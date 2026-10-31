@@ -114,3 +114,6 @@ func (d *Director) Interpret(ctx context.Context, sc *book.Scene, m *script.Mani
 	}
 	return nil, attempts, fmt.Errorf("unreachable")
 }
+
+// Model reports the model id in use, for /health.
+func (d *Director) Model() string { return d.model }

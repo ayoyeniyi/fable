@@ -2,7 +2,9 @@
 //
 //	fable-interpreter validate  --manifest schema/manifest.hall-of-doors.json --book book/passages.json script.json
 //	fable-interpreter generate  --scene hall-of-doors --out scripts/hall-of-doors.json
-//	fable-interpreter serve     --addr :8787          (POST /interpret {"sceneId":"hall-of-doors"}, GET /health)
+//	fable-interpreter serve     --addr :8787 [--wait 3s] [--warm]
+//	    POST /interpret {"sceneId","readingPosition","noCache","waitSeconds"} -> 200 script (X-Fable-Cache hit|miss) or 202 generating
+//	    GET /health, GET /jobs, GET /passages
 package main
 
 import (
@@ -13,14 +15,16 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"path/filepath"
-	"runtime"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/Thabhelo/fable/interpreter/internal/book"
 	"github.com/Thabhelo/fable/interpreter/internal/llm"
 	"github.com/Thabhelo/fable/interpreter/internal/script"
+	"github.com/Thabhelo/fable/interpreter/internal/server"
 )
 
 func loadManifest(root, sceneID string) (*script.Manifest, error) {
@@ -120,69 +124,38 @@ func main() {
 		fs := flag.NewFlagSet("serve", flag.ExitOnError)
 		addr := fs.String("addr", ":8787", "listen address")
 		model := fs.String("model", os.Getenv("FABLE_MODEL"), "Claude model id")
+		wait := fs.Duration("wait", 3*time.Second, "how long a request waits for a fresh script before answering 202 (the client may ask for more with waitSeconds)")
+		warm := fs.Bool("warm", false, "generate every scene without a valid cache at startup (needs ANTHROPIC_API_KEY)")
 		fs.Parse(os.Args[2:])
 		bk, err := book.Load(filepath.Join(root, "book", "passages.json"))
 		if err != nil {
 			log.Fatal(err)
 		}
 		dir := llm.New(*model)
-		mux := http.NewServeMux()
-		mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
-			var ms runtime.MemStats
-			runtime.ReadMemStats(&ms)
-			json.NewEncoder(w).Encode(map[string]any{"ok": true, "heapMB": float64(ms.HeapAlloc) / 1e6, "scenes": len(bk.Scenes)})
-		})
-		mux.HandleFunc("GET /passages", func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(bk)
-		})
-		mux.HandleFunc("POST /interpret", func(w http.ResponseWriter, r *http.Request) {
-			var req struct {
-				SceneID         string `json:"sceneId"`
-				ReadingPosition string `json:"readingPosition"` // sentence id the reader has reached
-				NoCache         bool   `json:"noCache"`
+		srv := server.New(root, bk, dir)
+		srv.DefaultWait = *wait
+		srv.Model = dir.Model()
+		if *warm {
+			if os.Getenv("ANTHROPIC_API_KEY") == "" {
+				log.Printf("--warm ignored: ANTHROPIC_API_KEY is not set")
+			} else {
+				log.Printf("warming %d scene(s)", srv.Warm())
 			}
-			if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1<<16)).Decode(&req); err != nil {
-				http.Error(w, err.Error(), 400)
-				return
-			}
-			sc, err := bk.Scene(req.SceneID)
-			if err != nil {
-				http.Error(w, err.Error(), 404)
-				return
-			}
-			m, err := loadManifest(root, req.SceneID)
-			if err != nil {
-				http.Error(w, err.Error(), 404)
-				return
-			}
-			cachePath := filepath.Join(root, "out", "cache", req.SceneID+".json")
-			if !req.NoCache {
-				if cached, err := os.ReadFile(cachePath); err == nil {
-					if cs, perr := script.Parse(cached); perr == nil && len(script.Validate(cs, m, sc.SentenceIDs())) == 0 {
-						w.Header().Set("Content-Type", "application/json")
-						w.Header().Set("X-Fable-Cache", "hit")
-						w.Write(cached)
-						return
-					}
-				}
-			}
-			ctx, cancel := context.WithTimeout(r.Context(), 8*time.Minute)
+		}
+		hs := &http.Server{Addr: *addr, Handler: srv.Handler(), ReadHeaderTimeout: 10 * time.Second, ReadTimeout: 30 * time.Second, WriteTimeout: 3 * time.Minute, IdleTimeout: 2 * time.Minute}
+		go func() {
+			sig := make(chan os.Signal, 1)
+			signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
+			<-sig
+			log.Printf("shutting down")
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 			defer cancel()
-			s, attempts, err := dir.Interpret(ctx, sc, m, req.ReadingPosition)
-			if err != nil {
-				http.Error(w, fmt.Sprintf("%v (attempts=%d)", err, len(attempts)), 502)
-				return
-			}
-			js, _ := json.MarshalIndent(s, "", "  ")
-			os.MkdirAll(filepath.Dir(cachePath), 0o755)
-			os.WriteFile(cachePath, js, 0o644)
-			w.Header().Set("Content-Type", "application/json")
-			w.Header().Set("X-Fable-Cache", "miss")
-			w.Write(js)
-		})
-		log.Printf("fable-interpreter listening on %s (model %s)", *addr, *model)
-		log.Fatal(http.ListenAndServe(*addr, mux))
+			hs.Shutdown(ctx)
+		}()
+		log.Printf("fable-interpreter listening on %s (model %s, key %v, wait %s)", *addr, srv.Model, os.Getenv("ANTHROPIC_API_KEY") != "", *wait)
+		if err := hs.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatal(err)
+		}
 	default:
 		log.Fatalf("unknown command %q", os.Args[1])
 	}

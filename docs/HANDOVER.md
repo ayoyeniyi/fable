@@ -39,7 +39,9 @@ Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs
   - a size change faster than 3 s.
 
   It caught the hall baseline rattling the little door two sentences before Alice finds it, and that action is removed.
-- **Interpreter** (`interpreter/`, Go): builds, tests pass, and all three baselines validate. Live generation is **untested**: there is no `ANTHROPIC_API_KEY`.
+- **Interpreter** (`interpreter/`, Go): builds, tests pass (validator + HTTP server), and all three baselines validate. Live generation is **untested**: there is no `ANTHROPIC_API_KEY`.
+  - `serve` runs each generation detached from the request (`internal/server`): a headset that stops waiting no longer cancels the Claude call, one generation per scene is in flight at a time, and the result is validated again before it is cached. A request waits `--wait` (default 3 s, or its own `waitSeconds`, max 120 s) and otherwise gets **202** `{"status":"generating"}` with `X-Fable-Cache: pending`; the next open of that passage gets the cached live script. Unity treats the 202 body as an unparseable script and falls back, so no client change was needed; passing `waitSeconds` from Unity would let a demo wait for a live result on first open. `--warm` pre-generates every scene at startup when a key is present. `GET /jobs` lists what is generating and cached; `/health` reports whether a key is present.
+  - Smoke-tested without a key: `/health` ok, `POST /interpret` 502 in 1.4 s with the SDK's credential message, cache hit 200 in 0 ms, clean shutdown on SIGINT. Binary 17.8 MB.
 - **Last verified editor run**:
   - All three loops through the picker, including hall beat 9 at 4× and expanding at 4×.
   - Stepping back eases 4× → 1×.
