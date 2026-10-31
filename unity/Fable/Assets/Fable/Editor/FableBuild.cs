@@ -60,7 +60,8 @@ namespace Fable.Editor
             if (urp)
             {
                 urp.msaaSampleCount = 4; urp.supportsHDR = false; urp.renderScale = 1.0f; urp.supportsCameraDepthTexture = false; urp.supportsCameraOpaqueTexture = false;
-                urp.shadowDistance = 0; urp.maxAdditionalLightsCount = 8; urp.supportsAdditionalLightShadows = false; urp.supportsMainLightShadows = false;
+                urp.shadowDistance = 0; urp.maxAdditionalLightsCount = 8;
+                var so = new SerializedObject(urp); so.FindProperty("m_AdditionalLightShadowsSupported").boolValue = false; so.FindProperty("m_MainLightShadowsSupported").boolValue = false; so.ApplyModifiedPropertiesWithoutUndo();
                 GraphicsSettings.defaultRenderPipeline = urp; QualitySettings.renderPipeline = urp;
                 EditorUtility.SetDirty(urp);
             }
