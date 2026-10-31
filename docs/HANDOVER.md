@@ -50,6 +50,20 @@ Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs
   - 0 errors, 0 warnings.
   - Note: grab was exercised by invoking the handlers directly, because there are no hands in the editor.
 
+## The product now: a reader for whole books (brief of 2026-10-31, supersedes the one-book framing)
+
+Fable is a VR reader for four public-domain books (Alice, Oz, the Butler Odyssey, Gulliver), read cover to cover on a floating page inside one of three rooms per book, with a highlight menu (Define, Translate, Search, Peek, Step In). Scope tiers and the step order are in `docs/PLAN.md`. Status by step:
+
+**Step 4, content pipeline and whole-book reading: built, editor-verified; page legibility not yet measured on the headset.**
+- `tools/ingest_book.py` (stdlib Python) turns a Standard Ebooks EPUB or a Gutenberg text into `content/books/<slug>/book.json` (chapters → paragraphs → sentences, ids like `alice:c01.p016.s01`) and `SOURCE.md` (URL, SHA-256, edition, licence, the SE colophon with the cover painting). `tools/books.json` lists the four sources. Standard Ebooks has only the Bryant Odyssey, so the Odyssey is Gutenberg #1727 (Butler). Front/back matter, licence blocks and every note and note mark are dropped; authors' own prefaces and epigraphs stay. Verse keeps its line breaks (`lineBefore`). Counts: alice 12 ch / 1,407 sentences / 26.6k words; oz 24 / 2,117 / 39.3k; odyssey 24 / 3,859 / 117.0k; gulliver 39 / 2,620 / 102.6k. Downloads cache in `out/sources/`.
+- `tools/map_passages.py` links each Step In passage sentence (`hall-of-doors:004`) to its book sentence and gives each passage a `bookFrom`/`bookTo` range (all matches ≥ 0.95).
+- `FableBuild.SyncData` copies the books to `StreamingAssets/books/<slug>/book.json` (2.5 MB; APK 179 MB).
+- `BookReader.cs` replaces the passage picker. Pages are measured by a hidden TextMeshPro copy (exact at four sizes: 17 / 19.5 / 22.5 / 26 pt on the 0.001-scale page), ragged right, running head, chapter title on its first page, footer with page, pages left in the chapter and % of the book. Contents (chapters, then bookmarks), bookmark ribbon, text size; progress per book in `progress.json` (`Books[slug]`: page-anchor sentence, bookmarks, size). Re-layouts keep the reader's sentence on the page. Only the next page is laid out, at most one a frame.
+- `PagePointer.cs`: the hand's pointer pose / controller ray / editor mouse onto the page, with a cursor dot. Pinch on a control presses it; pinch elsewhere turns the page; left pinch goes back. Consistent with the point-and-pinch model below.
+- Step In from the page: when the page holds a staged passage, "Step in ›" (or hold right pinch) opens its miniature at the beat for the page's first sentence (across Unity scenes for the tea party and croquet ground); closing returns to the page at the sentence reached. `FlowController.OpenBook(slug)` switches books (the lobby will call it).
+- Verified in the editor (play mode, desktop camera): all four books paginate (medium: alice 121 pages, oz 171, odyssey 420, gulliver 396; 2.0-3.6 ms per page on the M-series Mac); every control through the pinch path (`PagePointer.TestRay`); resume after restart; resize without drift; Step In and return in the hall and across scenes to the croquet ground; 0 errors. Desktop previews: `captures/desktop/desktop-preview_HallOfDoors_book-*.png`.
+- **Not verified:** legibility and comfort of the page for 20 minutes on the Quest 2 (the brief requires measuring this on the headset); per-page layout cost on the Quest (estimate 8-15 ms; one layout happens on each page turn and a chapter-back or text-size change lays out up to a whole chapter at once); the pointer dot's usability with hand pointer poses. Test hooks: `FlowController.Reader.Describe()`, `.Press("contents"|"size"|"bookmark"|"entry:N")`, `.NextPage()`, `.GoToSentence(id)`, `.PageCensus()`.
+
 ## Headset session 1 (Quest 2, 2026-10-31, on the owner's Mac)
 
 Installed over USB and run with hands. Findings and fixes, all pushed:
@@ -89,8 +103,8 @@ The reader found two-hand gestures unintuitive and reached the garden by acciden
 
 ## Not done / not verified
 
-1. **No headset run.** No Quest has been attached, and on this Mac security software kills and deletes `adb` (it needs whitelisting). There are no headset captures, no frame timings, and no physical test of pinch, grab or comfort.
-2. **Live generation untested** (no API key). The plumbing is tested: Unity posts `sceneId` and `readingPosition`, the server answered from its validated cache, and with no key the server returned 502 and Unity fell back to the bundled baseline within 5 s. The page shows where the scene came from ("live interpretation", "interpreter cache", "saved on this headset", "bundled baseline"), so a demo never passes a prepared scene off as live.
+1. **Headset coverage is partial.** Sessions 1-3 above ran on a Quest 2; the whole-book reader (step 4) has not been installed on the headset yet, and `adb` is not present on the build Mac in every session (security software has removed it before).
+2. **Live generation** works on the owner's Mac (see "Input model after headset session 3"); the pinch-to-miniature latencies the brief asks for (cached, live opus, live haiku) are not measured yet. The page shows where the scene came from ("live interpretation", "interpreter cache", "saved on this headset", "bundled baseline").
 3. **Miniature, now fixed in the editor** (it was broken before, though the state strings looked right):
    - Static-batched environment meshes didn't scale with the diorama. Environments are no longer `BatchingStatic`.
    - The reading panel was set to about 600× its size in the miniature.

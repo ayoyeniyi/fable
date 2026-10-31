@@ -1,35 +1,37 @@
-# Plan against the competition brief (Meta VR Start 2026, Entertainment, New Experience; deadline 2026-11-18)
+# Plan (Meta VR Start 2026, Entertainment, New Experience; deadline 2026-11-18)
 
-Status key: done = built and exercised; partial = built, not yet verified in the headset; todo.
+**The product (brief of 2026-10-31, supersedes the one-book plan):** a VR-native reader for whole books. The reader stands in a lobby with a shelf of four public-domain books, opens one as a floating page inside one of three preset rooms for that book, reads it cover to cover, and can highlight text for Define, Translate, Search, Peek (a small annotated low-fi model) or Step In (the passage staged as a miniature that grows around the reader). Step In stages prebuilt assets from a validated SceneScript; it never builds photoreal geometry at runtime. Spoiler rule everywhere: nothing past the end of the highlight or the reader's position is sent to the interpreter or shown.
 
-| brief item | status | where |
+Books: Alice (Standard Ebooks), Oz (SE), the Odyssey in Samuel Butler's 1900 prose translation only (Gutenberg #1727), Gulliver (SE). Rooms:
+
+| book | rooms (P0 room first) |
+|---|---|
+| Alice | Hall of Doors (built) · Mad Tea Party garden (built) · Queen's Croquet Ground (built) |
+| Oz | Kansas farmhouse interior, storm sky · Poppy field by the river · Emerald City throne room |
+| Odyssey | Calypso's cave on Ogygia · Deck of Odysseus's ship at night, Sirens' isle off the bow · Great hall at Ithaca |
+| Gulliver | Glumdalclitch's room in Brobdingnag, reader at doll scale · Lilliput beach, reader at giant scale · Laputa |
+
+## Scope tiers (finish P0 before P1; never trade P0 polish for P2 breadth)
+
+- **P0:** hardware-verified 72 Hz on Quest 2; lobby with shelf and four books; all four books readable cover to cover with typography comfortable for 20 minutes; one finished room per book (Hall of Doors, Kansas farmhouse, Calypso's cave, Glumdalclitch's room); highlight menu with Define, Search, Peek, Step In; Peek from the manifest/library (a) and clay (c) with Claude-written labels; Step In for the Hall of Doors from the headset with the live interpreter; credited music; progress per book across restarts; demo video.
+- **P1:** the other eight rooms (HDRI sky plus hero meshes is fine outdoors); Step In for one anchor scene per book with cached baselines; Translate; a ~40-model generic low-poly library for Peek (a); room switching from the page; grabbable key and bottle.
+- **P2:** Peek (b) server-side text-to-3D with prefetch; SceneScript prefetch; EPUB upload; voice-read of the current beat.
+- **Deferred:** multiplayer, arbitrary books, branching, unrestricted animated characters, Meta VR Glasses-specific features.
+
+## Steps (in order) and status
+
+Status key: done (headset) / done (editor) = built and exercised there; partial; todo.
+
+| step | status | notes |
 |---|---|---|
-| Comfortable, minimal reader; passage in elegant type | done (editor) | `ReadingPanel.cs`, EB Garamond, paper panel, passage picker; panel placement over the diorama still to fix |
-| Hand input only, usable seated | done (headset) | pinch right/left/both, drag-scrub, grab in `ReaderController.cs` / `StoryGrabbable.cs`; controller fallback; untested on hardware |
-| Select a passage, miniature scene unfolds in front of the reader | done (editor) | picker on the page; diorama at 0.09 scale grows on the table; hall needs a dollhouse ceiling cut |
-| Expand into immersive view | done (direct) | `FlowController.Unfold` scales the room up around the reader |
-| Scrub through the passage sentence by sentence, reversible | done (editor) | tap and pinch-drag (6 cm per beat); replay makes it exact, reader size included |
-| Highlight the current sentence | done | panel re-typesets with the active sentence in ink, the rest dimmed |
-| Pick up important objects, reveal their text | done (editor) | golden key and bottle via Interaction SDK; holding shows the introducing sentence; physical grab unverified |
-| Closing returns to the exact reading position | done (editor) | per-passage `progress.json`, survives restart, page reopens on the passage read last |
-| Signature: changing-size passage | done (mechanism) | `readerScale` action, 4x on the last beat of the Hall of Doors |
-| Visual realism, PBR wood/brass/fabric, natural lamp light | partial | three environments baked and lightmapped; textures ASTC; tuning needs the headset |
-| Atmospheric spatial audio | partial | 24 synthesised cues across three scenes, reverb zone, pooled 3D sources; not heard on hardware |
-| Backend receives passage, position, prior context | partial | interpreter takes position and prior context; Unity does not send the position yet |
-| Structured instructions with approved ids, timing, sentence refs; validated | done | schema + Go + C# validators + tests; validators also reject showing anything before its sentence |
-| Limited action vocabulary | done | place, move, remove, animate, light, sound, readerScale |
-| Cache successful scenes, preserve progress, fallback if generation fails | done (editor) | interpreter cache, Unity script cache, baseline fallback, per-passage progress |
-| One book, three scenes, live interpretation | partial | three environments and baselines done; live generation untested (no API key) |
-| Runnable Quest build, source, setup, architecture, demo video | partial | runs on a Quest 2 (72 fps at the page and diorama); video after the task loop is verified |
-| Measured headset performance | partial | 72/72 fps, 5 to 10 ms app time at the page and diorama; full-scale hall and outdoor scenes still to log |
-
-## Order of work from here
-
-1. Headset: install `out/fable.apk`, capture (`adb shell screencap`), profile on Quest 2 (OVR Metrics Tool, `adb shell dumpsys SurfaceFlinger --latency`), target 72 Hz. Blocked on a Quest and a working `adb` on the build Mac.
-2. Hand-test pinch, scrub, grab and the 4x scale for comfort; fix what breaks.
-3. Live interpretation with an API key: `generate` per scene vs baseline, `serve` + `SceneDirector.InterpreterUrl`, send the reading position, a no-baseline passage from the same setting.
-4. Visual tuning from the headset view (see HANDOVER, Not done 3-5), dollhouse cut for the hall diorama.
-5. Unfamiliar-reader tests, demo video under three minutes from headset footage.
+| 1-3 Build, headset install, hand-testing (earlier brief) | done (headset) | Quest 2 sessions 1-3 in HANDOVER; 72 fps at the page and diorama |
+| 4 Content pipeline, whole-book pages | done (editor) | `tools/ingest_book.py`, `content/books/*`, `BookReader.cs`, `PagePointer.cs`; page legibility for 20 minutes still to measure on the headset |
+| 5 Highlight menu, Define, Search, Peek (c) clay + (a) matcher, `fable-interpreter mock` | todo | needs pinch-drag text selection on the page (PagePointer gives the hit point) |
+| 6 Lobby with shelf and four books | todo | cover art from the SE editions (paintings named in each `SOURCE.md` colophon); Odyssey needs a public-domain painting with a recorded source |
+| 7 Rooms: Kansas farmhouse, Calypso's cave, Glumdalclitch's room; music and CREDITS.md | todo | Hall of Doors exists; budgets in ARCHITECTURE.md |
+| 8 Step In live: generate vs baseline, latencies (cached / live opus / live haiku), streaming, 20 s fallback | partial | live generation runs on the owner's Mac; latencies, streaming and the 20 s rule not done |
+| 9 Grabbables | done (editor) | key and bottle via the Interaction SDK; physical grab on the headset pending |
+| 10 Demo video under 3 minutes | todo | caption prepared assets vs cached scripts vs live generation |
 
 ## Richer scenes (requested after headset session 1: "we could be doing more")
 
