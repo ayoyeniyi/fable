@@ -1,7 +1,9 @@
 {
   "sceneId": "queens-croquet-ground",
   "environment": "env.queens-croquet-ground",
-  "ambiences": ["amb.formal-garden"],
+  "ambiences": [
+    "amb.formal-garden"
+  ],
   "anchors": {
     "reader.gate": "just inside the garden entrance",
     "reader.rose-tree": "a few steps from the rose tree",
@@ -24,12 +26,52 @@
     "fx.paint-splash": "a splash of red paint on Five"
   },
   "clips": {
-    "char.two": ["card.paint", "card.look-up", "card.speak", "card.bow"],
-    "char.five": ["card.paint", "card.look-up", "card.speak", "card.sulk"],
-    "char.seven": ["card.paint", "card.look-up", "card.speak", "card.fling-brush"],
-    "prop.rose-tree": ["roses.redden", "roses.rustle"],
-    "fx.red-roses": ["roses.redden"]
+    "char.two": [
+      "card.paint",
+      "card.look-up",
+      "card.speak",
+      "card.bow"
+    ],
+    "char.five": [
+      "card.paint",
+      "card.look-up",
+      "card.speak",
+      "card.sulk"
+    ],
+    "char.seven": [
+      "card.paint",
+      "card.look-up",
+      "card.speak",
+      "card.fling-brush"
+    ],
+    "prop.rose-tree": [
+      "roses.redden",
+      "roses.rustle"
+    ],
+    "fx.red-roses": [
+      "roses.redden"
+    ]
   },
-  "lights": ["light.sun", "light.sky", "light.fill"],
-  "sounds": ["sfx.brush-strokes", "sfx.brush-fling", "sfx.gravel-steps", "sfx.garden-birds", "sfx.wind-hedges", "sfx.card-shuffle"]
+  "lights": [
+    "light.sun",
+    "light.sky",
+    "light.fill"
+  ],
+  "sounds": [
+    "sfx.brush-strokes",
+    "sfx.brush-fling",
+    "sfx.gravel-steps",
+    "sfx.garden-birds",
+    "sfx.wind-hedges",
+    "sfx.card-shuffle"
+  ],
+  "introducedBy": {
+    "prop.rose-tree": "queens-croquet-ground:000",
+    "prop.paint-pot": "queens-croquet-ground:000",
+    "char.two": "queens-croquet-ground:000",
+    "char.five": "queens-croquet-ground:000",
+    "char.seven": "queens-croquet-ground:000",
+    "fx.red-roses": "queens-croquet-ground:000",
+    "fx.paint-splash": "queens-croquet-ground:001"
+  }
 }

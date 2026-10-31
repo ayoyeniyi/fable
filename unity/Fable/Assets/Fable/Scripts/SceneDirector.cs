@@ -100,7 +100,7 @@ namespace Fable
                 var t = Registry.Asset(id);
                 assetHome[id] = t.localPosition; assetHomeRot[id] = t.localRotation; assetHomeScale[id] = t.localScale;
             }
-            foreach (var g in new[] { "lamp.row", "light.garden", "light.fill" })
+            foreach (var g in Registry.LightIds)
             {
                 var ls = Registry.Lights(g); if (ls == null) continue;
                 foreach (var l in ls) lightHome[l.name] = l.intensity;
@@ -184,7 +184,10 @@ namespace Fable
             // home moves them there, keeping the authored offset inside the group.
             var pos = anchor.position;
             if (a.Offset != null) pos += anchor.TransformVector(new Vector3(a.Offset[0], a.Offset[1], a.Offset[2]));
-            bool atHome = a.Anchor == DefaultAnchorFor(a.Asset);
+            // a prop already authored near the anchor stays where Blender put it (its group pivot need not be the anchor)
+            float envScale = Mathf.Max(1e-4f, Registry.EnvironmentRoot.lossyScale.x);
+            var home = t.parent ? t.parent.TransformPoint(assetHome[a.Asset]) : assetHome[a.Asset];
+            bool atHome = a.Anchor == DefaultAnchorFor(a.Asset) || (a.Offset == null && Vector3.Distance(home, anchor.position) / envScale < 1.0f);
             if (!atHome) t.position = pos;
             if (a.YawDegrees != null) t.rotation = Quaternion.Euler(0, a.YawDegrees.Value, 0) * t.rotation;
             var scale = assetHomeScale[a.Asset] * (a.Scale ?? 1f);

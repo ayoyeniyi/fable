@@ -61,6 +61,10 @@ namespace Fable
         [JsonProperty("clips")] public Dictionary<string, List<string>> Clips = new();
         [JsonProperty("lights")] public List<string> Lights = new();
         [JsonProperty("sounds")] public List<string> Sounds = new();
+        /// asset id -> the sentence that first introduces it; using it earlier would show the reader something unread
+        [JsonProperty("introducedBy")] public Dictionary<string, string> IntroducedBy = new();
+        /// first sentence on which the reader may change size
+        [JsonProperty("readerScaleFrom")] public string ReaderScaleFrom;
     }
 
     public class Passage

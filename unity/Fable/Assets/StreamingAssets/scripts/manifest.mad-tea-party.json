@@ -1,7 +1,9 @@
 {
   "sceneId": "mad-tea-party",
   "environment": "env.mad-tea-party",
-  "ambiences": ["amb.garden-afternoon"],
+  "ambiences": [
+    "amb.garden-afternoon"
+  ],
   "anchors": {
     "reader.path": "standing on the path, facing the table under the tree",
     "reader.armchair": "seated at the large arm-chair at the end of the table",
@@ -25,13 +27,51 @@
     "fx.steam": "steam from the teapot"
   },
   "clips": {
-    "char.hatter": ["hatter.look", "hatter.eyes-wide", "hatter.speak"],
-    "char.march-hare": ["hare.offer", "hare.speak", "hare.elbow"],
-    "char.dormouse": ["dormouse.breathe", "dormouse.twitch"],
-    "prop.armchair": ["armchair.sit"],
-    "prop.tea-service": ["tea.rattle", "tea.pour"],
-    "fx.dappled-light": ["dapple.sway"]
+    "char.hatter": [
+      "hatter.look",
+      "hatter.eyes-wide",
+      "hatter.speak"
+    ],
+    "char.march-hare": [
+      "hare.offer",
+      "hare.speak",
+      "hare.elbow"
+    ],
+    "char.dormouse": [
+      "dormouse.breathe",
+      "dormouse.twitch"
+    ],
+    "prop.armchair": [
+      "armchair.sit"
+    ],
+    "prop.tea-service": [
+      "tea.rattle",
+      "tea.pour"
+    ],
+    "fx.dappled-light": [
+      "dapple.sway"
+    ]
   },
-  "lights": ["light.sun", "light.sky", "light.fill"],
-  "sounds": ["sfx.cups-rattle", "sfx.tea-pour", "sfx.chair-creak", "sfx.no-room-shout", "sfx.leaves", "sfx.birdsong", "sfx.dormouse-snore"]
+  "lights": [
+    "light.sun",
+    "light.sky",
+    "light.fill"
+  ],
+  "sounds": [
+    "sfx.cups-rattle",
+    "sfx.tea-pour",
+    "sfx.chair-creak",
+    "sfx.no-room-shout",
+    "sfx.leaves",
+    "sfx.birdsong",
+    "sfx.dormouse-snore"
+  ],
+  "introducedBy": {
+    "prop.tea-table": "mad-tea-party:000",
+    "prop.tea-service": "mad-tea-party:000",
+    "char.hatter": "mad-tea-party:000",
+    "char.march-hare": "mad-tea-party:000",
+    "char.dormouse": "mad-tea-party:000",
+    "prop.armchair": "mad-tea-party:003"
+  }
 }

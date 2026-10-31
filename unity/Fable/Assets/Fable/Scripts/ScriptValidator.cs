@@ -55,6 +55,10 @@ namespace Fable
                 for (int j = 0; j < b.Actions.Count; j++)
                 {
                     var a = b.Actions[j]; var q = $"{p}.actions[{j}]";
+                    var subject = a.Type == "animate" ? a.Target : a.Asset;
+                    if (a.Type != "remove" && subject != null && b.SentenceId != null && m.IntroducedBy != null &&
+                        m.IntroducedBy.TryGetValue(subject, out var introducedAt) && string.CompareOrdinal(b.SentenceId, introducedAt) < 0)
+                        Add($"{q} uses '{subject}' on {b.SentenceId}, before the text introduces it at {introducedAt}");
                     switch (a.Type)
                     {
                         case "place":
@@ -94,7 +98,9 @@ namespace Fable
                         case "readerScale":
                             if (a.Anchor == null || !m.Anchors.ContainsKey(a.Anchor)) Add($"{q}.anchor '{a.Anchor}' unknown");
                             if (a.Scale == null || a.Scale < 0.1f || a.Scale > 10) Add($"{q}.scale required in [0.1,10]");
-                            if (!InRange(a.DurationSeconds, 0.5f, 12)) Add($"{q}.durationSeconds out of range");
+                            if (a.DurationSeconds == null || a.DurationSeconds < 3 || a.DurationSeconds > 12) Add($"{q}.durationSeconds required in [3,12]");
+                            if (a.Scale != null && Math.Abs(a.Scale.Value - 1f) > 1e-4f && !string.IsNullOrEmpty(m.ReaderScaleFrom) && b.SentenceId != null &&
+                                string.CompareOrdinal(b.SentenceId, m.ReaderScaleFrom) < 0) Add($"{q} changes the reader's size before {m.ReaderScaleFrom}");
                             break;
                         default: Add($"{q}.type '{a.Type}' unknown"); break;
                     }

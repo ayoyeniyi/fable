@@ -40,6 +40,10 @@ namespace Fable.Editor
             PlayerSettings.companyName = "Fable";
             PlayerSettings.Android.textureCompressionFormats = new[] { TextureCompressionFormat.ASTC };
             PlayerSettings.gpuSkinning = true;
+            // one input backend: "Both" is unsupported on Android. Hands and controllers come through OVRInput/OpenXR,
+            // the editor keyboard fallback through the Input System package. Takes effect after an editor restart.
+            var player = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/ProjectSettings.asset")[0]);
+            player.FindProperty("activeInputHandler").intValue = 1; player.ApplyModifiedPropertiesWithoutUndo();
             // keep the Android build's footprint down: release IL2CPP, size-optimised codegen, high stripping, no symbol packages
             PlayerSettings.SetIl2CppCompilerConfiguration(target, Il2CppCompilerConfiguration.Release);
             PlayerSettings.SetIl2CppCodeGeneration(target, Il2CppCodeGeneration.OptimizeSize);
@@ -118,6 +122,7 @@ namespace Fable.Editor
         [MenuItem("Fable/2 Build Scene")]
         public static void BuildScene()
         {
+            SyncData();
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             RenderSettings.ambientMode = AmbientMode.Flat; RenderSettings.ambientLight = new Color(0.09f, 0.07f, 0.05f);
             RenderSettings.defaultReflectionMode = DefaultReflectionMode.Custom; RenderSettings.reflectionIntensity = 1f;
@@ -271,6 +276,21 @@ namespace Fable.Editor
             return panel;
         }
 
+        /// The repo's book, manifests and baseline scripts are the source of truth; StreamingAssets holds copies the app reads.
+        [MenuItem("Fable/Sync Data")]
+        public static void SyncData()
+        {
+            var repo = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "..", ".."));
+            var dst = Path.Combine(Application.dataPath, "StreamingAssets");
+            Directory.CreateDirectory(Path.Combine(dst, "book")); Directory.CreateDirectory(Path.Combine(dst, "scripts"));
+            File.Copy(Path.Combine(repo, "book", "passages.json"), Path.Combine(dst, "book", "passages.json"), true);
+            int n = 1;
+            foreach (var f in Directory.GetFiles(Path.Combine(repo, "schema"), "manifest.*.json")) { File.Copy(f, Path.Combine(dst, "scripts", Path.GetFileName(f)), true); n++; }
+            foreach (var f in Directory.GetFiles(Path.Combine(repo, "scripts"), "*.baseline.json")) { File.Copy(f, Path.Combine(dst, "scripts", Path.GetFileName(f)), true); n++; }
+            AssetDatabase.Refresh();
+            Debug.Log($"[FableBuild] synced {n} data files into StreamingAssets");
+        }
+
         [MenuItem("Fable/3 Bake Lighting")]
         public static void BakeLighting()
         {
@@ -290,6 +310,7 @@ namespace Fable.Editor
         [MenuItem("Fable/4 Build APK")]
         public static void BuildApk()
         {
+            SyncData();
             Directory.CreateDirectory("out");
             var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions { scenes = new[] { ScenePath }, locationPathName = "out/fable-hall-of-doors.apk", target = BuildTarget.Android, options = BuildOptions.None });
             Debug.Log($"[FableBuild] {report.summary.result}: {report.summary.totalSize / 1e6:F1} MB, {report.summary.totalErrors} errors, {report.summary.totalTime.TotalSeconds:F0}s");

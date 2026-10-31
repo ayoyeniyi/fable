@@ -148,9 +148,10 @@ namespace Fable
         /// Close: the room folds into the page; the page shows the sentence the reader reached.
         IEnumerator Return()
         {
+            bool fromScene = Current == State.Scene;
             busy = true; Current = State.Returning;
             ReadingRoom.SetActive(true);
-            var pivot = Current == State.Scene ? new Vector3(Head.position.x, env.position.y, Head.position.z) : miniaturePivot;
+            var pivot = fromScene ? new Vector3(Head.position.x, env.position.y, Head.position.z) : miniaturePivot;
             float from = env.localScale.x;
             for (float e = 0; e < GrowSeconds; e += Time.deltaTime)
             {

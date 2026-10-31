@@ -24,11 +24,11 @@ namespace Fable
             {
                 var n = t.name;
                 if (n.StartsWith("anchor.")) anchors[n.Substring(7)] = t;
-                else if (n.StartsWith("prop.") || n.StartsWith("fx.") || n == "door.little") assets[n] = t;
+                else if (IsAssetName(n)) assets[n] = t;
             }
             foreach (var l in root.GetComponentsInChildren<Light>(true))
             {
-                string id = l.name.StartsWith("Lamp") ? "lamp.row" : l.name.StartsWith("Garden") ? "light.garden" : "light.fill";
+                string id = LightId(l.transform);
                 if (!lightGroups.TryGetValue(id, out var list)) lightGroups[id] = list = new List<Light>();
                 list.Add(l);
                 l.shadows = LightShadows.None; // baked; realtime shadows are too costly on Quest 2
@@ -38,10 +38,29 @@ namespace Fable
             Debug.Log($"[Fable] registry: {anchors.Count} anchors, {assets.Count} assets, {lightGroups.Count} light groups, {clips.Count} clips");
         }
 
+        public static bool IsAssetName(string n) => n.StartsWith("prop.") || n.StartsWith("fx.") || n.StartsWith("char.") || n == "door.little";
+
+        /// Hall of Doors lights keep their Blender names (Lamp*, Garden*); newer scenes name the light, or a parent
+        /// empty, by its manifest id ("light.sun", "light.sun.2" groups as "light.sun").
+        static string LightId(Transform t)
+        {
+            for (var p = t; p; p = p.parent)
+            {
+                if (p.name.StartsWith("light."))
+                {
+                    var parts = p.name.Split('.');
+                    return parts.Length > 2 && int.TryParse(parts[parts.Length - 1], out _) ? string.Join(".", parts, 0, parts.Length - 1) : p.name;
+                }
+                if (p.name.StartsWith("env.")) break;
+            }
+            return t.name.StartsWith("Lamp") ? "lamp.row" : t.name.StartsWith("Garden") ? "light.garden" : "light.fill";
+        }
+
         public Transform Anchor(string id) => anchors.TryGetValue(id, out var t) ? t : null;
         public Transform Asset(string id) => assets.TryGetValue(id, out var t) ? t : null;
         public List<Light> Lights(string id) => lightGroups.TryGetValue(id, out var l) ? l : null;
         public AudioClip Clip(string id) => clips.TryGetValue(id, out var c) ? c : null;
         public IEnumerable<string> AssetIds => assets.Keys;
+        public IEnumerable<string> LightIds => lightGroups.Keys;
     }
 }
