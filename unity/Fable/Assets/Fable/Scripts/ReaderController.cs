@@ -1,6 +1,6 @@
 // Hand-controlled story progression, seated, hands only.
 //   right pinch tap        next beat          left pinch tap        previous beat
-//   right pinch and drag   scrub (6 cm = one beat, either direction)
+//   right pinch and drag   scroll the story (5 cm = one sentence; up or right = forward, down or left = back)
 //   both hands pinch, quick release   toggle miniature / immersive      (one hand: hold the right pinch ~1 s)
 //   both hands pinch, hold 1 s        close the scene, back to the page  (one hand: hold the left pinch ~1 s)
 // Controllers (index triggers) mirror the pinches so testers without hand tracking are not stuck.
@@ -14,7 +14,7 @@ namespace Fable
     {
         public event Action Next, Previous, ReturnToReading, Select, ToggleView;
         public event Action<int> Scrub;                 // +1 / -1 per scrub step while dragging
-        public float TapSeconds = 0.35f, DragStepMetres = 0.06f, HoldToReturn = 1.0f, HoldOneHand = 0.9f;
+        public float TapSeconds = 0.35f, DragStepMetres = 0.05f, HoldToReturn = 1.0f, HoldOneHand = 0.9f;
         bool rHeld, lHeld;   // a one-hand hold already fired for this pinch
 
 #if FABLE_META_XR
@@ -91,13 +91,16 @@ namespace Fable
             if (r && rDown < 0) { rDown = now; rStart = rLast = rPos; rAccum = 0; rDragging = false; rHeld = false; }
             else if (r)
             {
-                var moved = rPos - rStart; moved.y = 0;
+                var moved = rPos - rStart;
                 if (!rDragging && moved.magnitude > 0.02f) rDragging = true;
                 if (!rDragging && !rHeld && now - rDown > HoldOneHand) { rHeld = true; ToggleView?.Invoke(); }
                 if (rDragging)
                 {
-                    var step = rPos - rLast; var fwd = Camera.main ? Camera.main.transform.right : Vector3.right; fwd.y = 0; fwd.Normalize();
-                    rAccum += Vector3.Dot(step, fwd);
+                    // one-hand scrolling, as on a phone: a pinched hand moving up (or to the right) scrolls the story forward,
+                    // down (or left) scrolls back, 5 cm per sentence, along whichever axis the hand moves most
+                    var step = rPos - rLast; var right = Camera.main ? Camera.main.transform.right : Vector3.right; right.y = 0; right.Normalize();
+                    float dx = Vector3.Dot(step, right), dy = step.y;
+                    rAccum += Mathf.Abs(dy) > Mathf.Abs(dx) ? dy : dx;
                     while (rAccum > DragStepMetres) { rAccum -= DragStepMetres; Scrub?.Invoke(+1); }
                     while (rAccum < -DragStepMetres) { rAccum += DragStepMetres; Scrub?.Invoke(-1); }
                     rLast = rPos;

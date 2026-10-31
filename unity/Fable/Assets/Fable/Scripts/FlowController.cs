@@ -44,6 +44,15 @@ namespace Fable
         int chosen;
         Passage.Scene Chosen => passages.Count > 0 ? passages[chosen] : Director.PassageScene;
         public int PassageCount => passages.Count;
+        public StoryTasks Tasks { get; private set; }
+        public bool HasPassage(string id) => passages.Exists(p => p.Id == id);
+        /// Open another passage from inside a scene (the little door into the garden).
+        public void OpenPassage(string id)
+        {
+            int i = passages.FindIndex(p => p.Id == id);
+            if (i < 0 || busy) return;
+            chosen = i; OpenChosen();
+        }
         string Place(string id) => Places.TryGetValue(id, out var p) ? p : "the scene";
 
         /// Sky dome and distant scenery: shown only at full scale (a 45 m dome at diorama scale would still enclose the reader).
@@ -162,6 +171,7 @@ namespace Fable
             env.gameObject.SetActive(true); PrepareDiorama(); env.gameObject.SetActive(false);
             passages = book.Scenes.Where(p => p.Id == SceneId || (UnityScenes.TryGetValue(p.Id, out var n) && Application.CanStreamedLevelBeLoaded(n))).ToList();
             if (Panel && !Panel.GetComponent<GestureCues>()) Panel.gameObject.AddComponent<GestureCues>();   // animated gesture row under the passage
+            Tasks = GetComponent<StoryTasks>() ? GetComponent<StoryTasks>() : gameObject.AddComponent<StoryTasks>(); Tasks.Init(Director, this, Input, Head);   // do-what-Alice-does tasks
             Input.Select += OnSelect; Input.ModeChanged += OnInputMode; Input.Next += OnNext; Input.Previous += OnPrev; Input.ReturnToReading += OnReturn; Input.ToggleView += OnToggle; Input.Scrub += OnScrub;
             Director.BeatChanged += (i, b) =>
             {
@@ -208,7 +218,8 @@ namespace Fable
         string InputNote => Input.InputMode == "none" ? "show your hands to the headset, or pick up the controllers.   " : "";
         void OnInputMode(string mode) { if (busy) return; if (Current == State.Reading) ShowPicker(); else if (Director.Script != null && Director.BeatIndex >= 0) Panel.Show(Director.PassageScene, Director.Script.Beats[Director.BeatIndex].SentenceId, Hint()); }
 
-        string Hint() => InputNote + (Current == State.Scene
+        string TaskNote => Tasks != null && Tasks.Prompt != "" ? $"<b>{Tasks.Prompt}</b>   " : "";
+        string Hint() => TaskNote + InputNote + (Current == State.Scene
             ? $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   right {Pinch}: next sentence \u00b7 left {Pinch}: back \u00b7 {Pinch} and drag: scrub \u00b7 hold right {Pinch}: back to the table \u00b7 hold left {Pinch}: close the book"
             : $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   right {Pinch}: next sentence \u00b7 left {Pinch}: back \u00b7 {Pinch} and drag: scrub \u00b7 hold right {Pinch}: step inside \u00b7 hold left {Pinch}: close the book");
 
