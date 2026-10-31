@@ -190,15 +190,25 @@ namespace Fable.Editor
             var rigPrefab = AssetDatabase.FindAssets("OVRCameraRig t:Prefab").Select(g => AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(g))).FirstOrDefault(p => p.name == "OVRCameraRig");
             rig = (GameObject)PrefabUtility.InstantiatePrefab(rigPrefab);
             var ovrRig = rig.GetComponent<OVRCameraRig>();
-            var manager = rig.GetComponent<OVRManager>() ?? rig.AddComponent<OVRManager>();
+            if (!rig.TryGetComponent<OVRManager>(out var manager)) manager = rig.AddComponent<OVRManager>();
             manager.trackingOriginType = OVRManager.TrackingOrigin.FloorLevel;
             head = ovrRig.centerEyeAnchor;
-            var left = new GameObject("LeftHand"); left.transform.SetParent(ovrRig.leftHandAnchor, false); var lh = left.AddComponent<OVRHand>(); SetHandType(lh, OVRHand.Hand.HandLeft);
-            var right = new GameObject("RightHand"); right.transform.SetParent(ovrRig.rightHandAnchor, false); var rh = right.AddComponent<OVRHand>(); SetHandType(rh, OVRHand.Hand.HandRight);
-            var lskel = left.AddComponent<OVRSkeleton>(); var rskel = right.AddComponent<OVRSkeleton>();
-            var lmesh = left.AddComponent<OVRMesh>(); var rmesh = right.AddComponent<OVRMesh>();
-            left.AddComponent<OVRMeshRenderer>(); right.AddComponent<OVRMeshRenderer>();
-            left.AddComponent<SkinnedMeshRenderer>(); right.AddComponent<SkinnedMeshRenderer>();
+            // Interaction SDK rig: hand and controller data, grab/poke/ray interactors and hand visuals in one prefab,
+            // pointed at this camera rig. Its OVRHand data sources also feed the reader's pinch gestures.
+            var isdkPrefab = AssetDatabase.FindAssets("OVRComprehensiveInteractionRig t:Prefab").Select(AssetDatabase.GUIDToAssetPath)
+                .Where(p => p.EndsWith("/OVRComprehensiveInteractionRig.prefab")).Select(AssetDatabase.LoadAssetAtPath<GameObject>).FirstOrDefault();
+            if (!isdkPrefab) throw new Exception("OVRComprehensiveInteractionRig prefab not found (com.meta.xr.sdk.interaction.ovr)");
+            var isdk = (GameObject)PrefabUtility.InstantiatePrefab(isdkPrefab, rig.transform);
+            var rigRefSo = new SerializedObject(isdk.GetComponent<Oculus.Interaction.Input.OVRCameraRigRef>());
+            rigRefSo.FindProperty("_ovrCameraRig").objectReferenceValue = ovrRig; rigRefSo.ApplyModifiedPropertiesWithoutUndo();
+            // The reader never moves (the world scales around them), so the rig's locomotion stack (teleport, slide, turn,
+            // microgesture locomotion, the capsule locomotor and its tunnelling vignettes) is removed rather than left half-wired.
+            PrefabUtility.UnpackPrefabInstance(isdk, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+            var doomed = isdk.GetComponentsInChildren<Transform>(true).Where(t => t.name == "Locomotor" || t.name.Contains("Locomotion")).ToList();
+            foreach (var t in doomed) if (t) UnityEngine.Object.DestroyImmediate(t.gameObject);
+            OVRHand lh = null, rh = null;
+            foreach (var h in isdk.GetComponentsInChildren<OVRHand>(true)) { if (h.name.Contains("Left")) lh = h; else if (h.name.Contains("Right")) rh = h; }
+            if (!lh || !rh) throw new Exception("Interaction rig has no OVRHand data sources");
 #else
             rig = new GameObject("CameraRig"); var camGo = new GameObject("CenterEye"); camGo.transform.SetParent(rig.transform); camGo.transform.localPosition = new Vector3(0, 1.62f, 0);
             var cam = camGo.AddComponent<Camera>(); cam.nearClipPlane = 0.05f; cam.farClipPlane = 60f; camGo.AddComponent<AudioListener>(); head = camGo.transform;

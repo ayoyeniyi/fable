@@ -31,6 +31,7 @@ namespace Fable
             book = JsonConvert.DeserializeObject<Passage>(System.IO.File.ReadAllText(System.IO.Path.Combine(Application.streamingAssetsPath, "book/passages.json")));
             env = Director.Registry.EnvironmentRoot;
             if (!UnityEngine.XR.XRSettings.isDeviceActive && Head && Head.localPosition.y < 0.5f) Head.localPosition = new Vector3(0, 1.25f, 0);
+            Director.Flow = this; Director.Panel = Panel; Director.Reader = Input;
             yield return Director.Load(SceneId, book);
             env.gameObject.SetActive(false);
             Input.Select += OnSelect; Input.Next += OnNext; Input.Previous += OnPrev; Input.ReturnToReading += OnReturn; Input.ToggleView += OnToggle; Input.Scrub += OnScrub;
@@ -60,6 +61,14 @@ namespace Fable
             else if (Current == State.Reading) StartCoroutine(Grow());
         }
         void OnReturn() { if ((Current == State.Scene || Current == State.Miniature) && !busy) StartCoroutine(Return()); }
+
+        /// Back to the passage at the current beat (after a held prop is put down, for instance).
+        public void RefreshPanel()
+        {
+            if (Director.Script == null) return;
+            var at = Director.BeatIndex >= 0 ? Director.Script.Beats[Director.BeatIndex].SentenceId : null;
+            Panel.Show(Director.PassageScene, at, Current == State.Reading ? "pinch to open the scene" : Hint());
+        }
 
         // test hooks: the same paths the hands take, callable from the editor CLI
         public void StepInto() => OnSelect();

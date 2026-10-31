@@ -21,6 +21,11 @@ namespace Fable
         public string InterpreterUrl = "";
 
         public SceneScript Script { get; private set; }
+        public SceneManifest Manifest { get; private set; }
+        public FlowController Flow;
+        public ReadingPanel Panel;
+        public ReaderController Reader;
+        readonly List<StoryGrabbable> grabbables = new();
         public Passage.Scene PassageScene { get; private set; }
         public int BeatIndex { get; private set; } = -1;
         public event Action<int, Beat> BeatChanged;
@@ -36,6 +41,7 @@ namespace Fable
         {
             PassageScene = book.Scenes.First(s => s.Id == sceneId);
             var manifest = JsonConvert.DeserializeObject<SceneManifest>(ReadStreaming($"scripts/manifest.{sceneId}.json"));
+            Manifest = manifest;
             var ids = PassageScene.Sentences().Select(s => s.Id).ToList();
             SceneScript candidate = null;
             if (!string.IsNullOrEmpty(InterpreterUrl))
@@ -78,7 +84,26 @@ namespace Fable
             if (Clips) Clips.Init(Registry);
             if (Audio) Audio.Init(Registry);
             CaptureHomes();
+            SetUpGrabbables();
             ResetRoom();
+        }
+
+        /// The sentence that first brings an asset into the story, or null.
+        public string IntroducedBy(string assetId) =>
+            Manifest?.IntroducedBy != null && Manifest.IntroducedBy.TryGetValue(assetId, out var s) ? s : null;
+
+        void SetUpGrabbables()
+        {
+            foreach (var g in grabbables) if (g) Destroy(g);
+            grabbables.Clear();
+            if (Manifest?.Grabbable == null) return;
+            foreach (var id in Manifest.Grabbable)
+            {
+                var t = Registry.Asset(id); if (!t) { Debug.LogWarning($"[Fable] grabbable {id} not in the environment"); continue; }
+                if (!t.TryGetComponent<StoryGrabbable>(out var g)) g = t.gameObject.AddComponent<StoryGrabbable>();
+                g.AssetId = id; g.Flow = Flow; g.Director = this; g.Panel = Panel; g.Reader = Reader;
+                grabbables.Add(g);
+            }
         }
 
         static string ReadStreaming(string rel)
@@ -110,6 +135,7 @@ namespace Fable
         /// Everything the script can place starts hidden; the environment shell itself is always there.
         public void ResetRoom()
         {
+            foreach (var g in grabbables) if (g) g.ForceRest();
             Clips.StopAll();
             foreach (var id in Registry.AssetIds)
             {

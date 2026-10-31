@@ -69,5 +69,9 @@
     "fx.garden-glow": "hall-of-doors:006",
     "prop.drink-me-bottle": "hall-of-doors:009"
   },
-  "readerScaleFrom": "hall-of-doors:012"
+  "readerScaleFrom": "hall-of-doors:012",
+  "grabbable": [
+    "prop.golden-key",
+    "prop.drink-me-bottle"
+  ]
 }

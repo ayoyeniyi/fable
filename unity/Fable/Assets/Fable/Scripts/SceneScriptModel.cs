@@ -65,6 +65,8 @@ namespace Fable
         [JsonProperty("introducedBy")] public Dictionary<string, string> IntroducedBy = new();
         /// first sentence on which the reader may change size
         [JsonProperty("readerScaleFrom")] public string ReaderScaleFrom;
+        /// props the reader can pick up in the immersive view
+        [JsonProperty("grabbable")] public List<string> Grabbable = new();
     }
 
     public class Passage

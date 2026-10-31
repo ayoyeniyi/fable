@@ -70,6 +70,8 @@ type Manifest struct {
 	IntroducedBy map[string]string `json:"introducedBy,omitempty"`
 	// ReaderScaleFrom is the first sentence on which the reader may change size (scale != 1).
 	ReaderScaleFrom string `json:"readerScaleFrom,omitempty"`
+	// Grabbable props can be picked up in the headset; the interpreter does not script them.
+	Grabbable []string `json:"grabbable,omitempty"`
 }
 
 // tooEarly reports whether asset is used on sentence before the text introduces it.

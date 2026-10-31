@@ -24,6 +24,10 @@ namespace Fable
         public bool RightPinching { get; private set; }
 
         float rDown = -1, lDown = -1, bothDown = -1; bool bothFired, rDragging; Vector3 rStart, rLast; float rAccum;
+        bool suppressed;   // a pinch that grabbed a prop is not also a page turn or a scrub
+
+        /// Called when a pinch picks something up (or puts it down): that pinch no longer counts as a tap or drag.
+        public void SuppressCurrentPinch() { suppressed = true; rDown = lDown = bothDown = -1; rDragging = false; }
 
         bool Pinch(bool left, out Vector3 pos)
         {
@@ -53,6 +57,7 @@ namespace Fable
             bool r = Pinch(false, out var rPos), l = Pinch(true, out _);
             LeftPinching = l; RightPinching = r;
             float now = Time.time;
+            if (suppressed) { if (!l && !r) suppressed = false; return; }
 
             // both hands: quick release toggles the view, a held pinch closes the scene
             if (l && r)
