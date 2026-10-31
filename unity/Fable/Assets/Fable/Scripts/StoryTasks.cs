@@ -34,6 +34,23 @@ namespace Fable
                 new Task { Sentence = "hall-of-doors:011", Verb = Verb.BringTo, Target = "prop.drink-me-bottle", Dest = "head", Prompt = "DRINK ME: bring the bottle to your lips.", Radius = 0.26f },
                 new Task { Sentence = "hall-of-doors:012", Verb = Verb.GoThrough, Target = "door.little", Passage = "queens-croquet-ground", Prompt = "You are small enough now. Go through the little door into the garden.", Radius = 0.7f },
             },
+            ["mad-tea-party"] = new[]
+            {
+                new Task { Sentence = "mad-tea-party:000", Verb = Verb.LookAt, Target = "char.dormouse", Prompt = "Look at the Dormouse, fast asleep between them.", Radius = 3.5f },
+                new Task { Sentence = "mad-tea-party:002", Verb = Verb.LookAt, Target = "prop.armchair", Prompt = "\"There's plenty of room!\" Find the big armchair at the end of the table.", Radius = 4f },
+                new Task { Sentence = "mad-tea-party:004", Verb = Verb.Touch, Target = "char.march-hare", Prompt = "The March Hare offers you wine. Reach out to him.", Radius = 0.3f },
+                new Task { Sentence = "mad-tea-party:005", Verb = Verb.Touch, Target = "prop.tea-service", Prompt = "Look all round the table: touch the tea things. There is nothing but tea.", Radius = 0.25f },
+                new Task { Sentence = "mad-tea-party:011", Verb = Verb.LookAt, Target = "char.hatter", Prompt = "The Hatter is staring at you. Look back at him.", Radius = 3.5f },
+                new Task { Sentence = "mad-tea-party:014", Verb = Verb.Touch, Target = "prop.tea-service", Prompt = "A riddle! Pick up your cup while you think.", Radius = 0.25f },
+            },
+            ["queens-croquet-ground"] = new[]
+            {
+                new Task { Sentence = "queens-croquet-ground:000", Verb = Verb.LookAt, Target = "prop.rose-tree", Prompt = "Three gardeners are painting the roses. Go nearer and watch.", Radius = 2.6f },
+                new Task { Sentence = "queens-croquet-ground:001", Verb = Verb.Touch, Target = "prop.paint-pot", Prompt = "Red paint, for white roses. Touch the pot.", Radius = 0.25f },
+                new Task { Sentence = "queens-croquet-ground:009", Verb = Verb.LookAt, Target = "char.seven", Prompt = "Seven has seen you. Look at him.", Radius = 4f },
+                new Task { Sentence = "queens-croquet-ground:011", Verb = Verb.LookAt, Target = "char.two", Prompt = "They all look at Two. So do you.", Radius = 4f },
+                new Task { Sentence = "queens-croquet-ground:012", Verb = Verb.Touch, Target = "prop.rose-tree", Prompt = "Touch a painted rose. The red comes off on your fingers.", Radius = 0.3f },
+            },
         };
 
         SceneDirector director; FlowController flow; ReaderController reader; Transform head;
@@ -70,7 +87,7 @@ namespace Fable
             float radius = active.Radius * scale;
             bool ok = active.Verb switch
             {
-                Verb.Touch => Touching(radius),
+                Verb.Touch => active.Target == "doors" ? Touching(radius) : TouchingAsset(director.Registry.Asset(active.Target), radius),
                 Verb.Grab => Holding(active.Target),
                 Verb.BringTo => Holding(active.Target) && Near(director.Registry.Asset(active.Target), DestPoint(), radius),
                 Verb.LookAt => LookingAt(director.Registry.Anchor(active.Target) ?? director.Registry.Asset(active.Target), radius),
@@ -126,6 +143,18 @@ namespace Fable
             foreach (var h in Hands())
                 foreach (var r in root.GetComponentsInChildren<Renderer>())
                     if (r.name.StartsWith("MESH_Door") && !r.name.Contains("Little") && Vector3.Distance(r.bounds.ClosestPoint(h), h) < radius) return true;
+            return false;
+        }
+
+        bool TouchingAsset(Transform t, float radius)
+        {
+            if (!t) return false;
+            var rends = t.GetComponentsInChildren<Renderer>();
+            foreach (var h in Hands())
+            {
+                if (rends.Length == 0 && Vector3.Distance(t.position, h) < radius) return true;
+                foreach (var r in rends) if (Vector3.Distance(r.bounds.ClosestPoint(h), h) < radius) return true;
+            }
             return false;
         }
 

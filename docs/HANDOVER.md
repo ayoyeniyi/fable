@@ -62,9 +62,16 @@ Installed over USB and run with hands. Findings and fixes, all pushed:
 - Pipeline gotcha: an APK built right after a script edit fails with "script class layout is incompatible" unless the editor has actually recompiled; wait for `Library/ScriptAssemblies/Assembly-CSharp.dll` to change first. The Quest will not start a VR activity while the headset is off the face; `am start` is queued until it is worn.
 - Captures: `captures/headset/` (both eyes, `adb screencap`), frame logs `session*_frames.log`.
 
-## Headset session 2 changes (built and installed, awaiting the reader's verdict)
+## Headset session 2 (reader's verdict: stripes gone, gestures work and feel right; "nothing to do in the room")
 
-- **Stripes.** The reader saw transparent vertical bands (several per eye, count changing). `Assets/XR/Settings/OpenXR Package Settings.asset` had the Meta Quest feature's `m_depthSubmissionMode: 1`; with Vulkan + MSAA the compositor's positional reprojection can smear bands when the submitted depth is untrustworthy. Set to `0` in both feature blocks. If the bands persist, next experiments in order: MSAA 2x, then OpenGLES3 instead of Vulkan.
+Added after that verdict, built and installed, not yet seen by the reader:
+- **Tasks** (`StoryTasks.cs`, added to the Fable systems object at runtime): per sentence, a thing to do in the room. The target glows (emission pulse), the page shows the prompt in bold, and completing it calls `Director.Next()`; pinching still works. Verbs: Touch (hand within reach of the target's renderers, or any `MESH_Door*` for "doors"), Grab (`StoryGrabbable.Held`), BringTo (held target near an anchor or the head), LookAt (head near and facing), GoThrough (head at the little door after the 4x shrink → `FlowController.OpenPassage("queens-croquet-ground")`). Tables for all three scenes live in the class; the hall's chain is door → key → door → look through → bottle → drink → through the door into the garden.
+- **One-hand scrolling**: pinch and move up/down or sideways, 5 cm per sentence, on the dominant axis.
+- Baselines: every sentence now has a beat (hall 13/52 actions, tea party 17/48, croquet 13/44).
+
+Earlier in the session:
+
+- **Stripes: fixed, confirmed by the reader.** Transparent vertical bands (several per eye) came from the Meta Quest OpenXR feature's depth submission (`m_depthSubmissionMode: 1`) under Vulkan + MSAA; set to `0` in both feature blocks and the bands are gone. Keep it off.
 - **One-hand forms** (`ReaderController.cs`): hold the right pinch ~0.9 s without moving = toggle miniature/immersive; hold the left pinch = close the book. Taps stay under 0.35 s; the both-hands gestures still work. Same for the controller triggers.
 - **Gesture cues** (`GestureCues.cs`, added to the page at runtime by `FlowController.Start`): a row of looping glyphs under the passage (pinch, hold with a filling ring, slide), one per available action, labelled for hands or controllers, following the flow state. Built from a generated circle sprite, so no scene rebuild was needed; it grows the panel to 906 px.
 - **Readings** (interpreter only so far): `variant` 0..3 in `/interpret`, direction notes in `internal/llm/claude.go` (`Readings`), cache per variant. Unity does not send `variant` yet; the plan is a left-hand pinch-and-slide in the miniature to switch readings, the page showing "reading 2 of 4", and the diorama re-running the new script at the same sentence. Needs a live key to be visible.

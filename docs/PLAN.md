@@ -5,7 +5,7 @@ Status key: done = built and exercised; partial = built, not yet verified in the
 | brief item | status | where |
 |---|---|---|
 | Comfortable, minimal reader; passage in elegant type | done (editor) | `ReadingPanel.cs`, EB Garamond, paper panel, passage picker; panel placement over the diorama still to fix |
-| Hand input only, usable seated | partial | pinch right/left/both, drag-scrub, grab in `ReaderController.cs` / `StoryGrabbable.cs`; controller fallback; untested on hardware |
+| Hand input only, usable seated | done (headset) | pinch right/left/both, drag-scrub, grab in `ReaderController.cs` / `StoryGrabbable.cs`; controller fallback; untested on hardware |
 | Select a passage, miniature scene unfolds in front of the reader | done (editor) | picker on the page; diorama at 0.09 scale grows on the table; hall needs a dollhouse ceiling cut |
 | Expand into immersive view | done (direct) | `FlowController.Unfold` scales the room up around the reader |
 | Scrub through the passage sentence by sentence, reversible | done (editor) | tap and pinch-drag (6 cm per beat); replay makes it exact, reader size included |
@@ -20,8 +20,8 @@ Status key: done = built and exercised; partial = built, not yet verified in the
 | Limited action vocabulary | done | place, move, remove, animate, light, sound, readerScale |
 | Cache successful scenes, preserve progress, fallback if generation fails | done (editor) | interpreter cache, Unity script cache, baseline fallback, per-passage progress |
 | One book, three scenes, live interpretation | partial | three environments and baselines done; live generation untested (no API key) |
-| Runnable Quest build, source, setup, architecture, demo video | partial | APK builds (175 MB, three scenes); not yet installed on a headset; video after headset testing |
-| Measured headset performance | todo | needs a Quest on USB |
+| Runnable Quest build, source, setup, architecture, demo video | partial | runs on a Quest 2 (72 fps at the page and diorama); video after the task loop is verified |
+| Measured headset performance | partial | 72/72 fps, 5 to 10 ms app time at the page and diorama; full-scale hall and outdoor scenes still to log |
 
 ## Order of work from here
 
