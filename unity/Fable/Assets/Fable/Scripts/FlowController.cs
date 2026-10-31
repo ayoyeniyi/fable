@@ -34,6 +34,19 @@ namespace Fable
         {
             ["hall-of-doors"] = "HallOfDoors", ["mad-tea-party"] = "MadTeaParty", ["queens-croquet-ground"] = "QueensCroquetGround"
         };
+        /// Where a place's door leads: the hall's little door opens on the garden, the garden path leads to the tea table,
+        /// and the tea party's house door takes you back to the hall. A loop through the book's three places.
+        static readonly Dictionary<string, string> Links = new()
+        {
+            ["hall-of-doors"] = "queens-croquet-ground", ["queens-croquet-ground"] = "mad-tea-party", ["mad-tea-party"] = "hall-of-doors"
+        };
+        public bool OpenLinkedPassage()
+        {
+            if (busy || !Links.TryGetValue(Director.PassageScene?.Id ?? SceneId, out var next) || !HasPassage(next)) return false;
+            OpenPassage(next); return true;
+        }
+        public Locomotion Move { get; private set; }
+
         static readonly Dictionary<string, string> Places = new()
         {
             ["hall-of-doors"] = "the hall", ["mad-tea-party"] = "the tea-party", ["queens-croquet-ground"] = "the rose garden"
@@ -172,6 +185,11 @@ namespace Fable
             passages = book.Scenes.Where(p => p.Id == SceneId || (UnityScenes.TryGetValue(p.Id, out var n) && Application.CanStreamedLevelBeLoaded(n))).ToList();
             if (Panel && !Panel.GetComponent<GestureCues>()) Panel.gameObject.AddComponent<GestureCues>();   // animated gesture row under the passage
             Tasks = GetComponent<StoryTasks>() ? GetComponent<StoryTasks>() : gameObject.AddComponent<StoryTasks>(); Tasks.Init(Director, this, Input, Head);   // do-what-Alice-does tasks
+            Transform rigRoot = Head ? Head.parent : null;
+#if FABLE_META_XR
+            var ovrRig = Head ? Head.GetComponentInParent<OVRCameraRig>() : null; if (ovrRig) rigRoot = ovrRig.transform;
+#endif
+            Move = GetComponent<Locomotion>() ? GetComponent<Locomotion>() : gameObject.AddComponent<Locomotion>(); Move.Init(this, Director, Input, Head, rigRoot);   // point and pinch to go there
             Input.Select += OnSelect; Input.ModeChanged += OnInputMode; Input.Next += OnNext; Input.Previous += OnPrev; Input.ReturnToReading += OnReturn; Input.ToggleView += OnToggle; Input.Scrub += OnScrub;
             Director.BeatChanged += (i, b) =>
             {
@@ -220,8 +238,8 @@ namespace Fable
 
         string TaskNote => Tasks != null && Tasks.Prompt != "" ? $"<b>{Tasks.Prompt}</b>   " : "";
         string Hint() => TaskNote + InputNote + (Current == State.Scene
-            ? $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   right {Pinch}: next sentence \u00b7 left {Pinch}: back \u00b7 {Pinch} and drag: scrub \u00b7 hold right {Pinch}: back to the table \u00b7 hold left {Pinch}: close the book"
-            : $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   right {Pinch}: next sentence \u00b7 left {Pinch}: back \u00b7 {Pinch} and drag: scrub \u00b7 hold right {Pinch}: step inside \u00b7 hold left {Pinch}: close the book");
+            ? $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   point at the floor and {Pinch}: go there \u00b7 swing your arms: walk \u00b7 point at the little door and {Pinch}: go through \u00b7 {Pinch}: next sentence \u00b7 hold right {Pinch}: back to the table \u00b7 hold left {Pinch}: close the book"
+            : $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   point into the little room and {Pinch}: step in there \u00b7 {Pinch}: next sentence \u00b7 {Pinch} and drag: scroll \u00b7 hold left {Pinch}: close the book");
 
         void OnSelect() { if (Current == State.Reading && !busy) OpenChosen(); }
         void OnNext() { if ((Current == State.Scene || Current == State.Miniature) && !busy && !Director.Next()) StartCoroutine(Current == State.Scene ? Shrink() : Return()); }
@@ -293,16 +311,21 @@ namespace Fable
         }
 
         /// From diorama to full scale around the reader. The pivot moves from the table to the reader's feet so the floor arrives under them.
-        IEnumerator Expand()
+        /// Step into the diorama at the spot the reader pointed to (world position on the diorama floor).
+        public void ExpandAt(Vector3 worldPoint) { if (Current == State.Miniature && !busy) StartCoroutine(Expand(worldPoint)); }
+
+        IEnumerator Expand() => Expand(null);
+        IEnumerator Expand(Vector3? landing)
         {
             busy = true; Current = State.Expanding;
             ReadingRoom.SetActive(false);
             var feet = new Vector3(Head.position.x, 0f, Head.position.z);
             var standAnchor = Director.Registry.ReaderStand;
-            // at full scale we want standAnchor under the reader: compute the final env position, then blend
+            // at full scale we want the landing point (or the stand anchor) under the reader: compute the final env position, then blend
             var startPos = env.position; var startScale = env.localScale.x;
             var endScale = Director.ReaderFactor;   // 1, or 4 once Alice has drunk
-            var endPos = feet - (standAnchor.position - env.position) / startScale * endScale;
+            var standAt = landing ?? standAnchor.position;
+            var endPos = feet - (standAt - env.position) / startScale * endScale;
             PanelInScene();
             Director.Audio.PlayAmbience(Director.Script.Environment.Ambience, 0.6f);
             for (float e = 0; e < ExpandSeconds; e += Time.deltaTime)

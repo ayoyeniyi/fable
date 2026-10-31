@@ -27,6 +27,8 @@ namespace Fable
         /// tester can tell at once whether their hands are being seen. Hands win when both are present.
         public string InputMode { get; private set; } = "none";
         public event Action<string> ModeChanged;
+        /// Set by Locomotion: a right tap while the ray rests on something goes there instead of turning the page.
+        public Func<bool> TapInterceptor;
         string lastMode;
 
         float rDown = -1, lDown = -1, bothDown = -1; bool bothFired, rDragging; Vector3 rStart, rLast; float rAccum;
@@ -108,7 +110,7 @@ namespace Fable
             }
             else if (rDown >= 0)
             {
-                if (!rDragging && !rHeld && now - rDown < TapSeconds) { Next?.Invoke(); Select?.Invoke(); }
+                if (!rDragging && !rHeld && now - rDown < TapSeconds && !(TapInterceptor != null && TapInterceptor())) { Next?.Invoke(); Select?.Invoke(); }
                 rDown = -1; rDragging = false; rHeld = false;
             }
 

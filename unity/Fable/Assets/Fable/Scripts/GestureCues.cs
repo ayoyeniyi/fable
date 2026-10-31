@@ -11,7 +11,7 @@ namespace Fable
 {
     public class GestureCues : MonoBehaviour
     {
-        public enum Kind { Pinch, Hold, Drag }
+        public enum Kind { Pinch, Hold, Drag, Point, Swing }
         public struct Cue { public Kind Kind; public bool Left; public string Label; public Cue(Kind k, bool left, string label) { Kind = k; Left = left; Label = label; } }
 
         public float Top = 790f, RowHeight = 104f, Period = 2.4f;
@@ -77,14 +77,15 @@ namespace Fable
                     list.Add(new Cue(Kind.Drag, false, $"{g} and slide\nchoose a passage"));
                     break;
                 case FlowController.State.Miniature:
-                    list.Add(new Cue(Kind.Pinch, false, $"right {g}\nnext sentence"));
-                    list.Add(new Cue(Kind.Hold, false, $"hold right {g}\nstep inside"));
+                    list.Add(new Cue(Kind.Point, false, $"point into the room, {g}\nstep in there"));
+                    list.Add(new Cue(Kind.Pinch, false, $"{g}\nnext sentence"));
                     list.Add(new Cue(Kind.Hold, true, $"hold left {g}\nclose the book"));
                     break;
                 case FlowController.State.Scene:
-                    list.Add(new Cue(Kind.Pinch, false, $"right {g}\nnext sentence"));
-                    list.Add(new Cue(Kind.Drag, false, $"{g} and slide\nscrub the story"));
-                    list.Add(new Cue(Kind.Hold, false, $"hold right {g}\nback to the table"));
+                    list.Add(new Cue(Kind.Point, false, $"point at the floor, {g}\ngo there"));
+                    list.Add(new Cue(Kind.Swing, false, "swing your arms\nwalk"));
+                    list.Add(new Cue(Kind.Point, false, $"point at a door, {g}\ngo through"));
+                    list.Add(new Cue(Kind.Pinch, false, $"{g}\nnext sentence"));
                     break;
             }
             return list;
@@ -142,6 +143,24 @@ namespace Fable
                         ring = t < 0.2f ? 0 : t < 0.8f ? (t - 0.2f) / 0.6f : 0;
                         touching = gap < 1f;
                         break;
+                    case Kind.Point:
+                        // a hand held out: index dot leads, a ring lands ahead, then a pinch
+                        gap = t < 0.55f ? 10f : t < 0.75f ? 0f : 10f; touching = gap < 1f;
+                        s.Ring.fillAmount = t < 0.55f ? Mathf.Clamp01(t / 0.45f) : 1f; s.Ring.rectTransform.anchoredPosition = centre + new Vector2(0, -26f);
+                        s.Ring.color = new Color(Accent.r, Accent.g, Accent.b, 0.55f);
+                        s.Thumb.rectTransform.anchoredPosition = centre + new Vector2(-gap * 0.4f, 8f);
+                        s.Index.rectTransform.anchoredPosition = centre + new Vector2(gap * 0.4f, 16f);
+                        s.Palm.rectTransform.anchoredPosition = centre + new Vector2(0, 2f);
+                        s.Thumb.color = s.Index.color = touching ? Accent : Ink;
+                        continue;
+                    case Kind.Swing:
+                        // two hands pumping in opposite phase
+                        gap = 0; touching = false;
+                        s.Thumb.rectTransform.anchoredPosition = centre + new Vector2(-14f, Mathf.Sin(t * Mathf.PI * 4f) * 14f);
+                        s.Index.rectTransform.anchoredPosition = centre + new Vector2(14f, -Mathf.Sin(t * Mathf.PI * 4f) * 14f);
+                        s.Palm.rectTransform.anchoredPosition = centre; s.Ring.fillAmount = 0;
+                        s.Thumb.color = s.Index.color = Ink;
+                        continue;
                     default:
                         // pinched, slide to one side and back
                         gap = 0; touching = true;
