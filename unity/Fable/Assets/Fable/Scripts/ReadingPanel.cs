@@ -11,7 +11,7 @@ namespace Fable
         public TMP_Text Title, Chapter, Body, Hint;
         public Transform Head;
         public float Distance = 1.15f, Height = -0.08f, Side = 0f, Follow = 2.2f;   // Side: metres to the reader's right (negative = left)
-        public Color Ink = new(0.13f, 0.11f, 0.09f), Dim = new(0.13f, 0.11f, 0.09f, 0.38f), Paper = new(0.96f, 0.93f, 0.86f);
+        public Color Ink = new(0.13f, 0.11f, 0.09f), Dim = new(0.13f, 0.11f, 0.09f, 0.62f), Paper = new(0.96f, 0.93f, 0.86f);
 
         /// Size relative to the authored panel (the canvas itself is scaled ~0.001 to turn pixels into metres).
         public float Scale = 1f;
@@ -21,6 +21,12 @@ namespace Fable
 
         void Awake() { baseScale = transform.localScale.x; }
 
+        /// The page holds still. It glides to a new spot only when the reader turns well away from it, when their
+        /// height changes, or when the flow asks (Recentre); a page that trails every head movement cannot be read.
+        public float DeadZoneDegrees = 28f;
+        bool recentring = true;
+        public void Recentre() { recentring = true; }
+
         void LateUpdate()
         {
             transform.localScale = Vector3.one * (baseScale * Scale);
@@ -29,9 +35,14 @@ namespace Fable
             if (fwd.sqrMagnitude < 0.01f) fwd = Vector3.forward;
             var right = Vector3.Cross(Vector3.up, fwd);
             var target = Head.position + fwd * Distance + Vector3.up * Height + right * Side;
+            var toPanel = transform.position - Head.position;
+            float off = Vector3.Angle(fwd, Vector3.ProjectOnPlane(toPanel, Vector3.up));
+            if (!recentring && (off > DeadZoneDegrees || Mathf.Abs(toPanel.y - Height) > 0.35f)) recentring = true;
+            if (!recentring) return;
             transform.position = Vector3.Lerp(transform.position, target, Time.deltaTime * Follow);
             var look = Quaternion.LookRotation(transform.position - Head.position, Vector3.up);
             transform.rotation = Quaternion.Slerp(transform.rotation, look, Time.deltaTime * Follow);
+            if ((transform.position - target).sqrMagnitude < 0.0004f && Quaternion.Angle(transform.rotation, look) < 1.5f) { transform.position = target; transform.rotation = look; recentring = false; }
         }
 
         public void Show(Passage.Scene s, string sentenceId, string hint)

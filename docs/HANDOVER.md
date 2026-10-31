@@ -50,6 +50,18 @@ Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs
   - 0 errors, 0 warnings.
   - Note: grab was exercised by invoking the handlers directly, because there are no hands in the editor.
 
+## Headset session 1 (Quest 2, 2026-10-31, on the owner's Mac)
+
+Installed over USB and run with hands. Findings and fixes, all pushed:
+- `FlowController.Start` read the book with `File.ReadAllText`; StreamingAssets live inside the APK, so it threw on device. Now a `UnityWebRequest` (`SceneDirector.ReadStreaming` already did this for manifests).
+- `Assets/Oculus/OculusProjectConfig.asset` had `handTrackingSupport: 0` (controllers only): hands were never tracked by the app. Now `1` (controllers and hands). The page shows the active input ("hands", "controllers", or asks for hands) and `[Fable] input: …` is logged.
+- The seven hall lamps were Mixed lights at 2.2: realtime per-pixel lighting cost ~25 ms a frame and, with HDR off on the Mobile URP asset, clipped the hall to yellow. Now fully baked at 1.0 and a less orange colour; `lamp.flicker` modulates the `MESH_Flame` emission instead. The editor runs the PC quality level (HDR on), so this never showed on the desktop.
+- Dimmed sentences were 38% opacity: unreadable in the headset. Now 62%; hint text 15 pt and darker; hints name the gesture ("right hand: touch thumb and index finger…").
+- The page used to trail every head movement with a left-hand offset; it now holds still, centred above the diorama, and re-aims only when the reader turns more than 28° or on a state change (`ReadingPanel.Recentre`).
+- Measured: 72/72 fps at the page (5 to 6 ms app) and with the diorama (9 to 10 ms). The full-scale hall is still to measure with baked lamps (it was 36 fps with realtime ones). Medium dynamic foveated rendering is on.
+- Pipeline gotcha: an APK built right after a script edit fails with "script class layout is incompatible" unless the editor has actually recompiled; wait for `Library/ScriptAssemblies/Assembly-CSharp.dll` to change first. The Quest will not start a VR activity while the headset is off the face; `am start` is queued until it is worn.
+- Captures: `captures/headset/` (both eyes, `adb screencap`), frame logs `session*_frames.log`.
+
 ## Not done / not verified
 
 1. **No headset run.** No Quest has been attached, and on this Mac security software kills and deletes `adb` (it needs whitelisting). There are no headset captures, no frame timings, and no physical test of pinch, grab or comfort.

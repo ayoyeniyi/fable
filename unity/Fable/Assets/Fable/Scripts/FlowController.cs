@@ -129,9 +129,10 @@ namespace Fable
         }
 
         // reading panel placements: on its own, beside the diorama (to the left, out of the line of sight), and inside the scene
-        void PanelAlone() { Panel.Distance = 1.15f; Panel.Height = -0.08f; Panel.Side = 0f; Panel.Scale = 1f; }
-        void PanelBesideDiorama() { Panel.Distance = 0.95f; Panel.Height = -0.12f; Panel.Side = -0.62f; Panel.Scale = 0.6f; }
-        void PanelInScene() { Panel.Distance = 0.9f; Panel.Height = -0.32f; Panel.Side = 0f; Panel.Scale = 0.55f; }
+        void PanelAlone() { Panel.Distance = 1.15f; Panel.Height = -0.08f; Panel.Side = 0f; Panel.Scale = 1f; Panel.Recentre(); }
+        // centred above the diorama (the hall's roofline sits about 0.43 m below the eye), not off to one side
+        void PanelBesideDiorama() { Panel.Distance = 1.0f; Panel.Height = -0.02f; Panel.Side = 0f; Panel.Scale = 0.6f; Panel.Recentre(); }
+        void PanelInScene() { Panel.Distance = 0.9f; Panel.Height = -0.32f; Panel.Side = 0f; Panel.Scale = 0.55f; Panel.Recentre(); }
 
         IEnumerator Start()
         {
@@ -159,7 +160,7 @@ namespace Fable
             env.gameObject.SetActive(false);
             env.gameObject.SetActive(true); PrepareDiorama(); env.gameObject.SetActive(false);
             passages = book.Scenes.Where(p => p.Id == SceneId || (UnityScenes.TryGetValue(p.Id, out var n) && Application.CanStreamedLevelBeLoaded(n))).ToList();
-            Input.Select += OnSelect; Input.Next += OnNext; Input.Previous += OnPrev; Input.ReturnToReading += OnReturn; Input.ToggleView += OnToggle; Input.Scrub += OnScrub;
+            Input.Select += OnSelect; Input.ModeChanged += OnInputMode; Input.Next += OnNext; Input.Previous += OnPrev; Input.ReturnToReading += OnReturn; Input.ToggleView += OnToggle; Input.Scrub += OnScrub;
             Director.BeatChanged += (i, b) =>
             {
                 Panel.Show(Director.PassageScene, b.SentenceId, Hint());
@@ -177,8 +178,8 @@ namespace Fable
         void ShowPicker(bool welcome = false)
         {
             var p = Chosen; var saved = ProgressStore.Load(p.Id);
-            string pick = passages.Count > 1 ? $"\u2039 {chosen + 1} of {passages.Count} \u203a   drag or tap left for another passage.   " : "";
-            string open = saved.SentenceId != null ? (welcome ? $"welcome back. pinch to open {Place(p.Id)} where you left it" : $"pinch to open {Place(p.Id)} where you left it") : $"pinch to open {Place(p.Id)}";
+            string pick = InputNote + (passages.Count > 1 ? $"\u2039 passage {chosen + 1} of {passages.Count} \u203a  {LeftPick} for another.   " : "");
+            string open = saved.SentenceId != null ? (welcome ? $"welcome back. {RightOpen} to open {Place(p.Id)} where you left it" : $"{RightOpen} to open {Place(p.Id)} where you left it") : $"{RightOpen} to open {Place(p.Id)}";
             string source = p.Id == SceneId && Director.ScriptSource != "" ? $"   (scene: {Director.ScriptSource})" : "";
             Panel.Show(p, saved.SentenceId, pick + open + source);
         }
@@ -198,9 +199,16 @@ namespace Fable
             UnityEngine.SceneManagement.SceneManager.LoadScene(UnityScenes[Chosen.Id]);
         }
 
-        string Hint() => Current == State.Scene
-            ? $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   tap right to continue, left to go back, drag to scrub, both hands: miniature, hold: page"
-            : $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   tap right to continue, drag to scrub, both hands: step inside, hold: page";
+        // The same action named for whatever the reader is holding: a pinch for hands, the index trigger for controllers.
+        string Pinch => Input.InputMode == "controllers" ? "trigger" : "pinch";
+        string RightOpen => Input.InputMode == "controllers" ? "right trigger" : "right hand: touch thumb and index finger";
+        string LeftPick => Input.InputMode == "controllers" ? "left trigger" : "left hand: touch thumb and index finger";
+        string InputNote => Input.InputMode == "none" ? "show your hands to the headset, or pick up the controllers.   " : "";
+        void OnInputMode(string mode) { if (busy) return; if (Current == State.Reading) ShowPicker(); else if (Director.Script != null && Director.BeatIndex >= 0) Panel.Show(Director.PassageScene, Director.Script.Beats[Director.BeatIndex].SentenceId, Hint()); }
+
+        string Hint() => InputNote + (Current == State.Scene
+            ? $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   right {Pinch}: next sentence \u00b7 left {Pinch}: back \u00b7 {Pinch} and drag: scrub \u00b7 {Pinch} both hands: back to the table \u00b7 hold both: close the book"
+            : $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   right {Pinch}: next sentence \u00b7 left {Pinch}: back \u00b7 {Pinch} and drag: scrub \u00b7 {Pinch} both hands: step inside \u00b7 hold both: close the book");
 
         void OnSelect() { if (Current == State.Reading && !busy) OpenChosen(); }
         void OnNext() { if ((Current == State.Scene || Current == State.Miniature) && !busy && !Director.Next()) StartCoroutine(Current == State.Scene ? Shrink() : Return()); }

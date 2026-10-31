@@ -22,6 +22,11 @@ namespace Fable
 #endif
         public bool LeftPinching { get; private set; }
         public bool RightPinching { get; private set; }
+        /// "hands", "controllers" or "none": what the headset is tracking right now. Shown on the page and logged, so a
+        /// tester can tell at once whether their hands are being seen. Hands win when both are present.
+        public string InputMode { get; private set; } = "none";
+        public event Action<string> ModeChanged;
+        string lastMode;
 
         float rDown = -1, lDown = -1, bothDown = -1; bool bothFired, rDragging; Vector3 rStart, rLast; float rAccum;
         bool suppressed;   // a pinch that grabbed a prop is not also a page turn or a scrub
@@ -56,6 +61,14 @@ namespace Fable
         {
             bool r = Pinch(false, out var rPos), l = Pinch(true, out _);
             LeftPinching = l; RightPinching = r;
+#if FABLE_META_XR
+            bool handsSeen = (LeftHand && LeftHand.IsTracked) || (RightHand && RightHand.IsTracked);
+            bool ctrlSeen = OVRInput.IsControllerConnected(OVRInput.Controller.LTouch) || OVRInput.IsControllerConnected(OVRInput.Controller.RTouch);
+            InputMode = handsSeen ? "hands" : ctrlSeen ? "controllers" : "none";
+#elif UNITY_EDITOR || UNITY_STANDALONE
+            InputMode = "keyboard";
+#endif
+            if (InputMode != lastMode) { lastMode = InputMode; Debug.Log($"[Fable] input: {InputMode}"); ModeChanged?.Invoke(InputMode); }
             float now = Time.time;
             if (suppressed) { if (!l && !r) suppressed = false; return; }
 
