@@ -16,6 +16,7 @@ namespace Fable
         public event Action Next, Previous, ReturnToReading, Select, ToggleView;
         public event Action<int> Scrub;                 // +1 / -1 per scrub step while dragging
         public event Action<int> Turn;                  // +1 (right) / -1 (left) per step of a left-hand sideways drag
+        public event Action<bool> PinchBegan, PinchEnded;   // raw pinch edges per hand (true = right), before taps and holds are judged
         public float TapSeconds = 0.35f, DragStepMetres = 0.05f, TurnStepMetres = 0.10f, HoldToReturn = 1.0f, HoldOneHand = 0.9f;
         bool rHeld, lHeld;   // a one-hand hold already fired for this pinch
 
@@ -35,6 +36,7 @@ namespace Fable
 
         float rDown = -1, lDown = -1, bothDown = -1; bool bothFired, rDragging, lDragging; Vector3 rStart, rLast, lStart, lLast; float rAccum, lAccum;
         bool suppressed;   // a pinch that grabbed a prop is not also a page turn or a scrub
+        bool wasR, wasL;
 
 #if FABLE_META_XR
         /// The ray a hand or controller points along, in world space, shared by the page pointer and the room pointer.
@@ -90,7 +92,12 @@ namespace Fable
             pos = Vector3.zero; bool p = false;
 #if FABLE_META_XR
             var h = left ? LeftHand : RightHand; var a = left ? LeftPointer : RightPointer;
-            if (h && h.IsTracked) { p = h.GetFingerIsPinching(OVRHand.HandFinger.Index) && h.GetFingerConfidence(OVRHand.HandFinger.Index) == OVRHand.TrackingConfidence.High; if (a) pos = a.position; }
+            if (h && h.IsTracked)
+            {
+                p = h.GetFingerIsPinching(OVRHand.HandFinger.Index) && h.GetFingerConfidence(OVRHand.HandFinger.Index) == OVRHand.TrackingConfidence.High;
+                p |= h.GetFingerIsPinching(OVRHand.HandFinger.Middle) && h.GetFingerConfidence(OVRHand.HandFinger.Middle) == OVRHand.TrackingConfidence.High;   // a closing hand
+                if (a) pos = a.position;
+            }
             var ctrl = left ? OVRInput.Controller.LTouch : OVRInput.Controller.RTouch;
             if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, ctrl)) { p = true; pos = OVRInput.GetLocalControllerPosition(ctrl); if (a && a.parent) pos = a.parent.TransformPoint(pos); }
 #endif
@@ -120,6 +127,8 @@ namespace Fable
             InputMode = "keyboard";
 #endif
             if (InputMode != lastMode) { lastMode = InputMode; Debug.Log($"[Fable] input: {InputMode}"); ModeChanged?.Invoke(InputMode); }
+            if (r != wasR) { wasR = r; if (r) PinchBegan?.Invoke(true); else PinchEnded?.Invoke(true); }
+            if (l != wasL) { wasL = l; if (l) PinchBegan?.Invoke(false); else PinchEnded?.Invoke(false); }
 #if FABLE_META_XR
             Diagnose();
 #endif

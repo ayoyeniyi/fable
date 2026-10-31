@@ -79,13 +79,15 @@ namespace Fable
         {
             if (!flow || !input) return;
             string mode = input.InputMode;
-            string k = flow.Current + "|" + mode + "|" + flow.CanStepIn;
-            if (k != key) { key = k; Rebuild(Plan(flow.Current, mode, flow.CanStepIn), mode == "controllers"); }
+            var verb = flow.Tasks ? flow.Tasks.ActiveVerb : null;
+            bool grabbing = verb == StoryTasks.Verb.Grab || verb == StoryTasks.Verb.BringTo;
+            string k = flow.Current + "|" + mode + "|" + flow.CanStepIn + "|" + grabbing;
+            if (k != key) { key = k; Rebuild(Plan(flow.Current, mode, flow.CanStepIn, grabbing), mode == "controllers"); }
             Animate();
         }
 
         /// The actions available in this state, in the order a reader needs them. Labels: what you do, then what happens.
-        static List<Cue> Plan(FlowController.State state, string mode, bool canStepIn)
+        static List<Cue> Plan(FlowController.State state, string mode, bool canStepIn, bool grabbing = false)
         {
             bool ctrl = mode == "controllers";
             string g = ctrl ? "trigger" : "pinch";
@@ -110,7 +112,8 @@ namespace Fable
                     else list.Add(new Cue(Kind.Swing, false, "swing both arms\nwalk"));
                     if (ctrl) list.Add(new Cue(Kind.Turn, true, "left stick\nturn"));
                     else list.Add(new Cue(Kind.Turn, true, "left pinch, slide sideways\nturn"));
-                    list.Add(new Cue(Kind.Point, false, $"point at the little door, {g}\ngo through"));
+                    if (grabbing) list.Add(new Cue(Kind.Hold, false, $"point at it, {g} and hold\npick it up"));
+                    else list.Add(new Cue(Kind.Point, false, $"point at the little door, {g}\ngo through"));
                     list.Add(new Cue(Kind.Pinch, false, $"right {g}\nnext sentence"));
                     break;
             }

@@ -290,7 +290,7 @@ namespace Fable
         string TaskNote => Tasks != null && Tasks.Prompt != "" ? $"<b>{Tasks.Prompt}</b>   " : "";
         string Walk => Input.InputMode == "controllers" ? "right stick: walk \u00b7 left stick: turn" : "swing your arms: walk \u00b7 left pinch and slide sideways: turn";
         string Hint() => TaskNote + InputNote + (Current == State.Scene
-            ? $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   point at the floor and {Pinch}: go there \u00b7 {Walk} \u00b7 point at the little door and {Pinch}: go through \u00b7 {Pinch}: next sentence \u00b7 hold right {Pinch}: back to the table \u00b7 hold left {Pinch}: close the book"
+            ? $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   point at the floor and {Pinch}: go there \u00b7 {Walk} \u00b7 point at the key or bottle, {Pinch} and keep holding: pick it up \u00b7 point at the little door and {Pinch}: go through \u00b7 {Pinch}: next sentence \u00b7 hold right {Pinch}: back to the table \u00b7 hold left {Pinch}: close the book"
             : $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   point into the little room and {Pinch}: step in there \u00b7 {Pinch}: next sentence \u00b7 {Pinch} and drag: scroll \u00b7 hold left {Pinch}: close the book");
 
         // A right tap fires Next and Select together; on the page, Next does the work (Select stays for the scene states).

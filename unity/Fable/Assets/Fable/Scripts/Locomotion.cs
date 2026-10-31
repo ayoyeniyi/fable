@@ -3,6 +3,8 @@
 //   floor of the diorama         -> you step into the room at that spot
 //   the little door              -> you go through it into the next place
 //   a locked door                -> it rattles
+//   the key or the bottle        -> pinch and keep holding: it flies into your hand and rides with it; let go to put it back
+//                                   (a pinching hand closed on the prop picks it up too; controllers: trigger or grip)
 // Nothing here needs two hands or a combination. Walking is arm-swinging (both hands pumping, seated or standing) or
 // the right thumbstick. Turning on the spot, for a seated reader who cannot swivel: the left thumbstick snaps 45
 // degrees, or the left hand pinches and drags sideways (10 cm per step); looking round still turns you for free.
@@ -14,16 +16,20 @@ namespace Fable
 {
     public class Locomotion : MonoBehaviour
     {
-        public enum HitKind { None, Floor, LittleDoor, LockedDoor }
+        public enum HitKind { None, Floor, LittleDoor, LockedDoor, Prop }
         public float TeleportDiscMetres = 0.34f, WalkSpeed = 1.6f, SwingThreshold = 0.45f, SnapDegrees = 45f;
         /// Left stick turns, right stick moves (what the reader asked for). false = the Quest's usual layout, swapped.
         public bool LeftStickTurns = true;
         bool stickTurnArmed = true;
-        public Color Brass = new(0.85f, 0.62f, 0.22f), Go = new(0.95f, 0.9f, 0.75f), Locked = new(0.8f, 0.3f, 0.2f);
+        public Color Brass = new(0.85f, 0.62f, 0.22f), Go = new(0.95f, 0.9f, 0.75f), Locked = new(0.8f, 0.3f, 0.2f), Pick = new(0.55f, 0.85f, 0.45f);
+        public float GrabReachMetres = 0.16f, AimSlackMetres = 0.06f;   // reach: a pinching hand this close picks up; slack: how far the ray may miss a prop
 
         FlowController flow; SceneDirector director; ReaderController reader; Transform head, rig;
         LineRenderer line; Transform disc; Material lineMat, discMat;
-        HitKind hit; Vector3 hitPoint; bool rightSource = true;
+        HitKind hit; Vector3 hitPoint; bool rightSource = true; StoryGrabbable hitProp;
+        readonly Transform[] carry = new Transform[2];   // [0] left, [1] right: where a held prop rides (the pinch point along the ray)
+        readonly bool[] carryLive = new bool[2];
+        StoryGrabbable[] props = new StoryGrabbable[0]; float propsScanned = -1;
         Vector3 lastL, lastR; float swing; bool hadHands;
 
         public HitKind CurrentHit => hit;
@@ -38,11 +44,60 @@ namespace Fable
             var d0 = GameObject.CreatePrimitive(PrimitiveType.Cylinder); Destroy(d0.GetComponent<Collider>()); d0.name = "PointDisc"; d0.transform.SetParent(transform, false);
             d0.GetComponent<Renderer>().material = discMat; d0.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; disc = d0.transform;
             Show(false);
+            for (int i = 0; i < 2; i++) { carry[i] = new GameObject(i == 0 ? "CarryLeft" : "CarryRight").transform; carry[i].SetParent(transform, false); }
             reader.TapInterceptor = Activate;
             reader.Turn += Snap;
+            reader.PinchBegan += OnPinchBegan; reader.PinchEnded += OnPinchEnded;
         }
 
-        void OnDestroy() { if (reader) reader.Turn -= Snap; }
+        void OnDestroy() { if (reader) { reader.Turn -= Snap; reader.PinchBegan -= OnPinchBegan; reader.PinchEnded -= OnPinchEnded; } }
+
+        StoryGrabbable[] Props()
+        {
+            if (Time.time - propsScanned > 1f) { props = FindObjectsByType<StoryGrabbable>(FindObjectsSortMode.None); propsScanned = Time.time; }
+            return props;
+        }
+
+        /// Keep each hand's carry point on its ray (hands: the system pointer origin, at the pinch; controllers: the grip).
+        void UpdateCarry()
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                bool right = i == 1;
+                carryLive[i] = reader.PointRay(right, out var r);
+                if (carryLive[i]) { carry[i].position = r.origin; carry[i].rotation = Quaternion.LookRotation(r.direction, Vector3.up); }
+            }
+        }
+
+        /// A pinch closing: on a prop the ray rests on, or around a prop within reach, picks it up.
+        void OnPinchBegan(bool right)
+        {
+            if (!Active || flow.Current != FlowController.State.Scene) return;
+            int i = right ? 1 : 0; if (!carryLive[i]) return;
+            float scale = director.Registry.EnvironmentRoot ? director.Registry.EnvironmentRoot.lossyScale.x : 1f;
+            StoryGrabbable pick = null;
+            foreach (var g in Props())
+                if (g && g.CanGrab && g.WorldBounds(out var b) && Vector3.Distance(b.ClosestPoint(carry[i].position), carry[i].position) < GrabReachMetres * Mathf.Max(scale, 0.3f)) { pick = g; break; }
+            if (!pick && hit == HitKind.Prop && hitProp && hitProp.CanGrab && rightSource == right) pick = hitProp;
+            if (pick) pick.Grab(carry[i]);
+        }
+
+        void OnPinchEnded(bool right)
+        {
+            int i = right ? 1 : 0;
+            foreach (var g in Props()) if (g && g.Held && g.HeldBy == carry[i]) g.Release();
+        }
+
+        /// Controllers: the grip button picks up and lets go like a pinch would.
+        void GripButtons()
+        {
+#if FABLE_META_XR
+            if (OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch)) OnPinchBegan(true);
+            if (OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch)) OnPinchEnded(true);
+            if (OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch)) OnPinchBegan(false);
+            if (OVRInput.GetUp(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch)) OnPinchEnded(false);
+#endif
+        }
 
         /// Turn on the spot about the reader's own head, so the room pivots around them rather than them orbiting the rig.
         public void Snap(int dir)
@@ -70,14 +125,16 @@ namespace Fable
 
         void Update()
         {
-            if (!Active) { hit = HitKind.None; Show(false); return; }
+            if (!Active) { hit = HitKind.None; hitProp = null; Show(false); return; }
+            UpdateCarry();
             Aim();
+            GripButtons();
             Walk();
         }
 
         void Aim()
         {
-            hit = HitKind.None;
+            hit = HitKind.None; hitProp = null;
             if (!Pointer(out var ray)) { Show(false); return; }
             // only a hand held up and pointed roughly ahead or down shows the ray; a hand resting in the lap does not
             var fwd = Vector3.ProjectOnPlane(head.forward, Vector3.up).normalized;
@@ -90,6 +147,14 @@ namespace Fable
             // the big doors are locked
             foreach (var r in reg.EnvironmentRoot.GetComponentsInChildren<Renderer>())
                 if (r.name.StartsWith("MESH_Door") && !r.name.Contains("Little") && r.bounds.IntersectRay(ray, out float dd) && dd < best) { best = dd; point = ray.GetPoint(dd); hit = HitKind.LockedDoor; }
+            // props you can pick up (full-size room only), with some slack around them: a hand in the air is never pixel-steady
+            if (flow.Current == FlowController.State.Scene)
+                foreach (var g in Props())
+                {
+                    if (!g || !g.CanGrab || !g.WorldBounds(out var pb)) continue;
+                    pb.Expand(AimSlackMetres * 2f * Mathf.Max(scale, 0.3f));
+                    if (pb.IntersectRay(ray, out float dp) && dp < best) { best = dp; point = ray.GetPoint(dp); hit = HitKind.Prop; hitProp = g; }
+                }
             // the floor: the room's floor plane, within the room's footprint
             float floorY = reg.Centre.position.y;
             if (ray.direction.y < -0.02f)
@@ -105,7 +170,7 @@ namespace Fable
             hitPoint = point;
             Show(true);
             line.SetPosition(0, ray.origin); line.SetPosition(1, point);
-            var c = hit == HitKind.Floor ? Brass : hit == HitKind.LittleDoor ? Go : Locked;
+            var c = hit == HitKind.Floor ? Brass : hit == HitKind.LittleDoor ? Go : hit == HitKind.Prop ? Pick : Locked;
             lineMat.color = c; discMat.color = c;
             float dia = TeleportDiscMetres * Mathf.Clamp(scale, 0.05f, 4f);
             disc.position = point + Vector3.up * 0.004f * Mathf.Max(scale, 0.2f); disc.localScale = new Vector3(dia, 0.002f * Mathf.Max(scale, 0.2f), dia); disc.rotation = Quaternion.identity;
@@ -149,6 +214,8 @@ namespace Fable
                 case HitKind.LockedDoor:
                     director.Audio.Play("sfx.door-locked-rattle", "hall.centre", 0.6f);
                     return true;
+                case HitKind.Prop:
+                    return true;   // a quick pinch on a prop is not a page turn; the grab itself happens on the pinch edge
             }
             return false;
         }

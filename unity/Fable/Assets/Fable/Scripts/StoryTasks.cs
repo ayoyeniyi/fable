@@ -60,6 +60,7 @@ namespace Fable
         MaterialPropertyBlock block;   // made in Awake: Unity forbids creating one in a field initializer
 
         public string Prompt => active != null && !done ? active.Prompt : "";
+        public Verb? ActiveVerb => active != null && !done ? active.Verb : (Verb?)null;
 
         void Awake() { block ??= new MaterialPropertyBlock(); }
 
