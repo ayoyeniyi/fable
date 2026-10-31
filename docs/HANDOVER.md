@@ -76,6 +76,17 @@ Earlier in the session:
 - **Gesture cues** (`GestureCues.cs`, added to the page at runtime by `FlowController.Start`): a row of looping glyphs under the passage (pinch, hold with a filling ring, slide), one per available action, labelled for hands or controllers, following the flow state. Built from a generated circle sprite, so no scene rebuild was needed; it grows the panel to 906 px.
 - **Readings** (interpreter only so far): `variant` 0..3 in `/interpret`, direction notes in `internal/llm/claude.go` (`Readings`), cache per variant. Unity does not send `variant` yet; the plan is a left-hand pinch-and-slide in the miniature to switch readings, the page showing "reading 2 of 4", and the diorama re-running the new script at the same sentence. Needs a live key to be visible.
 
+## Input model after headset session 3 (the reader's words: "the absolute easiest way")
+
+The reader found two-hand gestures unintuitive and reached the garden by accident. The model is now **point and pinch acts on what you point at**, with one hand, seated:
+- `Locomotion.cs` (added to the Fable systems object at runtime): a ray from the hand's SDK pointer pose (or the controller) with a landing disc. Pinch on the full-size floor = teleport there; on the diorama floor = step in at that spot (`FlowController.ExpandAt`); on the little door = go through to the linked place (`FlowController.Links`: hall → garden → tea party → hall); on a big door = it rattles (locked). Pointing at nothing leaves the pinch to the page (next sentence) via `ReaderController.TapInterceptor`.
+- Walking at full scale: arm-swing (both hands pumping in opposite phase, works seated) or the controller thumbstick. No vignette yet; watch comfort.
+- Still available but never required: right hold = step inside/back to the table, left hold = close the book, both-hands gestures.
+- `GestureCues` leads with Point and Swing glyphs; hints lead with pointing.
+- Tasks (`StoryTasks`) accept point-and-pinch as touching, aiming the held key at the door, and a steady gaze to go through, so none needs the reader to walk.
+
+**Live interpretation runs.** Key in `~/.config/fable/env` on the owner's Mac (never in the repo). `fable-interpreter serve --addr 0.0.0.0:8787 --warm --wait 20s` generated all three scenes on the first attempt (9 to 12 beats each, 20 to 28 s) once the prompt spelled out the exact JSON shape (`internal/llm/claude.go`) and the repair round named every unknown key (`script.UnknownFields`). The headset reads the server URL from `/sdcard/Android/data/com.fable.alice/files/interpreter.txt`; the page then says "scene: interpreter cache". Observed in the first live hall script: Claude placed `fx.dust` (no mesh in the export) and did not use `readerScale` on the DRINK ME sentence; prompt nudges for both are the next tuning step.
+
 ## Not done / not verified
 
 1. **No headset run.** No Quest has been attached, and on this Mac security software kills and deletes `adb` (it needs whitelisting). There are no headset captures, no frame timings, and no physical test of pinch, grab or comfort.
