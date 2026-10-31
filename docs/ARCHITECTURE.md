@@ -25,8 +25,8 @@
 
 **Scale.** Alice shrinking is implemented by scaling the environment root about the point on the floor under the reader's head over 3 to 8 seconds. The reader never moves; the world grows. The validator rejects faster scale changes.
 
-**Assets.** Everything is generated: geometry and materials by `blender/build_hall_of_doors.py`, textures by baking those materials, sounds by `audio/synth_sfx.py`. No downloaded models or samples. EB Garamond is OFL.
+**Assets.** Everything is generated: geometry and materials by `blender/build_<scene>.py` (exported as `.gltf` + textures so Unity compresses them), textures by baking those materials, sounds by `audio/synth_sfx.py`. No downloaded models or samples. EB Garamond is OFL.
 
 **Build.** `FableBuild.cs` exposes ConfigureProject, ConfigureXR, BuildScene, BakeLighting, BuildApk, CaptureDesktopPreviews as `-executeMethod` entry points, and the same calls work live through the Unity CLI's Pipeline package (`unity command eval 'Fable.Editor.FableBuild.BuildScene();'`). Quest settings: Android, ARM64, IL2CPP, Vulkan, ASTC, URP with MSAA 4x, single-pass instanced stereo, OpenXR with the Meta XR feature and hand tracking.
 
-**Budgets (Quest 2).** Environment 30k triangles in 44 meshes, one 4K floor texture, 2K walls and ceiling, 1K and smaller props, lights baked (Mixed) with no realtime shadows, one baked reflection probe, 6 pooled spatial audio sources.
+**Budgets (Quest 2).** Target about 35k triangles and under 50 meshes per environment. The tea party (35k / 26) and croquet ground (36k / 42) meet it; the hall is 61k / 44 and is the first to cut if Quest 2 profiling demands it. Textures are compressed to ASTC on import (6x6 colour and data, 4x4 normals), with mipmaps, 2K max, plus one 4K ground per scene. Lights are baked (Mixed) with no realtime shadows; there is one baked reflection probe per scene and 6 pooled spatial audio sources. APK: 175 MB for all three scenes.

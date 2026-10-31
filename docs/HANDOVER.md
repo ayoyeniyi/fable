@@ -1,63 +1,103 @@
-# Fable handover (written 2026-10-31 by the previous Claude Code session)
+# Fable handover (updated 2026-10-31, second Claude Code session)
 
-Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs/TOOLING.md`. Everything below was true at the last commit of that session.
+Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs/TOOLING.md`. Everything below was true at the commit that last touched this file. "Verified" always says where: **editor** (Unity play mode on a Mac, desktop camera, no HMD) or **headset**. Nothing has been verified on a headset yet.
 
 ## What exists and is verified
 
-- **Hall of Doors environment** (`blender/build_hall_of_doors.py`): fully procedural Blender 5.2 scene, PBR node materials, 7 hanging oil lamps, 12 doors, low curtain, 15-inch door with a real opening to a lit passage, glass table, golden key, DRINK ME bottle. Bakes base colour, roughness and normal maps, merges static meshes by material, exports `hall_of_doors.glb` (44 meshes, 30k tris, 83 MB with 2K PNG textures) with named anchor empties and prop groups. Six art iterations are archived in `captures/blender/` (Cycles renders, not headset).
-- **Unity 6000.3.27f2 project** (`unity/Fable`): URP, OpenXR + Meta XR Core SDK 207.0.1 (hand tracking, Touch profiles enabled in code), glTFast 6.20.0, Newtonsoft, TMP with EB Garamond. Compiles clean. `Assets/Fable/Editor/FableBuild.cs` builds everything headless: ConfigureProject, ConfigureXR, BuildScene (from the GLB), BakeLighting, BuildApk, CaptureDesktopPreviews. Lightmaps and a reflection probe bake correctly (lamp glass excluded from occlusion).
-- **Runtime** (`Assets/Fable/Scripts`): SceneRegistry (ids from node names), SceneDirector (validated SceneScript execution, deterministic replay, JumpTo resume, reader scale about the reader's feet relative to the room's current scale), ClipPlayer (12 clips), SpatialAudio (reverb zone + pooled 3D sources), ReaderController (right tap next, left tap previous, right pinch-drag scrubs, both hands quick = toggle miniature/immersive, both hands held 1 s = return; controller triggers mirror; keyboard in editor), ReadingPanel (passage with current sentence in ink), FlowController (Reading -> Growing -> Miniature -> Expanding -> Scene -> Shrinking/Returning), ProgressStore (progress.json + script cache in persistentDataPath).
-- **Verified in the editor** through the Unity CLI (desktop, no headset): reading page -> hall grows -> beats 1..9 -> auto return; progress file written; interpreter script cache path exercised with the bundled baseline. The miniature flow compiled and ran but the final verified run of it was still in progress when this handover was written; check `captures/desktop/mini_0*.png` and run the play test below.
-- **Interpreter** (`interpreter/`, Go 1.24): `fable-interpreter validate|generate|serve`. Sends passage sentences, manifest, previously read context (`contextBefore`) and reading position to Claude (`claude-opus-5-5`, anthropic-sdk-go), validates against the schema and manifest, repairs once, caches validated scripts under `out/cache/`. Tests pass. Binary 17.7 MB, 12 MB RSS. Live generation is **untested**: no `ANTHROPIC_API_KEY` was available.
-- **Book data**: `book/passages.json` with sentence ids and prior context for the three scenes; manifests and validated baseline scripts for all three in `schema/` and `scripts/`.
+- **Three environments**, all procedural Blender 5.2 scripts with the same pipeline (geometry, PBR node materials, baked base colour / roughness-metal / normal maps, static meshes merged by material, named anchors and prop groups), exported as `.gltf` + `.bin` + `textures/`:
+  - `blender/build_hall_of_doors.py`: 60,942 tris, 44 meshes. (Earlier docs said 30k; the exported file has always been 61k.)
+  - `blender/build_mad_tea_party.py`: 35,344 tris, 26 meshes. Hatter, March Hare and Dormouse are sculpted props, not rigs.
+  - `blender/build_queens_croquet_ground.py`: 35,750 tris, 42 meshes. Card gardeners Two, Five, Seven; rose tree with white and red roses.
+  - `blender/check_glb_ids.py <file.gltf|.glb> --manifest ... --baseline ...` confirms every manifest and baseline id is a node. The tea party and croquet ground pass. The hall fails only on its older names (lamps named `Lamp*`, `hall.centre`, no `fx.dust` node), which `SceneRegistry` maps on purpose.
+  - Cycles renders are in `captures/blender/<scene>/` (Blender renders, not Unity).
+- **Unity project** (`unity/Fable`, 6000.3.27f2, URP, OpenXR + Meta XR Core 207.0.1, Interaction SDK, glTFast). `FableBuild.cs` provides:
+  - `ConfigureProject`, which sets Android/IL2CPP/ARM64/Vulkan/ASTC and Input System only (Active Input Handling "Both" is unsupported on Android).
+  - `ConfigureXR`.
+  - `BuildScene`: one Unity scene per passage, the hall first.
+  - `BakeLighting`: per-scene lightmaps and a reflection probe.
+  - `BuildApk`, which writes `unity/Fable/out/fable.apk`.
+  - `SyncData`, which copies book, manifests and baselines into StreamingAssets and runs before builds.
+  - Build steps refuse to run in play mode.
+- **Texture import** (`FableTextureImport.cs`): each image's role comes from the `.gltf`.
+  - Normal maps: ASTC 4×4, linear.
+  - Roughness-metal and occlusion: ASTC 6×6, linear.
+  - Colour: ASTC 6×6, sRGB.
+  - Mipmaps on, 2048 cap; the one 4K ground per scene stays at 4096.
+  - Measured result: texture data went from 1.5 GB to 267 MB, and the **APK is 175 MB** (it was 400 MB when the textures came embedded in `.glb` files and glTFast imported them uncompressed).
+- **APK builds** in about 1.5 minutes. The first Gradle run on a new machine may fail to resolve `dl.google.com`; retry it.
+- **Runtime**
+  - **Passage picker** on the reading page: drag the right pinch or tap left to choose, tap right to open. Opening another passage loads its Unity scene and goes straight into the miniature.
+  - **Progress per passage** (`progress.json`). The app boots into the hall scene, but the page offers the passage read last, "where you left it".
+  - **Miniature → immersive → return.** The reader's size is part of the beat state: the diorama never changes size, expanding arrives at the current size (4× after DRINK ME), stepping back past that beat eases the room back over 3 s, and leaving the scene stops any scaling.
+  - **Grabbable golden key and DRINK ME bottle** (Interaction SDK hand pinch/palm and controller grip, immersive view only). Holding one shows the sentence that introduces it (manifest `introducedBy`). Letting go returns it to where the script placed it. A pinch that grabs never also turns a page.
+  - **31 clips.** Tea party and croquet: lean/nod/bow/turn, breathe, rattle, pour, and roses reddening (the tint clears on rewind).
+  - **24 synthesised sounds** (`audio/synth_sfx.py`), including two garden ambiences. The "No room!" shout is a formant chorus, not speech.
+  - **Outdoor scenes:** sky dome and far scenery show only at full scale. A gradient dome is generated when the export has none (the croquet ground).
+- **Spoiler guard.** Manifests carry `introducedBy` (asset → first sentence) and `readerScaleFrom`. The Go and C# validators both reject:
+  - placing, moving or animating an asset before its sentence;
+  - a size change before `readerScaleFrom`;
+  - a size change faster than 3 s.
 
-## Not done / not verified (be honest about these)
+  It caught the hall baseline rattling the little door two sentences before Alice finds it, and that action is removed.
+- **Interpreter** (`interpreter/`, Go): builds, tests pass, and all three baselines validate. Live generation is **untested**: there is no `ANTHROPIC_API_KEY`.
+- **Last verified editor run**:
+  - All three loops through the picker, including hall beat 9 at 4× and expanding at 4×.
+  - Stepping back eases 4× → 1×.
+  - Grab reveal: the bottle held at beat 9 shows sentence 009, and on release it returns to rest at 0.0000 m.
+  - Per-passage resume after a cold restart.
+  - 0 errors, 0 warnings.
+  - Note: grab was exercised by invoking the handlers directly, because there are no hands in the editor.
 
-1. **No headset run yet.** No Quest was attached. Headset captures (`captures/headset/`) are empty and nothing has measured frame time.
-2. **No APK yet.** The IL2CPP build compiled and failed only in Gradle packaging because the laptop ran out of disk (the build needs ~11 GB of scratch under `Library/Bee`). On a machine with space: `FableBuild.BuildApk` or `unity command build run --target Android --outputPath out/fable.apk --confirm true`.
-3. **Miniature diorama / scrubbing / grab** are coded but hand-untested. Grabbable key and bottle (reveal their sentence) are not implemented.
-4. **Only the Hall of Doors has assets.** Tea party and croquet ground have passages, manifests and baselines but no Blender environment.
-5. **Known visual defects** on desktop previews: brass needs the baked reflection probe (`Assets/Fable/Scenes/HallReflectionProbe.exr` is now baked, re-check), glass table tint is a little milky, overall lighting is bright for a "dark hall" (lamp intensity 2.2, tune after a headset look), lightmap resolution is 24 texels/m on a 512 atlas (raise once build times are known).
-6. **Passage picker UI** is not built; `FlowController.SceneId` is fixed to `hall-of-doors`.
-7. **Miniature view needs a dollhouse cut.** In the last play test (`captures/desktop/mini_02_miniature.png`, desktop camera) the diorama is seen from above, so the reader looks at the lit top of the ceiling slab. Hide `MESH_Plaster`'s ceiling part (export the ceiling as its own mesh from Blender, then disable it while `FlowController.Current == Miniature`) and move the reading panel out of the line of sight to the diorama (it currently sits at `Height = 0.28`, right where the eye looks).
-8. **Last verified run** (editor, run-in-background on, 123 fps): Reading -> Growing -> Miniature resumed at the saved beat 5 -> beats 6..8 -> Expanding -> Scene -> beat 9 (4x scale) -> Shrinking -> Reading at beat 9, progress.json written, props placed correctly, no runtime exceptions. The reflection probe baked explicitly (`HallReflectionProbe.exr`) but the lightmapper's own "Reflection System" job logged "Failed to bake the reflection probe" three times; the lightmaps themselves are from the earlier successful bake. Re-run `lighting bake` on the new machine and check brass in the headset.
+## Not done / not verified
+
+1. **No headset run.** No Quest has been attached, and on this Mac security software kills and deletes `adb` (it needs whitelisting). There are no headset captures, no frame timings, and no physical test of pinch, grab or comfort.
+2. **Live generation untested** (no API key). `SceneDirector` sends only `sceneId` to `/interpret`; it does not send the reading position yet.
+3. **Miniature needs a dollhouse cut.** The hall diorama is seen from above, so the reader sees the ceiling slab. Export the ceiling as its own mesh and hide it while in the miniature. Also move the reading panel out of the line of sight (`Height = 0.28`).
+4. **Visual tuning from the headset.** Brass reflections, milky glass, the hall is bright for a "dark hall" (lamp 2.2), lightmap resolution. In the croquet ground, the rose tree reads as topiary and Seven partly hides Two. In the tea party, the dappled light is opaque petals.
+5. **Triangle budget.** The hall at 61k is double the ARCHITECTURE target; profile on Quest 2 before cutting.
+6. **The little door is visible before the curtain appears** (sentence 005). It is architecture, but the curtain could arguably be present from the start.
+7. Demo video and unfamiliar-reader tests.
 
 ## How to work on it
 
 ```bash
-git clone https://github.com/ayoyeniyi/fable && cd fable
-# Unity CLI (https://unity.com/install.sh) installs editors and drives a running one
+git clone git@github.com:ayoyeniyi/fable.git && cd fable
+curl -fsSL https://unity.com/install.sh | bash             # Unity CLI (if its CDN 404s, use Unity Hub --headless install)
 unity install 6000.3.27f2 --module android android-sdk-ndk-tools android-open-jdk
 unity pipeline install --project-path unity/Fable
 unity open unity/Fable --build-target Android
-unity status --until-ready --project-path unity/Fable
-unity command eval 'Fable.Editor.FableBuild.ConfigureProject(); Fable.Editor.FableBuild.ConfigureXR();' --project-path unity/Fable --timeout 600
-unity command eval 'Fable.Editor.FableBuild.BuildScene();' --project-path unity/Fable --timeout 600
-unity command lighting bake --project-path unity/Fable       # then: unity command lighting bake_status
-unity command build run --target Android --outputPath out/fable.apk --confirm true --project-path unity/Fable
+export UNITY_PROJECT_PATH=$PWD/unity/Fable                # the CLI wants --project-path BEFORE the subcommand; the env var avoids that
+unity status --until-ready
+unity command eval 'Fable.Editor.FableBuild.ConfigureProject(); return "ok";' --timeout 600   # then restart the editor once (input handling)
+unity command eval 'Fable.Editor.FableBuild.BuildScene(); Fable.Editor.FableBuild.BakeLighting(); return "ok";' --timeout 3600
+unity command eval 'Fable.Editor.FableBuild.BuildApk(); return "ok";' --timeout 3600
 adb install -r unity/Fable/out/fable.apk && adb shell am start -n com.fable.alice/com.unity3d.player.UnityPlayerGameActivity
 ```
 
-Play-mode smoke test from the CLI (the editor must be allowed to run unfocused: `unity command editor.playmode set_run_in_background --enable true`):
+Environments: run `blender -b -P blender/build_<scene>.py -- --out out/<scene> --bake --export --tex 2048`, which takes 1–2 minutes each. Add `--render` for Cycles stills. Then copy the `.gltf`, the `.bin` and the referenced `textures/` into `unity/Fable/Assets/Fable/Models/<Scene>/`. Sounds: `blender -b --python audio/synth_sfx.py -- --out unity/Fable/Assets/Fable/Resources/Audio`.
+
+Play-mode test from the CLI (FlowController has test hooks: `StepInto`, `StepNext`, `StepBack`, `StepToggle`, `StepReturn`, `StepChoose(dir)`, `Describe()`, `ChosenId`):
 
 ```bash
-unity command editor.playmode start --project-path unity/Fable
+unity command editor.playmode set_run_in_background --enable true
+unity command editor.playmode start
 F='UnityEngine.Object.FindFirstObjectByType<Fable.FlowController>()'
-unity command eval "$F.StepInto(); return $F.Describe();" --project-path unity/Fable      # Growing -> Miniature
-unity command eval "$F.StepNext(); return $F.Describe();"  --project-path unity/Fable      # beats
-unity command eval "$F.StepToggle(); return $F.Describe();" --project-path unity/Fable     # Expanding -> Scene
-unity command eval "$F.StepReturn(); return $F.Describe();" --project-path unity/Fable     # back to the page
-unity command console get --level error --tail 10 --project-path unity/Fable
+unity command --result-only eval "$F.StepInto(); return $F.Describe();"
 ```
 
-Gotchas learned the hard way: the Pipeline server restarts after every recompile, so run `unity recompile` then `unity status --until-ready` before driving the editor; `recompile` can report success with `compilationFailed: true`, so also check `unity command console get --level error`; capture `save_path` must be inside the project; without an HMD the OVR centre eye sits at the floor (FlowController lifts it to 1.25 m in that case); MonoBehaviour dictionaries are not serialized, so SceneRegistry rebuilds in Awake; URP asset shadow flags are read-only properties (use SerializedObject); TMP Essential Resources must be imported once (`TMP Essential Resources.unitypackage` from `Packages/com.unity.ugui/Package Resources`).
+Poll `Describe()` until it reaches the state you expect; don't rely on fixed sleeps. Under memory pressure, play-mode start and scene loads stall for many seconds.
 
-Blender: `blender -b -P blender/build_hall_of_doors.py -- --out out/hall --render --bake --export --samples 160 --res 1600 --tex 2048` (about 25 minutes on an M-series GPU; `--quick --render` for a 5-minute look). Never write to a folder named `build/` in this repo owner's environment.
+## Gotchas
 
-## Order of work from here (see docs/PLAN.md)
-
-1. Attach a Quest, build and install the APK, capture (`adb shell screencap`), profile (OVR Metrics Tool or `adb shell dumpsys SurfaceFlinger --latency`), fix what the headset shows. Target 72 Hz on Quest 2.
-2. Hand-test the miniature flow and scrubbing; add grabbable key and bottle (Meta Interaction SDK, `com.meta.xr.sdk.interaction.ovr` is already installed) that reveal their sentence.
-3. Run `fable-interpreter generate --scene hall-of-doors` with an API key, compare to the baseline, then `serve` and point `SceneDirector.InterpreterUrl` at it from the headset.
-4. Passage picker on the reading panel; the other two environments in Blender with the same pipeline.
-5. Demo video under three minutes, unfamiliar-reader tests.
+- The Pipeline server restarts after every recompile, so run `unity status --until-ready` afterwards. `recompile` can succeed with `compilationFailed: true`; check `console get`.
+- `?? AddComponent` never adds anything in Unity, because of Unity's fake-null; use `TryGetComponent`.
+- `OVRComprehensiveInteractionRig` brings a locomotion stack. BuildScene deletes it and cleans the dangling references; the reader never moves.
+- Editor-noise files to leave out of commits:
+  - `Assets/Resources/DevAgentSettings.asset`, which **holds an access token; an older one is already in history**;
+  - `UnityConnectSettings.asset`;
+  - the EB Garamond SDF atlas;
+  - `PerformanceTestRun*`;
+  - `.utmp/`;
+  - `runInBackground` in `ProjectSettings.asset`.
+- GitHub rejects files over 100 MB and git-lfs is not installed; keep textures as separate files.
+- Never write to a folder named `build/` in this owner's environment.
