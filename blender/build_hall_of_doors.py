@@ -123,7 +123,8 @@ def wood(name, base=(0.32, 0.17, 0.08), dark=(0.09, 0.045, 0.02), light=(0.55, 0
     nt.links.new(wave.outputs["Fac"], mix.inputs[2])
     nt.links.new(fine.outputs["Fac"], mix.inputs[3])
     mid = tuple((b + l) / 2 for b, l in zip(base, light))
-    r = ramp(nt, [(0.0, (*dark, 1)), (0.25, (*base, 1)), (0.55, (*mid, 1)), (0.75, (*light, 1)), (0.9, (*base, 1))], (-450, 100))
+    lite = tuple((m + l) / 2 for m, l in zip(mid, light))
+    r = ramp(nt, [(0.0, (*dark, 1)), (0.2, (*base, 1)), (0.5, (*mid, 1)), (0.72, (*lite, 1)), (0.9, (*base, 1))], (-450, 100))
     nt.links.new(mix.outputs[0], r.inputs["Fac"])
     # wear: pointiness lifts edges, dust in crevices via AO
     geo = node(nt, "ShaderNodeNewGeometry", (-700, -350))
@@ -567,8 +568,17 @@ DYNAMIC.append(group("prop.curtain", [curtain] + _rings, (CURTAIN_X, -hy + 0.125
 little = make_door("LittleDoor", LD_W, LITTLE_DOOR_H, (CURTAIN_X, -hy), 0.0, M_DOOR_OAK, panels=2, knob_side=1)
 _leaf = [o for o in little if any(k in o.name for k in ("Leaf", "Panel", "Knob", "Escutcheon"))]
 DYNAMIC.append(group("door.little", _leaf, (CURTAIN_X - LD_W / 2, -hy + 0.02, 0.0)))
+# the opening itself: a boolean cut through the wall (applied at export, cutter never exported)
+_wall_s = bpy.data.objects["Wall_S"]
+_cutter = box("LittleDoor_Cutter", (LD_W, 0.6, LITTLE_DOOR_H), (CURTAIN_X, -hy, LITTLE_DOOR_H / 2), M_PLASTER)
+_cutter.hide_render = True; _cutter.display_type = 'WIRE'
+_bool = _wall_s.modifiers.new("LittleDoorHole", 'BOOLEAN'); _bool.operation = 'DIFFERENCE'; _bool.object = _cutter
 # garden beyond: a bright emissive card and a short passage "not much larger than a rat-hole"
-box("LittlePassage", (0.3, 0.6, LITTLE_DOOR_H), (CURTAIN_X, -hy - 0.3 - 0.075, LITTLE_DOOR_H / 2), M_PLASTER)
+for nm, size, loc in [("LittlePassage_Floor", (LD_W + 0.06, 0.62, 0.03), (CURTAIN_X, -hy - 0.31, -0.015)),
+                      ("LittlePassage_Ceil", (LD_W + 0.06, 0.62, 0.03), (CURTAIN_X, -hy - 0.31, LITTLE_DOOR_H + 0.015)),
+                      ("LittlePassage_L", (0.03, 0.62, LITTLE_DOOR_H), (CURTAIN_X - LD_W / 2 - 0.015, -hy - 0.31, LITTLE_DOOR_H / 2)),
+                      ("LittlePassage_R", (0.03, 0.62, LITTLE_DOOR_H), (CURTAIN_X + LD_W / 2 + 0.015, -hy - 0.31, LITTLE_DOOR_H / 2))]:
+    box(nm, size, loc, M_PLASTER)
 garden_mat, gnt, gb = new_mat("M_GardenGlow")
 gb.inputs["Base Color"].default_value = (0.55, 0.8, 0.45, 1)
 gb.inputs["Emission Color"].default_value = (0.75, 0.95, 0.6, 1)
@@ -700,6 +710,8 @@ def bake_and_export():
         o.select_set(True); bpy.context.view_layer.objects.active = o
     bpy.ops.object.convert(target='MESH')
     bpy.ops.object.select_all(action='DESELECT')
+    bpy.data.objects.remove(bpy.data.objects["LittleDoor_Cutter"])
+    meshes = [o for o in COLL.objects if o.type == 'MESH']
     # group static meshes by material; dynamic members (children of prop/door/fx empties) stay separate
     dynamic_members = [o for o in meshes if o.parent is not None]
     groups = {}

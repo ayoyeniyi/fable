@@ -60,7 +60,53 @@ namespace Fable.Editor
                 EditorUtility.SetDirty(urp);
             }
             AssetDatabase.SaveAssets();
+            ConfigureXR();
             Debug.Log("[FableBuild] project configured for Quest (Android, ARM64, IL2CPP, Vulkan, ASTC, URP mobile, MSAA 4x)");
+        }
+
+        /// OpenXR loader for Android with the Meta Quest feature and hand tracking, done in code so the batch pipeline needs no clicks.
+        [MenuItem("Fable/1b Configure XR")]
+        public static void ConfigureXR()
+        {
+            var settingsPath = "Assets/XR/XRGeneralSettingsPerBuildTarget.asset";
+            Directory.CreateDirectory("Assets/XR");
+            var perTarget = AssetDatabase.LoadAssetAtPath<UnityEditor.XR.Management.XRGeneralSettingsPerBuildTarget>(settingsPath);
+            if (!perTarget)
+            {
+                perTarget = ScriptableObject.CreateInstance<UnityEditor.XR.Management.XRGeneralSettingsPerBuildTarget>();
+                AssetDatabase.CreateAsset(perTarget, settingsPath);
+            }
+            foreach (var group in new[] { BuildTargetGroup.Android, BuildTargetGroup.Standalone })
+            {
+                if (!perTarget.HasSettingsForBuildTarget(group)) perTarget.CreateDefaultSettingsForBuildTarget(group);
+                var gs = perTarget.SettingsForBuildTarget(group);
+                gs.InitManagerOnStart = true;
+                if (gs.Manager == null)
+                {
+                    gs.Manager = ScriptableObject.CreateInstance<UnityEngine.XR.Management.XRManagerSettings>();
+                    gs.Manager.name = group + " Providers"; AssetDatabase.AddObjectToAsset(gs.Manager, perTarget);
+                }
+                UnityEditor.XR.Management.Metadata.XRPackageMetadataStore.AssignLoader(gs.Manager, "UnityEngine.XR.OpenXR.OpenXRLoader", group);
+                UnityEditor.XR.OpenXR.Features.FeatureHelpers.RefreshFeatures(group);
+                var oxr = UnityEngine.XR.OpenXR.OpenXRSettings.GetSettingsForBuildTargetGroup(group);
+                Debug.Log($"[FableBuild] OpenXR settings for {group}: {(oxr ? oxr.GetFeatures().Length + " features" : "none")}");
+                if (oxr != null)
+                {
+                    oxr.renderMode = UnityEngine.XR.OpenXR.OpenXRSettings.RenderMode.SinglePassInstanced;
+                    oxr.depthSubmissionMode = UnityEngine.XR.OpenXR.OpenXRSettings.DepthSubmissionMode.Depth16Bit;
+                    foreach (var f in oxr.GetFeatures())
+                    {
+                        var n = f.GetType().Name;
+                        if (n.StartsWith("Detached")) { f.enabled = false; continue; }
+                        if (n.Contains("MetaQuest") || n.Contains("OculusTouchControllerProfile") || n.Contains("HandInteractionProfile") || n.Contains("HandTracking") || n.Contains("MetaXRFeature"))
+                        { f.enabled = true; Debug.Log($"[FableBuild] OpenXR feature on ({group}): {n}"); }
+                    }
+                    EditorUtility.SetDirty(oxr);
+                }
+            }
+            UnityEditor.EditorBuildSettings.AddConfigObject(UnityEngine.XR.Management.XRGeneralSettings.k_SettingsKey, perTarget, true);
+            EditorUtility.SetDirty(perTarget); AssetDatabase.SaveAssets();
+            Debug.Log("[FableBuild] XR: OpenXR loader assigned for Android and Standalone");
         }
 
         [MenuItem("Fable/2 Build Scene")]
@@ -188,7 +234,7 @@ namespace Fable.Editor
             Lightmapping.lightingSettings = new LightingSettings
             {
                 lightmapper = LightingSettings.Lightmapper.ProgressiveGPU, lightmapMaxSize = 2048, lightmapResolution = 12, lightmapPadding = 2,
-                directSampleCount = 32, indirectSampleCount = 256, environmentSampleCount = 64, bounces = 3, denoiserTypeDirect = LightingSettings.DenoiserType.OpenImage,
+                directSampleCount = 32, indirectSampleCount = 256, environmentSampleCount = 64, maxBounces = 3, denoiserTypeDirect = LightingSettings.DenoiserType.OpenImage,
                 denoiserTypeIndirect = LightingSettings.DenoiserType.OpenImage, lightmapCompression = LightmapCompression.HighQuality, mixedBakeMode = MixedLightingMode.Shadowmask, ao = true, aoMaxDistance = 0.6f
             };
             Lightmapping.lightingSettings.name = "FableLighting"; AssetDatabase.CreateAsset(Lightmapping.lightingSettings, "Assets/Fable/Scenes/FableLighting.lighting");
