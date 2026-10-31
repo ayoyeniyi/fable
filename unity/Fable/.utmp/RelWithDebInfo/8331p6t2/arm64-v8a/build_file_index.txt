@@ -1,0 +1,2 @@
+/Users/thabhelo/fable/unity/Fable/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/src/main/cpp/CMakeLists.txt
+/Users/thabhelo/fable/unity/Fable/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/src/main/cpp/GameActivity/CMakeLists.txt

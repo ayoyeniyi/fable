@@ -841,16 +841,19 @@ PlayerSettings:
   webWasm2023: 0
   webEnableSubmoduleStrippingCompatibility: 0
   scriptingDefineSymbols:
-    Android: FABLE_META_XR;OVR_DISABLE_HAND_PINCH_BUTTON_MAPPING
-    Standalone: FABLE_META_XR;OVR_DISABLE_HAND_PINCH_BUTTON_MAPPING
+    Android: FABLE_META_XR
+    Standalone: FABLE_META_XR
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
     Android: 1
-  il2cppCompilerConfiguration: {}
-  il2cppCodeGeneration: {}
+  il2cppCompilerConfiguration:
+    Android: 1
+  il2cppCodeGeneration:
+    Android: 1
   il2cppStacktraceInformation: {}
-  managedStrippingLevel: {}
+  managedStrippingLevel:
+    Android: 3
   incrementalIl2cppBuild: {}
   suppressCommonWarnings: 1
   allowUnsafeCode: 0

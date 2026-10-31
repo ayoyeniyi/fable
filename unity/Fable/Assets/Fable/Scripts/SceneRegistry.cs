@@ -13,6 +13,9 @@ namespace Fable
         readonly Dictionary<string, List<Light>> lightGroups = new();
         readonly Dictionary<string, AudioClip> clips = new();
 
+        // the lookup tables are not serialized: rebuild them from the scene when play starts
+        void Awake() { if (EnvironmentRoot && anchors.Count == 0) Build(EnvironmentRoot); }
+
         public void Build(Transform root)
         {
             EnvironmentRoot = root;

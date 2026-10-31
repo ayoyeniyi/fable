@@ -40,6 +40,12 @@ namespace Fable.Editor
             PlayerSettings.companyName = "Fable";
             PlayerSettings.Android.textureCompressionFormats = new[] { TextureCompressionFormat.ASTC };
             PlayerSettings.gpuSkinning = true;
+            // keep the Android build's footprint down: release IL2CPP, size-optimised codegen, high stripping, no symbol packages
+            PlayerSettings.SetIl2CppCompilerConfiguration(target, Il2CppCompilerConfiguration.Release);
+            PlayerSettings.SetIl2CppCodeGeneration(target, Il2CppCodeGeneration.OptimizeSize);
+            PlayerSettings.SetManagedStrippingLevel(target, ManagedStrippingLevel.High);
+            EditorUserBuildSettings.androidCreateSymbols = AndroidCreateSymbols.Disabled;
+            EditorUserBuildSettings.androidBuildSubtarget = MobileTextureSubtarget.ASTC;
             PlayerSettings.SetScriptingDefineSymbols(target, Defines);
             PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.Standalone, Defines);
             EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android, BuildTarget.Android);
@@ -54,7 +60,7 @@ namespace Fable.Editor
             if (urp)
             {
                 urp.msaaSampleCount = 4; urp.supportsHDR = false; urp.renderScale = 1.0f; urp.supportsCameraDepthTexture = false; urp.supportsCameraOpaqueTexture = false;
-                urp.shadowDistance = 0; urp.maxAdditionalLightsCount = 8;
+                urp.shadowDistance = 0; urp.maxAdditionalLightsCount = 8; urp.supportsAdditionalLightShadows = false; urp.supportsMainLightShadows = false;
                 GraphicsSettings.defaultRenderPipeline = urp; QualitySettings.renderPipeline = urp;
                 EditorUtility.SetDirty(urp);
             }
@@ -127,9 +133,16 @@ namespace Fable.Editor
                 bool dynamic = t.name.StartsWith("prop.") || t.name.StartsWith("fx.") || t.name == "door.little" || (t.parent && (t.parent.name.StartsWith("prop.") || t.parent.name.StartsWith("fx.") || t.parent.name == "door.little"));
                 GameObjectUtility.SetStaticEditorFlags(t.gameObject, dynamic ? 0 : StaticEditorFlags.BatchingStatic | StaticEditorFlags.ContributeGI | StaticEditorFlags.OccludeeStatic | StaticEditorFlags.OccluderStatic);
             }
+            // the flame sits inside the glass chimney: glass and flame must not occlude the lightmapper or cast shadows
+            foreach (var r in env.GetComponentsInChildren<Renderer>(true))
+                if (r.name.Contains("LampGlass") || r.name.Contains("Flame") || r.name.Contains("GardenCard"))
+                {
+                    r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; r.receiveShadows = false;
+                    GameObjectUtility.SetStaticEditorFlags(r.gameObject, StaticEditorFlags.BatchingStatic);
+                }
             foreach (var l in env.GetComponentsInChildren<Light>(true))
             {
-                l.lightmapBakeType = LightmapBakeType.Mixed; l.shadows = LightShadows.Soft; l.intensity = l.name.StartsWith("Lamp") ? 1.6f : 0f; l.range = l.name.StartsWith("Lamp") ? 7f : 3f;
+                l.lightmapBakeType = LightmapBakeType.Mixed; l.shadows = LightShadows.Soft; l.intensity = l.name.StartsWith("Lamp") ? 2.2f : 0f; l.range = l.name.StartsWith("Lamp") ? 7.5f : 3f;
                 l.color = l.name.StartsWith("Lamp") ? new Color(1f, 0.72f, 0.45f) : new Color(0.72f, 0.9f, 1f);
             }
             // glass and transparent props: switch to URP Lit transparent so the table and bottle read as glass
@@ -193,6 +206,9 @@ namespace Fable.Editor
             var reading = new GameObject("ReadingRoom");
             var disc = GameObject.CreatePrimitive(PrimitiveType.Cylinder); disc.name = "FloorDisc"; disc.transform.SetParent(reading.transform); disc.transform.position = rig.transform.position + new Vector3(0, -0.01f, 0); disc.transform.localScale = new Vector3(6, 0.01f, 6);
             var discMat = new Material(Shader.Find("Universal Render Pipeline/Lit")); discMat.color = new Color(0.08f, 0.075f, 0.07f); discMat.SetFloat("_Smoothness", 0.1f); disc.GetComponent<Renderer>().sharedMaterial = discMat; UnityEngine.Object.DestroyImmediate(disc.GetComponent<Collider>());
+            var table = GameObject.CreatePrimitive(PrimitiveType.Cylinder); table.name = "DioramaTable"; table.transform.SetParent(reading.transform);
+            table.transform.position = rig.transform.position + new Vector3(0, 0.36f, 0.95f); table.transform.localScale = new Vector3(1.5f, 0.36f, 1.5f);
+            var tableMat = new Material(Shader.Find("Universal Render Pipeline/Lit")); tableMat.color = new Color(0.16f, 0.12f, 0.09f); tableMat.SetFloat("_Smoothness", 0.35f); table.GetComponent<Renderer>().sharedMaterial = tableMat; UnityEngine.Object.DestroyImmediate(table.GetComponent<Collider>());
             var soft = new GameObject("ReadingLight").AddComponent<Light>(); soft.transform.SetParent(reading.transform); soft.transform.position = rig.transform.position + new Vector3(0, 2.4f, 0.6f); soft.type = LightType.Point; soft.range = 5; soft.intensity = 1.1f; soft.color = new Color(1f, 0.92f, 0.8f); soft.lightmapBakeType = LightmapBakeType.Realtime; soft.shadows = LightShadows.None;
 
             // systems
@@ -203,7 +219,7 @@ namespace Fable.Editor
             var director = systems.AddComponent<SceneDirector>(); director.Registry = registry; director.Clips = clips; director.Audio = audio; director.ReaderHead = head;
             var input = systems.AddComponent<ReaderController>();
 #if FABLE_META_XR
-            input.LeftHand = lh; input.RightHand = rh;
+            input.LeftHand = lh; input.RightHand = rh; input.LeftPointer = ovrRig.leftHandAnchor; input.RightPointer = ovrRig.rightHandAnchor;
 #endif
             var panel = BuildPanel(head);
             var flow = systems.AddComponent<FlowController>(); flow.Director = director; flow.Input = input; flow.Panel = panel; flow.Head = head; flow.ReadingRoom = reading;

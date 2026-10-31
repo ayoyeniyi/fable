@@ -30,6 +30,7 @@ namespace Fable
         readonly Dictionary<string, Vector3> assetHomeScale = new();
         readonly Dictionary<string, float> lightHome = new();
         Coroutine scaleRoutine;
+        float baseScale = 1f;   // the room's scale before any readerScale action (1 immersive, ~0.09 miniature)
 
         public IEnumerator Load(string sceneId, Passage book)
         {
@@ -55,6 +56,16 @@ namespace Fable
                     }
                 }
                 else Debug.LogWarning($"[Fable] interpreter unreachable: {req.error}");
+            }
+            if (candidate != null) ProgressStore.CacheScript(sceneId, JsonConvert.SerializeObject(candidate));
+            if (candidate == null)
+            {
+                var cached = ProgressStore.LoadCachedScript(sceneId);
+                if (cached != null)
+                {
+                    try { var cs = ScriptValidator.Parse(cached); if (ScriptValidator.Validate(cs, manifest, ids).Count == 0) { candidate = cs; Debug.Log("[Fable] using cached interpreter script"); } }
+                    catch (Exception e) { Debug.LogWarning($"[Fable] cache unreadable: {e.Message}"); }
+                }
             }
             if (candidate == null)
             {
@@ -109,7 +120,7 @@ namespace Fable
             foreach (var kv in lightHome) { }
             var garden = Registry.Lights("light.garden"); if (garden != null) foreach (var l in garden) l.intensity = 0;
             var lamps = Registry.Lights("lamp.row"); if (lamps != null) foreach (var l in lamps) l.intensity = lightHome[l.name] * 0.2f;
-            Registry.EnvironmentRoot.localScale = Vector3.one;
+            baseScale = Registry.EnvironmentRoot.localScale.x;
             BeatIndex = -1;
         }
 
@@ -120,6 +131,17 @@ namespace Fable
             Apply(Script.Beats[BeatIndex], instant: false);
             BeatChanged?.Invoke(BeatIndex, Script.Beats[BeatIndex]);
             return true;
+        }
+
+        /// Jump straight to a beat (resume): everything before it instant, the beat itself animated.
+        public void JumpTo(int index)
+        {
+            if (Script == null) return;
+            index = Mathf.Clamp(index, 0, Script.Beats.Count - 1);
+            ResetRoom();
+            for (int i = 0; i <= index; i++) Apply(Script.Beats[i], instant: i < index);
+            BeatIndex = index;
+            BeatChanged?.Invoke(BeatIndex, Script.Beats[BeatIndex]);
         }
 
         public bool Previous()
@@ -265,7 +287,8 @@ namespace Fable
         {
             var root = Registry.EnvironmentRoot;
             var pivot = ReaderHead ? new Vector3(ReaderHead.position.x, root.position.y, ReaderHead.position.z) : root.position;
-            float from = root.localScale.x;
+            float from = root.localScale.x; target *= baseScale;
+            if (Mathf.Abs(baseScale - 1f) > 0.01f) pivot = root.TransformPoint(Registry.Anchor("hall.centre") ? root.InverseTransformPoint(Registry.Anchor("hall.centre").position) : Vector3.zero);
             for (float e = 0; e < dur; e += Time.deltaTime)
             {
                 float s = Mathf.Lerp(from, target, Mathf.SmoothStep(0, 1, e / Mathf.Max(dur, 0.001f)));
