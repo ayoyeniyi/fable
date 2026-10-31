@@ -1,39 +1,406 @@
 {
-  "version": 1, "sceneId": "mad-tea-party", "title": "A Mad Tea-Party",
-  "environment": { "prefab": "env.mad-tea-party", "ambience": "amb.garden-afternoon", "exposure": 0.3, "fog": 0.05 },
+  "version": 1,
+  "sceneId": "mad-tea-party",
+  "title": "A Mad Tea-Party",
+  "environment": {
+    "prefab": "env.mad-tea-party",
+    "ambience": "amb.garden-afternoon",
+    "exposure": 0.3,
+    "fog": 0.05
+  },
   "beats": [
-    { "sentenceId": "mad-tea-party:000", "focus": "table.corner", "actions": [
-      { "type": "place", "asset": "prop.tea-table", "anchor": "table.centre", "appear": "fade" },
-      { "type": "place", "asset": "prop.tea-service", "anchor": "table.centre", "appear": "fade" },
-      { "type": "place", "asset": "char.hatter", "anchor": "seat.hatter", "appear": "fade" },
-      { "type": "place", "asset": "char.march-hare", "anchor": "seat.march-hare", "appear": "fade" },
-      { "type": "place", "asset": "char.dormouse", "anchor": "seat.dormouse", "appear": "fade" },
-      { "type": "animate", "target": "char.dormouse", "clip": "dormouse.breathe", "durationSeconds": 4, "loop": true },
-      { "type": "place", "asset": "fx.dappled-light", "anchor": "table.centre", "appear": "fade" },
-      { "type": "sound", "sound": "sfx.leaves", "anchor": "tree.canopy", "volume": 0.4 } ] },
-    { "sentenceId": "mad-tea-party:001", "focus": "seat.dormouse", "actions": [
-      { "type": "animate", "target": "char.dormouse", "clip": "dormouse.twitch", "durationSeconds": 1 },
-      { "type": "sound", "sound": "sfx.dormouse-snore", "anchor": "seat.dormouse", "volume": 0.5 } ] },
-    { "sentenceId": "mad-tea-party:002", "focus": "table.corner", "actions": [
-      { "type": "animate", "target": "char.hatter", "clip": "hatter.speak", "durationSeconds": 1.5 },
-      { "type": "animate", "target": "char.march-hare", "clip": "hare.speak", "durationSeconds": 1.5 },
-      { "type": "sound", "sound": "sfx.no-room-shout", "anchor": "table.corner", "volume": 0.8 } ] },
-    { "sentenceId": "mad-tea-party:003", "focus": "table.end", "actions": [
-      { "type": "place", "asset": "prop.armchair", "anchor": "table.end", "appear": "fade" },
-      { "type": "animate", "target": "prop.armchair", "clip": "armchair.sit", "durationSeconds": 2 },
-      { "type": "sound", "sound": "sfx.chair-creak", "anchor": "table.end", "volume": 0.6 },
-      { "type": "readerScale", "anchor": "reader.armchair", "scale": 1.0, "durationSeconds": 3 } ] },
-    { "sentenceId": "mad-tea-party:004", "focus": "seat.march-hare", "actions": [
-      { "type": "animate", "target": "char.march-hare", "clip": "hare.offer", "durationSeconds": 2 } ] },
-    { "sentenceId": "mad-tea-party:005", "focus": "table.centre", "actions": [
-      { "type": "animate", "target": "prop.tea-service", "clip": "tea.rattle", "durationSeconds": 1 },
-      { "type": "place", "asset": "fx.steam", "anchor": "table.centre", "appear": "fade" },
-      { "type": "sound", "sound": "sfx.cups-rattle", "anchor": "table.centre", "volume": 0.5 } ] },
-    { "sentenceId": "mad-tea-party:011", "focus": "seat.hatter", "actions": [
-      { "type": "animate", "target": "char.hatter", "clip": "hatter.look", "durationSeconds": 2 },
-      { "type": "animate", "target": "char.hatter", "clip": "hatter.speak", "durationSeconds": 1.2 } ] },
-    { "sentenceId": "mad-tea-party:014", "focus": "seat.hatter", "actions": [
-      { "type": "animate", "target": "char.hatter", "clip": "hatter.eyes-wide", "durationSeconds": 1.5 },
-      { "type": "animate", "target": "fx.dappled-light", "clip": "dapple.sway", "durationSeconds": 6, "loop": true } ] }
+    {
+      "sentenceId": "mad-tea-party:000",
+      "focus": "table.corner",
+      "actions": [
+        {
+          "type": "place",
+          "asset": "prop.tea-table",
+          "anchor": "table.centre",
+          "appear": "fade"
+        },
+        {
+          "type": "place",
+          "asset": "prop.tea-service",
+          "anchor": "table.centre",
+          "appear": "fade"
+        },
+        {
+          "type": "place",
+          "asset": "char.hatter",
+          "anchor": "seat.hatter",
+          "appear": "fade"
+        },
+        {
+          "type": "place",
+          "asset": "char.march-hare",
+          "anchor": "seat.march-hare",
+          "appear": "fade"
+        },
+        {
+          "type": "place",
+          "asset": "char.dormouse",
+          "anchor": "seat.dormouse",
+          "appear": "fade"
+        },
+        {
+          "type": "animate",
+          "target": "char.dormouse",
+          "clip": "dormouse.breathe",
+          "durationSeconds": 4,
+          "loop": true
+        },
+        {
+          "type": "place",
+          "asset": "fx.dappled-light",
+          "anchor": "table.centre",
+          "appear": "fade"
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.birdsong",
+          "anchor": "tree.canopy",
+          "volume": 0.35
+        }
+      ]
+    },
+    {
+      "sentenceId": "mad-tea-party:001",
+      "focus": "seat.dormouse",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.dormouse",
+          "clip": "dormouse.twitch",
+          "durationSeconds": 1
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.dormouse-snore",
+          "anchor": "seat.dormouse",
+          "volume": 0.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "mad-tea-party:002",
+      "focus": "table.corner",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.hatter",
+          "clip": "hatter.speak",
+          "durationSeconds": 1.5
+        },
+        {
+          "type": "animate",
+          "target": "char.march-hare",
+          "clip": "hare.speak",
+          "durationSeconds": 1.5
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.no-room-shout",
+          "anchor": "table.corner",
+          "volume": 0.8
+        }
+      ]
+    },
+    {
+      "sentenceId": "mad-tea-party:003",
+      "focus": "table.end",
+      "actions": [
+        {
+          "type": "place",
+          "asset": "prop.armchair",
+          "anchor": "table.end",
+          "appear": "fade"
+        },
+        {
+          "type": "animate",
+          "target": "prop.armchair",
+          "clip": "armchair.sit",
+          "durationSeconds": 2
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.chair-creak",
+          "anchor": "table.end",
+          "volume": 0.6
+        },
+        {
+          "type": "readerScale",
+          "anchor": "reader.armchair",
+          "scale": 1.0,
+          "durationSeconds": 3
+        }
+      ]
+    },
+    {
+      "sentenceId": "mad-tea-party:004",
+      "focus": "seat.march-hare",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.march-hare",
+          "clip": "hare.offer",
+          "durationSeconds": 2
+        },
+        {
+          "type": "animate",
+          "target": "char.march-hare",
+          "clip": "hare.speak",
+          "durationSeconds": 1.6
+        }
+      ]
+    },
+    {
+      "sentenceId": "mad-tea-party:005",
+      "focus": "table.centre",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "prop.tea-service",
+          "clip": "tea.rattle",
+          "durationSeconds": 1
+        },
+        {
+          "type": "place",
+          "asset": "fx.steam",
+          "anchor": "table.centre",
+          "appear": "fade"
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.cups-rattle",
+          "anchor": "table.centre",
+          "volume": 0.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "mad-tea-party:006",
+      "focus": "seat.hatter",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.hatter",
+          "clip": "hatter.look",
+          "durationSeconds": 1.5
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.birdsong",
+          "anchor": "tree.canopy",
+          "volume": 0.3
+        }
+      ]
+    },
+    {
+      "sentenceId": "mad-tea-party:007",
+      "focus": "seat.march-hare",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.march-hare",
+          "clip": "hare.speak",
+          "durationSeconds": 1.4
+        },
+        {
+          "type": "animate",
+          "target": "char.dormouse",
+          "clip": "dormouse.twitch",
+          "durationSeconds": 1.0
+        }
+      ]
+    },
+    {
+      "sentenceId": "mad-tea-party:008",
+      "focus": "table.end",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "prop.tea-service",
+          "clip": "tea.rattle",
+          "durationSeconds": 1.0
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.cups-rattle",
+          "anchor": "table.centre",
+          "volume": 0.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "mad-tea-party:009",
+      "focus": "seat.march-hare",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.march-hare",
+          "clip": "hare.speak",
+          "durationSeconds": 2.0
+        },
+        {
+          "type": "animate",
+          "target": "char.march-hare",
+          "clip": "hare.elbow",
+          "durationSeconds": 1.2
+        }
+      ]
+    },
+    {
+      "sentenceId": "mad-tea-party:010",
+      "focus": "table.centre",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.hatter",
+          "clip": "hatter.look",
+          "durationSeconds": 1.5
+        },
+        {
+          "type": "animate",
+          "target": "char.dormouse",
+          "clip": "dormouse.twitch",
+          "durationSeconds": 0.8
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.leaves",
+          "anchor": "tree.canopy",
+          "volume": 0.4
+        }
+      ]
+    },
+    {
+      "sentenceId": "mad-tea-party:011",
+      "focus": "seat.hatter",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.hatter",
+          "clip": "hatter.look",
+          "durationSeconds": 2
+        },
+        {
+          "type": "animate",
+          "target": "char.hatter",
+          "clip": "hatter.speak",
+          "durationSeconds": 1.2
+        }
+      ]
+    },
+    {
+      "sentenceId": "mad-tea-party:012",
+      "focus": "seat.hatter",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.hatter",
+          "clip": "hatter.look",
+          "durationSeconds": 2.5
+        },
+        {
+          "type": "animate",
+          "target": "fx.dappled-light",
+          "clip": "dapple.sway",
+          "durationSeconds": 6,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "sentenceId": "mad-tea-party:013",
+      "focus": "table.end",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.march-hare",
+          "clip": "hare.elbow",
+          "durationSeconds": 1.0
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.cups-rattle",
+          "anchor": "table.centre",
+          "volume": 0.4
+        }
+      ]
+    },
+    {
+      "sentenceId": "mad-tea-party:014",
+      "focus": "seat.hatter",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.hatter",
+          "clip": "hatter.eyes-wide",
+          "durationSeconds": 1.5
+        },
+        {
+          "type": "animate",
+          "target": "fx.dappled-light",
+          "clip": "dapple.sway",
+          "durationSeconds": 6,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "sentenceId": "mad-tea-party:015",
+      "focus": "table.centre",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "prop.tea-service",
+          "clip": "tea.pour",
+          "durationSeconds": 2.0
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.tea-pour",
+          "anchor": "table.centre",
+          "volume": 0.6
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.birdsong",
+          "anchor": "tree.canopy",
+          "volume": 0.3
+        }
+      ]
+    },
+    {
+      "sentenceId": "mad-tea-party:016",
+      "focus": "seat.hatter",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.hatter",
+          "clip": "hatter.speak",
+          "durationSeconds": 1.8
+        },
+        {
+          "type": "animate",
+          "target": "char.march-hare",
+          "clip": "hare.speak",
+          "durationSeconds": 1.8
+        },
+        {
+          "type": "animate",
+          "target": "char.dormouse",
+          "clip": "dormouse.twitch",
+          "durationSeconds": 1.0
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.dormouse-snore",
+          "anchor": "seat.dormouse",
+          "volume": 0.4
+        }
+      ]
+    }
   ]
 }
