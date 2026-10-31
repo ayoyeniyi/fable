@@ -17,6 +17,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Fable/Scenes/QueensCroquetGround.unity
     guid: 254b7e42fee1c4d8194d894f329c7991
+  - enabled: 1
+    path: Assets/Fable/Scenes/KansasFarmhouse.unity
+    guid: 0556dea11f26845898e1ecba2eef2b1c
+  - enabled: 1
+    path: Assets/Fable/Scenes/CalypsosCave.unity
+    guid: 7d8528ad40dbc4cccbda14fb03f83306
+  - enabled: 1
+    path: Assets/Fable/Scenes/GlumdalclitchsRoom.unity
+    guid: 94c024689654f4bf89d53306845408bb
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 26154d77f6c974987ae91a02379cdc30, type: 2}

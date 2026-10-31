@@ -1,0 +1,341 @@
+fileFormatVersion: 2
+guid: aaf61e7ad571f4bbb8fa106f0d80973c
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies:
+  - type: 0
+    originalUri: Assets/Fable/Models/CalypsosCave/calypsos_cave.bin
+    assetPath: Assets/Fable/Models/CalypsosCave/calypsos_cave.bin
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_FarTrees_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_FarTrees_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_FarTrees_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_FarTrees_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_FarTrees_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_FarTrees_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Headland_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Headland_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Headland_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Headland_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Headland_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Headland_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_FarSea_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_FarSea_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_FarSea_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_FarSea_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_FarSea_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_FarSea_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_AlderLeaves_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_AlderLeaves_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_AlderLeaves_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_AlderLeaves_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_AlderLeaves_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_AlderLeaves_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Ash_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Ash_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Ash_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Ash_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Ash_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Ash_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Bark_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Bark_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Bark_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Bark_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Bark_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Bark_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Boulder_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Boulder_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Boulder_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Boulder_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Boulder_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Boulder_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_CaveFloor_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_CaveFloor_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_CaveFloor_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_CaveFloor_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_CaveFloor_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_CaveFloor_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_CaveRock_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_CaveRock_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_CaveRock_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_CaveRock_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_CaveRock_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_CaveRock_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_ChannelStone_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_ChannelStone_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_ChannelStone_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_ChannelStone_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_ChannelStone_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_ChannelStone_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Cloth_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Cloth_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Cloth_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Cloth_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Cloth_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Cloth_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Cypress_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Cypress_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Cypress_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Cypress_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Cypress_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Cypress_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Embers_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Embers_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Embers_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Embers_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Embers_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Embers_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Flame_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Flame_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Flame_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Flame_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Flame_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Flame_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Fleece_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Fleece_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Fleece_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Fleece_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Fleece_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Fleece_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Gold_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Gold_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Gold_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Gold_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Gold_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Gold_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Grapes_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Grapes_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Grapes_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Grapes_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Grapes_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Grapes_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Ground_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Ground_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Ground_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Ground_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Ground_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Ground_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_HearthStone_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_HearthStone_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_HearthStone_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_HearthStone_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_HearthStone_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_HearthStone_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Herbage_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Herbage_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Herbage_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Herbage_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Herbage_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Herbage_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Logs_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Logs_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Logs_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Logs_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Logs_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Logs_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_LoomWood_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_LoomWood_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_LoomWood_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_LoomWood_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_LoomWood_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_LoomWood_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_PoplarBark_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_PoplarBark_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_PoplarBark_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_PoplarBark_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_PoplarBark_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_PoplarBark_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_PoplarLeaves_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_PoplarLeaves_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_PoplarLeaves_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_PoplarLeaves_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_PoplarLeaves_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_PoplarLeaves_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Sea_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Sea_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Sea_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Sea_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Sea_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Sea_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Terracotta_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Terracotta_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Terracotta_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Terracotta_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Terracotta_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Terracotta_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Twigs_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Twigs_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Twigs_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Twigs_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Twigs_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Twigs_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_VineLeaves_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_VineLeaves_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_VineLeaves_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_VineLeaves_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_VineLeaves_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_VineLeaves_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_VineWood_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_VineWood_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_VineWood_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_VineWood_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_VineWood_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_VineWood_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_VioletBed_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_VioletBed_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_VioletBed_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_VioletBed_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_VioletBed_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_VioletBed_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Violets_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Violets_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Violets_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Violets_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Violets_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Violets_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Warp_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Warp_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Warp_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Warp_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Warp_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Warp_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Water_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Water_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Water_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Water_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_Water_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_Water_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_SkyDome_BaseColor.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_SkyDome_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_SkyDome_Normal.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_SkyDome_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/CalypsosCave/textures/T_SkyDome_Roughness.jpg
+    assetPath: Assets/Fable/Models/CalypsosCave/textures/T_SkyDome_Roughness.jpg
+  reportItems:
+  - type: 2
+    code: 20
+    messages:
+    - KHR_materials_emissive_strength

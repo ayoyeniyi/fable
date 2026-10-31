@@ -1,0 +1,281 @@
+fileFormatVersion: 2
+guid: 0e813036077c74273b0a927c8e9b79e8
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies:
+  - type: 0
+    originalUri: Assets/Fable/Models/KansasFarmhouse/kansas_farmhouse.bin
+    assetPath: Assets/Fable/Models/KansasFarmhouse/kansas_farmhouse.bin
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_DistantPrairie_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_DistantPrairie_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_DistantPrairie_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_DistantPrairie_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_DistantPrairie_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_DistantPrairie_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_BedWood_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_BedWood_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_BedWood_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_BedWood_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_BedWood_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_BedWood_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_BlackIron_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_BlackIron_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_BlackIron_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_BlackIron_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_BlackIron_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_BlackIron_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_BroomStraw_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_BroomStraw_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_BroomStraw_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_BroomStraw_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_BroomStraw_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_BroomStraw_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Calico_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Calico_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Calico_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Calico_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Calico_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Calico_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_ChairWood_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_ChairWood_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_ChairWood_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_ChairWood_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_ChairWood_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_ChairWood_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Crockery_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Crockery_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Crockery_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Crockery_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Crockery_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Crockery_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Cupboard_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Cupboard_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Cupboard_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Cupboard_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Cupboard_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Cupboard_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_DoorPlanks_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_DoorPlanks_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_DoorPlanks_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_DoorPlanks_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_DoorPlanks_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_DoorPlanks_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Enamel_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Enamel_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Enamel_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Enamel_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Enamel_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Enamel_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Flame_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Flame_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Flame_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Flame_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Flame_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Flame_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_FloorPlanks_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_FloorPlanks_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_FloorPlanks_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_FloorPlanks_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_FloorPlanks_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_FloorPlanks_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_LampBrass_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_LampBrass_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_LampBrass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_LampBrass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_LampBrass_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_LampBrass_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_LampGlass_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_LampGlass_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_LampGlass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_LampGlass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_LampGlass_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_LampGlass_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Linen_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Linen_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Linen_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Linen_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Linen_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Linen_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_PrairieGrass_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_PrairieGrass_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_PrairieGrass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_PrairieGrass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_PrairieGrass_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_PrairieGrass_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_PrairieGround_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_PrairieGround_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_PrairieGround_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_PrairieGround_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_PrairieGround_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_PrairieGround_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Quilt_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Quilt_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Quilt_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Quilt_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Quilt_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Quilt_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Rafters_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Rafters_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Rafters_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Rafters_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_Rafters_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_Rafters_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_RagRug_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_RagRug_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_RagRug_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_RagRug_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_RagRug_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_RagRug_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_RoofBoards_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_RoofBoards_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_RoofBoards_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_RoofBoards_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_RoofBoards_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_RoofBoards_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_RustIron_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_RustIron_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_RustIron_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_RustIron_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_RustIron_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_RustIron_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_StoveEmbers_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_StoveEmbers_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_StoveEmbers_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_StoveEmbers_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_StoveEmbers_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_StoveEmbers_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_TablePine_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_TablePine_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_TablePine_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_TablePine_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_TablePine_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_TablePine_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_TrapDoor_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_TrapDoor_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_TrapDoor_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_TrapDoor_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_TrapDoor_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_TrapDoor_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_WallBoards_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_WallBoards_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_WallBoards_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_WallBoards_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_WallBoards_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_WallBoards_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_WindowTrim_Normal.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_WindowTrim_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_WindowTrim_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_WindowTrim_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_WindowTrim_Roughness.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_WindowTrim_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/KansasFarmhouse/textures/T_SkyDome_BaseColor.jpg
+    assetPath: Assets/Fable/Models/KansasFarmhouse/textures/T_SkyDome_BaseColor.jpg
+  reportItems:
+  - type: 2
+    code: 20
+    messages:
+    - KHR_materials_emissive_strength

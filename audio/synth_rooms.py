@@ -3,7 +3,7 @@
    Every clip is synthesised here: no third-party samples, no licence questions (CC0 like the rest of Fable's own work).
 
    amb.lobby              quiet panelled room: soft room tone, a slow clock, the oil lamp
-   amb.kansas-storm       the farmhouse in the coming cyclone: "a low wail of the wind ... from the north", the long
+   amb.kansas-farmhouse       the farmhouse in the coming cyclone: "a low wail of the wind ... from the north", the long
                           grass bowing in waves, boards creaking, and "a sharp whistling in the air from the south"
    amb.calypsos-cave      Ogygia: surf on the shore, "four running rills of water", the cedar fire, sea-crows and birds
    music.calypsos-cave    a sparse plucked lyre in the Dorian mode, slow, for Calypso's cave (composed here)
@@ -74,7 +74,7 @@ for at in rng.uniform(0, sec, 7):                               # boards creakin
 for at in (6.0, 19.5):                                          # the sharp whistle from the south
     k = int(3.2 * SR); tk = np.arange(k) / SR; f = 1900 + 500 * np.sin(np.pi * tk / tk[-1]) + 60 * np.sin(2 * np.pi * 5 * tk)
     place(x, np.sin(2 * np.pi * np.cumsum(f) / SR) * env(k, 0.9, 1.4) * 0.05 + band(noise(k), 1700, 2600) * env(k, 0.9, 1.4) * 0.05, at)
-save("amb.kansas-storm", norm(loop_seam(x, 1.5), 0.5))
+save("amb.kansas-farmhouse", norm(loop_seam(x, 1.5), 0.5))
 
 # ---------------------------------------------------------------- Ogygia: surf, rills, the cedar fire, birds
 sec = 32; n = SR * sec; tt = t(sec)

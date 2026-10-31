@@ -186,7 +186,7 @@ namespace Fable.Editor
             }
             // the flame sits inside the glass chimney: glass and flame must not occlude the lightmapper or cast shadows
             foreach (var r in env.GetComponentsInChildren<Renderer>(true))
-                if (r.name.Contains("LampGlass") || r.name.Contains("Flame") || r.name.Contains("GardenCard"))
+                if (r.name.Contains("LampGlass") || r.name.Contains("Flame") || r.name.Contains("GardenCard") || r.name.Contains("WindowGlass"))
                 {
                     r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; r.receiveShadows = false;
                     GameObjectUtility.SetStaticEditorFlags(r.gameObject, 0);
@@ -198,7 +198,19 @@ namespace Fable.Editor
                     l.lightmapBakeType = LightmapBakeType.Mixed; l.shadows = LightShadows.Soft;
                     if (l.name.StartsWith("light.sun")) { l.type = LightType.Directional; l.intensity = 1.5f; l.color = new Color(1f, 0.93f, 0.80f); }
                     else if (l.name.StartsWith("light.sky")) { l.type = LightType.Directional; l.intensity = 0.35f; l.color = new Color(0.62f, 0.74f, 1f); l.shadows = LightShadows.None; }
+                    else if (l.name.Contains("Fire") || l.name.Contains("lamp") || l.name.Contains("stove")) { l.lightmapBakeType = LightmapBakeType.Baked; l.intensity = l.name.Contains("Fire") ? 6f : 2.2f; l.range = l.name.Contains("Fire") ? 9f : 5f; l.color = new Color(1f, 0.62f, 0.30f); l.shadows = LightShadows.Soft; }   // hearth, oil lamp, stove: warm, baked
                     else { l.intensity = 0.5f; l.range = 12f; l.color = new Color(1f, 0.95f, 0.86f); l.shadows = LightShadows.None; }
+                }
+                if (sceneId == "kansas-farmhouse")
+                {
+                    // the cyclone coming: a low, filtered sun, a gray-green sky and close gray haze
+                    foreach (var l in env.GetComponentsInChildren<Light>(true))
+                    {
+                        if (l.name.StartsWith("light.sun")) { l.intensity = 0.55f; l.color = new Color(0.80f, 0.84f, 0.74f); }
+                        else if (l.name.StartsWith("light.sky")) { l.intensity = 0.3f; l.color = new Color(0.58f, 0.66f, 0.62f); }
+                    }
+                    RenderSettings.ambientSkyColor = new Color(0.30f, 0.34f, 0.31f); RenderSettings.ambientEquatorColor = new Color(0.26f, 0.27f, 0.24f); RenderSettings.ambientGroundColor = new Color(0.14f, 0.13f, 0.11f);
+                    RenderSettings.fogDensity = 0.02f; RenderSettings.fogColor = new Color(0.40f, 0.44f, 0.40f);
                 }
                 // the sky dome and far scenery are unlit backdrop: no lightmap, no shadows, shown only at full scale
                 var unlit = Shader.Find("Universal Render Pipeline/Unlit");
@@ -227,6 +239,13 @@ namespace Fable.Editor
                 if (def.Lobby) { l.range = 6f; l.intensity = l.name.StartsWith("Lamp0") ? 4f : l.name.StartsWith("Lamp5") || l.name.StartsWith("Lamp6") ? 5f : 1.1f; }
             }
             if (def.Lobby) RenderSettings.ambientLight = new Color(0.20f, 0.165f, 0.13f);
+            if (!outdoor && def.LightScale > 1f)
+            {
+                // a room at giant scale: the window light travels tens of metres, so it needs far more intensity than a lamp
+                foreach (var l in env.GetComponentsInChildren<Light>(true))
+                    if (l.name.StartsWith("Lamp")) l.intensity = l.name.Contains("WindowFill") ? 450f : l.name.Contains("Window") ? 600f : 45f;   // inverse-square over 6-50 m
+                RenderSettings.ambientLight = new Color(0.30f, 0.27f, 0.24f);
+            }
             // glass and transparent props: switch to URP Lit transparent so the table and bottle read as glass
             Directory.CreateDirectory("Assets/Fable/Materials");
             Material Glassy(string name, Color tint, float smooth)
@@ -245,6 +264,7 @@ namespace Fable.Editor
             var lampGlassMat = Glassy("M_LampGlass_URP", new Color(1f, 0.95f, 0.85f, 0.25f), 0.8f);
             foreach (var r in env.GetComponentsInChildren<Renderer>(true))
             {
+                if (def.Room && r.name.Contains("WindowGlass")) continue;   // rooms draw daylit panes unlit (below)
                 var mats = r.sharedMaterials; bool changed = false;
                 for (int i = 0; i < mats.Length; i++)
                 {
@@ -254,6 +274,18 @@ namespace Fable.Editor
                     else if (m.name.Contains("Glass")) { mats[i] = glassMat; changed = true; }
                 }
                 if (changed) r.sharedMaterials = mats;
+            }
+            if (def.Room)
+            {
+                // daylit window panes: glTF's emissive strength does not come through, so the glass is drawn unlit and bright
+                var unlitGlass = Shader.Find("Universal Render Pipeline/Unlit");
+                foreach (var r in env.GetComponentsInChildren<Renderer>(true))
+                    if (r.name.Contains("WindowGlass") && unlitGlass)
+                    {
+                        var path = $"Assets/Fable/Materials/{sceneId}_WindowGlass.mat"; Directory.CreateDirectory("Assets/Fable/Materials");
+                        var m = AssetDatabase.LoadAssetAtPath<Material>(path); if (!m) { m = new Material(unlitGlass); AssetDatabase.CreateAsset(m, path); }
+                        m.SetColor("_BaseColor", new Color(0.92f, 0.94f, 0.96f)); EditorUtility.SetDirty(m); r.sharedMaterial = m;
+                    }
             }
             // one baked reflection probe per scene: brass, glass, porcelain and the floor read their surroundings
             var probeGo = new GameObject(hall ? "HallReflectionProbe" : "SceneReflectionProbe"); probeGo.transform.SetParent(env.transform, false);
