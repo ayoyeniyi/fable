@@ -1,0 +1,264 @@
+{
+  "book": {
+    "title": "Alice's Adventures in Wonderland",
+    "author": "Lewis Carroll",
+    "year": 1865,
+    "source": "Project Gutenberg eBook #11, public domain (US)"
+  },
+  "scenes": [
+    {
+      "id": "hall-of-doors",
+      "title": "The Hall of Doors",
+      "chapter": "I. Down the Rabbit-Hole",
+      "paragraphs": [
+        [
+          {
+            "id": "hall-of-doors:000",
+            "text": "Alice was not a bit hurt, and she jumped up on to her feet in a moment: she looked up, but it was all dark overhead; before her was another long passage, and the White Rabbit was still in sight, hurrying down it."
+          },
+          {
+            "id": "hall-of-doors:001",
+            "text": "There was not a moment to be lost: away went Alice like the wind, and was just in time to hear it say, as it turned a corner, “Oh my ears and whiskers, how late it’s getting!”"
+          },
+          {
+            "id": "hall-of-doors:002",
+            "text": "She was close behind it when she turned the corner, but the Rabbit was no longer to be seen: she found herself in a long, low hall, which was lit up by a row of lamps hanging from the roof."
+          }
+        ],
+        [
+          {
+            "id": "hall-of-doors:003",
+            "text": "There were doors all round the hall, but they were all locked; and when Alice had been all the way down one side and up the other, trying every door, she walked sadly down the middle, wondering how she was ever to get out again."
+          }
+        ],
+        [
+          {
+            "id": "hall-of-doors:004",
+            "text": "Suddenly she came upon a little three-legged table, all made of solid glass; there was nothing on it except a tiny golden key, and Alice’s first thought was that it might belong to one of the doors of the hall; but, alas! either the locks were too large, or the key was too small, but at any rate it would not open any of them."
+          },
+          {
+            "id": "hall-of-doors:005",
+            "text": "However, on the second time round, she came upon a low curtain she had not noticed before, and behind it was a little door about fifteen inches high: she tried the little golden key in the lock, and to her great delight it fitted!"
+          }
+        ],
+        [
+          {
+            "id": "hall-of-doors:006",
+            "text": "Alice opened the door and found that it led into a small passage, not much larger than a rat-hole: she knelt down and looked along the passage into the loveliest garden you ever saw."
+          },
+          {
+            "id": "hall-of-doors:007",
+            "text": "How she longed to get out of that dark hall, and wander about among those beds of bright flowers and those cool fountains, but she could not even get her head through the doorway; “and even if my head would go through,” thought poor Alice, “it would be of very little use without my shoulders. Oh, how I wish I could shut up like a telescope! I think I could, if I only knew how to begin.”"
+          },
+          {
+            "id": "hall-of-doors:008",
+            "text": "For, you see, so many out-of-the-way things had happened lately, that Alice had begun to think that very few things indeed were really impossible."
+          }
+        ],
+        [
+          {
+            "id": "hall-of-doors:009",
+            "text": "There seemed to be no use in waiting by the little door, so she went back to the table, half hoping she might find another key on it, or at any rate a book of rules for shutting people up like telescopes: this time she found a little bottle on it, (“which certainly was not here before,” said Alice,) and round the neck of the bottle was a paper label, with the words “DRINK ME,” beautifully printed on it in large letters."
+          }
+        ],
+        [
+          {
+            "id": "hall-of-doors:010",
+            "text": "It was all very well to say “Drink me,” but the wise little Alice was not going to do that in a hurry."
+          },
+          {
+            "id": "hall-of-doors:011",
+            "text": "“No, I’ll look first,” she said, “and see whether it’s marked ‘poison’ or not”; for she had read several nice little histories about children who had got burnt, and eaten up by wild beasts and other unpleasant things, all because they would not remember the simple rules their friends had taught them: such as, that a red-hot poker will burn you if you hold it too long; and that if you cut your finger very deeply with a knife, it usually bleeds; and she had never forgotten that, if you drink much from a bottle marked “poison,” it is almost certain to disagree with you, sooner or later."
+          }
+        ],
+        [
+          {
+            "id": "hall-of-doors:012",
+            "text": "However, this bottle was not marked “poison,” so Alice ventured to"
+          }
+        ]
+      ],
+      "sentenceCount": 13
+    },
+    {
+      "id": "mad-tea-party",
+      "title": "A Mad Tea-Party",
+      "chapter": "VII. A Mad Tea-Party",
+      "paragraphs": [
+        [
+          {
+            "id": "mad-tea-party:000",
+            "text": "There was a table set out under a tree in front of the house, and the March Hare and the Hatter were having tea at it: a Dormouse was sitting between them, fast asleep, and the other two were using it as a cushion, resting their elbows on it, and talking over its head."
+          },
+          {
+            "id": "mad-tea-party:001",
+            "text": "“Very uncomfortable for the Dormouse,” thought Alice; “only, as it’s asleep, I suppose it doesn’t mind.”"
+          }
+        ],
+        [
+          {
+            "id": "mad-tea-party:002",
+            "text": "The table was a large one, but the three were all crowded together at one corner of it: “No room! No room!” they cried out when they saw Alice coming."
+          },
+          {
+            "id": "mad-tea-party:003",
+            "text": "“There’s plenty of room!” said Alice indignantly, and she sat down in a large arm-chair at one end of the table."
+          }
+        ],
+        [
+          {
+            "id": "mad-tea-party:004",
+            "text": "“Have some wine,” the March Hare said in an encouraging tone."
+          }
+        ],
+        [
+          {
+            "id": "mad-tea-party:005",
+            "text": "Alice looked all round the table, but there was nothing on it but tea."
+          },
+          {
+            "id": "mad-tea-party:006",
+            "text": "“I don’t see any wine,” she remarked."
+          }
+        ],
+        [
+          {
+            "id": "mad-tea-party:007",
+            "text": "“There isn’t any,” said the March Hare."
+          }
+        ],
+        [
+          {
+            "id": "mad-tea-party:008",
+            "text": "“Then it wasn’t very civil of you to offer it,” said Alice angrily."
+          }
+        ],
+        [
+          {
+            "id": "mad-tea-party:009",
+            "text": "“It wasn’t very civil of you to sit down without being invited,” said the March Hare."
+          }
+        ],
+        [
+          {
+            "id": "mad-tea-party:010",
+            "text": "“I didn’t know it was your table,” said Alice; “it’s laid for a great many more than three.”"
+          }
+        ],
+        [
+          {
+            "id": "mad-tea-party:011",
+            "text": "“Your hair wants cutting,” said the Hatter."
+          },
+          {
+            "id": "mad-tea-party:012",
+            "text": "He had been looking at Alice for some time with great curiosity, and this was his first speech."
+          }
+        ],
+        [
+          {
+            "id": "mad-tea-party:013",
+            "text": "“You should learn not to make personal remarks,” Alice said with some severity; “it’s very rude.”"
+          }
+        ],
+        [
+          {
+            "id": "mad-tea-party:014",
+            "text": "The Hatter opened his eyes very wide on hearing this; but all he said was, “Why is a raven like a writing-desk?”"
+          }
+        ],
+        [
+          {
+            "id": "mad-tea-party:015",
+            "text": "“Come, we shall have some fun now!” thought Alice."
+          },
+          {
+            "id": "mad-tea-party:016",
+            "text": "“I’m glad they’ve begun asking riddles.—I believe I can guess that,” she added aloud."
+          }
+        ]
+      ],
+      "sentenceCount": 17
+    },
+    {
+      "id": "queens-croquet-ground",
+      "title": "The Queen's Croquet-Ground",
+      "chapter": "VIII. The Queen's Croquet-Ground",
+      "paragraphs": [
+        [
+          {
+            "id": "queens-croquet-ground:000",
+            "text": "A large rose-tree stood near the entrance of the garden: the roses growing on it were white, but there were three gardeners at it, busily painting them red."
+          },
+          {
+            "id": "queens-croquet-ground:001",
+            "text": "Alice thought this a very curious thing, and she went nearer to watch them, and just as she came up to them she heard one of them say, “Look out now, Five! Don’t go splashing paint over me like that!”"
+          }
+        ],
+        [
+          {
+            "id": "queens-croquet-ground:002",
+            "text": "“I couldn’t help it,” said Five, in a sulky tone; “Seven jogged my elbow.”"
+          }
+        ],
+        [
+          {
+            "id": "queens-croquet-ground:003",
+            "text": "On which Seven looked up and said, “That’s right, Five! Always lay the blame on others!”"
+          }
+        ],
+        [
+          {
+            "id": "queens-croquet-ground:004",
+            "text": "“You’d better not talk!” said Five."
+          },
+          {
+            "id": "queens-croquet-ground:005",
+            "text": "“I heard the Queen say only yesterday you deserved to be beheaded!”"
+          }
+        ],
+        [
+          {
+            "id": "queens-croquet-ground:006",
+            "text": "“What for?” said the one who had spoken first."
+          }
+        ],
+        [
+          {
+            "id": "queens-croquet-ground:007",
+            "text": "“That’s none of your business, Two!” said Seven."
+          }
+        ],
+        [
+          {
+            "id": "queens-croquet-ground:008",
+            "text": "“Yes, it is his business!” said Five, “and I’ll tell him—it was for bringing the cook tulip-roots instead of onions.”"
+          }
+        ],
+        [
+          {
+            "id": "queens-croquet-ground:009",
+            "text": "Seven flung down his brush, and had just begun “Well, of all the unjust things—” when his eye chanced to fall upon Alice, as she stood watching them, and he checked himself suddenly: the others looked round also, and all of them bowed low."
+          }
+        ],
+        [
+          {
+            "id": "queens-croquet-ground:010",
+            "text": "“Would you tell me,” said Alice, a little timidly, “why you are painting those roses?”"
+          }
+        ],
+        [
+          {
+            "id": "queens-croquet-ground:011",
+            "text": "Five and Seven said nothing, but looked at Two."
+          },
+          {
+            "id": "queens-croquet-ground:012",
+            "text": "Two began in a low voice, “Why the fact is, you see, Miss, this here ought to have been a red rose-tree, and we put a white one in by mistake; and if the Queen was to find it out, we should all have our heads cut off, you know. So"
+          }
+        ]
+      ],
+      "sentenceCount": 13
+    }
+  ]
+}

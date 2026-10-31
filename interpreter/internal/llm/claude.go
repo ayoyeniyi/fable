@@ -1,0 +1,108 @@
+// Package llm turns a passage plus manifest into a SceneScript using Claude,
+// with one repair round driven by validator output.
+package llm
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"strings"
+
+	"github.com/anthropics/anthropic-sdk-go/v2"
+
+	"github.com/Thabhelo/fable/interpreter/internal/book"
+	"github.com/Thabhelo/fable/interpreter/internal/script"
+)
+
+const systemPrompt = `You are the scene director for Fable, a VR reading experience on Meta Quest.
+You receive one passage of a public-domain novel, split into numbered sentences, and a manifest
+listing the only assets, anchors, animation clips, lights and sounds the engine can execute.
+
+Produce a SceneScript JSON object and nothing else: no prose, no code fences.
+Rules:
+- "version": 1. "sceneId" and "environment.prefab" exactly as the manifest gives them.
+- One beat per sentence that changes the room, in reading order. Sentences that change nothing may be skipped.
+- Use only ids that appear in the manifest. Never invent an asset, anchor, clip, light or sound.
+- Keep the reader's comfort: at most one readerScale action per beat, duration 3 to 8 seconds,
+  and never scale faster than that. No camera motion exists; the reader stands still.
+- Prefer small, legible changes: a lamp flicker, a door rattle, a bottle appearing on the table.
+- Sound actions are spatial; give each an anchor.
+- Match the text literally. The passage is the authority, not the film adaptations.`
+
+type Director struct {
+	client anthropic.Client
+	model  string
+}
+
+func New(model string) *Director {
+	if model == "" {
+		model = "claude-opus-5-5"
+	}
+	return &Director{client: anthropic.NewClient(), model: model}
+}
+
+func (d *Director) ask(ctx context.Context, msgs []anthropic.MessageParam) (string, error) {
+	resp, err := d.client.Messages.New(ctx, anthropic.MessageNewParams{
+		Model:     anthropic.Model(d.model),
+		MaxTokens: 16000,
+		System:    []anthropic.TextBlockParam{{Text: systemPrompt}},
+		Messages:  msgs,
+	})
+	if err != nil {
+		return "", err
+	}
+	if resp.StopReason == "refusal" {
+		return "", fmt.Errorf("model declined the request (stop_reason=refusal)")
+	}
+	var sb strings.Builder
+	for _, block := range resp.Content {
+		if t, ok := block.AsAny().(anthropic.TextBlock); ok {
+			sb.WriteString(t.Text)
+		}
+	}
+	return stripFences(sb.String()), nil
+}
+
+func stripFences(s string) string {
+	s = strings.TrimSpace(s)
+	if strings.HasPrefix(s, "```") {
+		s = strings.TrimPrefix(s, "```json")
+		s = strings.TrimPrefix(s, "```")
+		if i := strings.LastIndex(s, "```"); i >= 0 {
+			s = s[:i]
+		}
+	}
+	return strings.TrimSpace(s)
+}
+
+// Interpret asks for a script, validates it, and sends the validator's findings back once.
+func (d *Director) Interpret(ctx context.Context, sc *book.Scene, m *script.Manifest) (*script.SceneScript, []string, error) {
+	mj, _ := json.MarshalIndent(m, "", "  ")
+	user := fmt.Sprintf("MANIFEST:\n%s\n\nPASSAGE (%s, %s):\n%s\nReturn the SceneScript JSON.", mj, sc.Title, sc.Chapter, sc.Numbered())
+	msgs := []anthropic.MessageParam{anthropic.NewUserMessage(anthropic.NewTextBlock(user))}
+	var attempts []string
+	for round := 0; round < 2; round++ {
+		raw, err := d.ask(ctx, msgs)
+		if err != nil {
+			return nil, attempts, err
+		}
+		attempts = append(attempts, raw)
+		s, perr := script.Parse([]byte(raw))
+		var problems []string
+		if perr != nil {
+			problems = []string{perr.Error()}
+		} else {
+			problems = script.Validate(s, m, sc.SentenceIDs())
+		}
+		if len(problems) == 0 {
+			return s, attempts, nil
+		}
+		if round == 1 {
+			return nil, attempts, fmt.Errorf("script still invalid after repair: %s", strings.Join(problems, "; "))
+		}
+		msgs = append(msgs,
+			anthropic.NewAssistantMessage(anthropic.NewTextBlock(raw)),
+			anthropic.NewUserMessage(anthropic.NewTextBlock("The engine rejected that script:\n- "+strings.Join(problems, "\n- ")+"\nReturn the corrected full SceneScript JSON only.")))
+	}
+	return nil, attempts, fmt.Errorf("unreachable")
+}

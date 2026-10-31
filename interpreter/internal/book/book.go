@@ -1,0 +1,74 @@
+// Package book loads book/passages.json (sentence-indexed passages).
+package book
+
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+)
+
+type Sentence struct {
+	ID   string `json:"id"`
+	Text string `json:"text"`
+}
+
+type Scene struct {
+	ID            string       `json:"id"`
+	Title         string       `json:"title"`
+	Chapter       string       `json:"chapter"`
+	Paragraphs    [][]Sentence `json:"paragraphs"`
+	SentenceCount int          `json:"sentenceCount"`
+}
+
+type Book struct {
+	Book struct {
+		Title  string `json:"title"`
+		Author string `json:"author"`
+		Year   int    `json:"year"`
+		Source string `json:"source"`
+	} `json:"book"`
+	Scenes []Scene `json:"scenes"`
+}
+
+func Load(path string) (*Book, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	var b Book
+	if err := json.Unmarshal(data, &b); err != nil {
+		return nil, fmt.Errorf("passages: %w", err)
+	}
+	return &b, nil
+}
+
+func (b *Book) Scene(id string) (*Scene, error) {
+	for i := range b.Scenes {
+		if b.Scenes[i].ID == id {
+			return &b.Scenes[i], nil
+		}
+	}
+	return nil, fmt.Errorf("scene %q not in book", id)
+}
+
+func (s *Scene) SentenceIDs() []string {
+	var ids []string
+	for _, p := range s.Paragraphs {
+		for _, se := range p {
+			ids = append(ids, se.ID)
+		}
+	}
+	return ids
+}
+
+// Numbered renders the passage with ids so the model can cite sentences exactly.
+func (s *Scene) Numbered() string {
+	out := ""
+	for _, p := range s.Paragraphs {
+		for _, se := range p {
+			out += "[" + se.ID + "] " + se.Text + "\n"
+		}
+		out += "\n"
+	}
+	return out
+}

@@ -1,0 +1,242 @@
+{
+  "version": 1,
+  "sceneId": "hall-of-doors",
+  "title": "The Hall of Doors",
+  "environment": {
+    "prefab": "env.hall-of-doors",
+    "ambience": "amb.hall-lamps",
+    "exposure": -0.2,
+    "fog": 0.2
+  },
+  "beats": [
+    {
+      "sentenceId": "hall-of-doors:000",
+      "focus": "hall.centre",
+      "actions": [
+        {
+          "type": "light",
+          "light": "lamp.row",
+          "intensity": 0.2,
+          "durationSeconds": 0
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.footsteps-stone",
+          "anchor": "reader.entrance",
+          "volume": 0.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "hall-of-doors:002",
+      "focus": "hall.ceiling",
+      "actions": [
+        {
+          "type": "light",
+          "light": "lamp.row",
+          "intensity": 1.0,
+          "durationSeconds": 4
+        },
+        {
+          "type": "animate",
+          "target": "lamp.row",
+          "clip": "lamp.flicker",
+          "durationSeconds": 6,
+          "loop": true
+        }
+      ]
+    },
+    {
+      "sentenceId": "hall-of-doors:003",
+      "focus": "hall.centre",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "door.little",
+          "clip": "door.rattle",
+          "durationSeconds": 1.2
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.door-locked-rattle",
+          "anchor": "hall.centre",
+          "volume": 0.7
+        }
+      ]
+    },
+    {
+      "sentenceId": "hall-of-doors:004",
+      "focus": "table.top",
+      "actions": [
+        {
+          "type": "place",
+          "asset": "prop.glass-table",
+          "anchor": "hall.centre",
+          "appear": "fade"
+        },
+        {
+          "type": "place",
+          "asset": "prop.golden-key",
+          "anchor": "table.top",
+          "appear": "settle"
+        },
+        {
+          "type": "animate",
+          "target": "prop.golden-key",
+          "clip": "key.glint",
+          "durationSeconds": 2
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.glass-set-down",
+          "anchor": "table.top",
+          "volume": 0.4
+        }
+      ]
+    },
+    {
+      "sentenceId": "hall-of-doors:005",
+      "focus": "curtain.front",
+      "actions": [
+        {
+          "type": "place",
+          "asset": "prop.curtain",
+          "anchor": "curtain.front",
+          "appear": "fade"
+        },
+        {
+          "type": "animate",
+          "target": "prop.curtain",
+          "clip": "curtain.draw",
+          "durationSeconds": 2.5
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.curtain-slide",
+          "anchor": "curtain.front",
+          "volume": 0.6
+        },
+        {
+          "type": "animate",
+          "target": "prop.golden-key",
+          "clip": "key.turn",
+          "durationSeconds": 1.5
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.key-fits",
+          "anchor": "door.little",
+          "volume": 0.8
+        }
+      ]
+    },
+    {
+      "sentenceId": "hall-of-doors:006",
+      "focus": "door.little",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "door.little",
+          "clip": "door.open",
+          "durationSeconds": 2
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.door-small-open",
+          "anchor": "door.little",
+          "volume": 0.8
+        },
+        {
+          "type": "light",
+          "light": "light.garden",
+          "intensity": 2.5,
+          "kelvin": 6200,
+          "durationSeconds": 3
+        },
+        {
+          "type": "place",
+          "asset": "fx.garden-glow",
+          "anchor": "door.little",
+          "appear": "fade"
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.garden-birds",
+          "anchor": "door.little",
+          "volume": 0.35
+        }
+      ]
+    },
+    {
+      "sentenceId": "hall-of-doors:009",
+      "focus": "table.top",
+      "actions": [
+        {
+          "type": "place",
+          "asset": "prop.drink-me-bottle",
+          "anchor": "table.top",
+          "offset": [
+            0.08,
+            0,
+            0
+          ],
+          "appear": "grow"
+        },
+        {
+          "type": "animate",
+          "target": "prop.drink-me-bottle",
+          "clip": "bottle.appear",
+          "durationSeconds": 1.5
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.glass-set-down",
+          "anchor": "table.top",
+          "volume": 0.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "hall-of-doors:010",
+      "focus": "table.top",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "lamp.row",
+          "clip": "lamp.steady",
+          "durationSeconds": 2
+        },
+        {
+          "type": "animate",
+          "target": "prop.golden-key",
+          "clip": "key.glint",
+          "durationSeconds": 1.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "hall-of-doors:012",
+      "focus": "table.top",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "prop.drink-me-bottle",
+          "clip": "bottle.uncork",
+          "durationSeconds": 1
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.cork-pop",
+          "anchor": "table.top",
+          "volume": 0.7
+        },
+        {
+          "type": "readerScale",
+          "anchor": "reader.table",
+          "scale": 4.0,
+          "durationSeconds": 7
+        }
+      ]
+    }
+  ]
+}

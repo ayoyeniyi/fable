@@ -1,0 +1,20 @@
+# Unity
+unity/Fable/[Ll]ibrary/
+unity/Fable/[Tt]emp/
+unity/Fable/[Oo]bj/
+unity/Fable/[Bb]uild/
+unity/Fable/[Ll]ogs/
+unity/Fable/[Uu]ser[Ss]ettings/
+unity/Fable/.vs/
+unity/*.log
+*.csproj
+*.sln
+# Blender and build outputs
+build/
+blender/*.blend1
+__pycache__/
+# Go
+interpreter/fable-interpreter
+.env
+out/
+audio/out/
