@@ -64,6 +64,7 @@ Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs
 5. **Triangle budget.** The hall at 61k is double the ARCHITECTURE target; profile on Quest 2 before cutting.
 6. **The little door is visible before the curtain appears** (sentence 005). It is architecture, but the curtain could arguably be present from the start.
 7. Demo video and unfamiliar-reader tests.
+8. **`fx.dust` has no node in the hall export** (`schema/manifest.hall-of-doors.json` lists it; `hall_of_doors.gltf` has no `fx.dust`), so a script that places it does nothing. Either export the mote card or drop it from the manifest; `blender/check_glb_ids.py` reports it.
 
 ## How to work on it
 
