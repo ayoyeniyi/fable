@@ -1,8 +1,8 @@
 // Hand-controlled story progression, seated, hands only.
 //   right pinch tap        next beat          left pinch tap        previous beat
 //   right pinch and drag   scrub (6 cm = one beat, either direction)
-//   both hands pinch, quick release   toggle miniature / immersive
-//   both hands pinch, hold 1 s        close the scene, back to the page
+//   both hands pinch, quick release   toggle miniature / immersive      (one hand: hold the right pinch ~1 s)
+//   both hands pinch, hold 1 s        close the scene, back to the page  (one hand: hold the left pinch ~1 s)
 // Controllers (index triggers) mirror the pinches so testers without hand tracking are not stuck.
 // Keyboard fallback in the editor: Space / Backspace, arrows, Tab (toggle), Escape (return).
 using System;
@@ -14,7 +14,8 @@ namespace Fable
     {
         public event Action Next, Previous, ReturnToReading, Select, ToggleView;
         public event Action<int> Scrub;                 // +1 / -1 per scrub step while dragging
-        public float TapSeconds = 0.35f, DragStepMetres = 0.06f, HoldToReturn = 1.0f;
+        public float TapSeconds = 0.35f, DragStepMetres = 0.06f, HoldToReturn = 1.0f, HoldOneHand = 0.9f;
+        bool rHeld, lHeld;   // a one-hand hold already fired for this pinch
 
 #if FABLE_META_XR
         public OVRHand LeftHand, RightHand;
@@ -87,11 +88,12 @@ namespace Fable
             }
 
             // right hand: tap = next, drag = scrub
-            if (r && rDown < 0) { rDown = now; rStart = rLast = rPos; rAccum = 0; rDragging = false; }
+            if (r && rDown < 0) { rDown = now; rStart = rLast = rPos; rAccum = 0; rDragging = false; rHeld = false; }
             else if (r)
             {
                 var moved = rPos - rStart; moved.y = 0;
                 if (!rDragging && moved.magnitude > 0.02f) rDragging = true;
+                if (!rDragging && !rHeld && now - rDown > HoldOneHand) { rHeld = true; ToggleView?.Invoke(); }
                 if (rDragging)
                 {
                     var step = rPos - rLast; var fwd = Camera.main ? Camera.main.transform.right : Vector3.right; fwd.y = 0; fwd.Normalize();
@@ -103,13 +105,14 @@ namespace Fable
             }
             else if (rDown >= 0)
             {
-                if (!rDragging && now - rDown < TapSeconds) { Next?.Invoke(); Select?.Invoke(); }
-                rDown = -1; rDragging = false;
+                if (!rDragging && !rHeld && now - rDown < TapSeconds) { Next?.Invoke(); Select?.Invoke(); }
+                rDown = -1; rDragging = false; rHeld = false;
             }
 
-            // left hand: tap = previous
-            if (l && lDown < 0) lDown = now;
-            else if (!l && lDown >= 0) { if (now - lDown < TapSeconds) Previous?.Invoke(); lDown = -1; }
+            // left hand: tap = previous, hold = close the scene
+            if (l && lDown < 0) { lDown = now; lHeld = false; }
+            else if (l && !lHeld && now - lDown > HoldOneHand) { lHeld = true; ReturnToReading?.Invoke(); }
+            else if (!l && lDown >= 0) { if (!lHeld && now - lDown < TapSeconds) Previous?.Invoke(); lDown = -1; lHeld = false; }
         }
     }
 }

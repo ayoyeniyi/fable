@@ -30,3 +30,13 @@ Status key: done = built and exercised; partial = built, not yet verified in the
 3. Live interpretation with an API key: `generate` per scene vs baseline, `serve` + `SceneDirector.InterpreterUrl`, send the reading position, a no-baseline passage from the same setting.
 4. Visual tuning from the headset view (see HANDOVER, Not done 3-5), dollhouse cut for the hall diorama.
 5. Unfamiliar-reader tests, demo video under three minutes from headset footage.
+
+## Richer scenes (requested after headset session 1: "we could be doing more")
+
+Today each sentence has one scripted beat. The brief's wow is a room that keeps answering the text, so:
+
+1. **Two to four actions per beat in the baselines**, all from the existing vocabulary: when Alice tries the doors, every door handle rattles in turn with footsteps between them; when the key is found, it glints *and* the lamps steady; when the bottle appears, the lamp row flickers and the cork pops on "Drink me".
+2. **Hall additions worth a Blender pass**: the little door's keyhole glow and a visible garden beyond it (a card is there already), the glass table catching lamp light, dust in the lamp cones (the manifest's `fx.dust` has no mesh yet).
+3. **Readings**: ship the Unity switch for the interpreter's variants so one paragraph can be staged four ways; this is the "parallel universes" the reader asked for and it needs no new assets.
+4. **Touchable text**: more grabbables that reveal their sentence (the lamp, a door knob), using the pattern `StoryGrabbable` already has.
+5. **Outdoor scenes**: give the tea party and croquet ground the same density pass once the hall sets the bar.

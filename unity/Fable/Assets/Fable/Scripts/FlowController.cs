@@ -43,6 +43,7 @@ namespace Fable
         List<Passage.Scene> passages = new();
         int chosen;
         Passage.Scene Chosen => passages.Count > 0 ? passages[chosen] : Director.PassageScene;
+        public int PassageCount => passages.Count;
         string Place(string id) => Places.TryGetValue(id, out var p) ? p : "the scene";
 
         /// Sky dome and distant scenery: shown only at full scale (a 45 m dome at diorama scale would still enclose the reader).
@@ -160,6 +161,7 @@ namespace Fable
             env.gameObject.SetActive(false);
             env.gameObject.SetActive(true); PrepareDiorama(); env.gameObject.SetActive(false);
             passages = book.Scenes.Where(p => p.Id == SceneId || (UnityScenes.TryGetValue(p.Id, out var n) && Application.CanStreamedLevelBeLoaded(n))).ToList();
+            if (Panel && !Panel.GetComponent<GestureCues>()) Panel.gameObject.AddComponent<GestureCues>();   // animated gesture row under the passage
             Input.Select += OnSelect; Input.ModeChanged += OnInputMode; Input.Next += OnNext; Input.Previous += OnPrev; Input.ReturnToReading += OnReturn; Input.ToggleView += OnToggle; Input.Scrub += OnScrub;
             Director.BeatChanged += (i, b) =>
             {
@@ -207,8 +209,8 @@ namespace Fable
         void OnInputMode(string mode) { if (busy) return; if (Current == State.Reading) ShowPicker(); else if (Director.Script != null && Director.BeatIndex >= 0) Panel.Show(Director.PassageScene, Director.Script.Beats[Director.BeatIndex].SentenceId, Hint()); }
 
         string Hint() => InputNote + (Current == State.Scene
-            ? $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   right {Pinch}: next sentence \u00b7 left {Pinch}: back \u00b7 {Pinch} and drag: scrub \u00b7 {Pinch} both hands: back to the table \u00b7 hold both: close the book"
-            : $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   right {Pinch}: next sentence \u00b7 left {Pinch}: back \u00b7 {Pinch} and drag: scrub \u00b7 {Pinch} both hands: step inside \u00b7 hold both: close the book");
+            ? $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   right {Pinch}: next sentence \u00b7 left {Pinch}: back \u00b7 {Pinch} and drag: scrub \u00b7 hold right {Pinch}: back to the table \u00b7 hold left {Pinch}: close the book"
+            : $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   right {Pinch}: next sentence \u00b7 left {Pinch}: back \u00b7 {Pinch} and drag: scrub \u00b7 hold right {Pinch}: step inside \u00b7 hold left {Pinch}: close the book");
 
         void OnSelect() { if (Current == State.Reading && !busy) OpenChosen(); }
         void OnNext() { if ((Current == State.Scene || Current == State.Miniature) && !busy && !Director.Next()) StartCoroutine(Current == State.Scene ? Shrink() : Return()); }

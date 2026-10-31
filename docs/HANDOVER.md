@@ -62,6 +62,13 @@ Installed over USB and run with hands. Findings and fixes, all pushed:
 - Pipeline gotcha: an APK built right after a script edit fails with "script class layout is incompatible" unless the editor has actually recompiled; wait for `Library/ScriptAssemblies/Assembly-CSharp.dll` to change first. The Quest will not start a VR activity while the headset is off the face; `am start` is queued until it is worn.
 - Captures: `captures/headset/` (both eyes, `adb screencap`), frame logs `session*_frames.log`.
 
+## Headset session 2 changes (built and installed, awaiting the reader's verdict)
+
+- **Stripes.** The reader saw transparent vertical bands (several per eye, count changing). `Assets/XR/Settings/OpenXR Package Settings.asset` had the Meta Quest feature's `m_depthSubmissionMode: 1`; with Vulkan + MSAA the compositor's positional reprojection can smear bands when the submitted depth is untrustworthy. Set to `0` in both feature blocks. If the bands persist, next experiments in order: MSAA 2x, then OpenGLES3 instead of Vulkan.
+- **One-hand forms** (`ReaderController.cs`): hold the right pinch ~0.9 s without moving = toggle miniature/immersive; hold the left pinch = close the book. Taps stay under 0.35 s; the both-hands gestures still work. Same for the controller triggers.
+- **Gesture cues** (`GestureCues.cs`, added to the page at runtime by `FlowController.Start`): a row of looping glyphs under the passage (pinch, hold with a filling ring, slide), one per available action, labelled for hands or controllers, following the flow state. Built from a generated circle sprite, so no scene rebuild was needed; it grows the panel to 906 px.
+- **Readings** (interpreter only so far): `variant` 0..3 in `/interpret`, direction notes in `internal/llm/claude.go` (`Readings`), cache per variant. Unity does not send `variant` yet; the plan is a left-hand pinch-and-slide in the miniature to switch readings, the page showing "reading 2 of 4", and the diorama re-running the new script at the same sentence. Needs a live key to be visible.
+
 ## Not done / not verified
 
 1. **No headset run.** No Quest has been attached, and on this Mac security software kills and deletes `adb` (it needs whitelisting). There are no headset captures, no frame timings, and no physical test of pinch, grab or comfort.
