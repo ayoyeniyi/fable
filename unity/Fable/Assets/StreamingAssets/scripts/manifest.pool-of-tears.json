@@ -1,0 +1,77 @@
+{
+  "sceneId": "pool-of-tears",
+  "environment": "env.hall-of-doors",
+  "ambiences": [
+    "amb.hall-lamps"
+  ],
+  "anchors": {
+    "reader.entrance": "standing spot by the entry passage, facing down the hall",
+    "reader.table": "standing spot beside the glass table",
+    "reader.curtain": "kneeling spot in front of the low curtain",
+    "table.top": "centre of the glass table top",
+    "table.beside": "floor beside the table",
+    "curtain.front": "floor in front of the curtain",
+    "door.little": "the fifteen-inch door behind the curtain",
+    "hall.centre": "middle of the hall at floor level",
+    "hall.ceiling": "under the lamp row"
+  },
+  "assets": {
+    "prop.golden-key": "tiny golden key, 6 cm",
+    "prop.drink-me-bottle": "glass bottle with paper DRINK ME label, 12 cm",
+    "prop.curtain": "low velvet curtain on a brass rod",
+    "prop.glass-table": "three-legged solid glass table",
+    "fx.dust": "drifting dust motes in lamp light",
+    "fx.garden-glow": "cool daylight spilling through the little door"
+  },
+  "clips": {
+    "door.little": [
+      "door.open",
+      "door.close",
+      "door.rattle"
+    ],
+    "prop.curtain": [
+      "curtain.sway",
+      "curtain.draw"
+    ],
+    "prop.drink-me-bottle": [
+      "bottle.uncork",
+      "bottle.appear"
+    ],
+    "prop.golden-key": [
+      "key.glint",
+      "key.turn"
+    ],
+    "lamp.row": [
+      "lamp.flicker",
+      "lamp.steady"
+    ]
+  },
+  "lights": [
+    "lamp.row",
+    "light.garden",
+    "light.fill"
+  ],
+  "sounds": [
+    "sfx.footsteps-stone",
+    "sfx.door-locked-rattle",
+    "sfx.key-fits",
+    "sfx.door-small-open",
+    "sfx.curtain-slide",
+    "sfx.cork-pop",
+    "sfx.glass-set-down",
+    "sfx.garden-birds"
+  ],
+  "introducedBy": {
+    "prop.glass-table": "hall-of-doors:004",
+    "prop.golden-key": "hall-of-doors:004",
+    "prop.curtain": "hall-of-doors:005",
+    "door.little": "hall-of-doors:005",
+    "fx.garden-glow": "hall-of-doors:006",
+    "prop.drink-me-bottle": "hall-of-doors:009"
+  },
+  "readerScaleFrom": "hall-of-doors:012",
+  "grabbable": [
+    "prop.golden-key",
+    "prop.drink-me-bottle"
+  ]
+}

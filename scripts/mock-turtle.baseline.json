@@ -1,0 +1,240 @@
+{
+  "version": 1,
+  "sceneId": "mock-turtle",
+  "title": "The Gryphon and the Mock Turtle",
+  "environment": {
+    "prefab": "env.queens-croquet-ground",
+    "ambience": "amb.formal-garden",
+    "exposure": -0.1,
+    "fog": 0.15
+  },
+  "beats": [
+    {
+      "sentenceId": "mock-turtle:000",
+      "focus": "garden.path",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 4,
+          "light": "light.sun",
+          "intensity": 2.6,
+          "kelvin": 5400
+        },
+        {
+          "type": "sound",
+          "anchor": "garden.path",
+          "sound": "sfx.gravel-steps",
+          "volume": 0.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "mock-turtle:001",
+      "focus": "rose-tree.base",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 3,
+          "light": "light.fill",
+          "intensity": 1.4,
+          "kelvin": 4800
+        },
+        {
+          "type": "sound",
+          "anchor": "sky",
+          "sound": "sfx.garden-birds",
+          "volume": 0.35
+        }
+      ]
+    },
+    {
+      "sentenceId": "mock-turtle:002",
+      "focus": "rose-tree.base",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 1.5,
+          "light": "light.sun",
+          "intensity": 3,
+          "kelvin": 5600
+        },
+        {
+          "type": "sound",
+          "anchor": "gardener.seven",
+          "sound": "sfx.card-shuffle",
+          "volume": 0.6
+        }
+      ]
+    },
+    {
+      "sentenceId": "mock-turtle:003",
+      "focus": "garden.path",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "garden.path",
+          "sound": "sfx.gravel-steps",
+          "volume": 0.6
+        },
+        {
+          "type": "light",
+          "durationSeconds": 4,
+          "light": "light.sun",
+          "intensity": 2.4,
+          "kelvin": 5300
+        }
+      ]
+    },
+    {
+      "sentenceId": "mock-turtle:004",
+      "focus": "rose-tree.base",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "rose-tree.crown",
+          "sound": "sfx.wind-hedges",
+          "volume": 0.3
+        },
+        {
+          "type": "light",
+          "durationSeconds": 5,
+          "light": "light.fill",
+          "intensity": 1.1,
+          "kelvin": 4600
+        }
+      ]
+    },
+    {
+      "sentenceId": "mock-turtle:005",
+      "focus": "rose-tree.base",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "rose-tree.base",
+          "sound": "sfx.card-shuffle",
+          "volume": 0.45
+        },
+        {
+          "type": "light",
+          "durationSeconds": 3,
+          "light": "light.sun",
+          "intensity": 2.7,
+          "kelvin": 5500
+        }
+      ]
+    },
+    {
+      "sentenceId": "mock-turtle:006",
+      "focus": "rose-tree.base",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "sky",
+          "sound": "sfx.garden-birds",
+          "volume": 0.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "mock-turtle:007",
+      "focus": "reader.rose-tree",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 2,
+          "light": "light.fill",
+          "intensity": 1.3,
+          "kelvin": 4800
+        }
+      ]
+    },
+    {
+      "sentenceId": "mock-turtle:008",
+      "focus": "rose-tree.base",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "rose-tree.crown",
+          "sound": "sfx.wind-hedges",
+          "volume": 0.25
+        }
+      ]
+    },
+    {
+      "sentenceId": "mock-turtle:009",
+      "focus": "rose-tree.base",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "sky",
+          "sound": "sfx.garden-birds",
+          "volume": 0.55
+        },
+        {
+          "type": "light",
+          "durationSeconds": 4,
+          "light": "light.sky",
+          "intensity": 1.6,
+          "kelvin": 6200
+        }
+      ]
+    },
+    {
+      "sentenceId": "mock-turtle:010",
+      "focus": "garden.path",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "garden.path",
+          "sound": "sfx.gravel-steps",
+          "volume": 0.55
+        }
+      ]
+    },
+    {
+      "sentenceId": "mock-turtle:011",
+      "focus": "garden.path",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "reader.gate",
+          "sound": "sfx.gravel-steps",
+          "volume": 0.35
+        },
+        {
+          "type": "light",
+          "durationSeconds": 6,
+          "light": "light.sun",
+          "intensity": 2.1,
+          "kelvin": 5000
+        }
+      ]
+    },
+    {
+      "sentenceId": "mock-turtle:012",
+      "focus": "gardener.five",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 6,
+          "light": "light.fill",
+          "intensity": 0.8,
+          "kelvin": 4200
+        },
+        {
+          "type": "light",
+          "durationSeconds": 6,
+          "light": "light.sky",
+          "intensity": 1.1,
+          "kelvin": 5800
+        },
+        {
+          "type": "sound",
+          "anchor": "gardener.five",
+          "sound": "sfx.wind-hedges",
+          "volume": 0.4
+        }
+      ]
+    }
+  ]
+}

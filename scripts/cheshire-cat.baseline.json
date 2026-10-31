@@ -1,0 +1,206 @@
+{
+  "version": 1,
+  "sceneId": "cheshire-cat",
+  "title": "The Cheshire Cat",
+  "environment": {
+    "prefab": "env.queens-croquet-ground",
+    "ambience": "amb.formal-garden",
+    "exposure": -0.2,
+    "fog": 0.2
+  },
+  "beats": [
+    {
+      "sentenceId": "cheshire-cat:000",
+      "focus": "sky",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 3,
+          "light": "light.sun",
+          "intensity": 1.4,
+          "kelvin": 4800
+        },
+        {
+          "type": "sound",
+          "anchor": "sky",
+          "sound": "sfx.garden-birds",
+          "volume": 0.3
+        }
+      ]
+    },
+    {
+      "sentenceId": "cheshire-cat:001",
+      "focus": "sky",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 4,
+          "light": "light.fill",
+          "intensity": 0.7,
+          "kelvin": 5600
+        }
+      ]
+    },
+    {
+      "sentenceId": "cheshire-cat:002",
+      "focus": "sky",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "reader.rose-tree",
+          "sound": "sfx.wind-hedges",
+          "volume": 0.25
+        },
+        {
+          "type": "light",
+          "durationSeconds": 3,
+          "light": "light.sun",
+          "intensity": 1.6,
+          "kelvin": 4600
+        }
+      ]
+    },
+    {
+      "sentenceId": "cheshire-cat:003",
+      "focus": "sky",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "sky",
+          "sound": "sfx.garden-birds",
+          "volume": 0.35
+        }
+      ]
+    },
+    {
+      "sentenceId": "cheshire-cat:004",
+      "focus": "garden.path",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "garden.path",
+          "sound": "sfx.gravel-steps",
+          "volume": 0.2
+        }
+      ]
+    },
+    {
+      "sentenceId": "cheshire-cat:005",
+      "focus": "sky",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "sky",
+          "sound": "sfx.wind-hedges",
+          "volume": 0.3
+        }
+      ]
+    },
+    {
+      "sentenceId": "cheshire-cat:006",
+      "focus": "garden.path",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 4,
+          "light": "light.sky",
+          "intensity": 1,
+          "kelvin": 6200
+        }
+      ]
+    },
+    {
+      "sentenceId": "cheshire-cat:007",
+      "focus": "sky",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 3,
+          "light": "light.sun",
+          "intensity": 1.5,
+          "kelvin": 4700
+        }
+      ]
+    },
+    {
+      "sentenceId": "cheshire-cat:008",
+      "focus": "garden.path",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "garden.path",
+          "sound": "sfx.gravel-steps",
+          "volume": 0.15
+        }
+      ]
+    },
+    {
+      "sentenceId": "cheshire-cat:009",
+      "focus": "garden.path",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "garden.path",
+          "sound": "sfx.gravel-steps",
+          "volume": 0.3
+        },
+        {
+          "type": "light",
+          "durationSeconds": 5,
+          "light": "light.sky",
+          "intensity": 1.1,
+          "kelvin": 6000
+        }
+      ]
+    },
+    {
+      "sentenceId": "cheshire-cat:010",
+      "focus": "reader.rose-tree",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "sky",
+          "sound": "sfx.garden-birds",
+          "volume": 0.25
+        }
+      ]
+    },
+    {
+      "sentenceId": "cheshire-cat:011",
+      "focus": "garden.path",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "garden.path",
+          "sound": "sfx.wind-hedges",
+          "volume": 0.3
+        }
+      ]
+    },
+    {
+      "sentenceId": "cheshire-cat:012",
+      "focus": "sky",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "garden.path",
+          "sound": "sfx.wind-hedges",
+          "volume": 0.3
+        },
+        {
+          "type": "sound",
+          "anchor": "reader.gate",
+          "sound": "sfx.wind-hedges",
+          "volume": 0.3
+        },
+        {
+          "type": "light",
+          "durationSeconds": 3,
+          "light": "light.fill",
+          "intensity": 0.9,
+          "kelvin": 5200
+        }
+      ]
+    }
+  ]
+}

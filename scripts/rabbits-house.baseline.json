@@ -1,0 +1,218 @@
+{
+  "version": 1,
+  "sceneId": "rabbits-house",
+  "title": "The White Rabbit Mistakes Alice for Mary Ann",
+  "environment": {
+    "prefab": "env.queens-croquet-ground",
+    "ambience": "amb.formal-garden",
+    "exposure": -0.2,
+    "fog": 0.2
+  },
+  "beats": [
+    {
+      "sentenceId": "rabbits-house:000",
+      "focus": "garden.path",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 2,
+          "light": "light.sun",
+          "intensity": 1.2,
+          "kelvin": 5200
+        },
+        {
+          "type": "sound",
+          "anchor": "garden.path",
+          "sound": "sfx.gravel-steps",
+          "volume": 0.45
+        }
+      ]
+    },
+    {
+      "sentenceId": "rabbits-house:001",
+      "focus": "garden.path",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "garden.path",
+          "sound": "sfx.gravel-steps",
+          "volume": 0.4
+        }
+      ]
+    },
+    {
+      "sentenceId": "rabbits-house:002",
+      "focus": "garden.path",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 1,
+          "light": "light.fill",
+          "intensity": 0.8,
+          "kelvin": 5000
+        }
+      ]
+    },
+    {
+      "sentenceId": "rabbits-house:003",
+      "focus": "garden.path",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "garden.path",
+          "sound": "sfx.wind-hedges",
+          "volume": 0.3
+        }
+      ]
+    },
+    {
+      "sentenceId": "rabbits-house:004",
+      "focus": "garden.path",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 1.5,
+          "light": "light.sun",
+          "intensity": 0.8,
+          "kelvin": 4800
+        },
+        {
+          "type": "sound",
+          "anchor": "reader.gate",
+          "sound": "sfx.wind-hedges",
+          "volume": 0.4
+        }
+      ]
+    },
+    {
+      "sentenceId": "rabbits-house:005",
+      "focus": "reader.rose-tree",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "reader.rose-tree",
+          "sound": "sfx.gravel-steps",
+          "volume": 0.35
+        }
+      ]
+    },
+    {
+      "sentenceId": "rabbits-house:006",
+      "focus": "reader.gate",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 4,
+          "light": "light.sky",
+          "intensity": 1.1,
+          "kelvin": 6000
+        },
+        {
+          "type": "sound",
+          "anchor": "sky",
+          "sound": "sfx.garden-birds",
+          "volume": 0.35
+        },
+        {
+          "type": "sound",
+          "anchor": "reader.rose-tree",
+          "sound": "sfx.wind-hedges",
+          "volume": 0.25
+        }
+      ]
+    },
+    {
+      "sentenceId": "rabbits-house:007",
+      "focus": "reader.gate",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "reader.gate",
+          "sound": "sfx.gravel-steps",
+          "volume": 0.6
+        },
+        {
+          "type": "light",
+          "durationSeconds": 1,
+          "light": "light.fill",
+          "intensity": 1,
+          "kelvin": 5200
+        }
+      ]
+    },
+    {
+      "sentenceId": "rabbits-house:008",
+      "focus": "reader.gate",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "reader.gate",
+          "sound": "sfx.wind-hedges",
+          "volume": 0.35
+        }
+      ]
+    },
+    {
+      "sentenceId": "rabbits-house:009",
+      "focus": "reader.gate",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "reader.gate",
+          "sound": "sfx.gravel-steps",
+          "volume": 0.7
+        }
+      ]
+    },
+    {
+      "sentenceId": "rabbits-house:010",
+      "focus": "garden.path",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "garden.path",
+          "sound": "sfx.gravel-steps",
+          "volume": 0.8
+        },
+        {
+          "type": "light",
+          "durationSeconds": 2,
+          "light": "light.sun",
+          "intensity": 1.1,
+          "kelvin": 5200
+        }
+      ]
+    },
+    {
+      "sentenceId": "rabbits-house:011",
+      "focus": "garden.path",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "sky",
+          "sound": "sfx.garden-birds",
+          "volume": 0.4
+        }
+      ]
+    },
+    {
+      "sentenceId": "rabbits-house:012",
+      "focus": "garden.path",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 3,
+          "light": "light.sun",
+          "intensity": 1.3,
+          "kelvin": 5600
+        },
+        {
+          "type": "sound",
+          "anchor": "garden.path",
+          "sound": "sfx.garden-birds",
+          "volume": 0.45
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,225 @@
+{
+  "version": 1,
+  "sceneId": "lobster-quadrille",
+  "title": "The Lobster Quadrille",
+  "environment": {
+    "prefab": "env.queens-croquet-ground",
+    "ambience": "amb.formal-garden",
+    "exposure": -0.2,
+    "fog": 0.2
+  },
+  "beats": [
+    {
+      "sentenceId": "lobster-quadrille:000",
+      "focus": "reader.gate",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 6,
+          "light": "light.sky",
+          "intensity": 1.2,
+          "kelvin": 6500
+        },
+        {
+          "type": "sound",
+          "anchor": "garden.path",
+          "sound": "sfx.wind-hedges",
+          "volume": 0.3
+        }
+      ]
+    },
+    {
+      "sentenceId": "lobster-quadrille:001",
+      "focus": "reader.gate",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "sky",
+          "sound": "sfx.garden-birds",
+          "volume": 0.3
+        }
+      ]
+    },
+    {
+      "sentenceId": "lobster-quadrille:002",
+      "focus": "reader.rose-tree",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 3,
+          "light": "light.fill",
+          "intensity": 0.8,
+          "kelvin": 5200
+        }
+      ]
+    },
+    {
+      "sentenceId": "lobster-quadrille:003",
+      "focus": "garden.path",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "garden.path",
+          "sound": "sfx.gravel-steps",
+          "volume": 0.4
+        },
+        {
+          "type": "light",
+          "durationSeconds": 4,
+          "light": "light.sun",
+          "intensity": 1.4,
+          "kelvin": 5000
+        }
+      ]
+    },
+    {
+      "sentenceId": "lobster-quadrille:004",
+      "focus": "gardener.five",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "gardener.five",
+          "sound": "sfx.card-shuffle",
+          "volume": 0.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "lobster-quadrille:005",
+      "focus": "rose-tree.base",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "rose-tree.crown",
+          "sound": "sfx.wind-hedges",
+          "volume": 0.4
+        },
+        {
+          "type": "light",
+          "durationSeconds": 5,
+          "light": "light.sky",
+          "intensity": 1,
+          "kelvin": 7000
+        }
+      ]
+    },
+    {
+      "sentenceId": "lobster-quadrille:006",
+      "focus": "gardener.seven",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 8,
+          "light": "light.sun",
+          "intensity": 1.2,
+          "kelvin": 4800
+        }
+      ]
+    },
+    {
+      "sentenceId": "lobster-quadrille:007",
+      "focus": "garden.path",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "garden.path",
+          "sound": "sfx.gravel-steps",
+          "volume": 0.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "lobster-quadrille:008",
+      "focus": "gardener.seven",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "gardener.seven",
+          "sound": "sfx.card-shuffle",
+          "volume": 0.6
+        }
+      ]
+    },
+    {
+      "sentenceId": "lobster-quadrille:009",
+      "focus": "gardener.two",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "gardener.two",
+          "sound": "sfx.gravel-steps",
+          "volume": 0.4
+        },
+        {
+          "type": "light",
+          "durationSeconds": 3,
+          "light": "light.fill",
+          "intensity": 1,
+          "kelvin": 5400
+        }
+      ]
+    },
+    {
+      "sentenceId": "lobster-quadrille:010",
+      "focus": "gardener.seven",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "gardener.five",
+          "sound": "sfx.card-shuffle",
+          "volume": 0.5
+        },
+        {
+          "type": "sound",
+          "anchor": "gardener.seven",
+          "sound": "sfx.gravel-steps",
+          "volume": 0.4
+        }
+      ]
+    },
+    {
+      "sentenceId": "lobster-quadrille:011",
+      "focus": "reader.rose-tree",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "rose-tree.crown",
+          "sound": "sfx.wind-hedges",
+          "volume": 0.3
+        },
+        {
+          "type": "light",
+          "durationSeconds": 2,
+          "light": "light.sun",
+          "intensity": 1,
+          "kelvin": 4600
+        }
+      ]
+    },
+    {
+      "sentenceId": "lobster-quadrille:012",
+      "focus": "sky",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "sky",
+          "sound": "sfx.brush-fling",
+          "volume": 0.7
+        },
+        {
+          "type": "sound",
+          "anchor": "sky",
+          "sound": "sfx.garden-birds",
+          "volume": 0.6
+        },
+        {
+          "type": "light",
+          "durationSeconds": 1,
+          "light": "light.sun",
+          "intensity": 1.8,
+          "kelvin": 5200
+        }
+      ]
+    }
+  ]
+}

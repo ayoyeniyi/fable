@@ -1,0 +1,255 @@
+{
+  "version": 1,
+  "sceneId": "pool-of-tears",
+  "title": "Curiouser and Curiouser",
+  "environment": {
+    "prefab": "env.hall-of-doors",
+    "ambience": "amb.hall-lamps",
+    "exposure": -0.2,
+    "fog": 0.2
+  },
+  "beats": [
+    {
+      "sentenceId": "pool-of-tears:000",
+      "focus": "hall.ceiling",
+      "actions": [
+        {
+          "type": "place",
+          "asset": "prop.glass-table",
+          "anchor": "hall.centre",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "yawDegrees": 0,
+          "scale": 1,
+          "appear": "instant"
+        },
+        {
+          "type": "place",
+          "asset": "prop.golden-key",
+          "anchor": "table.top",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "yawDegrees": 20,
+          "scale": 1,
+          "appear": "instant"
+        },
+        {
+          "type": "place",
+          "asset": "prop.curtain",
+          "anchor": "curtain.front",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "yawDegrees": 0,
+          "scale": 1,
+          "appear": "instant"
+        },
+        {
+          "type": "readerScale",
+          "anchor": "reader.table",
+          "scale": 0.4,
+          "durationSeconds": 8
+        }
+      ]
+    },
+    {
+      "sentenceId": "pool-of-tears:001",
+      "focus": "table.beside",
+      "actions": [
+        {
+          "type": "readerScale",
+          "anchor": "reader.table",
+          "scale": 0.7,
+          "durationSeconds": 8
+        },
+        {
+          "type": "place",
+          "asset": "fx.dust",
+          "anchor": "table.beside",
+          "offset": [
+            0,
+            0.3,
+            0
+          ],
+          "yawDegrees": 0,
+          "scale": 1,
+          "appear": "fade"
+        }
+      ]
+    },
+    {
+      "sentenceId": "pool-of-tears:002",
+      "focus": "table.beside",
+      "actions": [
+        {
+          "type": "readerScale",
+          "anchor": "reader.table",
+          "scale": 1,
+          "durationSeconds": 8
+        }
+      ]
+    },
+    {
+      "sentenceId": "pool-of-tears:003",
+      "focus": "table.beside",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 3,
+          "light": "light.fill",
+          "intensity": 0.8,
+          "kelvin": 3200
+        }
+      ]
+    },
+    {
+      "sentenceId": "pool-of-tears:004",
+      "focus": "hall.ceiling",
+      "actions": [
+        {
+          "type": "readerScale",
+          "anchor": "reader.table",
+          "scale": 1.3,
+          "durationSeconds": 8
+        }
+      ]
+    },
+    {
+      "sentenceId": "pool-of-tears:005",
+      "focus": "table.beside",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 4,
+          "light": "light.fill",
+          "intensity": 1,
+          "kelvin": 3000
+        }
+      ]
+    },
+    {
+      "sentenceId": "pool-of-tears:006",
+      "focus": "hall.ceiling",
+      "actions": [
+        {
+          "type": "readerScale",
+          "anchor": "reader.table",
+          "scale": 1.5,
+          "durationSeconds": 8
+        }
+      ]
+    },
+    {
+      "sentenceId": "pool-of-tears:007",
+      "focus": "hall.centre",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "lamp.row",
+          "clip": "lamp.flicker",
+          "durationSeconds": 1.5,
+          "loop": false
+        }
+      ]
+    },
+    {
+      "sentenceId": "pool-of-tears:008",
+      "focus": "hall.centre",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "lamp.row",
+          "clip": "lamp.steady",
+          "durationSeconds": 2,
+          "loop": false
+        }
+      ]
+    },
+    {
+      "sentenceId": "pool-of-tears:009",
+      "focus": "table.beside",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 4,
+          "light": "light.fill",
+          "intensity": 1.2,
+          "kelvin": 2600
+        }
+      ]
+    },
+    {
+      "sentenceId": "pool-of-tears:010",
+      "focus": "hall.centre",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 3,
+          "light": "light.fill",
+          "intensity": 0.7,
+          "kelvin": 3200
+        }
+      ]
+    },
+    {
+      "sentenceId": "pool-of-tears:011",
+      "focus": "hall.ceiling",
+      "actions": [
+        {
+          "type": "readerScale",
+          "anchor": "reader.table",
+          "scale": 1.75,
+          "durationSeconds": 6
+        },
+        {
+          "type": "animate",
+          "target": "prop.golden-key",
+          "clip": "key.glint",
+          "durationSeconds": 1,
+          "loop": false
+        },
+        {
+          "type": "move",
+          "asset": "prop.golden-key",
+          "anchor": "door.little",
+          "ease": "smooth",
+          "durationSeconds": 2
+        },
+        {
+          "type": "sound",
+          "anchor": "curtain.front",
+          "sound": "sfx.footsteps-stone",
+          "volume": 0.6
+        }
+      ]
+    },
+    {
+      "sentenceId": "pool-of-tears:012",
+      "focus": "door.little",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 4,
+          "light": "lamp.row",
+          "intensity": 0.8,
+          "kelvin": 2600
+        },
+        {
+          "type": "animate",
+          "target": "prop.curtain",
+          "clip": "curtain.sway",
+          "durationSeconds": 2,
+          "loop": false
+        }
+      ]
+    }
+  ]
+}

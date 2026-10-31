@@ -1,0 +1,315 @@
+{
+  "version": 1,
+  "sceneId": "the-trial",
+  "title": "Who Stole the Tarts?",
+  "environment": {
+    "prefab": "env.mad-tea-party",
+    "ambience": "amb.garden-afternoon",
+    "exposure": -0.2,
+    "fog": 0.2
+  },
+  "beats": [
+    {
+      "sentenceId": "the-trial:000",
+      "focus": "table.corner",
+      "actions": [
+        {
+          "type": "place",
+          "asset": "prop.armchair",
+          "anchor": "table.end",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "yawDegrees": 0,
+          "scale": 1,
+          "appear": "fade"
+        },
+        {
+          "type": "place",
+          "asset": "char.hatter",
+          "anchor": "seat.hatter",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "yawDegrees": 0,
+          "scale": 1,
+          "appear": "fade"
+        },
+        {
+          "type": "place",
+          "asset": "char.march-hare",
+          "anchor": "seat.march-hare",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "yawDegrees": 0,
+          "scale": 1,
+          "appear": "fade"
+        },
+        {
+          "type": "place",
+          "asset": "char.dormouse",
+          "anchor": "seat.dormouse",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "yawDegrees": 0,
+          "scale": 1,
+          "appear": "fade"
+        }
+      ]
+    },
+    {
+      "sentenceId": "the-trial:001",
+      "focus": "table.centre",
+      "actions": [
+        {
+          "type": "place",
+          "asset": "prop.tea-table",
+          "anchor": "table.centre",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "yawDegrees": 0,
+          "scale": 1,
+          "appear": "settle"
+        },
+        {
+          "type": "place",
+          "asset": "prop.tea-service",
+          "anchor": "table.centre",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "yawDegrees": 0,
+          "scale": 1,
+          "appear": "settle"
+        },
+        {
+          "type": "place",
+          "asset": "fx.steam",
+          "anchor": "table.centre",
+          "offset": [
+            0,
+            0.1,
+            0
+          ],
+          "yawDegrees": 0,
+          "scale": 1,
+          "appear": "fade"
+        }
+      ]
+    },
+    {
+      "sentenceId": "the-trial:002",
+      "focus": "tree.canopy",
+      "actions": [
+        {
+          "type": "place",
+          "asset": "fx.dappled-light",
+          "anchor": "table.centre",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "yawDegrees": 0,
+          "scale": 1,
+          "appear": "fade"
+        },
+        {
+          "type": "animate",
+          "target": "fx.dappled-light",
+          "clip": "dapple.sway",
+          "durationSeconds": 6,
+          "loop": true
+        },
+        {
+          "type": "sound",
+          "anchor": "tree.canopy",
+          "sound": "sfx.leaves",
+          "volume": 0.4
+        }
+      ]
+    },
+    {
+      "sentenceId": "the-trial:003",
+      "focus": "table.corner",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 3,
+          "light": "light.sun",
+          "intensity": 1.6,
+          "kelvin": 5200
+        },
+        {
+          "type": "light",
+          "durationSeconds": 3,
+          "light": "light.sky",
+          "intensity": 0.9,
+          "kelvin": 6500
+        }
+      ]
+    },
+    {
+      "sentenceId": "the-trial:004",
+      "focus": "seat.hatter",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.hatter",
+          "clip": "hatter.look",
+          "durationSeconds": 2,
+          "loop": false
+        }
+      ]
+    },
+    {
+      "sentenceId": "the-trial:005",
+      "focus": "seat.hatter",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.hatter",
+          "clip": "hatter.eyes-wide",
+          "durationSeconds": 2,
+          "loop": false
+        },
+        {
+          "type": "sound",
+          "anchor": "seat.hatter",
+          "sound": "sfx.chair-creak",
+          "volume": 0.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "the-trial:006",
+      "focus": "table.corner",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.dormouse",
+          "clip": "dormouse.twitch",
+          "durationSeconds": 1.5,
+          "loop": false
+        },
+        {
+          "type": "sound",
+          "anchor": "tree.canopy",
+          "sound": "sfx.birdsong",
+          "volume": 0.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "the-trial:007",
+      "focus": "table.corner",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 2,
+          "light": "light.fill",
+          "intensity": 1.1,
+          "kelvin": 4500
+        }
+      ]
+    },
+    {
+      "sentenceId": "the-trial:008",
+      "focus": "seat.dormouse",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.dormouse",
+          "clip": "dormouse.breathe",
+          "durationSeconds": 4,
+          "loop": true
+        },
+        {
+          "type": "sound",
+          "anchor": "seat.dormouse",
+          "sound": "sfx.dormouse-snore",
+          "volume": 0.3
+        }
+      ]
+    },
+    {
+      "sentenceId": "the-trial:009",
+      "focus": "table.centre",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "prop.tea-service",
+          "clip": "tea.rattle",
+          "durationSeconds": 2,
+          "loop": false
+        },
+        {
+          "type": "sound",
+          "anchor": "table.centre",
+          "sound": "sfx.cups-rattle",
+          "volume": 0.6
+        }
+      ]
+    },
+    {
+      "sentenceId": "the-trial:010",
+      "focus": "seat.march-hare",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.march-hare",
+          "clip": "hare.elbow",
+          "durationSeconds": 1.5,
+          "loop": false
+        }
+      ]
+    },
+    {
+      "sentenceId": "the-trial:011",
+      "focus": "seat.march-hare",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.march-hare",
+          "clip": "hare.speak",
+          "durationSeconds": 2,
+          "loop": false
+        }
+      ]
+    },
+    {
+      "sentenceId": "the-trial:012",
+      "focus": "seat.hatter",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.hatter",
+          "clip": "hatter.look",
+          "durationSeconds": 2,
+          "loop": false
+        },
+        {
+          "type": "sound",
+          "anchor": "table.corner",
+          "sound": "sfx.cups-rattle",
+          "volume": 0.3
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,220 @@
+{
+  "version": 1,
+  "sceneId": "alices-evidence",
+  "title": "Alice's Evidence",
+  "environment": {
+    "prefab": "env.mad-tea-party",
+    "ambience": "amb.garden-afternoon",
+    "exposure": -0.2,
+    "fog": 0.2
+  },
+  "beats": [
+    {
+      "sentenceId": "alices-evidence:000",
+      "focus": "table.corner",
+      "actions": [
+        {
+          "type": "readerScale",
+          "anchor": "reader.path",
+          "scale": 2.5,
+          "durationSeconds": 6
+        },
+        {
+          "type": "sound",
+          "anchor": "reader.path",
+          "sound": "sfx.chair-creak",
+          "volume": 0.7
+        },
+        {
+          "type": "sound",
+          "anchor": "table.corner",
+          "sound": "sfx.cups-rattle",
+          "volume": 0.8
+        },
+        {
+          "type": "place",
+          "asset": "fx.dappled-light",
+          "anchor": "table.centre",
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "yawDegrees": 0,
+          "scale": 1,
+          "appear": "fade"
+        }
+      ]
+    },
+    {
+      "sentenceId": "alices-evidence:001",
+      "focus": "table.corner",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "table.corner",
+          "sound": "sfx.cups-rattle",
+          "volume": 0.5
+        },
+        {
+          "type": "animate",
+          "target": "fx.dappled-light",
+          "clip": "dapple.sway",
+          "durationSeconds": 3,
+          "loop": false
+        }
+      ]
+    },
+    {
+      "sentenceId": "alices-evidence:002",
+      "focus": "seat.hatter",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 3,
+          "light": "light.sun",
+          "intensity": 0.9,
+          "kelvin": 5000
+        },
+        {
+          "type": "sound",
+          "anchor": "tree.canopy",
+          "sound": "sfx.leaves",
+          "volume": 0.3
+        }
+      ]
+    },
+    {
+      "sentenceId": "alices-evidence:003",
+      "focus": "table.corner",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "fx.dappled-light",
+          "clip": "dapple.sway",
+          "durationSeconds": 4,
+          "loop": false
+        }
+      ]
+    },
+    {
+      "sentenceId": "alices-evidence:004",
+      "focus": "table.corner",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "tree.canopy",
+          "sound": "sfx.birdsong",
+          "volume": 0.3
+        }
+      ]
+    },
+    {
+      "sentenceId": "alices-evidence:005",
+      "focus": "tree.canopy",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 4,
+          "light": "light.sky",
+          "intensity": 1.2,
+          "kelvin": 6000
+        },
+        {
+          "type": "sound",
+          "anchor": "tree.canopy",
+          "sound": "sfx.leaves",
+          "volume": 0.4
+        }
+      ]
+    },
+    {
+      "sentenceId": "alices-evidence:006",
+      "focus": "seat.hatter",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 2,
+          "light": "light.fill",
+          "intensity": 0.8,
+          "kelvin": 5000
+        }
+      ]
+    },
+    {
+      "sentenceId": "alices-evidence:007",
+      "focus": "reader.path",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "tree.canopy",
+          "sound": "sfx.birdsong",
+          "volume": 0.25
+        }
+      ]
+    },
+    {
+      "sentenceId": "alices-evidence:008",
+      "focus": "seat.hatter",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 2,
+          "light": "light.sun",
+          "intensity": 0.8,
+          "kelvin": 4900
+        }
+      ]
+    },
+    {
+      "sentenceId": "alices-evidence:009",
+      "focus": "reader.path",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "tree.canopy",
+          "sound": "sfx.leaves",
+          "volume": 0.3
+        }
+      ]
+    },
+    {
+      "sentenceId": "alices-evidence:010",
+      "focus": "table.corner",
+      "actions": [
+        {
+          "type": "light",
+          "durationSeconds": 2,
+          "light": "light.sun",
+          "intensity": 1.1,
+          "kelvin": 5200
+        }
+      ]
+    },
+    {
+      "sentenceId": "alices-evidence:011",
+      "focus": "seat.march-hare",
+      "actions": [
+        {
+          "type": "sound",
+          "anchor": "seat.march-hare",
+          "sound": "sfx.chair-creak",
+          "volume": 0.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "alices-evidence:012",
+      "focus": "table.centre",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "fx.dappled-light",
+          "clip": "dapple.sway",
+          "durationSeconds": 4,
+          "loop": true
+        }
+      ]
+    }
+  ]
+}
