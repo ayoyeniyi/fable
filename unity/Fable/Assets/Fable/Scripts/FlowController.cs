@@ -21,6 +21,8 @@ namespace Fable
         public string SceneId = "hall-of-doors";
         public float MiniatureScale = 0.09f;    // the 14 m hall becomes a 1.3 m diorama
         public float GrowSeconds = 1.8f, ExpandSeconds = 3.2f;
+        /// Diorama placement from the eye: about 43 degrees down, so the reader looks into the dollhouse over its near wall.
+        public float DioramaForward = 0.75f, DioramaDrop = 0.7f;
 
         Passage book;
         Transform env;
@@ -44,9 +46,92 @@ namespace Fable
         string Place(string id) => Places.TryGetValue(id, out var p) ? p : "the scene";
 
         /// Sky dome and distant scenery: shown only at full scale (a 45 m dome at diorama scale would still enclose the reader).
-        public static bool IsBackdrop(string n) => n.Contains("SkyDome") || n.Contains("Sky_Dome") || n.StartsWith("far.") || n.Contains("Distant") || n.Contains("TreeLine") || n.Contains("Treeline");
-        readonly List<Renderer> backdrop = new();
-        void ShowBackdrop(bool on) { foreach (var r in backdrop) if (r) r.enabled = on; }
+        public static bool IsBackdrop(string n) => n.Contains("SkyDome") || n.Contains("Sky_Dome") || n.StartsWith("far.") || n.Contains("Distant") || n.Contains("TreeLine") || n.Contains("Treeline") || n.Contains("FarTrees");
+        /// The dollhouse cut: what roofs the scene over (the hall's ceiling, the tea-party tree's canopy) is lifted off
+        /// while it sits on the table as a diorama, so the reader looks down into it rather than at its top.
+        public static bool IsMiniatureCut(string n) => n == "MESH_Ceiling" || n == "MESH_Leaves";
+        readonly List<Renderer> backdrop = new(), roof = new();
+        GameObject plinth;   // outdoor diorama base: a lawn disc standing in for ground that would overhang the table
+        void ShowBackdrop(bool on)
+        {
+            foreach (var r in backdrop) if (r) r.enabled = on;
+            foreach (var r in roof) if (r) r.enabled = on;
+            if (plinth) plinth.SetActive(!on);
+        }
+
+        /// Anything wider than this (metres at full scale) would hang off the 1.5 m diorama table at MiniatureScale:
+        /// outdoor lawns, hedge rings, tree belts. It is cut from the diorama, which stands on a lawn plinth instead.
+        const float DioramaReach = 16f;
+
+        void PrepareDiorama()
+        {
+            Renderer ground = null; float groundArea = 0;
+            foreach (var r in env.GetComponentsInChildren<Renderer>(true))
+            {
+                if (IsBackdrop(r.name)) { backdrop.Add(r); continue; }
+                if (IsMiniatureCut(r.name)) { roof.Add(r); continue; }
+                if (SceneRegistry.IsAssetName(r.name) || (r.transform.parent && SceneRegistry.IsAssetName(r.transform.parent.name))) continue;
+                var s = r.bounds.size;
+                if (Mathf.Max(s.x, s.z) <= DioramaReach) continue;
+                roof.Add(r);
+                if (s.y < 1.5f && s.x * s.z > groundArea) { ground = r; groundArea = s.x * s.z; }
+            }
+            if (ground) plinth = MakePlinth(ground);
+        }
+
+        GameObject MakePlinth(Renderer ground)
+        {
+            const int seg = 48; float radius = DioramaReach * 0.5f;
+            var centre = Director.Registry.Centre; var gb = ground.bounds;
+            var go = new GameObject("DioramaPlinth"); go.transform.SetParent(env, false);
+            go.transform.position = new Vector3(centre.position.x, gb.max.y + 0.01f, centre.position.z);
+            var v = new Vector3[seg + 1]; var uv = new Vector2[seg + 1]; var tri = new int[seg * 3];
+            v[0] = Vector3.zero;
+            for (int i = 0; i < seg; i++) { float a = i * Mathf.PI * 2 / seg; v[i + 1] = new Vector3(Mathf.Cos(a), 0, Mathf.Sin(a)) * radius; }
+            for (int i = 0; i <= seg; i++) uv[i] = new Vector2(v[i].x, v[i].z) / (radius * 2) + new Vector2(0.5f, 0.5f);
+            for (int i = 0; i < seg; i++) { tri[i * 3] = 0; tri[i * 3 + 1] = (i + 1) % seg + 1; tri[i * 3 + 2] = i + 1; }
+            var mesh = new Mesh { name = "DioramaPlinth", vertices = v, uv = uv, triangles = tri }; mesh.RecalculateNormals(); mesh.RecalculateBounds();
+            go.AddComponent<MeshFilter>().sharedMesh = mesh;
+            // the lawn's baked texture is an atlas with its own unwrap, so the plinth takes the lawn's average colour instead
+            var mat = new Material(ground.sharedMaterial.shader) { name = "DioramaPlinth" };
+            mat.CopyPropertiesFromMaterial(ground.sharedMaterial);
+            foreach (var n in mat.GetTexturePropertyNames()) mat.SetTexture(n, null);
+            var gm = ground.sharedMaterial; var avg = AverageColour(gm.HasProperty("baseColorTexture") ? gm.GetTexture("baseColorTexture") : gm.HasProperty("_BaseMap") ? gm.GetTexture("_BaseMap") : gm.mainTexture);
+            foreach (var n in new[] { "_BaseColor", "baseColorFactor", "_Color" }) if (mat.HasProperty(n)) mat.SetColor(n, avg);
+            var mr = go.AddComponent<MeshRenderer>(); mr.sharedMaterial = mat; mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            go.SetActive(false);
+            return go;
+        }
+
+        /// Mean colour of a (non-readable, compressed) texture: a 16x16 GPU downsample, ignoring empty atlas space.
+        static Color AverageColour(Texture tex)
+        {
+            if (!tex) return new Color(0.32f, 0.46f, 0.2f);
+            var rt = RenderTexture.GetTemporary(16, 16, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
+            Graphics.Blit(tex, rt);
+            var prev = RenderTexture.active; RenderTexture.active = rt;
+            var small = new Texture2D(16, 16, TextureFormat.RGBA32, false); small.ReadPixels(new Rect(0, 0, 16, 16), 0, 0); small.Apply();
+            RenderTexture.active = prev; RenderTexture.ReleaseTemporary(rt);
+            Color sum = Color.black; int n = 0;
+            foreach (var c in small.GetPixels()) if (c.grayscale > 0.06f) { sum += c; n++; }
+            Destroy(small);
+            return n > 0 ? sum / n : new Color(0.32f, 0.46f, 0.2f);
+        }
+
+        /// The diorama table follows the diorama: its top always meets the diorama floor, whatever the reader's height.
+        void PlaceDioramaTable(Vector3 floorPoint)
+        {
+            var table = ReadingRoom ? ReadingRoom.transform.Find("DioramaTable") : null; if (!table) return;
+            float floorY = ReadingRoom.transform.position.y;   // the reading room sits on the real floor
+            float h = Mathf.Max(0.2f, floorPoint.y - floorY - 0.005f);
+            table.position = new Vector3(floorPoint.x, floorY + h / 2, floorPoint.z);
+            table.localScale = new Vector3(table.localScale.x, h / 2, table.localScale.z);
+        }
+
+        // reading panel placements: on its own, beside the diorama (to the left, out of the line of sight), and inside the scene
+        void PanelAlone() { Panel.Distance = 1.15f; Panel.Height = -0.08f; Panel.Side = 0f; Panel.Scale = 1f; }
+        void PanelBesideDiorama() { Panel.Distance = 0.95f; Panel.Height = -0.12f; Panel.Side = -0.62f; Panel.Scale = 0.6f; }
+        void PanelInScene() { Panel.Distance = 0.9f; Panel.Height = -0.32f; Panel.Side = 0f; Panel.Scale = 0.55f; }
 
         IEnumerator Start()
         {
@@ -56,7 +141,7 @@ namespace Fable
             Director.Flow = this; Director.Panel = Panel; Director.Reader = Input;
             yield return Director.Load(SceneId, book);
             env.gameObject.SetActive(false);
-            foreach (var r in env.GetComponentsInChildren<Renderer>(true)) if (IsBackdrop(r.name)) backdrop.Add(r);
+            env.gameObject.SetActive(true); PrepareDiorama(); env.gameObject.SetActive(false);
             passages = book.Scenes.Where(p => p.Id == SceneId || (UnityScenes.TryGetValue(p.Id, out var n) && Application.CanStreamedLevelBeLoaded(n))).ToList();
             Input.Select += OnSelect; Input.Next += OnNext; Input.Previous += OnPrev; Input.ReturnToReading += OnReturn; Input.ToggleView += OnToggle; Input.Scrub += OnScrub;
             Director.BeatChanged += (i, b) =>
@@ -149,14 +234,14 @@ namespace Fable
             Director.ResetRoom();
             var fwd = Vector3.ProjectOnPlane(Head.forward, Vector3.up).normalized; if (fwd.sqrMagnitude < 0.01f) fwd = Vector3.forward;
             var centre = Director.Registry.Centre;
-            var target = Head.position + fwd * 0.95f + Vector3.down * 0.55f;   // where the scene's centre point should sit, in world space
+            var target = Head.position + fwd * DioramaForward + Vector3.down * DioramaDrop;   // where the scene's centre point should sit, in world space
             env.localScale = Vector3.one * 0.001f;
             env.position = Vector3.zero;
             env.gameObject.SetActive(true); ShowBackdrop(false);
             // place so that the scaled hall centre lands on the target
             env.position = target - (centre.position - env.position);
-            miniaturePivot = target;
-            Panel.transform.localScale = Vector3.one * 0.7f; Panel.Distance = 1.0f; Panel.Height = 0.28f;
+            miniaturePivot = target; PlaceDioramaTable(target);
+            PanelBesideDiorama();
             Director.Audio.PlayAmbience(Director.Script.Environment.Ambience, 0.25f);
             for (float e = 0; e < GrowSeconds; e += Time.deltaTime)
             {
@@ -175,12 +260,12 @@ namespace Fable
             busy = true; Current = State.Expanding;
             ReadingRoom.SetActive(false);
             var feet = new Vector3(Head.position.x, 0f, Head.position.z);
-            var standAnchor = Director.Registry.ReaderStand; ShowBackdrop(true);
+            var standAnchor = Director.Registry.ReaderStand;
             // at full scale we want standAnchor under the reader: compute the final env position, then blend
             var startPos = env.position; var startScale = env.localScale.x;
             var endScale = Director.ReaderFactor;   // 1, or 4 once Alice has drunk
             var endPos = feet - (standAnchor.position - env.position) / startScale * endScale;
-            Panel.transform.localScale = Vector3.one * 0.55f; Panel.Distance = 0.9f; Panel.Height = -0.32f;
+            PanelInScene();
             Director.Audio.PlayAmbience(Director.Script.Environment.Ambience, 0.6f);
             for (float e = 0; e < ExpandSeconds; e += Time.deltaTime)
             {
@@ -189,7 +274,7 @@ namespace Fable
                 env.position = Vector3.Lerp(startPos, endPos, x);
                 yield return null;
             }
-            env.localScale = Vector3.one * endScale; env.position = endPos;
+            env.localScale = Vector3.one * endScale; env.position = endPos; ShowBackdrop(true);   // ground, roof and sky return once the floor is under the reader
             Current = State.Scene; busy = false; Director.Immersive = true;
             Panel.Show(Director.PassageScene, Director.Script.Beats[Mathf.Max(0, Director.BeatIndex)].SentenceId, Hint());
         }
@@ -200,11 +285,11 @@ namespace Fable
             busy = true; Current = State.Shrinking; Director.Immersive = false; Director.StopScaling();
             ReadingRoom.SetActive(true);
             var fwd = Vector3.ProjectOnPlane(Head.forward, Vector3.up).normalized; if (fwd.sqrMagnitude < 0.01f) fwd = Vector3.forward;
-            var target = Head.position + fwd * 0.95f + Vector3.down * 0.55f;
+            var target = Head.position + fwd * DioramaForward + Vector3.down * DioramaDrop;
             var centre = Director.Registry.Centre; ShowBackdrop(false);
             var startPos = env.position; var startScale = env.localScale.x;
             var endPos = target - (centre.position - env.position) / startScale * MiniatureScale;
-            Panel.transform.localScale = Vector3.one * 0.7f; Panel.Distance = 1.0f; Panel.Height = 0.28f;
+            PanelBesideDiorama();
             Director.Audio.PlayAmbience(Director.Script.Environment.Ambience, 0.25f);
             for (float e = 0; e < ExpandSeconds; e += Time.deltaTime)
             {
@@ -213,7 +298,7 @@ namespace Fable
                 env.position = Vector3.Lerp(startPos, endPos, x);
                 yield return null;
             }
-            env.localScale = Vector3.one * MiniatureScale; env.position = endPos; miniaturePivot = target;
+            env.localScale = Vector3.one * MiniatureScale; env.position = endPos; miniaturePivot = target; PlaceDioramaTable(target);
             Current = State.Miniature; busy = false;
             Panel.Show(Director.PassageScene, Director.Script.Beats[Mathf.Max(0, Director.BeatIndex)].SentenceId, Hint());
         }
@@ -230,12 +315,12 @@ namespace Fable
             {
                 float x = Mathf.SmoothStep(0, 1, e / GrowSeconds);
                 ScaleAbout(env, pivot, Mathf.Lerp(from, 0.001f, x));
-                Panel.transform.localScale = Vector3.one * Mathf.Lerp(0.7f, 1f, x);
+                Panel.Scale = Mathf.Lerp(0.6f, 1f, x);
                 yield return null;
             }
             env.gameObject.SetActive(false);
             Director.Audio.StopAmbience();
-            Panel.Distance = 1.15f; Panel.Height = -0.08f; Panel.transform.localScale = Vector3.one;
+            PanelAlone();
             Current = State.Reading; busy = false;
             chosen = Mathf.Max(0, passages.FindIndex(p => p.Id == SceneId));
             ShowPicker();

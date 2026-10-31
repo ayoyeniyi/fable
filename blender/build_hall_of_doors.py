@@ -333,6 +333,7 @@ M_BRASS = brass()
 M_GOLD = brass("M_Gold", color=(1.0, 0.76, 0.33), rough=(0.12, 0.3))
 M_STONE = stone_floor()
 M_PLASTER = plaster()
+M_CEILING = plaster("M_Ceiling")   # its own material so the merged ceiling is a separate mesh (MESH_Ceiling) Unity can hide for the dollhouse view
 M_VELVET = velvet()
 M_GLASS = glass()
 M_PAPER = paper()
@@ -439,7 +440,7 @@ DYNAMIC = []   # empties whose children are baked individually and never merged
 # ----------------------------------------------------------------------------- room shell
 hx, hy = HALL_L / 2, HALL_W / 2
 floor = box("Floor", (HALL_L + 0.4, HALL_W + 0.4, 0.1), (0, 0, -0.05), M_STONE)
-ceiling = box("Ceiling", (HALL_L + 0.4, HALL_W + 0.4, 0.1), (0, 0, HALL_H + 0.05), M_PLASTER)
+ceiling = box("Ceiling", (HALL_L + 0.4, HALL_W + 0.4, 0.1), (0, 0, HALL_H + 0.05), M_CEILING)
 T = 0.15
 box("Wall_N", (HALL_L + 0.4, T, HALL_H), (0, hy + T / 2, HALL_H / 2), M_PLASTER)
 box("Wall_S", (HALL_L + 0.4, T, HALL_H), (0, -hy - T / 2, HALL_H / 2), M_PLASTER)

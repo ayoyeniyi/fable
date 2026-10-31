@@ -172,14 +172,16 @@ namespace Fable.Editor
             foreach (var t in env.GetComponentsInChildren<Transform>(true))
             {
                 bool dynamic = SceneRegistry.IsAssetName(t.name) || (t.parent && SceneRegistry.IsAssetName(t.parent.name));
-                GameObjectUtility.SetStaticEditorFlags(t.gameObject, dynamic ? 0 : StaticEditorFlags.BatchingStatic | StaticEditorFlags.ContributeGI | StaticEditorFlags.OccludeeStatic | StaticEditorFlags.OccluderStatic);
+                // Lightmapped (ContributeGI) but never BatchingStatic or occlusion-static: the whole environment is scaled and moved
+                // at runtime (diorama, expand, the 4x size change) and static-batched meshes are frozen in world space at load.
+                GameObjectUtility.SetStaticEditorFlags(t.gameObject, dynamic ? 0 : StaticEditorFlags.ContributeGI | StaticEditorFlags.ReflectionProbeStatic);
             }
             // the flame sits inside the glass chimney: glass and flame must not occlude the lightmapper or cast shadows
             foreach (var r in env.GetComponentsInChildren<Renderer>(true))
                 if (r.name.Contains("LampGlass") || r.name.Contains("Flame") || r.name.Contains("GardenCard"))
                 {
                     r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; r.receiveShadows = false;
-                    GameObjectUtility.SetStaticEditorFlags(r.gameObject, StaticEditorFlags.BatchingStatic);
+                    GameObjectUtility.SetStaticEditorFlags(r.gameObject, 0);
                 }
             if (outdoor)
             {
@@ -196,7 +198,7 @@ namespace Fable.Editor
                     if (FlowControllerBackdrop(r.name))
                     {
                         r.shadowCastingMode = ShadowCastingMode.Off; r.receiveShadows = false;
-                        GameObjectUtility.SetStaticEditorFlags(r.gameObject, StaticEditorFlags.BatchingStatic);
+                        GameObjectUtility.SetStaticEditorFlags(r.gameObject, 0);
                         if (r.name.Contains("Sky") && r.sharedMaterial && unlit)
                         {
                             var path = $"Assets/Fable/Materials/{sceneId}_Sky.mat"; Directory.CreateDirectory("Assets/Fable/Materials");
@@ -417,7 +419,7 @@ namespace Fable.Editor
             var centre = FindDeep(env, "anchor.scene.centre"); if (centre) go.transform.position = new Vector3(centre.position.x, env.position.y, centre.position.z);
             go.AddComponent<MeshFilter>().sharedMesh = mesh;
             var mr = go.AddComponent<MeshRenderer>(); mr.sharedMaterial = mat; mr.shadowCastingMode = ShadowCastingMode.Off; mr.receiveShadows = false;
-            GameObjectUtility.SetStaticEditorFlags(go, StaticEditorFlags.BatchingStatic);
+            GameObjectUtility.SetStaticEditorFlags(go, 0);
         }
 
         [MenuItem("Fable/3 Bake Lighting")]
