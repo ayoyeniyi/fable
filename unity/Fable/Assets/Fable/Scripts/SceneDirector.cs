@@ -60,7 +60,9 @@ namespace Fable
                 req.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(body));
                 req.downloadHandler = new DownloadHandlerBuffer(); req.SetRequestHeader("Content-Type", "application/json"); req.timeout = 120;
                 yield return req.SendWebRequest();
-                if (req.result == UnityWebRequest.Result.Success)
+                if (req.result == UnityWebRequest.Result.Success && req.responseCode == 202)
+                    Debug.Log("[Fable] interpreter still generating this scene; using the saved or bundled script for now");
+                else if (req.result == UnityWebRequest.Result.Success)
                 {
                     try { candidate = ScriptValidator.Parse(req.downloadHandler.text); }
                     catch (Exception e) { Debug.LogWarning($"[Fable] interpreter JSON rejected: {e.Message}"); }
