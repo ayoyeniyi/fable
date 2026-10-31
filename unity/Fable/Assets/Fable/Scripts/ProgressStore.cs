@@ -25,6 +25,8 @@ namespace Fable
     {
         public string Slug;
         public string SentenceId;
+        /// The furthest sentence the reader has had on a page. Search never looks past it (the spoiler rule).
+        public string Furthest;
         public List<string> Bookmarks = new();
         public int TextSize = 1;
         public string SavedAtUtc;

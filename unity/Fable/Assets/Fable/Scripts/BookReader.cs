@@ -50,6 +50,7 @@ namespace Fable
         readonly List<int[]> sentStart = new();
         readonly List<Page> pages = new();
         readonly List<int> paraOffset = new();   // characters before each paragraph, for page estimates
+        readonly List<Run> shownRuns = new();    // rich-text runs of the page on show (for word hit-testing)
         int chapterChars;
 
         // page widgets built at runtime
@@ -94,7 +95,17 @@ namespace Fable
             Progress.TextSize = Mathf.Clamp(Progress.TextSize, 0, TextSizes.Length - 1);
             Debug.Log($"[Fable] book {slug}: {Book.Chapters.Count} chapters, {Book.SentenceCount} sentences, parsed in {(Time.realtimeSinceStartup - t0) * 1000:F0} ms");
             BuildWidgets();
+            // Search's index: every sentence lower-cased and stripped of punctuation, built off the main thread
+            var book = Book; searchText = null;
+            System.Threading.Tasks.Task.Run(() =>
+            {
+                var arr = new string[book.SentenceCount]; int i = 0;
+                foreach (var ch in book.Chapters) foreach (var p in ch.Paragraphs) foreach (var se in p.Sentences) arr[i++] = Normal(se.Text);
+                return arr;
+            }).ContinueWith(t => { if (!t.IsFaulted && Book == book) searchText = t.Result; });
         }
+
+        string[] searchText;   // by ordinal; null until built
 
         // ---------------------------------------------------------------- activation
 
@@ -313,12 +324,15 @@ namespace Fable
             var ch = Book.Chapters[ChapterIndex];
             float top = PageIndex == 0 ? BodyTopFirst : BodyTopRest;
             Place(Panel.Body, top, BodyBottom - top);
-            Panel.Body.text = Render(pg.Start, pg.End, 0, null, out _);
+            Panel.Body.text = Render(pg.Start, pg.End, 0, shownRuns, out _);
+            Panel.Body.ForceMeshUpdate();   // word hit-testing reads this page's layout
             Panel.Title.gameObject.SetActive(PageIndex == 0);
             Panel.Title.fontSize = 30;
             Panel.Title.text = PageIndex == 0 ? (ch.Name ?? ch.Heading) + (ch.Subtitle != null && ch.Subtitle.Length < 90 ? $"\n<size=55%><i>{ch.Subtitle}</i></size>" : "") : "";
             Panel.Chapter.text = RunningHead(ch);
             Progress.SentenceId = keep != null && StartsOn(keep, pg) ? keep : AnchorSentence(pg);
+            var lastSeen = LastVisibleSentence;
+            if (Book.Ordinal(lastSeen) > Book.Ordinal(Progress.Furthest)) Progress.Furthest = lastSeen;
             ProgressStore.SaveBook(Progress);
             UpdateStepIn(pg);
             ShowFooter();
@@ -521,9 +535,10 @@ namespace Fable
         // ---------------------------------------------------------------- pointing and pinching at controls
 
         /// A right pinch: press the control under the right hand's ray, if any. Returns true if one was pressed.
-        public bool PressAt(bool right)
+        public bool PressAt(bool right, bool dryRun = false)
         {
             if (!Active || !Pointer) return false;
+            if (dryRun) return Pointer.Over(right, contentsBtn) || Pointer.Over(right, sizeBtn) || Pointer.Over(right, markBtn) || Pointer.Over(right, stepBtn);
             if (Pointer.Over(right, contentsBtn)) { if (InContents) ShowPage(PageIndex, keep: Progress.SentenceId); else ShowContents(); return true; }
             if (Pointer.Over(right, sizeBtn)) { CycleTextSize(); return true; }
             if (Pointer.Over(right, markBtn) && !InContents) { ToggleBookmark(); return true; }
@@ -578,6 +593,164 @@ namespace Fable
             var ch = Book.Chapters[ChapterIndex];
             return $"book={Book.Slug} chapter={ch.Id} page={PageIndex + 1}/{(ChapterPaginated ? pages.Count.ToString() : pages.Count + "+")} anchor={Progress.SentenceId} last={LastVisibleSentence} size={TextSizeNames[Progress.TextSize]} marks={Progress.Bookmarks.Count} contents={InContents} stepIn={StepInPassage ?? "-"}";
         }
+
+        // ---------------------------------------------------------------- words on the page (highlighting)
+
+        /// True when the page shows the book's text (not the contents list): words can be highlighted.
+        public bool ShowsText => Active && !InContents && pages.Count > 0;
+
+        /// The word under a point on the page (page-local pixels): its index in the body's layout. Points between
+        /// lines or past a line's end take the nearest word on the nearest line, so a drag never drops out.
+        public bool WordAt(Vector2 pageLocal, out int word, bool nearest = false)
+        {
+            word = -1;
+            if (!ShowsText) return false;
+            var body = Panel.Body; var ti = body.textInfo;
+            if (ti == null || ti.wordCount == 0) return false;
+            Vector2 p = body.rectTransform.InverseTransformPoint(Pointer.Page.TransformPoint(pageLocal));
+            var r = body.rectTransform.rect;
+            if (!nearest && (p.x < r.xMin - 12 || p.x > r.xMax + 12 || p.y > r.yMax + 8 || p.y < r.yMin - 8)) return false;
+            // the line: the one whose band (ascender to descender) holds the point, else the closest
+            int line = -1; float best = float.MaxValue;
+            for (int l = 0; l < ti.lineCount; l++)
+            {
+                var li = ti.lineInfo[l]; if (li.characterCount == 0) continue;
+                float top = li.ascender, bot = li.descender;
+                float d = p.y > top ? p.y - top : p.y < bot ? bot - p.y : 0;
+                if (d < best) { best = d; line = l; }
+            }
+            if (line < 0 || (!nearest && best > 14)) return false;
+            best = float.MaxValue;
+            for (int w = 0; w < ti.wordCount; w++)
+            {
+                var wi = ti.wordInfo[w]; if (wi.characterCount == 0) continue;
+                var c0 = ti.characterInfo[wi.firstCharacterIndex]; var c1 = ti.characterInfo[wi.lastCharacterIndex];
+                if (c0.lineNumber != line) continue;
+                float d = p.x < c0.bottomLeft.x ? c0.bottomLeft.x - p.x : p.x > c1.topRight.x ? p.x - c1.topRight.x : 0;
+                if (d < best) { best = d; word = w; }
+            }
+            return word >= 0;
+        }
+
+        public int WordCount => Panel.Body.textInfo != null ? Panel.Body.textInfo.wordCount : 0;
+
+        Pos CharPos(int ci) => FromRich(shownRuns, Panel.Body.textInfo.characterInfo[ci].index);
+
+        /// The text from word a to word b (inclusive, either order), as the book has it, with its first and last sentence ids.
+        public string Selection(int a, int b, out string firstSentence, out string lastSentence)
+        {
+            firstSentence = lastSentence = null;
+            var ti = Panel.Body.textInfo; if (ti == null || a < 0 || b < 0 || a >= ti.wordCount || b >= ti.wordCount) return "";
+            if (b < a) (a, b) = (b, a);
+            var s = CharPos(ti.wordInfo[a].firstCharacterIndex);
+            var eLast = CharPos(ti.wordInfo[b].lastCharacterIndex); var e = new Pos(eLast.P, eLast.C + 1);
+            firstSentence = SentenceAt(s); lastSentence = SentenceAt(eLast);
+            var sb = new StringBuilder();
+            for (int p = s.P; p <= e.P && p < paraText.Count; p++)
+            {
+                int c0 = p == s.P ? s.C : 0, c1 = p == e.P ? Mathf.Min(e.C, paraText[p].Length) : paraText[p].Length;
+                if (c1 <= c0) continue;
+                if (sb.Length > 0) sb.Append(' ');
+                sb.Append(paraText[p], c0, c1 - c0);
+            }
+            return sb.ToString().Replace('\n', ' ');
+        }
+
+        /// One rectangle per line covered by words a..b, in the body's local space (for the highlight bars).
+        public void SelectionRects(int a, int b, List<Rect> into)
+        {
+            into.Clear();
+            var ti = Panel.Body.textInfo; if (ti == null || a < 0 || b < 0 || a >= ti.wordCount || b >= ti.wordCount) return;
+            if (b < a) (a, b) = (b, a);
+            int c0 = ti.wordInfo[a].firstCharacterIndex, c1 = ti.wordInfo[b].lastCharacterIndex;
+            int line = -1; float x0 = 0, x1 = 0;
+            for (int c = c0; c <= c1; c++)
+            {
+                var ci = ti.characterInfo[c];
+                if (!ci.isVisible) continue;
+                if (ci.lineNumber != line)
+                {
+                    if (line >= 0) into.Add(LineRect(ti, line, x0, x1));
+                    line = ci.lineNumber; x0 = ci.bottomLeft.x; x1 = ci.topRight.x;
+                }
+                else { x0 = Mathf.Min(x0, ci.bottomLeft.x); x1 = Mathf.Max(x1, ci.topRight.x); }
+            }
+            if (line >= 0) into.Add(LineRect(ti, line, x0, x1));
+        }
+
+        static Rect LineRect(TMP_TextInfo ti, int line, float x0, float x1)
+        {
+            var li = ti.lineInfo[line];
+            return Rect.MinMaxRect(x0 - 2, li.descender - 1, x1 + 2, li.ascender + 1);
+        }
+
+        /// The centre of word w in page-local pixels (for placing the menu, and for tests to aim at).
+        public Vector2 WordCentre(int w)
+        {
+            var ti = Panel.Body.textInfo; var wi = ti.wordInfo[w];
+            var a = ti.characterInfo[wi.firstCharacterIndex]; var b = ti.characterInfo[wi.lastCharacterIndex];
+            var mid = (a.bottomLeft + b.topRight) / 2f;
+            return Pointer.Page.InverseTransformPoint(Panel.Body.rectTransform.TransformPoint(mid));
+        }
+
+        /// The index of the first word on the page whose text starts a match for phrase (case-insensitive), or -1. Tests use it.
+        public int FindWord(string phrase, out int lastWord)
+        {
+            lastWord = -1;
+            var ti = Panel.Body.textInfo; if (ti == null) return -1;
+            var want = phrase.ToLowerInvariant().Split(new[] { ' ' }, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int w = 0; w + want.Length <= ti.wordCount; w++)
+            {
+                bool ok = true;
+                for (int k = 0; k < want.Length && ok; k++) ok = ti.wordInfo[w + k].GetWord().ToLowerInvariant().Trim('’', '\'') == want[k].Trim('’', '\'');
+                if (ok) { lastWord = w + want.Length - 1; return w; }
+            }
+            return -1;
+        }
+
+        /// Search: every sentence the reader has reached that contains the phrase (case-insensitive, whole words).
+        /// Never looks past Progress.Furthest: later matches are neither shown nor counted.
+        public List<(string id, string chapter, string snippet)> Search(string phrase, int max, out int total)
+        {
+            var hits = new List<(string, string, string)>(); total = 0;
+            var q = Normal(phrase); if (q.Length == 0) return hits;
+            int limit = Mathf.Max(Book.Ordinal(Progress.Furthest), Book.Ordinal(Progress.SentenceId));
+            int n = 0; var index = searchText;
+            foreach (var ch in Book.Chapters)
+                foreach (var p in ch.Paragraphs)
+                    foreach (var s in p.Sentences)
+                    {
+                        var t = index != null ? index[n] : Normal(s.Text);
+                        if (n++ > limit) return hits;
+                        int at = WholeWord(t, q);
+                        if (at < 0) continue;
+                        total++;
+                        if (hits.Count < max) hits.Add((s.Id, ch.Heading, Snippet(s.Text, phrase)));
+                    }
+            return hits;
+        }
+
+        static string Normal(string s)
+        {
+            var sb = new StringBuilder(s.Length);
+            foreach (var ch in s) sb.Append(ch == '’' || ch == '‘' ? '\'' : char.IsLetterOrDigit(ch) || ch == '\'' ? char.ToLowerInvariant(ch) : ' ');
+            return " " + System.Text.RegularExpressions.Regex.Replace(sb.ToString(), @"\s+", " ").Trim() + " ";
+        }
+        static int WholeWord(string text, string q) => text.IndexOf(q, System.StringComparison.Ordinal);   // q is " word word " already
+
+        static string Snippet(string text, string phrase)
+        {
+            int i = text.IndexOf(phrase, System.StringComparison.OrdinalIgnoreCase);
+            if (i < 0) i = 0;
+            int a = Mathf.Max(0, i - 40), b = Mathf.Min(text.Length, i + phrase.Length + 50);
+            while (a > 0 && text[a] != ' ') a--;
+            while (b < text.Length && text[b] != ' ') b++;
+            var pre = text.Substring(a, i - a).TrimStart(); var hit = text.Substring(i, Mathf.Min(phrase.Length, text.Length - i)); var post = text.Substring(i + hit.Length, b - i - hit.Length);
+            return (a > 0 ? "…" : "") + Escape(pre) + "<b>" + Escape(hit) + "</b>" + Escape(post) + (b < text.Length ? "…" : "");
+        }
+
+        /// The ordinal of the furthest sentence the reader has reached (for spoiler checks outside the reader).
+        public int ReachedOrdinal => Mathf.Max(Book.Ordinal(Progress.Furthest), Book.Ordinal(Progress.SentenceId));
 
         // ---------------------------------------------------------------- widgets
 

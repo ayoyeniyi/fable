@@ -1,0 +1,185 @@
+{
+  "version": 1,
+  "id": "alice.pocket-watch",
+  "title": "the Rabbit's watch",
+  "book": "alice",
+  "phrase": "watch",
+  "sentenceId": "alice:c01.p003.s03",
+  "heightMetres": 0.16,
+  "realHeight": "pocket-sized",
+  "source": "fixture",
+  "author": "written by Claude (Claude Code session, 2026-10-31) as an offline library fixture; not interpreter output",
+  "parts": [
+    {
+      "id": "case",
+      "shape": "cylinder",
+      "size": [
+        3.0,
+        0.5,
+        3.0
+      ],
+      "position": [
+        0,
+        1.6,
+        0
+      ],
+      "color": "#d8b24a",
+      "rotation": [
+        90,
+        0,
+        0
+      ],
+      "material": "metal"
+    },
+    {
+      "id": "face",
+      "shape": "cylinder",
+      "size": [
+        2.6,
+        0.08,
+        2.6
+      ],
+      "position": [
+        0,
+        1.6,
+        0.28
+      ],
+      "color": "#f6f1e2",
+      "rotation": [
+        90,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "hand-hour",
+      "shape": "box",
+      "size": [
+        0.12,
+        0.7,
+        0.04
+      ],
+      "position": [
+        0.0,
+        1.88,
+        0.34
+      ],
+      "color": "#222222"
+    },
+    {
+      "id": "hand-min",
+      "shape": "box",
+      "size": [
+        0.08,
+        1.0,
+        0.04
+      ],
+      "position": [
+        0.33,
+        1.75,
+        0.35
+      ],
+      "color": "#222222",
+      "rotation": [
+        0,
+        0,
+        -60
+      ]
+    },
+    {
+      "id": "crown",
+      "shape": "cylinder",
+      "size": [
+        0.4,
+        0.35,
+        0.4
+      ],
+      "position": [
+        0,
+        3.25,
+        0
+      ],
+      "color": "#b8913a",
+      "material": "metal"
+    },
+    {
+      "id": "bow",
+      "shape": "torus",
+      "size": [
+        0.9,
+        0.14,
+        0.9
+      ],
+      "position": [
+        0,
+        3.75,
+        0
+      ],
+      "color": "#b8913a",
+      "rotation": [
+        90,
+        0,
+        0
+      ],
+      "material": "metal"
+    },
+    {
+      "id": "chain-1",
+      "shape": "torus",
+      "size": [
+        0.4,
+        0.08,
+        0.4
+      ],
+      "position": [
+        0.35,
+        4.25,
+        0
+      ],
+      "color": "#b8913a",
+      "rotation": [
+        90,
+        0,
+        40
+      ],
+      "material": "metal"
+    },
+    {
+      "id": "chain-2",
+      "shape": "torus",
+      "size": [
+        0.4,
+        0.08,
+        0.4
+      ],
+      "position": [
+        0.7,
+        4.5,
+        0
+      ],
+      "color": "#b8913a",
+      "rotation": [
+        90,
+        0,
+        -20
+      ],
+      "material": "metal"
+    }
+  ],
+  "labels": [
+    {
+      "text": "took a watch out of its waistcoat-pocket",
+      "part": "case",
+      "quote": true
+    },
+    {
+      "text": "looked at it, and then hurried on",
+      "part": "face",
+      "quote": true
+    },
+    {
+      "text": "a gold case, as a gentleman's would be",
+      "part": "bow"
+    }
+  ]
+}

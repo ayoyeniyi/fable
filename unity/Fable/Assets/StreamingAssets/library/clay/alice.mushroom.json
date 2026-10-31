@@ -1,0 +1,198 @@
+{
+  "version": 1,
+  "id": "alice.mushroom",
+  "title": "the mushroom and the Caterpillar",
+  "book": "alice",
+  "phrase": "mushroom",
+  "sentenceId": "alice:c04.p042.s01",
+  "heightMetres": 0.32,
+  "realHeight": "about Alice's height, then",
+  "source": "fixture",
+  "author": "written by Claude (Claude Code session, 2026-10-31) as an offline library fixture; not interpreter output",
+  "parts": [
+    {
+      "id": "stem",
+      "shape": "cylinder",
+      "size": [
+        1.4,
+        3.0,
+        1.4
+      ],
+      "position": [
+        0,
+        1.5,
+        0
+      ],
+      "color": "#efe6d2"
+    },
+    {
+      "id": "cap",
+      "shape": "hemisphere",
+      "size": [
+        5.0,
+        1.6,
+        5.0
+      ],
+      "position": [
+        0,
+        3.0,
+        0
+      ],
+      "color": "#c9a27a"
+    },
+    {
+      "id": "cat-1",
+      "shape": "sphere",
+      "size": [
+        0.7,
+        0.6,
+        0.7
+      ],
+      "position": [
+        -0.9,
+        4.75,
+        0
+      ],
+      "color": "#4d76c9"
+    },
+    {
+      "id": "cat-2",
+      "shape": "sphere",
+      "size": [
+        0.75,
+        0.65,
+        0.75
+      ],
+      "position": [
+        -0.35,
+        4.8,
+        0
+      ],
+      "color": "#4d76c9"
+    },
+    {
+      "id": "cat-3",
+      "shape": "sphere",
+      "size": [
+        0.8,
+        0.8,
+        0.8
+      ],
+      "position": [
+        0.2,
+        5.0,
+        0
+      ],
+      "color": "#4d76c9"
+    },
+    {
+      "id": "cat-head",
+      "shape": "sphere",
+      "size": [
+        0.75,
+        0.75,
+        0.75
+      ],
+      "position": [
+        0.35,
+        5.7,
+        0.1
+      ],
+      "color": "#4d76c9"
+    },
+    {
+      "id": "arms",
+      "shape": "capsule",
+      "size": [
+        0.25,
+        0.9,
+        0.25
+      ],
+      "position": [
+        0.25,
+        5.15,
+        0.4
+      ],
+      "color": "#4d76c9",
+      "rotation": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "hookah-base",
+      "shape": "sphere",
+      "size": [
+        0.9,
+        1.1,
+        0.9
+      ],
+      "position": [
+        1.6,
+        3.75,
+        0.6
+      ],
+      "color": "#7a5a8a",
+      "material": "glass"
+    },
+    {
+      "id": "hookah-neck",
+      "shape": "cylinder",
+      "size": [
+        0.18,
+        1.2,
+        0.18
+      ],
+      "position": [
+        1.6,
+        4.8,
+        0.6
+      ],
+      "color": "#b8913a",
+      "material": "metal"
+    },
+    {
+      "id": "hookah-pipe",
+      "shape": "cylinder",
+      "size": [
+        0.07,
+        1.4,
+        0.07
+      ],
+      "position": [
+        1.0,
+        5.4,
+        0.45
+      ],
+      "color": "#5a3a2a",
+      "rotation": [
+        0,
+        0,
+        60
+      ]
+    }
+  ],
+  "labels": [
+    {
+      "text": "a large mushroom",
+      "part": "cap",
+      "quote": true
+    },
+    {
+      "text": "a large blue caterpillar",
+      "part": "cat-head",
+      "quote": true
+    },
+    {
+      "text": "quietly smoking a long hookah",
+      "part": "hookah-base",
+      "quote": true
+    },
+    {
+      "text": "with its arms folded",
+      "part": "arms",
+      "quote": true
+    }
+  ]
+}

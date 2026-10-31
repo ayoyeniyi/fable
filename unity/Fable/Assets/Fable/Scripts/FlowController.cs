@@ -59,6 +59,7 @@ namespace Fable
         /// The whole book on the page while reading; the passage view takes over in the miniature and the scene.
         public BookReader Reader { get; private set; }
         public PagePointer Pointer { get; private set; }
+        public Highlighter Highlight { get; private set; }
         public bool CanStepIn => Current == State.Reading && Reader != null && Reader.Active && !Reader.InContents && Reader.StepInPassage != null;
         List<Passage.Scene> passages = new();
         int chosen;
@@ -206,6 +207,8 @@ namespace Fable
             Reader.Panel = Panel; Reader.Pointer = Pointer; Reader.Input = Input;
             Reader.StagePassages = passages;
             yield return Reader.Load(string.IsNullOrEmpty(Director.PassageScene.Book) ? "alice" : Director.PassageScene.Book);
+            Highlight = GetComponent<Highlighter>() ? GetComponent<Highlighter>() : gameObject.AddComponent<Highlighter>();
+            Highlight.Init(this, Reader, Pointer, Input, Director);   // highlight words: Define, Search, Peek, Step In
             Input.Select += OnSelect; Input.ModeChanged += OnInputMode; Input.Next += OnNext; Input.Previous += OnPrev; Input.ReturnToReading += OnReturn; Input.ToggleView += OnToggle; Input.Scrub += OnScrub;
             Director.BeatChanged += (i, b) =>
             {
@@ -231,10 +234,14 @@ namespace Fable
         }
 
         /// Stage the passage whose text is on the page, starting at the beat for the page's first sentence.
-        void StepIn()
+        void StepIn() => StepInAt(null);
+
+        /// Stage the passage on the page from a book sentence (a highlight's), or from the page's first sentence.
+        public void StepInAt(string fromSentence)
         {
             var id = Reader.StepInPassage; if (id == null || busy) return;
-            var from = Reader.FirstVisibleSentence;
+            if (Highlight) Highlight.Clear();
+            var from = fromSentence ?? Reader.FirstVisibleSentence;
             Reader.Deactivate();
             int i = passages.FindIndex(p => p.Id == id); if (i < 0) return;
             chosen = i;
@@ -292,6 +299,7 @@ namespace Fable
             if (busy) return;
             if (Current == State.Reading)
             {
+                if (Highlight && Highlight.HandleTap(true)) return;   // the menu or card took the pinch
                 if (Reader.OverStepIn(true)) StepIn();
                 else if (!Reader.PressAt(true)) Reader.NextPage();
                 return;
@@ -302,20 +310,24 @@ namespace Fable
         {
             if (busy) return;
             if (Current == State.Scene || Current == State.Miniature) Director.Previous();
-            else if (Current == State.Reading) { if (Reader.OverStepIn(false)) StepIn(); else if (!Reader.PressAt(false)) Reader.PreviousPage(); }
+            else if (Current == State.Reading)
+            {
+                if (Highlight && Highlight.Busy) { Highlight.Clear(); return; }   // a left pinch closes the menu or card
+                if (Reader.OverStepIn(false)) StepIn(); else if (!Reader.PressAt(false)) Reader.PreviousPage();
+            }
         }
         void OnScrub(int dir)
         {
             if (busy) return;
             if (Current == State.Scene || Current == State.Miniature) { if (dir > 0) Director.Next(); else Director.Previous(); }
-            else if (Current == State.Reading) { if (dir > 0) Reader.NextPage(); else Reader.PreviousPage(); }
+            else if (Current == State.Reading && !(Highlight && Highlight.Busy)) { if (dir > 0) Reader.NextPage(); else Reader.PreviousPage(); }
         }
         void OnToggle()
         {
             if (busy) return;
             if (Current == State.Miniature) StartCoroutine(Expand());
             else if (Current == State.Scene) StartCoroutine(Shrink());
-            else if (Current == State.Reading) StepIn();
+            else if (Current == State.Reading && !(Highlight && Highlight.Busy)) StepIn();
         }
         void OnReturn() { if ((Current == State.Scene || Current == State.Miniature) && !busy) StartCoroutine(Return()); }
 
@@ -332,7 +344,7 @@ namespace Fable
         public void OpenBook(string slug) { if (Current == State.Reading && !busy) StartCoroutine(OpenBookRoutine(slug)); }
         IEnumerator OpenBookRoutine(string slug)
         {
-            busy = true; Reader.Deactivate();
+            busy = true; if (Highlight) Highlight.Clear(); Reader.Deactivate();
             yield return Reader.Load(slug);
             busy = false; ShowBook();
         }
@@ -345,7 +357,7 @@ namespace Fable
         public void StepReturn() => OnReturn();
         public void StepChoose(int dir) => OnScrub(dir);
         public string ChosenId => Chosen?.Id;
-        public string Describe() => (Current == State.Reading && Reader != null && Reader.Active ? Reader.Describe() + " " : "") + $"state={Current} beat={Director.BeatIndex + 1}/{(Director.Script != null ? Director.Script.Beats.Count : 0)} envScale={(env != null ? env.localScale.x.ToString("F2") : "n/a")} active={(env != null && env.gameObject.activeSelf)} playing={Application.isPlaying} source={Director.ScriptSource}";
+        public string Describe() => (Current == State.Reading && Reader != null && Reader.Active ? Reader.Describe() + " " + (Highlight ? Highlight.Describe() + " " : "") : "") + $"state={Current} beat={Director.BeatIndex + 1}/{(Director.Script != null ? Director.Script.Beats.Count : 0)} envScale={(env != null ? env.localScale.x.ToString("F2") : "n/a")} active={(env != null && env.gameObject.activeSelf)} playing={Application.isPlaying} source={Director.ScriptSource}";
 
         /// The diorama grows out of the table in front of the reader; its hall centre sits at chest height, a little below the page.
         IEnumerator Grow(int startBeat = -1)

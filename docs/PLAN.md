@@ -26,7 +26,7 @@ Status key: done (headset) / done (editor) = built and exercised there; partial;
 |---|---|---|
 | 1-3 Build, headset install, hand-testing (earlier brief) | done (headset) | Quest 2 sessions 1-3 in HANDOVER; 72 fps at the page and diorama |
 | 4 Content pipeline, whole-book pages | done (editor) | `tools/ingest_book.py`, `content/books/*`, `BookReader.cs`, `PagePointer.cs`; page legibility for 20 minutes still to measure on the headset |
-| 5 Highlight menu, Define, Search, Peek (c) clay + (a) matcher, `fable-interpreter mock` | todo | needs pinch-drag text selection on the page (PagePointer gives the hit point) |
+| 5 Highlight menu, Define, Search, Peek (c) clay + (a) matcher, `fable-interpreter mock` | done (editor) | `Highlighter.cs`, `ClayBuilder.cs`, `Lookup.cs`, `schema/mock-model.schema.json`, `content/dictionary`, `content/library`, `fable-interpreter mock` and `POST /peek`; editor latencies in HANDOVER. Not measured: live clay generation (no API key in that session), anything on the headset. Translate is shown disabled (P1) |
 | 6 Lobby with shelf and four books | todo | cover art from the SE editions (paintings named in each `SOURCE.md` colophon); Odyssey needs a public-domain painting with a recorded source |
 | 7 Rooms: Kansas farmhouse, Calypso's cave, Glumdalclitch's room; music and CREDITS.md | todo | Hall of Doors exists; budgets in ARCHITECTURE.md |
 | 8 Step In live: generate vs baseline, latencies (cached / live opus / live haiku), streaming, 20 s fallback | partial | live generation runs on the owner's Mac; latencies, streaming and the 20 s rule not done |

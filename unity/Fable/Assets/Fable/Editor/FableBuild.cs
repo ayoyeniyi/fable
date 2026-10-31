@@ -387,6 +387,16 @@ namespace Fable.Editor
                     var to = Path.Combine(dst, "books", Path.GetFileName(dir)); Directory.CreateDirectory(to);
                     File.Copy(src, Path.Combine(to, "book.json"), true); n++;
                 }
+            // the highlight menu's offline data: dictionary (Define) and the Peek library (index + clay models)
+            var dict = Path.Combine(repo, "content", "dictionary", "webster1913.json");
+            if (File.Exists(dict)) { Directory.CreateDirectory(Path.Combine(dst, "dictionary")); File.Copy(dict, Path.Combine(dst, "dictionary", "webster1913.json"), true); n++; }
+            var lib = Path.Combine(repo, "content", "library");
+            if (Directory.Exists(lib))
+                foreach (var f in Directory.GetFiles(lib, "*.json", SearchOption.AllDirectories))
+                {
+                    var rel = Path.GetRelativePath(lib, f); var to = Path.Combine(dst, "library", rel);
+                    Directory.CreateDirectory(Path.GetDirectoryName(to)); File.Copy(f, to, true); n++;
+                }
             AssetDatabase.Refresh();
             Debug.Log($"[FableBuild] synced {n} data files into StreamingAssets");
         }

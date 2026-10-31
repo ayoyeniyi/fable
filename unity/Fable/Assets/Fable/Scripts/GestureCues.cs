@@ -74,8 +74,8 @@ namespace Fable
                 case FlowController.State.Reading:
                     list.Add(new Cue(Kind.Pinch, false, $"right {g}\nturn the page"));
                     list.Add(new Cue(Kind.Pinch, true, $"left {g}\npage back"));
-                    list.Add(new Cue(Kind.Pinch, false, $"point and {g}\ncontents, size, bookmark"));
-                    if (canStepIn) list.Add(new Cue(Kind.Hold, false, $"hold right {g}\nstep in"));
+                    list.Add(new Cue(Kind.Drag, false, $"{g} and drag over words\nhighlight: define, peek…"));
+                    list.Add(new Cue(Kind.Pinch, false, $"point and {g}\ncontents, size, step in"));
                     break;
                 case FlowController.State.Miniature:
                     list.Add(new Cue(Kind.Point, false, $"point into the room, {g}\nstep in there"));
