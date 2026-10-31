@@ -1,7 +1,9 @@
 {
   "sceneId": "hall-of-doors",
   "environment": "env.hall-of-doors",
-  "ambiences": ["amb.hall-lamps"],
+  "ambiences": [
+    "amb.hall-lamps"
+  ],
   "anchors": {
     "reader.entrance": "standing spot by the entry passage, facing down the hall",
     "reader.table": "standing spot beside the glass table",
@@ -22,12 +24,50 @@
     "fx.garden-glow": "cool daylight spilling through the little door"
   },
   "clips": {
-    "door.little": ["door.open", "door.close", "door.rattle"],
-    "prop.curtain": ["curtain.sway", "curtain.draw"],
-    "prop.drink-me-bottle": ["bottle.uncork", "bottle.appear"],
-    "prop.golden-key": ["key.glint", "key.turn"],
-    "lamp.row": ["lamp.flicker", "lamp.steady"]
+    "door.little": [
+      "door.open",
+      "door.close",
+      "door.rattle"
+    ],
+    "prop.curtain": [
+      "curtain.sway",
+      "curtain.draw"
+    ],
+    "prop.drink-me-bottle": [
+      "bottle.uncork",
+      "bottle.appear"
+    ],
+    "prop.golden-key": [
+      "key.glint",
+      "key.turn"
+    ],
+    "lamp.row": [
+      "lamp.flicker",
+      "lamp.steady"
+    ]
   },
-  "lights": ["lamp.row", "light.garden", "light.fill"],
-  "sounds": ["sfx.footsteps-stone", "sfx.door-locked-rattle", "sfx.key-fits", "sfx.door-small-open", "sfx.curtain-slide", "sfx.cork-pop", "sfx.glass-set-down", "sfx.garden-birds"]
+  "lights": [
+    "lamp.row",
+    "light.garden",
+    "light.fill"
+  ],
+  "sounds": [
+    "sfx.footsteps-stone",
+    "sfx.door-locked-rattle",
+    "sfx.key-fits",
+    "sfx.door-small-open",
+    "sfx.curtain-slide",
+    "sfx.cork-pop",
+    "sfx.glass-set-down",
+    "sfx.garden-birds"
+  ],
+  "introducedBy": {
+    "prop.glass-table": "hall-of-doors:004",
+    "prop.golden-key": "hall-of-doors:004",
+    "prop.curtain": "hall-of-doors:005",
+    "door.little": "hall-of-doors:005",
+    "fx.garden-glow": "hall-of-doors:006",
+    "prop.drink-me-bottle": "hall-of-doors:009"
+  },
+  "readerScaleFrom": "hall-of-doors:012"
 }

@@ -51,12 +51,6 @@
       "focus": "hall.centre",
       "actions": [
         {
-          "type": "animate",
-          "target": "door.little",
-          "clip": "door.rattle",
-          "durationSeconds": 1.2
-        },
-        {
           "type": "sound",
           "sound": "sfx.door-locked-rattle",
           "anchor": "hall.centre",

@@ -65,3 +65,32 @@ func TestRejects(t *testing.T) {
 		}
 	}
 }
+
+// A script must never show the reader something the text has not reached.
+func TestRejectsAssetBeforeItsSentence(t *testing.T) {
+	m, ids := load(t)
+	raw := `{"version":1,"sceneId":"hall-of-doors","environment":{"prefab":"env.hall-of-doors","ambience":"` + m.Ambiences[0] + `"},
+	"beats":[{"sentenceId":"hall-of-doors:002","actions":[{"type":"place","asset":"prop.drink-me-bottle","anchor":"table.top"}]}]}`
+	s, err := Parse([]byte(raw))
+	if err != nil {
+		t.Fatal(err)
+	}
+	errs := Validate(s, m, ids)
+	if len(errs) == 0 || !strings.Contains(strings.Join(errs, ";"), "before the text introduces it") {
+		t.Fatalf("expected an early-reveal error, got %v", errs)
+	}
+}
+
+func TestRejectsEarlyOrFastReaderScale(t *testing.T) {
+	m, ids := load(t)
+	raw := `{"version":1,"sceneId":"hall-of-doors","environment":{"prefab":"env.hall-of-doors","ambience":"` + m.Ambiences[0] + `"},
+	"beats":[{"sentenceId":"hall-of-doors:004","actions":[{"type":"readerScale","anchor":"hall.centre","scale":4,"durationSeconds":1}]}]}`
+	s, err := Parse([]byte(raw))
+	if err != nil {
+		t.Fatal(err)
+	}
+	all := strings.Join(Validate(s, m, ids), ";")
+	if !strings.Contains(all, "before the text does") || !strings.Contains(all, "[3,12]") {
+		t.Fatalf("expected early and too-fast readerScale errors, got %q", all)
+	}
+}

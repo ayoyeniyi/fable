@@ -64,6 +64,19 @@ type Manifest struct {
 	Clips       map[string][]string `json:"clips"`
 	Lights      []string            `json:"lights"`
 	Sounds      []string            `json:"sounds"`
+	// IntroducedBy maps an asset to the sentence that first brings it into the story. An action that
+	// shows, moves or animates the asset on an earlier beat would show the reader something they have
+	// not read yet, so it is rejected.
+	IntroducedBy map[string]string `json:"introducedBy,omitempty"`
+	// ReaderScaleFrom is the first sentence on which the reader may change size (scale != 1).
+	ReaderScaleFrom string `json:"readerScaleFrom,omitempty"`
+}
+
+// tooEarly reports whether asset is used on sentence before the text introduces it.
+// Sentence ids are zero-padded within one passage, so string order is reading order.
+func (m *Manifest) tooEarly(asset, sentence string) (string, bool) {
+	at, ok := m.IntroducedBy[asset]
+	return at, ok && sentence < at
 }
 
 var sentenceIDRe = regexp.MustCompile(`^[a-z-]+:[0-9]{3}$`)
@@ -143,6 +156,13 @@ func Validate(s *SceneScript, m *Manifest, sentenceIDs []string) []string {
 		}
 		for j, a := range b.Actions {
 			q := fmt.Sprintf("%s.actions[%d]", p, j)
+			subject := a.Asset
+			if a.Type == "animate" {
+				subject = a.Target
+			}
+			if at, early := m.tooEarly(subject, b.SentenceID); early && a.Type != "remove" {
+				add("%s uses %q on %s, before the text introduces it at %s", q, subject, b.SentenceID, at)
+			}
 			switch a.Type {
 			case "place":
 				if _, ok := m.Assets[a.Asset]; !ok {
@@ -233,8 +253,11 @@ func Validate(s *SceneScript, m *Manifest, sentenceIDs []string) []string {
 				if a.Scale == nil || *a.Scale < 0.1 || *a.Scale > 10 {
 					add("%s.scale required in [0.1,10]", q)
 				}
-				if !inRange(a.DurationSeconds, 0.5, 12) {
-					add("%s.durationSeconds out of range", q)
+				if a.DurationSeconds == nil || *a.DurationSeconds < 3 || *a.DurationSeconds > 12 {
+					add("%s.durationSeconds required in [3,12]: slower size changes keep the reader comfortable", q)
+				}
+				if a.Scale != nil && *a.Scale != 1 && m.ReaderScaleFrom != "" && b.SentenceID < m.ReaderScaleFrom {
+					add("%s changes the reader's size on %s, before the text does at %s", q, b.SentenceID, m.ReaderScaleFrom)
 				}
 			default:
 				add("%s.type %q unknown", q, a.Type)
