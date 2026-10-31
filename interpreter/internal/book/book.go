@@ -19,6 +19,8 @@ type Scene struct {
 	Paragraphs    [][]Sentence `json:"paragraphs"`
 	SentenceCount int          `json:"sentenceCount"`
 	ContextBefore []string     `json:"contextBefore"`
+	// Room is the built environment this passage is staged in when it is not its own (several chapters share a room).
+	Room string `json:"room,omitempty"`
 }
 
 type Book struct {

@@ -122,7 +122,7 @@ func TestFailureIsReportedAndRetried(t *testing.T) {
 func TestUnknownSceneAndBadBody(t *testing.T) {
 	s := newServer(t, &fake{})
 	h := s.Handler()
-	if rr := post(t, h, `{"sceneId":"cheshire-cat"}`); rr.Code != 404 {
+	if rr := post(t, h, `{"sceneId":"no-such-scene"}`); rr.Code != 404 {
 		t.Fatalf("want 404, got %d", rr.Code)
 	}
 	if rr := post(t, h, `not json`); rr.Code != 400 {
