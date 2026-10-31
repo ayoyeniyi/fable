@@ -135,7 +135,23 @@ namespace Fable
 
         IEnumerator Start()
         {
-            book = JsonConvert.DeserializeObject<Passage>(System.IO.File.ReadAllText(System.IO.Path.Combine(Application.streamingAssetsPath, "book/passages.json")));
+            // StreamingAssets live inside the APK on Android, so a plain file read throws there; fetch through UnityWebRequest instead.
+            var bookPath = System.IO.Path.Combine(Application.streamingAssetsPath, "book/passages.json");
+            string bookJson;
+#if UNITY_ANDROID && !UNITY_EDITOR
+            // Quest: shade the periphery at lower density; the page sits in the centre of view where density stays full.
+            OVRManager.foveatedRenderingLevel = OVRManager.FoveatedRenderingLevel.Medium;
+            OVRManager.useDynamicFoveatedRendering = true;
+            using (var req = UnityEngine.Networking.UnityWebRequest.Get(bookPath))
+            {
+                yield return req.SendWebRequest();
+                if (req.result != UnityEngine.Networking.UnityWebRequest.Result.Success) { Debug.LogError($"[Fable] book missing from StreamingAssets: {req.error}"); yield break; }
+                bookJson = req.downloadHandler.text;
+            }
+#else
+            bookJson = System.IO.File.ReadAllText(bookPath);
+#endif
+            book = JsonConvert.DeserializeObject<Passage>(bookJson);
             env = Director.Registry.EnvironmentRoot;
             if (!UnityEngine.XR.XRSettings.isDeviceActive && Head && Head.localPosition.y < 0.5f) Head.localPosition = new Vector3(0, 1.25f, 0);
             Director.Flow = this; Director.Panel = Panel; Director.Reader = Input;
