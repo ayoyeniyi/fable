@@ -22,9 +22,11 @@ namespace Fable.Editor
     public static class FableBuild
     {
         // One Unity scene per passage, each with its own lightmaps. Outdoor scenes get daylight, an unlit sky dome and haze.
-        public class SceneDef { public string Id, Scene, Glb; public bool Outdoor; }
+        public class SceneDef { public string Id, Scene, Glb; public bool Outdoor, Lobby; }
         public static readonly SceneDef[] Scenes =
         {
+            // first in the build: the app opens in the lobby (blender/build_lobby.py)
+            new SceneDef { Id = "lobby", Scene = "Assets/Fable/Scenes/Lobby.unity", Glb = "Assets/Fable/Models/Lobby/lobby.gltf", Lobby = true },
             new SceneDef { Id = "hall-of-doors", Scene = "Assets/Fable/Scenes/HallOfDoors.unity", Glb = "Assets/Fable/Models/HallOfDoors/hall_of_doors.gltf" },
             new SceneDef { Id = "mad-tea-party", Scene = "Assets/Fable/Scenes/MadTeaParty.unity", Glb = "Assets/Fable/Models/MadTeaParty/mad_tea_party.gltf", Outdoor = true },
             new SceneDef { Id = "queens-croquet-ground", Scene = "Assets/Fable/Scenes/QueensCroquetGround.unity", Glb = "Assets/Fable/Models/QueensCroquetGround/queens_croquet_ground.gltf", Outdoor = true },
@@ -215,7 +217,10 @@ namespace Fable.Editor
                 // Fully baked: seven realtime point lights cost ~25 ms a frame on Quest 2 and blew the hall out to yellow at 2.2.
                 l.lightmapBakeType = LightmapBakeType.Baked; l.shadows = LightShadows.Soft; l.intensity = l.name.StartsWith("Lamp") ? 1.0f : 0f; l.range = l.name.StartsWith("Lamp") ? 7.5f : 3f;
                 l.color = l.name.StartsWith("Lamp") ? new Color(1f, 0.84f, 0.64f) : new Color(0.72f, 0.9f, 1f);
+                // the lobby: the table lamp and the two wall sconces light the room; the four picture lamps (Lamp1-4) the covers
+                if (def.Lobby) { l.range = 6f; l.intensity = l.name.StartsWith("Lamp0") ? 4f : l.name.StartsWith("Lamp5") || l.name.StartsWith("Lamp6") ? 5f : 1.1f; }
             }
+            if (def.Lobby) RenderSettings.ambientLight = new Color(0.20f, 0.165f, 0.13f);
             // glass and transparent props: switch to URP Lit transparent so the table and bottle read as glass
             Directory.CreateDirectory("Assets/Fable/Materials");
             Material Glassy(string name, Color tint, float smooth)
@@ -247,7 +252,8 @@ namespace Fable.Editor
             // one baked reflection probe per scene: brass, glass, porcelain and the floor read their surroundings
             var probeGo = new GameObject(hall ? "HallReflectionProbe" : "SceneReflectionProbe"); probeGo.transform.SetParent(env.transform, false);
             var centreAnchor = FindDeep(env.transform, "anchor.hall.centre") ?? FindDeep(env.transform, "anchor.scene.centre"); probeGo.transform.position = (centreAnchor ? centreAnchor.position : env.transform.position) + Vector3.up * 1.4f;
-            var probe = probeGo.AddComponent<ReflectionProbe>(); probe.mode = UnityEngine.Rendering.ReflectionProbeMode.Baked; probe.size = hall ? new Vector3(16, 4, 6) : new Vector3(30, 12, 30); probe.resolution = 128; probe.boxProjection = hall; probe.intensity = 1f;
+            var probe = probeGo.AddComponent<ReflectionProbe>(); probe.mode = UnityEngine.Rendering.ReflectionProbeMode.Baked; probe.size = hall ? new Vector3(16, 4, 6) : def.Lobby ? new Vector3(6, 3.2f, 5.4f) : new Vector3(30, 12, 30); probe.resolution = 128; probe.boxProjection = hall || def.Lobby; probe.intensity = 1f;
+            if (def.Lobby) probeGo.transform.position = (centreAnchor ? centreAnchor.position : env.transform.position) + Vector3.up * 1.5f;
 
             // camera rig
             GameObject rig; Transform head;
@@ -297,6 +303,25 @@ namespace Fable.Editor
             if (entrance) rig.transform.position = entrance.position;
             var cameras = rig.GetComponentsInChildren<Camera>(true);
             foreach (var c in cameras) { c.nearClipPlane = 0.05f; c.farClipPlane = 150f; c.clearFlags = CameraClearFlags.SolidColor; c.backgroundColor = Color.black; var d = c.GetUniversalAdditionalCameraData(); if (d) { d.renderPostProcessing = false; d.antialiasing = AntialiasingMode.None; } }
+
+            if (def.Lobby)
+            {
+                // the reader stands on the rug facing the bookcase
+                var shelf = FindDeep(env.transform, "anchor.lobby.shelf");
+                if (shelf && entrance) { var look = shelf.position - entrance.position; look.y = 0; if (look.sqrMagnitude > 1e-4f) rig.transform.rotation = Quaternion.LookRotation(look.normalized, Vector3.up); }
+                var lobbySystems = new GameObject("Fable");
+                var lobbyInput = lobbySystems.AddComponent<ReaderController>();
+#if FABLE_META_XR
+                lobbyInput.LeftHand = lh; lobbyInput.RightHand = rh; lobbyInput.LeftPointer = ovrRig.leftHandAnchor; lobbyInput.RightPointer = ovrRig.rightHandAnchor;
+#endif
+                var lobby = lobbySystems.AddComponent<LobbyController>(); lobby.Input = lobbyInput; lobby.Head = head; lobby.Env = env.transform;
+                lobby.Font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fable/Fonts/EBGaramond-Regular SDF.asset");
+                Directory.CreateDirectory(Path.GetDirectoryName(def.Scene));
+                EditorSceneManager.SaveScene(scene, def.Scene);
+                SetBuildScenes();
+                Debug.Log($"[FableBuild] scene saved: {def.Scene} (lobby, {env.GetComponentsInChildren<Transform>(true).Count(t => t.name.StartsWith("book."))} books)");
+                return;
+            }
 
             // reading room: a dark floor disc and a soft overhead light around the page
             var reading = new GameObject("ReadingRoom");
@@ -387,6 +412,26 @@ namespace Fable.Editor
                     var to = Path.Combine(dst, "books", Path.GetFileName(dir)); Directory.CreateDirectory(to);
                     File.Copy(src, Path.Combine(to, "book.json"), true); n++;
                 }
+            // a small index of the books for the lobby shelf (titles and where each chapter starts), so the lobby can say
+            // how far the reader has got without parsing four whole books
+            if (Directory.Exists(books))
+            {
+                var index = new Newtonsoft.Json.Linq.JArray();
+                foreach (var dir in Directory.GetDirectories(books).OrderBy(d => d))
+                {
+                    var src = Path.Combine(dir, "book.json"); if (!File.Exists(src)) continue;
+                    var bk = Book.Parse(File.ReadAllText(src)); int first = 0;
+                    var chapters = new Newtonsoft.Json.Linq.JArray();
+                    foreach (var ch in bk.Chapters)
+                    {
+                        int count = ch.Paragraphs.Sum(p => p.Sentences.Count);
+                        chapters.Add(new Newtonsoft.Json.Linq.JObject { ["id"] = ch.Id, ["heading"] = ch.Heading, ["name"] = ch.Name, ["first"] = first, ["sentences"] = count, ["paragraphs"] = ch.Paragraphs.Count });
+                        first += count;
+                    }
+                    index.Add(new Newtonsoft.Json.Linq.JObject { ["slug"] = bk.Slug, ["title"] = bk.Title, ["author"] = bk.Author, ["sentences"] = first, ["chapters"] = chapters });
+                }
+                File.WriteAllText(Path.Combine(dst, "books", "index.json"), new Newtonsoft.Json.Linq.JObject { ["books"] = index }.ToString(Newtonsoft.Json.Formatting.None)); n++;
+            }
             // the highlight menu's offline data: dictionary (Define) and the Peek library (index + clay models)
             var dict = Path.Combine(repo, "content", "dictionary", "webster1913.json");
             if (File.Exists(dict)) { Directory.CreateDirectory(Path.Combine(dst, "dictionary")); File.Copy(dict, Path.Combine(dst, "dictionary", "webster1913.json"), true); n++; }

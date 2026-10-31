@@ -64,6 +64,8 @@ namespace Fable
         static string pendingBookSentence;
         /// the passage to stage after a scene load when it is not the scene's own (several chapters share a room)
         static string pendingPassage;
+        /// the book chosen on the lobby shelf, opened on the page when this scene starts (null: the passage's own book)
+        public static string PendingBook;
 
         /// The whole book on the page while reading; the passage view takes over in the miniature and the scene.
         public BookReader Reader { get; private set; }
@@ -216,7 +218,10 @@ namespace Fable
             Reader = GetComponent<BookReader>() ? GetComponent<BookReader>() : gameObject.AddComponent<BookReader>();
             Reader.Panel = Panel; Reader.Pointer = Pointer; Reader.Input = Input;
             Reader.StagePassages = passages;
-            yield return Reader.Load(string.IsNullOrEmpty(Director.PassageScene.Book) ? "alice" : Director.PassageScene.Book);
+            var slug = PendingBook ?? (string.IsNullOrEmpty(Director.PassageScene.Book) ? "alice" : Director.PassageScene.Book); PendingBook = null;
+            yield return Reader.Load(slug);
+            Reader.ShelfAvailable = Application.CanStreamedLevelBeLoaded(LobbyController.SceneName);   // the page's "shelf" control
+            Reader.ShelfPressed += GoToLobby;
             Highlight = GetComponent<Highlighter>() ? GetComponent<Highlighter>() : gameObject.AddComponent<Highlighter>();
             Highlight.Init(this, Reader, Pointer, Input, Director);   // highlight words: Define, Search, Peek, Step In
             Input.Select += OnSelect; Input.ModeChanged += OnInputMode; Input.Next += OnNext; Input.Previous += OnPrev; Input.ReturnToReading += OnReturn; Input.ToggleView += OnToggle; Input.Scrub += OnScrub;
@@ -234,6 +239,7 @@ namespace Fable
                 StartCoroutine(Grow(beat));
             }
             else ShowBook();
+            if (LobbyController.OpenedAt >= 0) { Debug.Log($"[Fable] {Reader.Book.Slug} on the page {(Time.realtimeSinceStartup - LobbyController.OpenedAt) * 1000:F0} ms after the pinch on the shelf"); LobbyController.OpenedAt = -1; }
         }
 
         /// The reading page in its quiet state: the book, where the reader left it (or at a given book sentence).
@@ -367,7 +373,15 @@ namespace Fable
             Panel.Show(Director.PassageScene, at, Hint());
         }
 
-        /// Open another book on the page (the lobby's shelf will call this).
+        /// Back to the lobby and its shelf. Progress is already saved with every page.
+        public void GoToLobby()
+        {
+            if (busy || Current != State.Reading || !Application.CanStreamedLevelBeLoaded(LobbyController.SceneName)) return;
+            busy = true; if (Highlight) Highlight.Clear(); Reader.Deactivate();
+            UnityEngine.SceneManagement.SceneManager.LoadScene(LobbyController.SceneName);
+        }
+
+        /// Open another book on the page.
         public void OpenBook(string slug) { if (Current == State.Reading && !busy) StartCoroutine(OpenBookRoutine(slug)); }
         IEnumerator OpenBookRoutine(string slug)
         {

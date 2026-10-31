@@ -10,13 +10,14 @@ Built so far: the four books ingested and readable page by page with contents, b
 |---|---|
 | `content/books/<slug>/` | `book.json` (whole book, chapters → paragraphs → sentences with stable ids) and `SOURCE.md` (source URL, SHA-256, edition, licence) |
 | `content/dictionary/` | `webster1913.json`: Webster 1913 (public domain) cut to the words the four books use, for Define; `SOURCE.md` |
+| `content/covers/` | the four shelf covers (1400 x 2100): the three Standard Ebooks covers unchanged and an Odyssey cover composed from Böcklin's *Ulysses and Calypso* (public domain); `SOURCE.md` records every source, licence and hash |
 | `content/library/` | Peek library: `peek-library.json` (aliases, the sentence before which an entry is never offered, labels) and `clay/*.json` mock models; `SOURCE.md` |
-| `tools/` | `ingest_book.py` (EPUB / Gutenberg text → `book.json`), `books.json` (the four sources), `map_passages.py` (Step In passages → book sentence ids), `ingest_dictionary.py` (Webster 1913 → `content/dictionary`) |
+| `tools/` | `ingest_book.py` (EPUB / Gutenberg text → `book.json`), `books.json` (the four sources), `map_passages.py` (Step In passages → book sentence ids), `ingest_dictionary.py` (Webster 1913 → `content/dictionary`), `make_covers.py` (Blender: the shelf covers → `content/covers`) |
 | `book/` | `passages.json`: the Step In passages split into sentence ids, each linked to its book sentence; Gutenberg #11 text kept for reference |
 | `schema/` | `scene-script.schema.json` (the contract), `manifest.<scene>.json` (what each scene can do), `mock-model.schema.json` (Peek's clay models: primitives, 2-5 labels, 15k triangles) |
 | `interpreter/` | Go: `fable-interpreter generate|validate|serve|mock`. Asks Claude for a SceneScript (or a Peek clay model), validates, repairs once, never emits an invalid one. Claude only ever sees the book up to the reader's highlight |
 | `scripts/` | hand-authored, validated baseline scripts bundled in the app for offline use |
-| `blender/` | `build_hall_of_doors.py`, `build_mad_tea_party.py`, `build_queens_croquet_ground.py`: each environment as code; renders, bakes, exports `.gltf` + textures; `check_glb_ids.py` checks manifest coverage |
+| `blender/` | `build_lobby.py` (the room the app opens in: the bookcase with the four books face out), `build_hall_of_doors.py`, `build_mad_tea_party.py`, `build_queens_croquet_ground.py`: each environment as code; renders, bakes, exports `.gltf` + textures; `check_glb_ids.py` checks manifest coverage |
 | `audio/` | `synth_sfx.py`: every ambience and foley clip, synthesised |
 | `unity/Fable` | Unity 6000.3 URP project; runtime in `Assets/Fable/Scripts`, batch pipeline in `Assets/Fable/Editor` |
 | `captures/` | `blender/` (Cycles renders), `desktop/` (Unity editor camera), `headset/` (adb screencap from the Quest). Never mixed |
@@ -26,7 +27,8 @@ Built so far: the four books ingested and readable page by page with contents, b
 
 ```bash
 # 1. environments (Blender 5.2, 1-2 min each; add --render for Cycles stills)
-for sc in hall_of_doors:hall:HallOfDoors mad_tea_party:mad-tea-party:MadTeaParty queens_croquet_ground:queens-croquet-ground:QueensCroquetGround; do
+blender -b -P tools/make_covers.py                     # the four covers (content/covers), before the lobby
+for sc in lobby:lobby:Lobby hall_of_doors:hall:HallOfDoors mad_tea_party:mad-tea-party:MadTeaParty queens_croquet_ground:queens-croquet-ground:QueensCroquetGround; do
   IFS=: read py out unity <<< "$sc"
   blender -b -P blender/build_$py.py -- --out out/$out --bake --export --tex 2048
   # copy out/$out/$py.gltf, its .bin and the textures it references into unity/Fable/Assets/Fable/Models/$unity/
@@ -55,6 +57,8 @@ adb shell screencap -p /sdcard/fable.png && adb pull /sdcard/fable.png captures/
 ```
 
 ## Interaction
+
+In the lobby (where the app opens): point at a book on the shelf and it slides forward; pinch to open it. A card on the shelf edge under each book says how far you have read. On the page, **‹ shelf** goes back to the lobby. Until step 7 builds their rooms, Oz, the Odyssey and Gulliver are read in the same quiet reading space as Alice, without Step In.
 
 On the page: point with a hand (or controller) and pinch. A pinch on **contents**, **text size** or **bookmark** presses it; a pinch anywhere else turns the page, a left pinch turns back, and a pinch-drag flips pages. When the page holds a staged passage, **Step in ›** (or holding the right pinch) opens it as a miniature. In the scene: point and pinch on the floor to go there, on the little door to go through; a pinch at nothing reads on; hold left pinch to close and return to the page at the sentence reached. In the editor: the mouse is the right hand's ray; Space / Backspace / Tab / Escape.
 

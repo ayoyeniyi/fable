@@ -55,7 +55,10 @@ namespace Fable
 
         // page widgets built at runtime
         TMP_Text measure;
-        RectTransform contentsBtn, sizeBtn, markBtn, stepBtn;
+        RectTransform contentsBtn, sizeBtn, markBtn, stepBtn, shelfBtn;
+        /// The page's "shelf" control: back to the lobby. Shown only when the flow sets ShelfAvailable (a lobby is in the build).
+        public event System.Action ShelfPressed;
+        public bool ShelfAvailable;
         TMP_Text contentsLbl, sizeLbl, markLbl, stepLbl;
         Image ribbon;
         readonly List<(RectTransform rt, int target)> contentsRows = new();
@@ -538,7 +541,8 @@ namespace Fable
         public bool PressAt(bool right, bool dryRun = false)
         {
             if (!Active || !Pointer) return false;
-            if (dryRun) return Pointer.Over(right, contentsBtn) || Pointer.Over(right, sizeBtn) || Pointer.Over(right, markBtn) || Pointer.Over(right, stepBtn);
+            if (dryRun) return Pointer.Over(right, contentsBtn) || Pointer.Over(right, sizeBtn) || Pointer.Over(right, markBtn) || Pointer.Over(right, stepBtn) || (ShelfAvailable && Pointer.Over(right, shelfBtn));
+            if (ShelfAvailable && Pointer.Over(right, shelfBtn)) { ShelfPressed?.Invoke(); return true; }
             if (Pointer.Over(right, contentsBtn)) { if (InContents) ShowPage(PageIndex, keep: Progress.SentenceId); else ShowContents(); return true; }
             if (Pointer.Over(right, sizeBtn)) { CycleTextSize(); return true; }
             if (Pointer.Over(right, markBtn) && !InContents) { ToggleBookmark(); return true; }
@@ -558,6 +562,7 @@ namespace Fable
                 case "contents": if (InContents) ShowPage(PageIndex, keep: Progress.SentenceId); else ShowContents(); break;
                 case "size": CycleTextSize(); break;
                 case "bookmark": ToggleBookmark(); break;
+                case "shelf": ShelfPressed?.Invoke(); break;
                 default:
                     if (control.StartsWith("entry:") && int.TryParse(control.Substring(6), out var k)) OpenEntry(k);
                     else return "unknown control " + control;
@@ -781,6 +786,8 @@ namespace Fable
             }
             (contentsBtn, contentsLbl) = Button("BtnContents", new Vector2(0, 1), new Vector2(Margin - 8, -TopRow), new Vector2(130, TopRowH), TextAlignmentOptions.Left);
             contentsLbl.text = "contents";
+            TMP_Text shelfLbl; (shelfBtn, shelfLbl) = Button("BtnShelf", new Vector2(0, 1), new Vector2(Margin - 8 + 132, -TopRow), new Vector2(100, TopRowH), TextAlignmentOptions.Left);
+            shelfLbl.text = "\u2039 shelf";
             (sizeBtn, sizeLbl) = Button("BtnTextSize", new Vector2(1, 1), new Vector2(-Margin - 132, -TopRow), new Vector2(150, TopRowH), TextAlignmentOptions.Right);
             (markBtn, markLbl) = Button("BtnBookmark", new Vector2(1, 1), new Vector2(-Margin + 8, -TopRow), new Vector2(124, TopRowH), TextAlignmentOptions.Right);
             (stepBtn, stepLbl) = Button("BtnStepIn", new Vector2(1, 1), new Vector2(-Margin + 8, -FootY + 2), new Vector2(150, FootH - 4), TextAlignmentOptions.Right);
@@ -804,6 +811,7 @@ namespace Fable
         void SetWidgets(bool on)
         {
             foreach (var rt in new[] { contentsBtn, sizeBtn, markBtn }) if (rt) rt.gameObject.SetActive(on);
+            if (shelfBtn) shelfBtn.gameObject.SetActive(on && ShelfAvailable);
             if (stepBtn) stepBtn.gameObject.SetActive(on && StepInPassage != null);
             if (ribbon && !on) ribbon.gameObject.SetActive(false);
             if (!on) SetContentsRows(false);
@@ -825,7 +833,7 @@ namespace Fable
             if (!Pointer) return;
             // hover: the control a pinch would press glows faintly
             void Hover(RectTransform rt) { if (!rt || !rt.gameObject.activeSelf) return; var img = rt.GetComponent<Image>(); var a = Pointer.Over(true, rt) || Pointer.Over(false, rt) ? 0.16f : 0f; if (!Mathf.Approximately(img.color.a, a)) img.color = new Color(img.color.r, img.color.g, img.color.b, a); }
-            Hover(contentsBtn); Hover(sizeBtn); Hover(markBtn); Hover(stepBtn);
+            Hover(contentsBtn); Hover(sizeBtn); Hover(markBtn); Hover(stepBtn); Hover(shelfBtn);
             if (InContents) foreach (var r in contentsRows) Hover(r.rt);
         }
     }

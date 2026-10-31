@@ -1,0 +1,326 @@
+fileFormatVersion: 2
+guid: d5eb659ae83ea49088e144db58a2945a
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies:
+  - type: 0
+    originalUri: Assets/Fable/Models/Lobby/lobby.bin
+    assetPath: Assets/Fable/Models/Lobby/lobby.bin
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_alice_Board_Back_alice_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_alice_Board_Back_alice_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_alice_Board_Back_alice_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_alice_Board_Back_alice_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_alice_Board_Back_alice_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_alice_Board_Back_alice_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_alice_Board_Front_alice_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_alice_Board_Front_alice_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_alice_Board_Front_alice_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_alice_Board_Front_alice_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_alice_Board_Front_alice_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_alice_Board_Front_alice_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/cover_alice.jpg
+    assetPath: Assets/Fable/Models/Lobby/textures/cover_alice.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_alice_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_alice_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_alice_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_alice_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_alice_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_alice_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_alice_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_alice_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_alice_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_alice_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_alice_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_alice_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_gulliver_Board_Back_gulliver_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_gulliver_Board_Back_gulliver_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_gulliver_Board_Back_gulliver_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_gulliver_Board_Back_gulliver_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_gulliver_Board_Back_gulliver_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_gulliver_Board_Back_gulliver_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_gulliver_Board_Front_gulliver_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_gulliver_Board_Front_gulliver_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_gulliver_Board_Front_gulliver_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_gulliver_Board_Front_gulliver_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_gulliver_Board_Front_gulliver_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_gulliver_Board_Front_gulliver_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/cover_gulliver.jpg
+    assetPath: Assets/Fable/Models/Lobby/textures/cover_gulliver.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_gulliver_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_gulliver_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_gulliver_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_gulliver_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_gulliver_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_gulliver_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_gulliver_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_gulliver_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_gulliver_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_gulliver_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_gulliver_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_gulliver_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_odyssey_Board_Back_odyssey_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_odyssey_Board_Back_odyssey_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_odyssey_Board_Back_odyssey_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_odyssey_Board_Back_odyssey_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_odyssey_Board_Back_odyssey_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_odyssey_Board_Back_odyssey_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_odyssey_Board_Front_odyssey_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_odyssey_Board_Front_odyssey_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_odyssey_Board_Front_odyssey_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_odyssey_Board_Front_odyssey_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_odyssey_Board_Front_odyssey_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_odyssey_Board_Front_odyssey_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/cover_odyssey.jpg
+    assetPath: Assets/Fable/Models/Lobby/textures/cover_odyssey.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_odyssey_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_odyssey_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_odyssey_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_odyssey_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_odyssey_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_odyssey_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_odyssey_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_odyssey_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_odyssey_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_odyssey_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_odyssey_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_odyssey_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_oz_Board_Back_oz_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_oz_Board_Back_oz_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_oz_Board_Back_oz_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_oz_Board_Back_oz_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_oz_Board_Back_oz_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_oz_Board_Back_oz_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_oz_Board_Front_oz_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_oz_Board_Front_oz_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_oz_Board_Front_oz_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_oz_Board_Front_oz_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_oz_Board_Front_oz_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_oz_Board_Front_oz_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/cover_oz.jpg
+    assetPath: Assets/Fable/Models/Lobby/textures/cover_oz.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_oz_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_oz_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_oz_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_oz_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_oz_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Paper_Pages_oz_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_oz_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_oz_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_oz_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_oz_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Cloth_oz_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Cloth_oz_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Beam_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Beam_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Beam_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Beam_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Beam_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Beam_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Bookcase_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Bookcase_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Bookcase_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Bookcase_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Bookcase_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Bookcase_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Brass_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Brass_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Brass_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Brass_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Brass_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Brass_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Ceiling_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Ceiling_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Ceiling_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Ceiling_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Ceiling_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Ceiling_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Flame_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Flame_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Flame_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Flame_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Flame_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Flame_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Floorboards_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Floorboards_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Floorboards_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Floorboards_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Floorboards_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Floorboards_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Gilt_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Gilt_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Gilt_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Gilt_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Gilt_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Gilt_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_OakPanel_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_OakPanel_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_OakPanel_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_OakPanel_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_OakPanel_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_OakPanel_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Paper_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Paper_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Paper_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Paper_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Paper_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Paper_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Plaster_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Plaster_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Plaster_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Plaster_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Plaster_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Plaster_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Rug_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Rug_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Rug_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Rug_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Rug_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Rug_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Shade_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Shade_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Shade_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Shade_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Shade_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Shade_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Spines_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Spines_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Spines_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Spines_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Spines_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Spines_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Velvet_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Velvet_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Velvet_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Velvet_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_Velvet_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_Velvet_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_WindowNight_Normal.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_WindowNight_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_WindowNight_BaseColor.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_WindowNight_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/Lobby/textures/T_WindowNight_Roughness.png
+    assetPath: Assets/Fable/Models/Lobby/textures/T_WindowNight_Roughness.png
+  reportItems:
+  - type: 2
+    code: 20
+    messages:
+    - KHR_materials_emissive_strength
