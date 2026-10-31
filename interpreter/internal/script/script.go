@@ -27,6 +27,7 @@ type Action struct {
 	YawDegrees      *float64 `json:"yawDegrees,omitempty"`
 	Scale           *float64 `json:"scale,omitempty"`
 	Appear          string   `json:"appear,omitempty"`
+	Ease            string   `json:"ease,omitempty"`
 	Vanish          string   `json:"vanish,omitempty"`
 	Target          string   `json:"target,omitempty"`
 	Clip            string   `json:"clip,omitempty"`
@@ -169,6 +170,19 @@ func Validate(s *SceneScript, m *Manifest, sentenceIDs []string) []string {
 				}
 				if a.Target != "" || a.Clip != "" || a.Light != "" || a.Sound != "" || a.Vanish != "" {
 					add("%s has fields that do not belong to place", q)
+				}
+			case "move":
+				if _, ok := m.Assets[a.Asset]; !ok {
+					add("%s.asset %q unknown", q, a.Asset)
+				}
+				if _, ok := m.Anchors[a.Anchor]; !ok {
+					add("%s.anchor %q unknown", q, a.Anchor)
+				}
+				if !inRange(a.DurationSeconds, 0.1, 20) {
+					add("%s.durationSeconds out of range", q)
+				}
+				if a.Ease != "" && !contains([]string{"smooth", "linear", "settle"}, a.Ease) {
+					add("%s.ease %q invalid", q, a.Ease)
 				}
 			case "remove":
 				if _, ok := m.Assets[a.Asset]; !ok {

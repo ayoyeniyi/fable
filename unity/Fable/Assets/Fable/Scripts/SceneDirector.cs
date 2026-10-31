@@ -64,6 +64,8 @@ namespace Fable
                 Debug.Log("[Fable] using bundled baseline script");
             }
             Script = candidate;
+            if (Clips) Clips.Init(Registry);
+            if (Audio) Audio.Init(Registry);
             CaptureHomes();
             ResetRoom();
         }
@@ -138,6 +140,7 @@ namespace Fable
                 switch (a.Type)
                 {
                     case "place": Place(a, instant); break;
+                    case "move": Move(a, instant); break;
                     case "remove": Remove(a, instant); break;
                     case "animate":
                         if (instant) Clips.Play(a.Target, a.Clip, 0.01f, false);
@@ -188,6 +191,27 @@ namespace Fable
             t.localScale = scale; SetAlpha(t, 1);
         }
 
+        void Move(ScriptAction a, bool instant)
+        {
+            var t = Registry.Asset(a.Asset); var anchor = Registry.Anchor(a.Anchor); if (!t || !anchor) return;
+            var target = anchor.position;
+            if (a.Offset != null) target += anchor.TransformVector(new Vector3(a.Offset[0], a.Offset[1], a.Offset[2]));
+            if (instant) { t.position = target; return; }
+            StartCoroutine(Glide(t, target, a.DurationSeconds ?? 1.5f, a.Ease ?? "smooth"));
+        }
+
+        IEnumerator Glide(Transform t, Vector3 to, float dur, string ease)
+        {
+            var from = t.position;
+            for (float e = 0; e < dur; e += Time.deltaTime)
+            {
+                float x = e / dur;
+                x = ease == "linear" ? x : ease == "settle" ? 1 - Mathf.Pow(1 - x, 3) : Mathf.SmoothStep(0, 1, x);
+                t.position = Vector3.Lerp(from, to, x); yield return null;
+            }
+            t.position = to;
+        }
+
         void Remove(ScriptAction a, bool instant)
         {
             var t = Registry.Asset(a.Asset); if (!t) return;
@@ -207,7 +231,6 @@ namespace Fable
             t.gameObject.SetActive(false); t.localScale = s; SetAlpha(t, 1);
         }
 
-        static readonly MaterialPropertyBlock mpb = new();
         static void SetAlpha(Transform t, float a)
         {
             // URP Lit materials from glTFast are opaque; we drive a global fade property the FableFade shader

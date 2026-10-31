@@ -251,13 +251,13 @@ def velvet(name="M_Velvet", color=(0.36, 0.04, 0.05)):
     b.inputs["Sheen Tint"].default_value = (0.9, 0.55, 0.5, 1)
     mp = texcoord_obj(nt)
     weave = node(nt, "ShaderNodeTexWave", (-900, 0), wave_type='BANDS', bands_direction='X')
-    weave.inputs["Scale"].default_value = 400; weave.inputs["Distortion"].default_value = 1.5
+    weave.inputs["Scale"].default_value = 90; weave.inputs["Distortion"].default_value = 0.8
     nt.links.new(mp.outputs["Vector"], weave.inputs["Vector"])
     n = node(nt, "ShaderNodeTexNoise", (-900, -300)); n.inputs["Scale"].default_value = 3; n.inputs["Detail"].default_value = 4
     nt.links.new(mp.outputs["Vector"], n.inputs["Vector"])
     r = ramp(nt, [(0.35, (color[0] * 0.6, color[1] * 0.6, color[2] * 0.6, 1)), (0.7, (*color, 1))], (-600, -300))
     nt.links.new(n.outputs["Fac"], r.inputs["Fac"]); nt.links.new(r.outputs["Color"], b.inputs["Base Color"])
-    bump = node(nt, "ShaderNodeBump", (0, -200)); bump.inputs["Strength"].default_value = 0.15; bump.inputs["Distance"].default_value = 0.0005
+    bump = node(nt, "ShaderNodeBump", (0, -200)); bump.inputs["Strength"].default_value = 0.06; bump.inputs["Distance"].default_value = 0.0004
     nt.links.new(weave.outputs["Fac"], bump.inputs["Height"]); nt.links.new(bump.outputs["Normal"], b.inputs["Normal"])
     return m
 

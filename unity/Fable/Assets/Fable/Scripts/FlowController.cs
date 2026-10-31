@@ -26,12 +26,21 @@ namespace Fable
         {
             book = JsonConvert.DeserializeObject<Passage>(System.IO.File.ReadAllText(System.IO.Path.Combine(Application.streamingAssetsPath, "book/passages.json")));
             env = Director.Registry.EnvironmentRoot;
+            // desktop preview without a headset: lift the eye to seated height so captures and editor tests are representative
+            if (!UnityEngine.XR.XRSettings.isDeviceActive && Head && Head.localPosition.y < 0.5f) Head.localPosition = new Vector3(0, 1.25f, 0);
             yield return Director.Load(SceneId, book);
             env.gameObject.SetActive(false);
             Input.Select += OnSelect; Input.Next += OnNext; Input.Previous += OnPrev; Input.ReturnToReading += OnReturn;
             Director.BeatChanged += (i, b) => Panel.Show(Director.PassageScene, b.SentenceId, $"{i + 1} / {Director.Script.Beats.Count}   pinch right to continue, left to go back, both hands to return");
             Panel.Show(Director.PassageScene, null, "pinch to step into the hall");
         }
+
+        // test hooks: the same paths the hands take, callable from the editor CLI
+        public void StepInto() => OnSelect();
+        public void StepNext() => OnNext();
+        public void StepBack() => OnPrev();
+        public void StepReturn() => OnReturn();
+        public string Describe() => $"state={Current} beat={Director.BeatIndex + 1}/{(Director.Script != null ? Director.Script.Beats.Count : 0)} envScale={(env != null ? env.localScale.x.ToString("F2") : "n/a")} active={(env != null && env.gameObject.activeSelf)} playing={Application.isPlaying}";
 
         void OnSelect() { if (Current == State.Reading) StartCoroutine(Unfold()); }
         void OnNext() { if (Current == State.Scene && !Director.Next()) StartCoroutine(Return()); }

@@ -13,7 +13,8 @@ namespace Fable
         public void Init(SceneRegistry r)
         {
             reg = r;
-            var zone = reg.EnvironmentRoot.gameObject.GetComponent<AudioReverbZone>() ?? reg.EnvironmentRoot.gameObject.AddComponent<AudioReverbZone>();
+            var zone = reg.EnvironmentRoot.gameObject.GetComponent<AudioReverbZone>();
+            if (!zone) zone = reg.EnvironmentRoot.gameObject.AddComponent<AudioReverbZone>();
             zone.reverbPreset = AudioReverbPreset.StoneCorridor; zone.minDistance = 8; zone.maxDistance = 30;
             for (int i = 0; i < 6; i++) pool.Enqueue(MakeSource("sfx" + i));
         }

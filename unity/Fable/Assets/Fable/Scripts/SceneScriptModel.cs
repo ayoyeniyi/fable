@@ -38,6 +38,7 @@ namespace Fable
         [JsonProperty("yawDegrees")] public float? YawDegrees;
         [JsonProperty("scale")] public float? Scale;
         [JsonProperty("appear")] public string Appear;
+        [JsonProperty("ease")] public string Ease;
         [JsonProperty("vanish")] public string Vanish;
         [JsonProperty("target")] public string Target;
         [JsonProperty("clip")] public string Clip;

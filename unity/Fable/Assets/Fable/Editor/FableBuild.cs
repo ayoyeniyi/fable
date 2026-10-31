@@ -35,7 +35,6 @@ namespace Fable.Editor
             PlayerSettings.Android.targetSdkVersion = AndroidSdkVersions.AndroidApiLevelAuto;
             PlayerSettings.SetGraphicsAPIs(BuildTarget.Android, new[] { GraphicsDeviceType.Vulkan });
             PlayerSettings.colorSpace = ColorSpace.Linear;
-            PlayerSettings.Android.androidTargetDevices = AndroidTargetDevices.PhonesTabletsAndTVDevicesOnly;
             PlayerSettings.SetApplicationIdentifier(target, "com.fable.alice");
             PlayerSettings.productName = "Fable";
             PlayerSettings.companyName = "Fable";
@@ -113,7 +112,8 @@ namespace Fable.Editor
         public static void BuildScene()
         {
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            RenderSettings.ambientMode = AmbientMode.Flat; RenderSettings.ambientLight = new Color(0.02f, 0.015f, 0.01f);
+            RenderSettings.ambientMode = AmbientMode.Flat; RenderSettings.ambientLight = new Color(0.09f, 0.07f, 0.05f);
+            RenderSettings.defaultReflectionMode = DefaultReflectionMode.Custom; RenderSettings.reflectionIntensity = 1f;
             RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Exponential; RenderSettings.fogDensity = 0.035f; RenderSettings.fogColor = new Color(0.06f, 0.045f, 0.03f);
             RenderSettings.skybox = null;
 
@@ -133,10 +133,37 @@ namespace Fable.Editor
                 l.color = l.name.StartsWith("Lamp") ? new Color(1f, 0.72f, 0.45f) : new Color(0.72f, 0.9f, 1f);
             }
             // glass and transparent props: switch to URP Lit transparent so the table and bottle read as glass
+            Directory.CreateDirectory("Assets/Fable/Materials");
+            Material Glassy(string name, Color tint, float smooth)
+            {
+                var path = $"Assets/Fable/Materials/{name}.mat"; var existing = AssetDatabase.LoadAssetAtPath<Material>(path);
+                if (existing) { existing.color = tint; existing.SetFloat("_Smoothness", smooth); EditorUtility.SetDirty(existing); return existing; }
+                var gm = new Material(Shader.Find("Universal Render Pipeline/Lit"));
+                gm.SetFloat("_Surface", 1); gm.SetFloat("_Blend", 0); gm.SetFloat("_ZWrite", 0); gm.SetFloat("_Metallic", 0f); gm.SetFloat("_Smoothness", smooth);
+                gm.SetFloat("_EnvironmentReflections", 1f); gm.SetFloat("_SpecularHighlights", 1f);
+                gm.EnableKeyword("_SURFACE_TYPE_TRANSPARENT"); gm.DisableKeyword("_ALPHAPREMULTIPLY_ON"); gm.SetOverrideTag("RenderType", "Transparent"); gm.renderQueue = 3000;
+                gm.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha); gm.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                gm.color = tint; AssetDatabase.CreateAsset(gm, path); return gm;
+            }
+            var glassMat = Glassy("M_Glass_URP", new Color(0.55f, 0.7f, 0.65f, 0.10f), 0.98f);
+            var liquidMat = Glassy("M_Liquid_URP", new Color(0.65f, 0.18f, 0.08f, 0.85f), 0.9f);
+            var lampGlassMat = Glassy("M_LampGlass_URP", new Color(1f, 0.95f, 0.85f, 0.25f), 0.8f);
             foreach (var r in env.GetComponentsInChildren<Renderer>(true))
-                foreach (var m in r.sharedMaterials)
-                    if (m && (m.name.Contains("Glass") || m.name.Contains("Liquid") || m.name.Contains("LampGlass")))
-                    { m.SetFloat("_Surface", 1); m.SetFloat("_Blend", 0); m.SetFloat("_ZWrite", 0); m.renderQueue = 3000; m.EnableKeyword("_SURFACE_TYPE_TRANSPARENT"); m.SetOverrideTag("RenderType", "Transparent"); var c = m.color; c.a = m.name.Contains("Liquid") ? 0.75f : 0.28f; m.color = c; m.SetFloat("_Smoothness", 0.95f); }
+            {
+                var mats = r.sharedMaterials; bool changed = false;
+                for (int i = 0; i < mats.Length; i++)
+                {
+                    var m = mats[i]; if (!m) continue;
+                    if (m.name.Contains("LampGlass")) { mats[i] = lampGlassMat; changed = true; }
+                    else if (m.name.Contains("Liquid")) { mats[i] = liquidMat; changed = true; }
+                    else if (m.name.Contains("Glass")) { mats[i] = glassMat; changed = true; }
+                }
+                if (changed) r.sharedMaterials = mats;
+            }
+            // one baked reflection probe for the whole hall: brass, glass and the stone floor read their surroundings
+            var probeGo = new GameObject("HallReflectionProbe"); probeGo.transform.SetParent(env.transform, false);
+            var centreAnchor = FindDeep(env.transform, "anchor.hall.centre"); probeGo.transform.position = (centreAnchor ? centreAnchor.position : env.transform.position) + Vector3.up * 1.4f;
+            var probe = probeGo.AddComponent<ReflectionProbe>(); probe.mode = UnityEngine.Rendering.ReflectionProbeMode.Baked; probe.size = new Vector3(16, 4, 6); probe.resolution = 128; probe.boxProjection = true; probe.intensity = 1f;
 
             // camera rig
             GameObject rig; Transform head;
@@ -216,7 +243,7 @@ namespace Fable.Editor
             {
                 var t = new GameObject(n).AddComponent<TextMeshProUGUI>(); t.transform.SetParent(go.transform, false);
                 var r = t.rectTransform; r.anchorMin = new Vector2(0, 1); r.anchorMax = new Vector2(1, 1); r.pivot = new Vector2(0.5f, 1); r.anchoredPosition = new Vector2(0, -y); r.sizeDelta = new Vector2(-96, h);
-                t.font = font; t.fontSize = size; t.fontStyle = style; t.color = col; t.alignment = align; t.enableWordWrapping = true; t.richText = true; t.lineSpacing = 6; t.paragraphSpacing = 18;
+                t.font = font; t.fontSize = size; t.fontStyle = style; t.color = col; t.alignment = align; t.textWrappingMode = TextWrappingModes.Normal; t.richText = true; t.lineSpacing = 6; t.paragraphSpacing = 18;
                 return t;
             }
             var panel = go.AddComponent<ReadingPanel>(); panel.Head = head;
@@ -267,10 +294,15 @@ namespace Fable.Editor
                 var tex = new Texture2D(rt.width, rt.height, TextureFormat.RGB24, false); RenderTexture.active = rt; tex.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0); tex.Apply();
                 File.WriteAllBytes($"../../captures/desktop/{name}.png", tex.EncodeToPNG());
             }
-            var e = FindDeep(env.transform, "anchor.reader.entrance"); var t = FindDeep(env.transform, "anchor.table.top"); var d = FindDeep(env.transform, "anchor.door.little");
+            var e = FindDeep(env.transform, "anchor.reader.entrance"); var t = FindDeep(env.transform, "anchor.table.top"); var d = FindDeep(env.transform, "anchor.door.little"); var c = FindDeep(env.transform, "anchor.hall.centre"); var rc = FindDeep(env.transform, "anchor.reader.curtain");
+            var panel = GameObject.Find("ReadingPanel"); if (panel) panel.SetActive(false);
+            var reading = GameObject.Find("ReadingRoom"); if (reading) reading.SetActive(false);
             Shot("desktop_entrance", e.position + Vector3.up * 1.62f, t.position + Vector3.up * 0.6f);
-            Shot("desktop_table", t.position + new Vector3(0.5f, 0.45f, -0.7f), t.position);
-            Shot("desktop_little_door", d.position + new Vector3(-0.8f, 0.6f, 0.9f), d.position);
+            var toCentre = (c.position - t.position); toCentre.y = 0; toCentre = toCentre.sqrMagnitude < 0.01f ? Vector3.forward : toCentre.normalized;
+            Shot("desktop_table", t.position + toCentre * 0.75f + Vector3.up * 0.4f, t.position);
+            var toHall = (rc.position - d.position); toHall.y = 0; toHall = toHall.normalized;
+            Shot("desktop_little_door", d.position + toHall * 0.9f + Vector3.up * 0.55f, d.position);
+            if (panel) panel.SetActive(true); if (reading) reading.SetActive(true);
             cam.targetTexture = null; Debug.Log("[FableBuild] desktop previews written to captures/desktop");
         }
     }

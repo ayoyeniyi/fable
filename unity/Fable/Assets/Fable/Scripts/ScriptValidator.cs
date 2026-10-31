@@ -65,6 +65,12 @@ namespace Fable
                             if (!InRange(a.Scale, 0.05f, 20)) Add($"{q}.scale out of range");
                             if (a.Appear != null && !Appears.Contains(a.Appear)) Add($"{q}.appear invalid");
                             break;
+                        case "move":
+                            if (a.Asset == null || !m.Assets.ContainsKey(a.Asset)) Add($"{q}.asset '{a.Asset}' unknown");
+                            if (a.Anchor == null || !m.Anchors.ContainsKey(a.Anchor)) Add($"{q}.anchor '{a.Anchor}' unknown");
+                            if (!InRange(a.DurationSeconds, 0.1f, 20)) Add($"{q}.durationSeconds out of range");
+                            if (a.Ease != null && a.Ease != "smooth" && a.Ease != "linear" && a.Ease != "settle") Add($"{q}.ease invalid");
+                            break;
                         case "remove":
                             if (a.Asset == null || !m.Assets.ContainsKey(a.Asset)) Add($"{q}.asset '{a.Asset}' unknown");
                             if (a.Vanish != null && !Vanishes.Contains(a.Vanish)) Add($"{q}.vanish invalid");
