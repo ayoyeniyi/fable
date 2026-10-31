@@ -19,6 +19,9 @@ namespace Fable
         public Transform Head;
         public GameObject ReadingRoom;          // the quiet void with the page (soft light, dark floor disc)
         public string SceneId = "hall-of-doors";
+        /// A book's own room with no staged passage (step 7: Kansas farmhouse, Calypso's cave, Glumdalclitch's room): the
+        /// room stays in view and the page floats in it; there is no miniature and no Step In. RoomBook is the room's book.
+        public bool RoomOnly; public string RoomBook;
         public float MiniatureScale = 0.09f;    // the 14 m hall becomes a 1.3 m diorama
         public float GrowSeconds = 1.8f, ExpandSeconds = 3.2f;
         /// Diorama placement from the eye: about 43 degrees down, so the reader looks into the dollhouse over its near wall.
@@ -178,6 +181,7 @@ namespace Fable
 
         IEnumerator Start()
         {
+            if (RoomOnly) { yield return RoomStart(); yield break; }
             // StreamingAssets live inside the APK on Android, so a plain file read throws there; fetch through UnityWebRequest instead.
             var bookPath = System.IO.Path.Combine(Application.streamingAssetsPath, "book/passages.json");
             string bookJson;
@@ -242,10 +246,44 @@ namespace Fable
             if (LobbyController.OpenedAt >= 0) { Debug.Log($"[Fable] {Reader.Book.Slug} on the page {(Time.realtimeSinceStartup - LobbyController.OpenedAt) * 1000:F0} ms after the pinch on the shelf"); LobbyController.OpenedAt = -1; }
         }
 
+        /// A book's own room: the room is the reading space. Same page, pointer, highlight menu and gestures as the passage
+        /// scenes, without the director's passage, the diorama or the tasks.
+        IEnumerator RoomStart()
+        {
+#if UNITY_ANDROID && !UNITY_EDITOR
+            OVRManager.foveatedRenderingLevel = OVRManager.FoveatedRenderingLevel.Medium;
+            OVRManager.useDynamicFoveatedRendering = true;
+#endif
+            env = Director.Registry.EnvironmentRoot;
+            if (!UnityEngine.XR.XRSettings.isDeviceActive && Head && Head.localPosition.y < 0.5f) Head.localPosition = new Vector3(0, 1.55f, 0);
+            Director.Flow = this; Director.Panel = Panel; Director.Reader = Input; Director.LoadInterpreterUrl();
+            if (ReadingRoom) ReadingRoom.SetActive(false);
+            env.gameObject.SetActive(true);
+            foreach (var cam in FindObjectsByType<Camera>(FindObjectsSortMode.None)) if (cam.farClipPlane < 150f) cam.farClipPlane = 150f;
+            if (Panel && !Panel.GetComponent<GestureCues>()) Panel.gameObject.AddComponent<GestureCues>();
+            Pointer = Panel.GetComponent<PagePointer>() ? Panel.GetComponent<PagePointer>() : Panel.gameObject.AddComponent<PagePointer>();
+            Pointer.Reader = Input; Pointer.Page = (RectTransform)Panel.transform;
+            Reader = GetComponent<BookReader>() ? GetComponent<BookReader>() : gameObject.AddComponent<BookReader>();
+            Reader.Panel = Panel; Reader.Pointer = Pointer; Reader.Input = Input;
+            Reader.StagePassages = passages;   // none: no Step In from a room yet
+            var slug = PendingBook ?? RoomBook ?? "alice"; PendingBook = null;
+            yield return Reader.Load(slug);
+            Reader.ShelfAvailable = Application.CanStreamedLevelBeLoaded(LobbyController.SceneName);
+            Reader.ShelfPressed += GoToLobby;
+            Highlight = GetComponent<Highlighter>() ? GetComponent<Highlighter>() : gameObject.AddComponent<Highlighter>();
+            Highlight.Init(this, Reader, Pointer, Input, Director);
+            Input.Select += OnSelect; Input.ModeChanged += OnInputMode; Input.Next += OnNext; Input.Previous += OnPrev; Input.ReturnToReading += OnReturn; Input.ToggleView += OnToggle; Input.Scrub += OnScrub;
+            ShowBook();
+            if (LobbyController.OpenedAt >= 0) { Debug.Log($"[Fable] {Reader.Book.Slug} on the page {(Time.realtimeSinceStartup - LobbyController.OpenedAt) * 1000:F0} ms after the pinch on the shelf"); LobbyController.OpenedAt = -1; }
+        }
+
+        /// In a room the page stands where the reader does, a little below the eyes, and is not held above a table.
+        void PanelInRoom() { Panel.Distance = 1.1f; Panel.Height = -0.12f; Panel.Side = 0f; Panel.Scale = 1f; Panel.ClampToTable = false; Panel.Recentre(); }
+
         /// The reading page in its quiet state: the book, where the reader left it (or at a given book sentence).
         void ShowBook(string atBookSentence = null)
         {
-            PanelAlone();
+            if (RoomOnly) PanelInRoom(); else PanelAlone();
             Reader.Activate(atBookSentence);
         }
 

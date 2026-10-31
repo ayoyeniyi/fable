@@ -22,7 +22,9 @@ namespace Fable.Editor
     public static class FableBuild
     {
         // One Unity scene per passage, each with its own lightmaps. Outdoor scenes get daylight, an unlit sky dome and haze.
-        public class SceneDef { public string Id, Scene, Glb; public bool Outdoor, Lobby; }
+        /// Room: a book's own room with no staged passage (the page floats in it; FlowController.RoomOnly). LightScale
+        /// stretches indoor light ranges for rooms built at giant scale (Glumdalclitch's room is 12x).
+        public class SceneDef { public string Id, Scene, Glb, Book; public bool Outdoor, Lobby, Room; public float LightScale = 1f; }
         public static readonly SceneDef[] Scenes =
         {
             // first in the build: the app opens in the lobby (blender/build_lobby.py)
@@ -30,6 +32,10 @@ namespace Fable.Editor
             new SceneDef { Id = "hall-of-doors", Scene = "Assets/Fable/Scenes/HallOfDoors.unity", Glb = "Assets/Fable/Models/HallOfDoors/hall_of_doors.gltf" },
             new SceneDef { Id = "mad-tea-party", Scene = "Assets/Fable/Scenes/MadTeaParty.unity", Glb = "Assets/Fable/Models/MadTeaParty/mad_tea_party.gltf", Outdoor = true },
             new SceneDef { Id = "queens-croquet-ground", Scene = "Assets/Fable/Scenes/QueensCroquetGround.unity", Glb = "Assets/Fable/Models/QueensCroquetGround/queens_croquet_ground.gltf", Outdoor = true },
+            // step 7: one room per book for the other three books
+            new SceneDef { Id = "kansas-farmhouse", Scene = "Assets/Fable/Scenes/KansasFarmhouse.unity", Glb = "Assets/Fable/Models/KansasFarmhouse/kansas_farmhouse.gltf", Outdoor = true, Room = true, Book = "oz" },
+            new SceneDef { Id = "calypsos-cave", Scene = "Assets/Fable/Scenes/CalypsosCave.unity", Glb = "Assets/Fable/Models/CalypsosCave/calypsos_cave.gltf", Outdoor = true, Room = true, Book = "odyssey" },
+            new SceneDef { Id = "glumdalclitchs-room", Scene = "Assets/Fable/Scenes/GlumdalclitchsRoom.unity", Glb = "Assets/Fable/Models/GlumdalclitchsRoom/glumdalclitchs_room.gltf", Room = true, Book = "gulliver", LightScale = 12f },
         };
         const string ScenePath = "Assets/Fable/Scenes/HallOfDoors.unity";   // the hall: desktop previews
         static SceneDef Def(string id) => Scenes.First(d => d.Id == id);
@@ -215,7 +221,7 @@ namespace Fable.Editor
             if (!outdoor) foreach (var l in env.GetComponentsInChildren<Light>(true))
             {
                 // Fully baked: seven realtime point lights cost ~25 ms a frame on Quest 2 and blew the hall out to yellow at 2.2.
-                l.lightmapBakeType = LightmapBakeType.Baked; l.shadows = LightShadows.Soft; l.intensity = l.name.StartsWith("Lamp") ? 1.0f : 0f; l.range = l.name.StartsWith("Lamp") ? 7.5f : 3f;
+                l.lightmapBakeType = LightmapBakeType.Baked; l.shadows = LightShadows.Soft; l.intensity = l.name.StartsWith("Lamp") ? 1.0f : 0f; l.range = (l.name.StartsWith("Lamp") ? 7.5f : 3f) * def.LightScale;
                 l.color = l.name.StartsWith("Lamp") ? new Color(1f, 0.84f, 0.64f) : new Color(0.72f, 0.9f, 1f);
                 // the lobby: the table lamp and the two wall sconces light the room; the four picture lamps (Lamp1-4) the covers
                 if (def.Lobby) { l.range = 6f; l.intensity = l.name.StartsWith("Lamp0") ? 4f : l.name.StartsWith("Lamp5") || l.name.StartsWith("Lamp6") ? 5f : 1.1f; }
@@ -254,6 +260,12 @@ namespace Fable.Editor
             var centreAnchor = FindDeep(env.transform, "anchor.hall.centre") ?? FindDeep(env.transform, "anchor.scene.centre"); probeGo.transform.position = (centreAnchor ? centreAnchor.position : env.transform.position) + Vector3.up * 1.4f;
             var probe = probeGo.AddComponent<ReflectionProbe>(); probe.mode = UnityEngine.Rendering.ReflectionProbeMode.Baked; probe.size = hall ? new Vector3(16, 4, 6) : def.Lobby ? new Vector3(6, 3.2f, 5.4f) : new Vector3(30, 12, 30); probe.resolution = 128; probe.boxProjection = hall || def.Lobby; probe.intensity = 1f;
             if (def.Lobby) probeGo.transform.position = (centreAnchor ? centreAnchor.position : env.transform.position) + Vector3.up * 1.5f;
+            if (def.Room)
+            {
+                // fit the probe to the room itself (not the sky dome or far scenery)
+                var rs = env.GetComponentsInChildren<Renderer>(true).Where(r => !FlowControllerBackdrop(r.name) && !r.name.Contains("Sky")).ToArray();
+                if (rs.Length > 0) { var b = rs[0].bounds; foreach (var r in rs) b.Encapsulate(r.bounds); var size = Vector3.Min(b.size, new Vector3(80, 50, 80)); probeGo.transform.position = b.center; probe.size = size; probe.boxProjection = !outdoor; }
+            }
 
             // camera rig
             GameObject rig; Transform head;
@@ -304,11 +316,11 @@ namespace Fable.Editor
             var cameras = rig.GetComponentsInChildren<Camera>(true);
             foreach (var c in cameras) { c.nearClipPlane = 0.05f; c.farClipPlane = 150f; c.clearFlags = CameraClearFlags.SolidColor; c.backgroundColor = Color.black; var d = c.GetUniversalAdditionalCameraData(); if (d) { d.renderPostProcessing = false; d.antialiasing = AntialiasingMode.None; } }
 
+            // the reader faces the room's view: anchor.reader.look (rooms) or the lobby's shelf
+            var facing = FindDeep(env.transform, "anchor.reader.look") ?? FindDeep(env.transform, "anchor.lobby.shelf");
+            if (facing && entrance) { var look = facing.position - entrance.position; look.y = 0; if (look.sqrMagnitude > 1e-4f) rig.transform.rotation = Quaternion.LookRotation(look.normalized, Vector3.up); }
             if (def.Lobby)
             {
-                // the reader stands on the rug facing the bookcase
-                var shelf = FindDeep(env.transform, "anchor.lobby.shelf");
-                if (shelf && entrance) { var look = shelf.position - entrance.position; look.y = 0; if (look.sqrMagnitude > 1e-4f) rig.transform.rotation = Quaternion.LookRotation(look.normalized, Vector3.up); }
                 var lobbySystems = new GameObject("Fable");
                 var lobbyInput = lobbySystems.AddComponent<ReaderController>();
 #if FABLE_META_XR
@@ -316,6 +328,7 @@ namespace Fable.Editor
 #endif
                 var lobby = lobbySystems.AddComponent<LobbyController>(); lobby.Input = lobbyInput; lobby.Head = head; lobby.Env = env.transform;
                 lobby.Font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fable/Fonts/EBGaramond-Regular SDF.asset");
+                lobbySystems.AddComponent<RoomSound>().Id = "lobby";
                 Directory.CreateDirectory(Path.GetDirectoryName(def.Scene));
                 EditorSceneManager.SaveScene(scene, def.Scene);
                 SetBuildScenes();
@@ -345,6 +358,7 @@ namespace Fable.Editor
             var panel = BuildPanel(head);
             var flow = systems.AddComponent<FlowController>(); flow.Director = director; flow.Input = input; flow.Panel = panel; flow.Head = head; flow.ReadingRoom = reading;
             flow.SceneId = sceneId;
+            if (def.Room) { flow.RoomOnly = true; flow.RoomBook = def.Book; systems.AddComponent<RoomSound>().Id = sceneId; }
 
             Directory.CreateDirectory(Path.GetDirectoryName(def.Scene));
             EditorSceneManager.SaveScene(scene, def.Scene);

@@ -44,15 +44,19 @@ namespace Fable
         /// Set by FlowController: true at full scale around the reader, false on the page or with the diorama.
         public bool Immersive { get; set; }
 
+        /// The interpreter's address from the device file, if the scene did not set one (also used by rooms with no passage, for Peek).
+        public void LoadInterpreterUrl()
+        {
+            if (!string.IsNullOrEmpty(InterpreterUrl)) return;
+            var f = Path.Combine(Application.persistentDataPath, "interpreter.txt");
+            if (File.Exists(f)) { InterpreterUrl = File.ReadAllText(f).Trim(); Debug.Log($"[Fable] interpreter url from device file: {InterpreterUrl}"); }
+        }
+
         public IEnumerator Load(string sceneId, Passage book)
         {
             // A tester can point a built headset at a live interpreter without rebuilding:
             //   adb push url.txt /sdcard/Android/data/com.fable.alice/files/interpreter.txt   (one line, e.g. http://10.20.11.177:8787)
-            if (string.IsNullOrEmpty(InterpreterUrl))
-            {
-                var f = Path.Combine(Application.persistentDataPath, "interpreter.txt");
-                if (File.Exists(f)) { InterpreterUrl = File.ReadAllText(f).Trim(); Debug.Log($"[Fable] interpreter url from device file: {InterpreterUrl}"); }
-            }
+            LoadInterpreterUrl();
             PassageScene = book.Scenes.First(s => s.Id == sceneId);
             var manifest = JsonConvert.DeserializeObject<SceneManifest>(ReadStreaming($"scripts/manifest.{sceneId}.json"));
             Manifest = manifest;

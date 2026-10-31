@@ -21,13 +21,13 @@ namespace Fable
         public Color Ink = new(0.16f, 0.11f, 0.06f), CardDim = new(0.52f, 0.47f, 0.38f), CardLit = new(0.90f, 0.84f, 0.70f), RayColour = new(0.85f, 0.62f, 0.22f);
         public float SlideMetres = 0.06f, MaxRay = 6f;
 
-        /// Where each book is read. Alice reads in the Hall of Doors' scene; the other three rooms are step 7, so until
-        /// then Oz, the Odyssey and Gulliver open in the same scene (the page is shown in its quiet reading space, and
-        /// Step In stays hidden because no passages of those books are staged yet).
+        /// Where each book is read: its own P0 room. A room missing from the build falls back to the Hall of Doors scene's
+        /// quiet reading space.
         public static readonly Dictionary<string, string> ReadingScene = new()
         {
-            ["alice"] = "HallOfDoors", ["oz"] = "HallOfDoors", ["odyssey"] = "HallOfDoors", ["gulliver"] = "HallOfDoors",
+            ["alice"] = "HallOfDoors", ["oz"] = "KansasFarmhouse", ["odyssey"] = "CalypsosCave", ["gulliver"] = "GlumdalclitchsRoom",
         };
+        const string FallbackScene = "HallOfDoors";
 
         class Shelved
         {
@@ -215,6 +215,7 @@ namespace Fable
             opening = true; ray.enabled = false; dot.gameObject.SetActive(false);
             Debug.Log($"[Fable] lobby: opening {b.Slug} in {scene}"); OpenedAt = Time.realtimeSinceStartup;
             FlowController.PendingBook = b.Slug;
+            if (!Application.CanStreamedLevelBeLoaded(scene)) { Debug.LogWarning($"[Fable] lobby: {scene} is not in the build; reading {b.Slug} in {FallbackScene}"); scene = FallbackScene; }
             var load = Application.CanStreamedLevelBeLoaded(scene) ? SceneManager.LoadSceneAsync(scene) : null;
             if (load != null) load.allowSceneActivation = false;
             // the book comes off the shelf and up in front of the eyes, opening a little as it comes
