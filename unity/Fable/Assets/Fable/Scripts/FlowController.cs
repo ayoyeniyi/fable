@@ -53,6 +53,13 @@ namespace Fable
         };
         /// set before loading another passage's scene so it opens straight into the miniature
         static bool openOnLoad;
+        /// the book sentence the reader stepped in from, carried across a scene load (null: resume the passage)
+        static string pendingBookSentence;
+
+        /// The whole book on the page while reading; the passage view takes over in the miniature and the scene.
+        public BookReader Reader { get; private set; }
+        public PagePointer Pointer { get; private set; }
+        public bool CanStepIn => Current == State.Reading && Reader != null && Reader.Active && !Reader.InContents && Reader.StepInPassage != null;
         List<Passage.Scene> passages = new();
         int chosen;
         Passage.Scene Chosen => passages.Count > 0 ? passages[chosen] : Director.PassageScene;
@@ -190,35 +197,70 @@ namespace Fable
             var ovrRig = Head ? Head.GetComponentInParent<OVRCameraRig>() : null; if (ovrRig) rigRoot = ovrRig.transform;
 #endif
             Move = GetComponent<Locomotion>() ? GetComponent<Locomotion>() : gameObject.AddComponent<Locomotion>(); Move.Init(this, Director, Input, Head, rigRoot);   // point and pinch to go there
+            // the book: the passage's own book, read cover to cover on the page
+            Pointer = Panel.GetComponent<PagePointer>() ? Panel.GetComponent<PagePointer>() : Panel.gameObject.AddComponent<PagePointer>();
+            Pointer.Reader = Input; Pointer.Page = (RectTransform)Panel.transform;
+            Reader = GetComponent<BookReader>() ? GetComponent<BookReader>() : gameObject.AddComponent<BookReader>();
+            Reader.Panel = Panel; Reader.Pointer = Pointer; Reader.Input = Input;
+            Reader.StagePassages = passages;
+            yield return Reader.Load(string.IsNullOrEmpty(Director.PassageScene.Book) ? "alice" : Director.PassageScene.Book);
             Input.Select += OnSelect; Input.ModeChanged += OnInputMode; Input.Next += OnNext; Input.Previous += OnPrev; Input.ReturnToReading += OnReturn; Input.ToggleView += OnToggle; Input.Scrub += OnScrub;
             Director.BeatChanged += (i, b) =>
             {
                 Panel.Show(Director.PassageScene, b.SentenceId, Hint());
                 ProgressStore.Save(SceneId, i, b.SentenceId);
             };
-            // the picker starts on the passage read last (the APK always boots into the hall's scene)
-            var last = ProgressStore.LastSceneId();
-            chosen = Mathf.Max(0, passages.FindIndex(p => p.Id == (openOnLoad || last == null ? SceneId : last)));
-            if (chosen < 0 || chosen >= passages.Count) chosen = Mathf.Max(0, passages.FindIndex(p => p.Id == SceneId));
-            if (openOnLoad) { openOnLoad = false; StartCoroutine(Grow()); }
-            else ShowPicker(welcome: true);
+            chosen = Mathf.Max(0, passages.FindIndex(p => p.Id == SceneId));
+            if (openOnLoad)
+            {
+                openOnLoad = false;
+                int beat = pendingBookSentence != null ? BeatForBookSentence(pendingBookSentence) : -1;
+                pendingBookSentence = null;
+                StartCoroutine(Grow(beat));
+            }
+            else ShowBook();
         }
 
-        /// The reading page in its quiet state: the chosen passage, where the reader left it, and how to choose another.
-        void ShowPicker(bool welcome = false)
+        /// The reading page in its quiet state: the book, where the reader left it (or at a given book sentence).
+        void ShowBook(string atBookSentence = null)
         {
-            var p = Chosen; var saved = ProgressStore.Load(p.Id);
-            string pick = InputNote + (passages.Count > 1 ? $"\u2039 passage {chosen + 1} of {passages.Count} \u203a  {LeftPick} for another.   " : "");
-            string open = saved.SentenceId != null ? (welcome ? $"welcome back. {RightOpen} to open {Place(p.Id)} where you left it" : $"{RightOpen} to open {Place(p.Id)} where you left it") : $"{RightOpen} to open {Place(p.Id)}";
-            string source = p.Id == SceneId && Director.ScriptSource != "" ? $"   (scene: {Director.ScriptSource})" : "";
-            Panel.Show(p, saved.SentenceId, pick + open + source);
+            PanelAlone();
+            Reader.Activate(atBookSentence);
         }
 
-        void ChoosePassage(int dir)
+        /// Stage the passage whose text is on the page, starting at the beat for the page's first sentence.
+        void StepIn()
         {
-            if (passages.Count < 2) return;
-            chosen = (chosen + dir + passages.Count) % passages.Count;
-            ShowPicker();
+            var id = Reader.StepInPassage; if (id == null || busy) return;
+            var from = Reader.FirstVisibleSentence;
+            Reader.Deactivate();
+            int i = passages.FindIndex(p => p.Id == id); if (i < 0) return;
+            chosen = i;
+            if (id == SceneId) { StartCoroutine(Grow(BeatForBookSentence(from))); return; }
+            pendingBookSentence = from;
+            OpenChosen();
+        }
+
+        /// The first beat at or after a book sentence (0 if the page is before the passage, the last if after it).
+        int BeatForBookSentence(string bookSentence)
+        {
+            if (Director.Script == null || Reader == null || Reader.Book == null) return -1;
+            int at = Reader.Book.Ordinal(bookSentence); if (at < 0) return -1;
+            var map = new Dictionary<string, string>();
+            foreach (var s in Director.PassageScene.Sentences()) map[s.Id] = s.BookSentence;
+            var beats = Director.Script.Beats;
+            for (int b = 0; b < beats.Count; b++)
+                if (map.TryGetValue(beats[b].SentenceId, out var bs) && Reader.Book.Ordinal(bs) >= at) return b;
+            return beats.Count - 1;
+        }
+
+        /// The book sentence the passage view has reached (for the page after closing the scene).
+        string ReachedBookSentence()
+        {
+            if (Director.Script == null || Director.BeatIndex < 0) return null;
+            var sid = Director.Script.Beats[Director.BeatIndex].SentenceId;
+            foreach (var s in Director.PassageScene.Sentences()) if (s.Id == sid) return s.BookSentence;
+            return null;
         }
 
         void OpenChosen()
@@ -234,33 +276,44 @@ namespace Fable
         string RightOpen => Input.InputMode == "controllers" ? "right trigger" : "right hand: touch thumb and index finger";
         string LeftPick => Input.InputMode == "controllers" ? "left trigger" : "left hand: touch thumb and index finger";
         string InputNote => Input.InputMode == "none" ? "show your hands to the headset, or pick up the controllers.   " : "";
-        void OnInputMode(string mode) { if (busy) return; if (Current == State.Reading) ShowPicker(); else if (Director.Script != null && Director.BeatIndex >= 0) Panel.Show(Director.PassageScene, Director.Script.Beats[Director.BeatIndex].SentenceId, Hint()); }
+        void OnInputMode(string mode) { if (busy) return; if (Current == State.Reading) return; else if (Director.Script != null && Director.BeatIndex >= 0) Panel.Show(Director.PassageScene, Director.Script.Beats[Director.BeatIndex].SentenceId, Hint()); }
 
         string TaskNote => Tasks != null && Tasks.Prompt != "" ? $"<b>{Tasks.Prompt}</b>   " : "";
         string Hint() => TaskNote + InputNote + (Current == State.Scene
             ? $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   point at the floor and {Pinch}: go there \u00b7 swing your arms: walk \u00b7 point at the little door and {Pinch}: go through \u00b7 {Pinch}: next sentence \u00b7 hold right {Pinch}: back to the table \u00b7 hold left {Pinch}: close the book"
             : $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   point into the little room and {Pinch}: step in there \u00b7 {Pinch}: next sentence \u00b7 {Pinch} and drag: scroll \u00b7 hold left {Pinch}: close the book");
 
-        void OnSelect() { if (Current == State.Reading && !busy) OpenChosen(); }
-        void OnNext() { if ((Current == State.Scene || Current == State.Miniature) && !busy && !Director.Next()) StartCoroutine(Current == State.Scene ? Shrink() : Return()); }
+        // A right tap fires Next and Select together; on the page, Next does the work (Select stays for the scene states).
+        void OnSelect() { }
+        void OnNext()
+        {
+            if (busy) return;
+            if (Current == State.Reading)
+            {
+                if (Reader.OverStepIn(true)) StepIn();
+                else if (!Reader.PressAt(true)) Reader.NextPage();
+                return;
+            }
+            if ((Current == State.Scene || Current == State.Miniature) && !Director.Next()) StartCoroutine(Current == State.Scene ? Shrink() : Return());
+        }
         void OnPrev()
         {
             if (busy) return;
             if (Current == State.Scene || Current == State.Miniature) Director.Previous();
-            else if (Current == State.Reading) ChoosePassage(-1);
+            else if (Current == State.Reading) { if (Reader.OverStepIn(false)) StepIn(); else if (!Reader.PressAt(false)) Reader.PreviousPage(); }
         }
         void OnScrub(int dir)
         {
             if (busy) return;
             if (Current == State.Scene || Current == State.Miniature) { if (dir > 0) Director.Next(); else Director.Previous(); }
-            else if (Current == State.Reading) ChoosePassage(dir);
+            else if (Current == State.Reading) { if (dir > 0) Reader.NextPage(); else Reader.PreviousPage(); }
         }
         void OnToggle()
         {
             if (busy) return;
             if (Current == State.Miniature) StartCoroutine(Expand());
             else if (Current == State.Scene) StartCoroutine(Shrink());
-            else if (Current == State.Reading) OpenChosen();
+            else if (Current == State.Reading) StepIn();
         }
         void OnReturn() { if ((Current == State.Scene || Current == State.Miniature) && !busy) StartCoroutine(Return()); }
 
@@ -269,22 +322,31 @@ namespace Fable
         {
             if (Director.Script == null) return;
             var at = Director.BeatIndex >= 0 ? Director.Script.Beats[Director.BeatIndex].SentenceId : null;
-            if (Current == State.Reading) { ShowPicker(); return; }
+            if (Current == State.Reading) return;
             Panel.Show(Director.PassageScene, at, Hint());
         }
 
+        /// Open another book on the page (the lobby's shelf will call this).
+        public void OpenBook(string slug) { if (Current == State.Reading && !busy) StartCoroutine(OpenBookRoutine(slug)); }
+        IEnumerator OpenBookRoutine(string slug)
+        {
+            busy = true; Reader.Deactivate();
+            yield return Reader.Load(slug);
+            busy = false; ShowBook();
+        }
+
         // test hooks: the same paths the hands take, callable from the editor CLI
-        public void StepInto() => OnSelect();
+        public void StepInto() { if (Current == State.Reading) StepIn(); }
         public void StepNext() => OnNext();
         public void StepBack() => OnPrev();
         public void StepToggle() => OnToggle();
         public void StepReturn() => OnReturn();
         public void StepChoose(int dir) => OnScrub(dir);
         public string ChosenId => Chosen?.Id;
-        public string Describe() => $"state={Current} beat={Director.BeatIndex + 1}/{(Director.Script != null ? Director.Script.Beats.Count : 0)} envScale={(env != null ? env.localScale.x.ToString("F2") : "n/a")} active={(env != null && env.gameObject.activeSelf)} playing={Application.isPlaying} source={Director.ScriptSource}";
+        public string Describe() => (Current == State.Reading && Reader != null && Reader.Active ? Reader.Describe() + " " : "") + $"state={Current} beat={Director.BeatIndex + 1}/{(Director.Script != null ? Director.Script.Beats.Count : 0)} envScale={(env != null ? env.localScale.x.ToString("F2") : "n/a")} active={(env != null && env.gameObject.activeSelf)} playing={Application.isPlaying} source={Director.ScriptSource}";
 
         /// The diorama grows out of the table in front of the reader; its hall centre sits at chest height, a little below the page.
-        IEnumerator Grow()
+        IEnumerator Grow(int startBeat = -1)
         {
             busy = true; Current = State.Growing; Director.Immersive = false;
             Director.ResetRoom();
@@ -307,7 +369,8 @@ namespace Fable
             ScaleAbout(env, miniaturePivot, MiniatureScale);
             Current = State.Miniature; busy = false;
             var saved = ProgressStore.Load(SceneId);
-            if (saved.BeatIndex >= 0) Director.JumpTo(saved.BeatIndex); else Director.Next();
+            if (startBeat >= 0) Director.JumpTo(startBeat);
+            else if (saved.BeatIndex >= 0) Director.JumpTo(saved.BeatIndex); else Director.Next();
         }
 
         /// From diorama to full scale around the reader. The pivot moves from the table to the reader's feet so the floor arrives under them.
@@ -381,10 +444,9 @@ namespace Fable
             }
             env.gameObject.SetActive(false);
             Director.Audio.StopAmbience();
-            PanelAlone();
             Current = State.Reading; busy = false;
             chosen = Mathf.Max(0, passages.FindIndex(p => p.Id == SceneId));
-            ShowPicker();
+            ShowBook(ReachedBookSentence());
         }
 
         static void ScaleAbout(Transform t, Vector3 pivot, float s)

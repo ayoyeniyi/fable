@@ -56,9 +56,11 @@ namespace Fable
         SceneDirector director; FlowController flow; ReaderController reader; Transform head;
         Task active; float activeSince; bool done;
         readonly List<Renderer> glowing = new(); Color glowBase = new(1f, 0.78f, 0.35f);
-        readonly MaterialPropertyBlock block = new();
+        MaterialPropertyBlock block;   // made in Awake: Unity forbids creating one in a field initializer
 
         public string Prompt => active != null && !done ? active.Prompt : "";
+
+        void Awake() { block ??= new MaterialPropertyBlock(); }
 
         public void Init(SceneDirector d, FlowController f, ReaderController r, Transform h)
         {
@@ -204,6 +206,7 @@ namespace Fable
         {
             if (glowing.Count == 0) return;
             float k = 0.25f + 0.75f * (0.5f + 0.5f * Mathf.Sin(Time.time * 3.2f));
+            block ??= new MaterialPropertyBlock();
             foreach (var r in glowing) { if (!r) continue; r.GetPropertyBlock(block); block.SetColor("_EmissionColor", glowBase * k * 0.6f); r.SetPropertyBlock(block); }
         }
 

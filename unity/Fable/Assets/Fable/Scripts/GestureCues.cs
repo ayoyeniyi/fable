@@ -59,22 +59,23 @@ namespace Fable
         {
             if (!flow || !input) return;
             string mode = input.InputMode;
-            string k = flow.Current + "|" + mode + "|" + (flow.PassageCount > 1);
-            if (k != key) { key = k; Rebuild(Plan(flow.Current, mode, flow.PassageCount > 1)); }
+            string k = flow.Current + "|" + mode + "|" + flow.CanStepIn;
+            if (k != key) { key = k; Rebuild(Plan(flow.Current, mode, flow.CanStepIn)); }
             Animate();
         }
 
         /// The actions available in this state, in the order a reader needs them.
-        static List<Cue> Plan(FlowController.State state, string mode, bool several)
+        static List<Cue> Plan(FlowController.State state, string mode, bool canStepIn)
         {
             string g = mode == "controllers" ? "trigger" : "pinch";
             var list = new List<Cue>();
             switch (state)
             {
                 case FlowController.State.Reading:
-                    list.Add(new Cue(Kind.Pinch, false, $"right {g}\nopen the scene"));
-                    if (several) list.Add(new Cue(Kind.Pinch, true, $"left {g}\nanother passage"));
-                    list.Add(new Cue(Kind.Drag, false, $"{g} and slide\nchoose a passage"));
+                    list.Add(new Cue(Kind.Pinch, false, $"right {g}\nturn the page"));
+                    list.Add(new Cue(Kind.Pinch, true, $"left {g}\npage back"));
+                    list.Add(new Cue(Kind.Pinch, false, $"point and {g}\ncontents, size, bookmark"));
+                    if (canStepIn) list.Add(new Cue(Kind.Hold, false, $"hold right {g}\nstep in"));
                     break;
                 case FlowController.State.Miniature:
                     list.Add(new Cue(Kind.Point, false, $"point into the room, {g}\nstep in there"));

@@ -378,6 +378,15 @@ namespace Fable.Editor
             int n = 1;
             foreach (var f in Directory.GetFiles(Path.Combine(repo, "schema"), "manifest.*.json")) { File.Copy(f, Path.Combine(dst, "scripts", Path.GetFileName(f)), true); n++; }
             foreach (var f in Directory.GetFiles(Path.Combine(repo, "scripts"), "*.baseline.json")) { File.Copy(f, Path.Combine(dst, "scripts", Path.GetFileName(f)), true); n++; }
+            // whole books (tools/ingest_book.py output): StreamingAssets/books/<slug>/book.json
+            var books = Path.Combine(repo, "content", "books");
+            if (Directory.Exists(books))
+                foreach (var dir in Directory.GetDirectories(books))
+                {
+                    var src = Path.Combine(dir, "book.json"); if (!File.Exists(src)) continue;
+                    var to = Path.Combine(dst, "books", Path.GetFileName(dir)); Directory.CreateDirectory(to);
+                    File.Copy(src, Path.Combine(to, "book.json"), true); n++;
+                }
             AssetDatabase.Refresh();
             Debug.Log($"[FableBuild] synced {n} data files into StreamingAssets");
         }

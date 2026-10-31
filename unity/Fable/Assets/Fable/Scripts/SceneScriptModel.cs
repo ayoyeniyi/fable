@@ -71,10 +71,13 @@ namespace Fable
 
     public class Passage
     {
-        public class Sentence { [JsonProperty("id")] public string Id; [JsonProperty("text")] public string Text; }
+        public class Sentence { [JsonProperty("id")] public string Id; [JsonProperty("text")] public string Text; [JsonProperty("bookSentence")] public string BookSentence; }
         public class Scene
         {
             [JsonProperty("id")] public string Id;
+            [JsonProperty("book")] public string Book;           // slug of the whole book this passage is cut from
+            [JsonProperty("bookFrom")] public string BookFrom;   // first and last book sentence ids it covers
+            [JsonProperty("bookTo")] public string BookTo;
             [JsonProperty("title")] public string Title;
             [JsonProperty("chapter")] public string Chapter;
             [JsonProperty("paragraphs")] public List<List<Sentence>> Paragraphs = new();

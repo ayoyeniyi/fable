@@ -1,37 +1,360 @@
 {
-  "version": 1, "sceneId": "queens-croquet-ground", "title": "The Queen's Croquet-Ground",
-  "environment": { "prefab": "env.queens-croquet-ground", "ambience": "amb.formal-garden", "exposure": 0.4, "fog": 0.08 },
+  "version": 1,
+  "sceneId": "queens-croquet-ground",
+  "title": "The Queen's Croquet-Ground",
+  "environment": {
+    "prefab": "env.queens-croquet-ground",
+    "ambience": "amb.formal-garden",
+    "exposure": 0.4,
+    "fog": 0.08
+  },
   "beats": [
-    { "sentenceId": "queens-croquet-ground:000", "focus": "rose-tree.crown", "actions": [
-      { "type": "place", "asset": "prop.rose-tree", "anchor": "rose-tree.base", "appear": "grow" },
-      { "type": "place", "asset": "prop.paint-pot", "anchor": "paint.pot", "appear": "fade" },
-      { "type": "place", "asset": "char.two", "anchor": "gardener.two", "appear": "fade" },
-      { "type": "place", "asset": "char.five", "anchor": "gardener.five", "appear": "fade" },
-      { "type": "place", "asset": "char.seven", "anchor": "gardener.seven", "appear": "fade" },
-      { "type": "animate", "target": "char.two", "clip": "card.paint", "durationSeconds": 6, "loop": true },
-      { "type": "animate", "target": "char.five", "clip": "card.paint", "durationSeconds": 6, "loop": true },
-      { "type": "sound", "sound": "sfx.brush-strokes", "anchor": "rose-tree.crown", "volume": 0.6 } ] },
-    { "sentenceId": "queens-croquet-ground:001", "focus": "gardener.five", "actions": [
-      { "type": "readerScale", "anchor": "reader.rose-tree", "scale": 1.0, "durationSeconds": 3 },
-      { "type": "animate", "target": "char.seven", "clip": "card.paint", "durationSeconds": 3 },
-      { "type": "place", "asset": "fx.paint-splash", "anchor": "gardener.five", "appear": "instant" },
-      { "type": "sound", "sound": "sfx.gravel-steps", "anchor": "garden.path", "volume": 0.5 } ] },
-    { "sentenceId": "queens-croquet-ground:002", "focus": "gardener.five", "actions": [
-      { "type": "animate", "target": "char.five", "clip": "card.sulk", "durationSeconds": 2 },
-      { "type": "animate", "target": "char.five", "clip": "card.speak", "durationSeconds": 1.5 } ] },
-    { "sentenceId": "queens-croquet-ground:003", "focus": "gardener.seven", "actions": [
-      { "type": "animate", "target": "char.seven", "clip": "card.look-up", "durationSeconds": 1.2 },
-      { "type": "animate", "target": "char.seven", "clip": "card.speak", "durationSeconds": 1.5 } ] },
-    { "sentenceId": "queens-croquet-ground:009", "focus": "gardener.seven", "actions": [
-      { "type": "animate", "target": "char.seven", "clip": "card.fling-brush", "durationSeconds": 1.2 },
-      { "type": "sound", "sound": "sfx.brush-fling", "anchor": "gardener.seven", "volume": 0.7 },
-      { "type": "animate", "target": "char.two", "clip": "card.look-up", "durationSeconds": 1.2 },
-      { "type": "animate", "target": "char.five", "clip": "card.look-up", "durationSeconds": 1.2 } ] },
-    { "sentenceId": "queens-croquet-ground:011", "focus": "gardener.two", "actions": [
-      { "type": "animate", "target": "char.two", "clip": "card.bow", "durationSeconds": 2 } ] },
-    { "sentenceId": "queens-croquet-ground:012", "focus": "rose-tree.crown", "actions": [
-      { "type": "animate", "target": "char.two", "clip": "card.speak", "durationSeconds": 3 },
-      { "type": "place", "asset": "fx.red-roses", "anchor": "rose-tree.crown", "appear": "fade" },
-      { "type": "animate", "target": "fx.red-roses", "clip": "roses.redden", "durationSeconds": 5 } ] }
+    {
+      "sentenceId": "queens-croquet-ground:000",
+      "focus": "rose-tree.crown",
+      "actions": [
+        {
+          "type": "place",
+          "asset": "prop.rose-tree",
+          "anchor": "rose-tree.base",
+          "appear": "grow"
+        },
+        {
+          "type": "place",
+          "asset": "prop.paint-pot",
+          "anchor": "paint.pot",
+          "appear": "fade"
+        },
+        {
+          "type": "place",
+          "asset": "char.two",
+          "anchor": "gardener.two",
+          "appear": "fade"
+        },
+        {
+          "type": "place",
+          "asset": "char.five",
+          "anchor": "gardener.five",
+          "appear": "fade"
+        },
+        {
+          "type": "place",
+          "asset": "char.seven",
+          "anchor": "gardener.seven",
+          "appear": "fade"
+        },
+        {
+          "type": "animate",
+          "target": "char.two",
+          "clip": "card.paint",
+          "durationSeconds": 6,
+          "loop": true
+        },
+        {
+          "type": "animate",
+          "target": "char.five",
+          "clip": "card.paint",
+          "durationSeconds": 6,
+          "loop": true
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.wind-hedges",
+          "anchor": "sky",
+          "volume": 0.35
+        }
+      ]
+    },
+    {
+      "sentenceId": "queens-croquet-ground:001",
+      "focus": "gardener.five",
+      "actions": [
+        {
+          "type": "readerScale",
+          "anchor": "reader.rose-tree",
+          "scale": 1.0,
+          "durationSeconds": 3
+        },
+        {
+          "type": "animate",
+          "target": "char.seven",
+          "clip": "card.paint",
+          "durationSeconds": 3
+        },
+        {
+          "type": "place",
+          "asset": "fx.paint-splash",
+          "anchor": "gardener.five",
+          "appear": "instant"
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.gravel-steps",
+          "anchor": "garden.path",
+          "volume": 0.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "queens-croquet-ground:002",
+      "focus": "gardener.five",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.five",
+          "clip": "card.sulk",
+          "durationSeconds": 2
+        },
+        {
+          "type": "animate",
+          "target": "char.five",
+          "clip": "card.speak",
+          "durationSeconds": 1.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "queens-croquet-ground:003",
+      "focus": "gardener.seven",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.seven",
+          "clip": "card.look-up",
+          "durationSeconds": 1.2
+        },
+        {
+          "type": "animate",
+          "target": "char.seven",
+          "clip": "card.speak",
+          "durationSeconds": 1.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "queens-croquet-ground:004",
+      "focus": "gardener.five",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.five",
+          "clip": "card.speak",
+          "durationSeconds": 1.4
+        },
+        {
+          "type": "animate",
+          "target": "char.two",
+          "clip": "card.look-up",
+          "durationSeconds": 1.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "queens-croquet-ground:005",
+      "focus": "gardener.five",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.five",
+          "clip": "card.speak",
+          "durationSeconds": 2.2
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.card-shuffle",
+          "anchor": "gardener.two",
+          "volume": 0.5
+        },
+        {
+          "type": "animate",
+          "target": "prop.rose-tree",
+          "clip": "roses.rustle",
+          "durationSeconds": 3,
+          "loop": false
+        }
+      ]
+    },
+    {
+      "sentenceId": "queens-croquet-ground:006",
+      "focus": "gardener.two",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.two",
+          "clip": "card.speak",
+          "durationSeconds": 1.2
+        },
+        {
+          "type": "animate",
+          "target": "char.two",
+          "clip": "card.look-up",
+          "durationSeconds": 1.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "queens-croquet-ground:007",
+      "focus": "gardener.seven",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.seven",
+          "clip": "card.speak",
+          "durationSeconds": 1.6
+        },
+        {
+          "type": "animate",
+          "target": "char.five",
+          "clip": "card.look-up",
+          "durationSeconds": 1.5
+        }
+      ]
+    },
+    {
+      "sentenceId": "queens-croquet-ground:008",
+      "focus": "gardener.five",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.five",
+          "clip": "card.speak",
+          "durationSeconds": 2.6
+        },
+        {
+          "type": "animate",
+          "target": "char.two",
+          "clip": "card.paint",
+          "durationSeconds": 3,
+          "loop": false
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.brush-strokes",
+          "anchor": "rose-tree.base",
+          "volume": 0.4
+        }
+      ]
+    },
+    {
+      "sentenceId": "queens-croquet-ground:009",
+      "focus": "gardener.seven",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.seven",
+          "clip": "card.fling-brush",
+          "durationSeconds": 1.2
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.brush-fling",
+          "anchor": "gardener.seven",
+          "volume": 0.7
+        },
+        {
+          "type": "animate",
+          "target": "char.two",
+          "clip": "card.look-up",
+          "durationSeconds": 1.2
+        },
+        {
+          "type": "animate",
+          "target": "char.five",
+          "clip": "card.look-up",
+          "durationSeconds": 1.2
+        }
+      ]
+    },
+    {
+      "sentenceId": "queens-croquet-ground:010",
+      "focus": "garden.path",
+      "actions": [
+        {
+          "type": "sound",
+          "sound": "sfx.gravel-steps",
+          "anchor": "garden.path",
+          "volume": 0.6
+        },
+        {
+          "type": "animate",
+          "target": "char.two",
+          "clip": "card.look-up",
+          "durationSeconds": 1.5
+        },
+        {
+          "type": "animate",
+          "target": "char.five",
+          "clip": "card.look-up",
+          "durationSeconds": 1.5
+        },
+        {
+          "type": "animate",
+          "target": "char.seven",
+          "clip": "card.look-up",
+          "durationSeconds": 1.5
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.wind-hedges",
+          "anchor": "sky",
+          "volume": 0.3
+        }
+      ]
+    },
+    {
+      "sentenceId": "queens-croquet-ground:011",
+      "focus": "gardener.two",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.two",
+          "clip": "card.bow",
+          "durationSeconds": 2
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.garden-birds",
+          "anchor": "sky",
+          "volume": 0.3
+        }
+      ]
+    },
+    {
+      "sentenceId": "queens-croquet-ground:012",
+      "focus": "rose-tree.crown",
+      "actions": [
+        {
+          "type": "animate",
+          "target": "char.two",
+          "clip": "card.speak",
+          "durationSeconds": 3
+        },
+        {
+          "type": "place",
+          "asset": "fx.red-roses",
+          "anchor": "rose-tree.crown",
+          "appear": "fade"
+        },
+        {
+          "type": "animate",
+          "target": "fx.red-roses",
+          "clip": "roses.redden",
+          "durationSeconds": 5
+        },
+        {
+          "type": "animate",
+          "target": "char.five",
+          "clip": "card.paint",
+          "durationSeconds": 4,
+          "loop": false
+        },
+        {
+          "type": "sound",
+          "sound": "sfx.brush-strokes",
+          "anchor": "rose-tree.base",
+          "volume": 0.35
+        }
+      ]
+    }
   ]
 }
