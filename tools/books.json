@@ -1,0 +1,40 @@
+{
+  "alice": {
+    "title": "Alice’s Adventures in Wonderland",
+    "author": "Lewis Carroll",
+    "year": 1865,
+    "format": "se-epub",
+    "page": "https://standardebooks.org/ebooks/lewis-carroll/alices-adventures-in-wonderland/john-tenniel",
+    "url": "https://standardebooks.org/ebooks/lewis-carroll/alices-adventures-in-wonderland/john-tenniel/downloads/lewis-carroll_alices-adventures-in-wonderland_john-tenniel.epub?source=download",
+    "gutenberg": 11
+  },
+  "oz": {
+    "title": "The Wonderful Wizard of Oz",
+    "author": "L. Frank Baum",
+    "year": 1900,
+    "format": "se-epub",
+    "page": "https://standardebooks.org/ebooks/l-frank-baum/the-wonderful-wizard-of-oz",
+    "url": "https://standardebooks.org/ebooks/l-frank-baum/the-wonderful-wizard-of-oz/downloads/l-frank-baum_the-wonderful-wizard-of-oz.epub?source=download",
+    "gutenberg": 55
+  },
+  "odyssey": {
+    "title": "The Odyssey",
+    "author": "Homer",
+    "translator": "Samuel Butler",
+    "year": 1900,
+    "format": "gutenberg-txt",
+    "page": "https://www.gutenberg.org/ebooks/1727",
+    "url": "https://www.gutenberg.org/cache/epub/1727/pg1727.txt",
+    "gutenberg": 1727,
+    "note": "Standard Ebooks publishes only the William Cullen Bryant verse translation, so the Butler prose translation comes from Project Gutenberg. No other translation may be used."
+  },
+  "gulliver": {
+    "title": "Gulliver’s Travels",
+    "author": "Jonathan Swift",
+    "year": 1726,
+    "format": "se-epub",
+    "page": "https://standardebooks.org/ebooks/jonathan-swift/gullivers-travels",
+    "url": "https://standardebooks.org/ebooks/jonathan-swift/gullivers-travels/downloads/jonathan-swift_gullivers-travels.epub?source=download",
+    "gutenberg": 829
+  }
+}
