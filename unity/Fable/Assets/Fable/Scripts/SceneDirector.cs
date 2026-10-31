@@ -115,7 +115,8 @@ namespace Fable
             {
                 var t = Registry.Asset(id);
                 t.localPosition = assetHome[id]; t.localRotation = assetHomeRot[id]; t.localScale = assetHomeScale[id];
-                t.gameObject.SetActive(false);
+                // props and effects start hidden until the text places them; built-in parts of the room (the little door) stay
+                t.gameObject.SetActive(!(id.StartsWith("prop.") || id.StartsWith("fx.")));
             }
             foreach (var kv in lightHome) { }
             var garden = Registry.Lights("light.garden"); if (garden != null) foreach (var l in garden) l.intensity = 0;
