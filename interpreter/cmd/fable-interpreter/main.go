@@ -101,7 +101,7 @@ func main() {
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
 		defer cancel()
-		s, attempts, err := llm.New(*model).Interpret(ctx, sc, m)
+		s, attempts, err := llm.New(*model).Interpret(ctx, sc, m, "")
 		if err != nil {
 			for i, a := range attempts {
 				fmt.Fprintf(os.Stderr, "--- attempt %d ---\n%s\n", i+1, a)
@@ -138,7 +138,9 @@ func main() {
 		})
 		mux.HandleFunc("POST /interpret", func(w http.ResponseWriter, r *http.Request) {
 			var req struct {
-				SceneID string `json:"sceneId"`
+				SceneID         string `json:"sceneId"`
+				ReadingPosition string `json:"readingPosition"` // sentence id the reader has reached
+				NoCache         bool   `json:"noCache"`
 			}
 			if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1<<16)).Decode(&req); err != nil {
 				http.Error(w, err.Error(), 400)
@@ -154,15 +156,30 @@ func main() {
 				http.Error(w, err.Error(), 404)
 				return
 			}
+			cachePath := filepath.Join(root, "out", "cache", req.SceneID+".json")
+			if !req.NoCache {
+				if cached, err := os.ReadFile(cachePath); err == nil {
+					if cs, perr := script.Parse(cached); perr == nil && len(script.Validate(cs, m, sc.SentenceIDs())) == 0 {
+						w.Header().Set("Content-Type", "application/json")
+						w.Header().Set("X-Fable-Cache", "hit")
+						w.Write(cached)
+						return
+					}
+				}
+			}
 			ctx, cancel := context.WithTimeout(r.Context(), 8*time.Minute)
 			defer cancel()
-			s, attempts, err := dir.Interpret(ctx, sc, m)
+			s, attempts, err := dir.Interpret(ctx, sc, m, req.ReadingPosition)
 			if err != nil {
 				http.Error(w, fmt.Sprintf("%v (attempts=%d)", err, len(attempts)), 502)
 				return
 			}
+			js, _ := json.MarshalIndent(s, "", "  ")
+			os.MkdirAll(filepath.Dir(cachePath), 0o755)
+			os.WriteFile(cachePath, js, 0o644)
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(s)
+			w.Header().Set("X-Fable-Cache", "miss")
+			w.Write(js)
 		})
 		log.Printf("fable-interpreter listening on %s (model %s)", *addr, *model)
 		log.Fatal(http.ListenAndServe(*addr, mux))

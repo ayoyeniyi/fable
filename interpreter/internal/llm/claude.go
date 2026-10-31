@@ -27,7 +27,11 @@ Rules:
   and never scale faster than that. No camera motion exists; the reader stands still.
 - Prefer small, legible changes: a lamp flicker, a door rattle, a bottle appearing on the table.
 - Sound actions are spatial; give each an anchor.
-- Match the text literally. The passage is the authority, not the film adaptations.`
+- Match the text literally. The passage is the authority, not the film adaptations.
+- Keep characters and places consistent with the previously read context you are given, and never
+  show anything the reader has not reached yet: the reading position marks how far they have read.
+- Details the text leaves open (colours, exact sizes, where a thing stands) are your interpretation;
+  keep them modest and period-appropriate.`
 
 type Director struct {
 	client anthropic.Client
@@ -76,9 +80,13 @@ func stripFences(s string) string {
 }
 
 // Interpret asks for a script, validates it, and sends the validator's findings back once.
-func (d *Director) Interpret(ctx context.Context, sc *book.Scene, m *script.Manifest) (*script.SceneScript, []string, error) {
+func (d *Director) Interpret(ctx context.Context, sc *book.Scene, m *script.Manifest, readingPosition string) (*script.SceneScript, []string, error) {
 	mj, _ := json.MarshalIndent(m, "", "  ")
-	user := fmt.Sprintf("MANIFEST:\n%s\n\nPASSAGE (%s, %s):\n%s\nReturn the SceneScript JSON.", mj, sc.Title, sc.Chapter, sc.Numbered())
+	pos := readingPosition
+	if pos == "" {
+		pos = "the start of the passage"
+	}
+	user := fmt.Sprintf("MANIFEST:\n%s\n\nPREVIOUSLY READ (context only, already happened):\n%s\nREADING POSITION: %s\n\nPASSAGE (%s, %s):\n%s\nReturn the SceneScript JSON.", mj, sc.Context(6000), pos, sc.Title, sc.Chapter, sc.Numbered())
 	msgs := []anthropic.MessageParam{anthropic.NewUserMessage(anthropic.NewTextBlock(user))}
 	var attempts []string
 	for round := 0; round < 2; round++ {

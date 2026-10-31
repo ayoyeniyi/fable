@@ -18,6 +18,7 @@ type Scene struct {
 	Chapter       string       `json:"chapter"`
 	Paragraphs    [][]Sentence `json:"paragraphs"`
 	SentenceCount int          `json:"sentenceCount"`
+	ContextBefore []string     `json:"contextBefore"`
 }
 
 type Book struct {
@@ -59,6 +60,19 @@ func (s *Scene) SentenceIDs() []string {
 		}
 	}
 	return ids
+}
+
+// Context returns the previously read text, trimmed to the last maxChars characters.
+// Only text before the passage is ever sent: the model must not learn future events from us.
+func (s *Scene) Context(maxChars int) string {
+	out := ""
+	for _, p := range s.ContextBefore {
+		out += p + "\n\n"
+	}
+	if len(out) > maxChars {
+		out = "..." + out[len(out)-maxChars:]
+	}
+	return out
 }
 
 // Numbered renders the passage with ids so the model can cite sentences exactly.

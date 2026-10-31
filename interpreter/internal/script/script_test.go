@@ -45,12 +45,12 @@ func TestBaselineValid(t *testing.T) {
 func TestRejects(t *testing.T) {
 	m, ids := load(t)
 	cases := map[string]string{
-		"unknown field":   `{"version":1,"sceneId":"hall-of-doors","environment":{"prefab":"env.hall-of-doors","ambience":"amb.hall-lamps"},"beats":[],"evil":true}`,
-		"invented asset":  `{"version":1,"sceneId":"hall-of-doors","environment":{"prefab":"env.hall-of-doors","ambience":"amb.hall-lamps"},"beats":[{"sentenceId":"hall-of-doors:000","actions":[{"type":"place","asset":"prop.cheshire-cat","anchor":"table.top"}]}]}`,
-		"bad clip":        `{"version":1,"sceneId":"hall-of-doors","environment":{"prefab":"env.hall-of-doors","ambience":"amb.hall-lamps"},"beats":[{"sentenceId":"hall-of-doors:000","actions":[{"type":"animate","target":"door.little","clip":"door.explode"}]}]}`,
-		"wrong sentence":  `{"version":1,"sceneId":"hall-of-doors","environment":{"prefab":"env.hall-of-doors","ambience":"amb.hall-lamps"},"beats":[{"sentenceId":"hall-of-doors:099","actions":[]}]}`,
-		"out of order":    `{"version":1,"sceneId":"hall-of-doors","environment":{"prefab":"env.hall-of-doors","ambience":"amb.hall-lamps"},"beats":[{"sentenceId":"hall-of-doors:003","actions":[]},{"sentenceId":"hall-of-doors:001","actions":[]}]}`,
-		"too fast scale":  `{"version":1,"sceneId":"hall-of-doors","environment":{"prefab":"env.hall-of-doors","ambience":"amb.hall-lamps"},"beats":[{"sentenceId":"hall-of-doors:000","actions":[{"type":"readerScale","anchor":"reader.table","scale":4,"durationSeconds":0.1}]}]}`,
+		"unknown field":  `{"version":1,"sceneId":"hall-of-doors","environment":{"prefab":"env.hall-of-doors","ambience":"amb.hall-lamps"},"beats":[],"evil":true}`,
+		"invented asset": `{"version":1,"sceneId":"hall-of-doors","environment":{"prefab":"env.hall-of-doors","ambience":"amb.hall-lamps"},"beats":[{"sentenceId":"hall-of-doors:000","actions":[{"type":"place","asset":"prop.cheshire-cat","anchor":"table.top"}]}]}`,
+		"bad clip":       `{"version":1,"sceneId":"hall-of-doors","environment":{"prefab":"env.hall-of-doors","ambience":"amb.hall-lamps"},"beats":[{"sentenceId":"hall-of-doors:000","actions":[{"type":"animate","target":"door.little","clip":"door.explode"}]}]}`,
+		"wrong sentence": `{"version":1,"sceneId":"hall-of-doors","environment":{"prefab":"env.hall-of-doors","ambience":"amb.hall-lamps"},"beats":[{"sentenceId":"hall-of-doors:099","actions":[]}]}`,
+		"out of order":   `{"version":1,"sceneId":"hall-of-doors","environment":{"prefab":"env.hall-of-doors","ambience":"amb.hall-lamps"},"beats":[{"sentenceId":"hall-of-doors:003","actions":[]},{"sentenceId":"hall-of-doors:001","actions":[]}]}`,
+		"too fast scale": `{"version":1,"sceneId":"hall-of-doors","environment":{"prefab":"env.hall-of-doors","ambience":"amb.hall-lamps"},"beats":[{"sentenceId":"hall-of-doors:000","actions":[{"type":"readerScale","anchor":"reader.table","scale":4,"durationSeconds":0.1}]}]}`,
 	}
 	for name, js := range cases {
 		s, err := Parse([]byte(js))
