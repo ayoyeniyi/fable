@@ -18,16 +18,18 @@ import (
 	"time"
 
 	"github.com/Thabhelo/fable/interpreter/internal/book"
+	"github.com/Thabhelo/fable/interpreter/internal/llm"
 	"github.com/Thabhelo/fable/interpreter/internal/script"
 )
 
 // Interpreter is what llm.Director implements; tests substitute a fake.
 type Interpreter interface {
-	Interpret(ctx context.Context, sc *book.Scene, m *script.Manifest, readingPosition string) (*script.SceneScript, []string, error)
+	Interpret(ctx context.Context, sc *book.Scene, m *script.Manifest, readingPosition string, variant int) (*script.SceneScript, []string, error)
 }
 
 type job struct {
 	scene    string
+	variant  int
 	position string
 	started  time.Time
 	done     chan struct{}
@@ -65,13 +67,19 @@ func (s *Server) manifest(sceneID string) (*script.Manifest, error) {
 	return &m, nil
 }
 
-func (s *Server) cachePath(sceneID string) string {
-	return filepath.Join(s.Root, "out", "cache", sceneID+".json")
+// cachePath keeps variant 0 at the old name so existing caches stay valid.
+func (s *Server) cachePath(sceneID string, variant int) string {
+	if variant <= 0 {
+		return filepath.Join(s.Root, "out", "cache", sceneID+".json")
+	}
+	return filepath.Join(s.Root, "out", "cache", fmt.Sprintf("%s.v%d.json", sceneID, variant))
 }
 
+func jobKey(sceneID string, variant int) string { return fmt.Sprintf("%s#%d", sceneID, variant) }
+
 // cached returns the on-disk script if it still validates against today's manifest and passage.
-func (s *Server) cached(sceneID string, m *script.Manifest, sc *book.Scene) []byte {
-	data, err := os.ReadFile(s.cachePath(sceneID))
+func (s *Server) cached(sceneID string, variant int, m *script.Manifest, sc *book.Scene) []byte {
+	data, err := os.ReadFile(s.cachePath(sceneID, variant))
 	if err != nil {
 		return nil
 	}
@@ -83,14 +91,15 @@ func (s *Server) cached(sceneID string, m *script.Manifest, sc *book.Scene) []by
 }
 
 // ensureJob returns the running generation for a scene, starting one if none is in flight.
-func (s *Server) ensureJob(sceneID, position string, sc *book.Scene, m *script.Manifest) (*job, bool) {
+func (s *Server) ensureJob(sceneID string, variant int, position string, sc *book.Scene, m *script.Manifest) (*job, bool) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	if j, ok := s.jobs[sceneID]; ok {
+	key := jobKey(sceneID, variant)
+	if j, ok := s.jobs[key]; ok {
 		return j, false
 	}
-	j := &job{scene: sceneID, position: position, started: time.Now(), done: make(chan struct{})}
-	s.jobs[sceneID] = j
+	j := &job{scene: sceneID, variant: variant, position: position, started: time.Now(), done: make(chan struct{})}
+	s.jobs[key] = j
 	go s.run(j, sc, m)
 	return j, true
 }
@@ -98,8 +107,8 @@ func (s *Server) ensureJob(sceneID, position string, sc *book.Scene, m *script.M
 func (s *Server) run(j *job, sc *book.Scene, m *script.Manifest) {
 	ctx, cancel := context.WithTimeout(context.Background(), s.GenTimeout)
 	defer cancel()
-	log.Printf("interpret %s: generating (position %q)", j.scene, j.position)
-	out, attempts, err := s.Interp.Interpret(ctx, sc, m, j.position)
+	log.Printf("interpret %s v%d: generating (position %q)", j.scene, j.variant, j.position)
+	out, attempts, err := s.Interp.Interpret(ctx, sc, m, j.position, j.variant)
 	j.attempts = len(attempts)
 	if err == nil {
 		// the interpreter validated already; validate again here so the cache can never hold a bad script
@@ -112,7 +121,7 @@ func (s *Server) run(j *job, sc *book.Scene, m *script.Manifest) {
 		log.Printf("interpret %s: failed after %s, %d attempt(s): %v", j.scene, time.Since(j.started).Round(time.Millisecond), j.attempts, err)
 	} else {
 		js, _ := json.MarshalIndent(out, "", "  ")
-		p := s.cachePath(j.scene)
+		p := s.cachePath(j.scene, j.variant)
 		os.MkdirAll(filepath.Dir(p), 0o755)
 		if werr := os.WriteFile(p, js, 0o644); werr != nil {
 			log.Printf("interpret %s: cache write failed: %v", j.scene, werr)
@@ -123,8 +132,8 @@ func (s *Server) run(j *job, sc *book.Scene, m *script.Manifest) {
 	close(j.done)
 	// a failed job is forgotten so the next request retries; a successful one is served from the cache
 	s.mu.Lock()
-	if s.jobs[j.scene] == j {
-		delete(s.jobs, j.scene)
+	if s.jobs[jobKey(j.scene, j.variant)] == j {
+		delete(s.jobs, jobKey(j.scene, j.variant))
 	}
 	s.mu.Unlock()
 }
@@ -134,11 +143,13 @@ type interpretRequest struct {
 	ReadingPosition string  `json:"readingPosition"` // sentence id the reader has reached
 	NoCache         bool    `json:"noCache"`
 	WaitSeconds     float64 `json:"waitSeconds"` // 0 = server default
+	Variant         int     `json:"variant"`     // 0 = the plain reading; 1.. = alternative readings of the same passage
 }
 
 type pending struct {
 	Status         string  `json:"status"`
 	SceneID        string  `json:"sceneId"`
+	Variant        int     `json:"variant"`
 	ElapsedSeconds float64 `json:"elapsedSeconds"`
 	RetryAfter     int     `json:"retryAfterSeconds"`
 }
@@ -159,15 +170,21 @@ func (s *Server) handleInterpret(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
+	if req.Variant < 0 || req.Variant >= s.Variants() {
+		http.Error(w, fmt.Sprintf("variant must be 0..%d", s.Variants()-1), http.StatusBadRequest)
+		return
+	}
+	w.Header().Set("X-Fable-Variant", fmt.Sprint(req.Variant))
+	w.Header().Set("X-Fable-Variants", fmt.Sprint(s.Variants()))
 	if !req.NoCache {
-		if data := s.cached(req.SceneID, m, sc); data != nil {
+		if data := s.cached(req.SceneID, req.Variant, m, sc); data != nil {
 			w.Header().Set("Content-Type", "application/json")
 			w.Header().Set("X-Fable-Cache", "hit")
 			w.Write(data)
 			return
 		}
 	}
-	j, started := s.ensureJob(req.SceneID, req.ReadingPosition, sc, m)
+	j, started := s.ensureJob(req.SceneID, req.Variant, req.ReadingPosition, sc, m)
 	wait := s.DefaultWait
 	if req.WaitSeconds > 0 {
 		wait = time.Duration(req.WaitSeconds * float64(time.Second))
@@ -189,13 +206,13 @@ func (s *Server) handleInterpret(w http.ResponseWriter, r *http.Request) {
 	case <-timer.C:
 		elapsed := time.Since(j.started)
 		if started {
-			log.Printf("interpret %s: client waited %s, generation continues in the background", req.SceneID, wait)
+			log.Printf("interpret %s v%d: client waited %s, generation continues in the background", req.SceneID, req.Variant, wait)
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("X-Fable-Cache", "pending")
 		w.Header().Set("Retry-After", "15")
 		w.WriteHeader(http.StatusAccepted)
-		json.NewEncoder(w).Encode(pending{Status: "generating", SceneID: req.SceneID, ElapsedSeconds: elapsed.Seconds(), RetryAfter: 15})
+		json.NewEncoder(w).Encode(pending{Status: "generating", SceneID: req.SceneID, Variant: req.Variant, ElapsedSeconds: elapsed.Seconds(), RetryAfter: 15})
 	case <-r.Context().Done():
 		// the client left; the job keeps running and will fill the cache
 	}
@@ -203,6 +220,7 @@ func (s *Server) handleInterpret(w http.ResponseWriter, r *http.Request) {
 
 type jobStatus struct {
 	SceneID        string  `json:"sceneId"`
+	Variant        int     `json:"variant"`
 	Position       string  `json:"readingPosition,omitempty"`
 	ElapsedSeconds float64 `json:"elapsedSeconds"`
 }
@@ -211,17 +229,23 @@ func (s *Server) handleJobs(w http.ResponseWriter, r *http.Request) {
 	s.mu.Lock()
 	list := make([]jobStatus, 0, len(s.jobs))
 	for _, j := range s.jobs {
-		list = append(list, jobStatus{SceneID: j.scene, Position: j.position, ElapsedSeconds: time.Since(j.started).Seconds()})
+		list = append(list, jobStatus{SceneID: j.scene, Variant: j.variant, Position: j.position, ElapsedSeconds: time.Since(j.started).Seconds()})
 	}
 	s.mu.Unlock()
 	cached := []string{}
 	for _, sc := range s.Book.Scenes {
-		if m, err := s.manifest(sc.ID); err == nil && s.cached(sc.ID, m, &sc) != nil {
-			cached = append(cached, sc.ID)
+		m, err := s.manifest(sc.ID)
+		if err != nil {
+			continue
+		}
+		for v := 0; v < s.Variants(); v++ {
+			if s.cached(sc.ID, v, m, &sc) != nil {
+				cached = append(cached, jobKey(sc.ID, v))
+			}
 		}
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]any{"generating": list, "cached": cached})
+	json.NewEncoder(w).Encode(map[string]any{"generating": list, "cached": cached, "variants": s.Variants()})
 }
 
 func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
@@ -233,9 +257,12 @@ func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]any{
 		"ok": true, "heapMB": float64(ms.HeapAlloc) / 1e6, "scenes": len(s.Book.Scenes),
-		"model": s.Model, "apiKey": os.Getenv("ANTHROPIC_API_KEY") != "", "generating": n,
+		"model": s.Model, "apiKey": os.Getenv("ANTHROPIC_API_KEY") != "", "generating": n, "variants": s.Variants(),
 	})
 }
+
+// Variants is how many readings a passage has (the plain one plus the alternatives).
+func (s *Server) Variants() int { return len(llm.Readings) }
 
 // Warm starts a generation for every scene whose cache is missing or stale. Call it only when a
 // key is present; without one every job would fail and log noise.
@@ -244,10 +271,10 @@ func (s *Server) Warm() int {
 	for i := range s.Book.Scenes {
 		sc := &s.Book.Scenes[i]
 		m, err := s.manifest(sc.ID)
-		if err != nil || s.cached(sc.ID, m, sc) != nil {
+		if err != nil || s.cached(sc.ID, 0, m, sc) != nil {
 			continue
 		}
-		s.ensureJob(sc.ID, "", sc, m)
+		s.ensureJob(sc.ID, 0, "", sc, m)
 		n++
 	}
 	return n

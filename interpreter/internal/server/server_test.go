@@ -22,7 +22,7 @@ type fake struct {
 	calls int
 }
 
-func (f *fake) Interpret(ctx context.Context, sc *book.Scene, m *script.Manifest, pos string) (*script.SceneScript, []string, error) {
+func (f *fake) Interpret(ctx context.Context, sc *book.Scene, m *script.Manifest, pos string, variant int) (*script.SceneScript, []string, error) {
 	f.calls++
 	select {
 	case <-time.After(f.delay):
@@ -114,7 +114,7 @@ func TestFailureIsReportedAndRetried(t *testing.T) {
 	if rr.Code != http.StatusBadGateway || f.calls != 2 {
 		t.Fatalf("failed job should be retried: code %d, calls %d", rr.Code, f.calls)
 	}
-	if _, err := os.Stat(s.cachePath("hall-of-doors")); err == nil {
+	if _, err := os.Stat(s.cachePath("hall-of-doors", 0)); err == nil {
 		t.Fatal("a failed generation must not be cached")
 	}
 }
@@ -133,5 +133,29 @@ func TestUnknownSceneAndBadBody(t *testing.T) {
 	h.ServeHTTP(rr, req)
 	if rr.Code != 200 {
 		t.Fatalf("jobs: %d", rr.Code)
+	}
+}
+
+// Each reading of a passage is its own generation and its own cache entry; out-of-range variants are refused.
+func TestVariantsAreSeparate(t *testing.T) {
+	f := &fake{}
+	s := newServer(t, f)
+	h := s.Handler()
+	for _, v := range []int{0, 1} {
+		rr := post(t, h, `{"sceneId":"hall-of-doors","waitSeconds":2,"variant":`+string(rune('0'+v))+`}`)
+		if rr.Code != 200 || rr.Header().Get("X-Fable-Variant") != string(rune('0'+v)) {
+			t.Fatalf("variant %d: got %d %q", v, rr.Code, rr.Header().Get("X-Fable-Variant"))
+		}
+	}
+	if f.calls != 2 {
+		t.Fatalf("want one generation per variant, got %d", f.calls)
+	}
+	for _, v := range []int{0, 1} {
+		if _, err := os.Stat(s.cachePath("hall-of-doors", v)); err != nil {
+			t.Fatalf("variant %d not cached: %v", v, err)
+		}
+	}
+	if rr := post(t, h, `{"sceneId":"hall-of-doors","variant":99}`); rr.Code != 400 {
+		t.Fatalf("variant 99: want 400, got %d", rr.Code)
 	}
 }

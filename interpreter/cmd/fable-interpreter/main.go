@@ -1,7 +1,7 @@
 // fable-interpreter: turns a passage into a validated SceneScript.
 //
 //	fable-interpreter validate  --manifest schema/manifest.hall-of-doors.json --book book/passages.json script.json
-//	fable-interpreter generate  --scene hall-of-doors --out scripts/hall-of-doors.json
+//	fable-interpreter generate  --scene hall-of-doors [--variant 1] --out scripts/hall-of-doors.json
 //	fable-interpreter serve     --addr :8787 [--wait 3s] [--warm]
 //	    POST /interpret {"sceneId","readingPosition","noCache","waitSeconds"} -> 200 script (X-Fable-Cache hit|miss) or 202 generating
 //	    GET /health, GET /jobs, GET /passages
@@ -90,6 +90,7 @@ func main() {
 		scene := fs.String("scene", "hall-of-doors", "scene id")
 		out := fs.String("out", "", "output path (default stdout)")
 		model := fs.String("model", os.Getenv("FABLE_MODEL"), "Claude model id")
+		variant := fs.Int("variant", 0, "reading of the passage: 0 plain, 1.. alternative directions")
 		fs.Parse(os.Args[2:])
 		bk, err := book.Load(filepath.Join(root, "book", "passages.json"))
 		if err != nil {
@@ -105,7 +106,7 @@ func main() {
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
 		defer cancel()
-		s, attempts, err := llm.New(*model).Interpret(ctx, sc, m, "")
+		s, attempts, err := llm.New(*model).Interpret(ctx, sc, m, "", *variant)
 		if err != nil {
 			for i, a := range attempts {
 				fmt.Fprintf(os.Stderr, "--- attempt %d ---\n%s\n", i+1, a)

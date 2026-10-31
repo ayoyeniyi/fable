@@ -79,14 +79,28 @@ func stripFences(s string) string {
 	return strings.TrimSpace(s)
 }
 
+// Readings are the alternative interpretations of one passage ("parallel universes"): the same text and the same
+// vocabulary, staged with a different emphasis. Variant 0 is the plain reading; the others are cached separately.
+var Readings = []string{
+	"",
+	"This is a second reading of the passage. Emphasise scale and the body: how large the hall feels, how small the reader is, how objects loom or shrink. Favour slow, physical changes and let silence do work.",
+	"This is a third reading of the passage. Theatrical and lively: give characters and props more motion, stage each sentence like a beat on a small stage, and use the sound vocabulary generously, while keeping every action tied to the sentence that earns it.",
+	"This is a fourth reading of the passage. Spare and literal: the fewest actions that make the text visible, nothing decorative, sound only where the text names one.",
+}
+
 // Interpret asks for a script, validates it, and sends the validator's findings back once.
-func (d *Director) Interpret(ctx context.Context, sc *book.Scene, m *script.Manifest, readingPosition string) (*script.SceneScript, []string, error) {
+// variant selects one of Readings (out of range falls back to the plain reading).
+func (d *Director) Interpret(ctx context.Context, sc *book.Scene, m *script.Manifest, readingPosition string, variant int) (*script.SceneScript, []string, error) {
 	mj, _ := json.MarshalIndent(m, "", "  ")
 	pos := readingPosition
 	if pos == "" {
 		pos = "the start of the passage"
 	}
-	user := fmt.Sprintf("MANIFEST:\n%s\n\nPREVIOUSLY READ (context only, already happened):\n%s\nREADING POSITION: %s\n\nPASSAGE (%s, %s):\n%s\nReturn the SceneScript JSON.", mj, sc.Context(6000), pos, sc.Title, sc.Chapter, sc.Numbered())
+	direction := ""
+	if variant > 0 && variant < len(Readings) {
+		direction = "\nDIRECTION: " + Readings[variant] + "\n"
+	}
+	user := fmt.Sprintf("MANIFEST:\n%s\n\nPREVIOUSLY READ (context only, already happened):\n%s\nREADING POSITION: %s\n%s\nPASSAGE (%s, %s):\n%s\nReturn the SceneScript JSON.", mj, sc.Context(6000), pos, direction, sc.Title, sc.Chapter, sc.Numbered())
 	msgs := []anthropic.MessageParam{anthropic.NewUserMessage(anthropic.NewTextBlock(user))}
 	var attempts []string
 	for round := 0; round < 2; round++ {
