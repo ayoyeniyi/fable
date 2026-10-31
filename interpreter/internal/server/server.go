@@ -46,7 +46,9 @@ type Server struct {
 	DefaultWait time.Duration // how long a request waits for a fresh script before 202; default 3 s
 	MaxWait     time.Duration // cap on the client's waitSeconds; default 120 s
 	Model       string
+	Peeker      Peeker // Peek clay models; nil answers 503 unless the cache has one
 
+	peek peeks
 	mu   sync.Mutex
 	jobs map[string]*job
 }
@@ -290,6 +292,7 @@ func (s *Server) Handler() http.Handler {
 		json.NewEncoder(w).Encode(s.Book)
 	})
 	mux.HandleFunc("POST /interpret", s.handleInterpret)
+	mux.HandleFunc("POST /peek", s.handlePeek)
 	return logging(mux)
 }
 

@@ -1,0 +1,119 @@
+{
+  "version": 1,
+  "id": "odyssey.bronze-axe",
+  "title": "the bronze axe",
+  "book": "odyssey",
+  "phrase": "bronze axe",
+  "sentenceId": "odyssey:c05.p020.s03",
+  "heightMetres": 0.3,
+  "realHeight": "suited to his hands",
+  "source": "fixture",
+  "author": "written by Claude (Claude Code session, 2026-10-31) as an offline library fixture; not interpreter output",
+  "parts": [
+    {
+      "id": "handle",
+      "shape": "cylinder",
+      "size": [
+        0.35,
+        6.0,
+        0.35
+      ],
+      "position": [
+        0,
+        3.0,
+        0
+      ],
+      "color": "#7a6a3a"
+    },
+    {
+      "id": "head",
+      "shape": "box",
+      "size": [
+        0.6,
+        1.0,
+        0.5
+      ],
+      "position": [
+        0,
+        5.6,
+        0
+      ],
+      "color": "#b07a3a",
+      "material": "metal"
+    },
+    {
+      "id": "blade-l",
+      "shape": "cone",
+      "size": [
+        1.4,
+        1.6,
+        0.25
+      ],
+      "position": [
+        -1.0,
+        5.6,
+        0
+      ],
+      "color": "#b07a3a",
+      "rotation": [
+        0,
+        0,
+        90
+      ],
+      "material": "metal"
+    },
+    {
+      "id": "blade-r",
+      "shape": "cone",
+      "size": [
+        1.4,
+        1.6,
+        0.25
+      ],
+      "position": [
+        1.0,
+        5.6,
+        0
+      ],
+      "color": "#b07a3a",
+      "rotation": [
+        0,
+        0,
+        -90
+      ],
+      "material": "metal"
+    },
+    {
+      "id": "grip",
+      "shape": "cylinder",
+      "size": [
+        0.4,
+        1.2,
+        0.4
+      ],
+      "position": [
+        0,
+        0.8,
+        0
+      ],
+      "color": "#5a4a2a"
+    }
+  ],
+  "labels": [
+    {
+      "text": "a great bronze axe that suited his hands",
+      "part": "head",
+      "quote": true
+    },
+    {
+      "text": "sharpened on both sides",
+      "part": "blade-r",
+      "quote": true
+    },
+    {
+      "text": "a beautiful olive-wood handle",
+      "part": "handle",
+      "quote": true
+    }
+  ]
+}

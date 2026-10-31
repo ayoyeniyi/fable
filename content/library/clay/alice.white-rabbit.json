@@ -1,0 +1,242 @@
+{
+  "version": 1,
+  "id": "alice.white-rabbit",
+  "title": "the White Rabbit",
+  "book": "alice",
+  "phrase": "White Rabbit",
+  "sentenceId": "alice:c01.p002.s01",
+  "heightMetres": 0.28,
+  "realHeight": "a rabbit's size",
+  "source": "fixture",
+  "author": "written by Claude (Claude Code session, 2026-10-31) as an offline library fixture; not interpreter output",
+  "parts": [
+    {
+      "id": "body",
+      "shape": "capsule",
+      "size": [
+        2.2,
+        3.2,
+        2.0
+      ],
+      "position": [
+        0,
+        1.9,
+        0
+      ],
+      "color": "#f2efe8"
+    },
+    {
+      "id": "head",
+      "shape": "sphere",
+      "size": [
+        1.7,
+        1.6,
+        1.8
+      ],
+      "position": [
+        0,
+        4.1,
+        0.35
+      ],
+      "color": "#f2efe8"
+    },
+    {
+      "id": "ear-l",
+      "shape": "capsule",
+      "size": [
+        0.45,
+        2.0,
+        0.25
+      ],
+      "position": [
+        -0.4,
+        5.6,
+        0.1
+      ],
+      "color": "#f2efe8",
+      "rotation": [
+        0,
+        0,
+        12
+      ]
+    },
+    {
+      "id": "ear-r",
+      "shape": "capsule",
+      "size": [
+        0.45,
+        2.0,
+        0.25
+      ],
+      "position": [
+        0.4,
+        5.6,
+        0.1
+      ],
+      "color": "#f2efe8",
+      "rotation": [
+        0,
+        0,
+        -12
+      ]
+    },
+    {
+      "id": "ear-l-in",
+      "shape": "capsule",
+      "size": [
+        0.25,
+        1.5,
+        0.1
+      ],
+      "position": [
+        -0.4,
+        5.6,
+        0.22
+      ],
+      "color": "#e8a0a8",
+      "rotation": [
+        0,
+        0,
+        12
+      ]
+    },
+    {
+      "id": "ear-r-in",
+      "shape": "capsule",
+      "size": [
+        0.25,
+        1.5,
+        0.1
+      ],
+      "position": [
+        0.4,
+        5.6,
+        0.22
+      ],
+      "color": "#e8a0a8",
+      "rotation": [
+        0,
+        0,
+        -12
+      ]
+    },
+    {
+      "id": "eye-l",
+      "shape": "sphere",
+      "size": [
+        0.28,
+        0.28,
+        0.2
+      ],
+      "position": [
+        -0.42,
+        4.3,
+        1.15
+      ],
+      "color": "#d0405a",
+      "material": "gloss"
+    },
+    {
+      "id": "eye-r",
+      "shape": "sphere",
+      "size": [
+        0.28,
+        0.28,
+        0.2
+      ],
+      "position": [
+        0.42,
+        4.3,
+        1.15
+      ],
+      "color": "#d0405a",
+      "material": "gloss"
+    },
+    {
+      "id": "nose",
+      "shape": "sphere",
+      "size": [
+        0.22,
+        0.16,
+        0.16
+      ],
+      "position": [
+        0,
+        3.95,
+        1.25
+      ],
+      "color": "#e8a0a8"
+    },
+    {
+      "id": "foot-l",
+      "shape": "capsule",
+      "size": [
+        0.6,
+        1.4,
+        0.5
+      ],
+      "position": [
+        -0.6,
+        0.25,
+        0.5
+      ],
+      "color": "#f2efe8",
+      "rotation": [
+        90,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "foot-r",
+      "shape": "capsule",
+      "size": [
+        0.6,
+        1.4,
+        0.5
+      ],
+      "position": [
+        0.6,
+        0.25,
+        0.5
+      ],
+      "color": "#f2efe8",
+      "rotation": [
+        90,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "tail",
+      "shape": "sphere",
+      "size": [
+        0.7,
+        0.7,
+        0.7
+      ],
+      "position": [
+        0,
+        1.2,
+        -1.0
+      ],
+      "color": "#f2efe8"
+    }
+  ],
+  "labels": [
+    {
+      "text": "a White Rabbit with pink eyes",
+      "part": "eye-r",
+      "quote": true
+    },
+    {
+      "text": "ran close by her",
+      "part": "foot-l",
+      "quote": true
+    },
+    {
+      "text": "white all over",
+      "part": "body"
+    }
+  ]
+}

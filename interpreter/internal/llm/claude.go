@@ -60,10 +60,14 @@ func New(model string) *Director {
 }
 
 func (d *Director) ask(ctx context.Context, msgs []anthropic.MessageParam) (string, error) {
+	return d.askWith(ctx, systemPrompt, msgs, 16000)
+}
+
+func (d *Director) askWith(ctx context.Context, system string, msgs []anthropic.MessageParam, maxTokens int64) (string, error) {
 	resp, err := d.client.Messages.New(ctx, anthropic.MessageNewParams{
 		Model:     anthropic.Model(d.model),
-		MaxTokens: 16000,
-		System:    []anthropic.TextBlockParam{{Text: systemPrompt}},
+		MaxTokens: maxTokens,
+		System:    []anthropic.TextBlockParam{{Text: system}},
 		Messages:  msgs,
 	})
 	if err != nil {

@@ -1,0 +1,276 @@
+{
+  "version": 1,
+  "id": "gulliver.travelling-box",
+  "title": "the travelling-box",
+  "book": "gulliver",
+  "phrase": "travelling-box",
+  "sentenceId": "gulliver:c16.p002.s04",
+  "heightMetres": 0.25,
+  "realHeight": "twelve feet wide, to Gulliver",
+  "source": "fixture",
+  "author": "written by Claude (Claude Code session, 2026-10-31) as an offline library fixture; not interpreter output",
+  "parts": [
+    {
+      "id": "floor",
+      "shape": "box",
+      "size": [
+        6,
+        0.2,
+        6
+      ],
+      "position": [
+        0,
+        0.1,
+        0
+      ],
+      "color": "#8a6a4a"
+    },
+    {
+      "id": "wall-back",
+      "shape": "box",
+      "size": [
+        6,
+        5,
+        0.2
+      ],
+      "position": [
+        0,
+        2.6,
+        -2.9
+      ],
+      "color": "#a0805a"
+    },
+    {
+      "id": "wall-left",
+      "shape": "box",
+      "size": [
+        0.2,
+        5,
+        6
+      ],
+      "position": [
+        -2.9,
+        2.6,
+        0
+      ],
+      "color": "#a0805a"
+    },
+    {
+      "id": "wall-right",
+      "shape": "box",
+      "size": [
+        0.2,
+        5,
+        6
+      ],
+      "position": [
+        2.9,
+        2.6,
+        0
+      ],
+      "color": "#a0805a"
+    },
+    {
+      "id": "roof-a",
+      "shape": "box",
+      "size": [
+        6,
+        0.2,
+        2.5
+      ],
+      "position": [
+        0,
+        5.2,
+        -1.75
+      ],
+      "color": "#7a5a3a"
+    },
+    {
+      "id": "roof-b",
+      "shape": "box",
+      "size": [
+        6,
+        0.2,
+        2.5
+      ],
+      "position": [
+        0,
+        5.2,
+        1.75
+      ],
+      "color": "#7a5a3a"
+    },
+    {
+      "id": "roof-c",
+      "shape": "box",
+      "size": [
+        2.5,
+        0.2,
+        1.0
+      ],
+      "position": [
+        -1.75,
+        5.2,
+        0
+      ],
+      "color": "#7a5a3a"
+    },
+    {
+      "id": "roof-d",
+      "shape": "box",
+      "size": [
+        2.5,
+        0.2,
+        1.0
+      ],
+      "position": [
+        1.75,
+        5.2,
+        0
+      ],
+      "color": "#7a5a3a"
+    },
+    {
+      "id": "hammock",
+      "shape": "capsule",
+      "size": [
+        3.6,
+        0.5,
+        1.6
+      ],
+      "position": [
+        0,
+        2.8,
+        0
+      ],
+      "color": "#e8dcc0",
+      "rotation": [
+        0,
+        0,
+        90
+      ]
+    },
+    {
+      "id": "rope-1",
+      "shape": "cylinder",
+      "size": [
+        0.05,
+        3.4,
+        0.05
+      ],
+      "position": [
+        -2.2,
+        4.0,
+        -1.3
+      ],
+      "color": "#c8b890",
+      "rotation": [
+        30,
+        0,
+        -40
+      ]
+    },
+    {
+      "id": "rope-2",
+      "shape": "cylinder",
+      "size": [
+        0.05,
+        3.4,
+        0.05
+      ],
+      "position": [
+        2.2,
+        4.0,
+        -1.3
+      ],
+      "color": "#c8b890",
+      "rotation": [
+        30,
+        0,
+        40
+      ]
+    },
+    {
+      "id": "rope-3",
+      "shape": "cylinder",
+      "size": [
+        0.05,
+        3.4,
+        0.05
+      ],
+      "position": [
+        -2.2,
+        4.0,
+        1.3
+      ],
+      "color": "#c8b890",
+      "rotation": [
+        -30,
+        0,
+        -40
+      ]
+    },
+    {
+      "id": "rope-4",
+      "shape": "cylinder",
+      "size": [
+        0.05,
+        3.4,
+        0.05
+      ],
+      "position": [
+        2.2,
+        4.0,
+        1.3
+      ],
+      "color": "#c8b890",
+      "rotation": [
+        -30,
+        0,
+        40
+      ]
+    },
+    {
+      "id": "ring",
+      "shape": "torus",
+      "size": [
+        1.4,
+        0.3,
+        1.4
+      ],
+      "position": [
+        0,
+        5.8,
+        -2.0
+      ],
+      "color": "#6a6a6a",
+      "rotation": [
+        90,
+        0,
+        0
+      ],
+      "material": "metal"
+    }
+  ],
+  "labels": [
+    {
+      "text": "a very convenient closet, of twelve feet wide",
+      "part": "wall-back",
+      "quote": true
+    },
+    {
+      "text": "a hammock to be fixed, by silken ropes",
+      "part": "hammock",
+      "quote": true
+    },
+    {
+      "text": "a hole of a foot square, to give me air",
+      "part": "roof-c",
+      "quote": true
+    },
+    {
+      "text": "carried by a servant on horseback",
+      "part": "ring"
+    }
+  ]
+}

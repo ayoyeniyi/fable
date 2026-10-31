@@ -1,0 +1,300 @@
+{
+  "about": "Peek source (a): models the client can show without asking the interpreter. 'prefab' entries are props of a room that is loaded (cloned from the scene); 'clay' entries are mock models (schema/mock-model.schema.json) shipped with the app. An entry is never offered before its notBefore sentence (the spoiler rule). Labels on prefab entries: 'at' is a point in the prop's bounding box, each axis -0.5..0.5. Labels and clay models were written by Claude in this repo's sessions.",
+  "entries": [
+    {
+      "id": "alice.golden-key",
+      "book": "alice",
+      "kind": "prefab",
+      "scene": "hall-of-doors",
+      "asset": "prop.golden-key",
+      "title": "the golden key",
+      "aliases": [
+        "golden key",
+        "little golden key",
+        "tiny golden key",
+        "key"
+      ],
+      "notBefore": "alice:c01.p013.s01",
+      "heightMetres": 0.16,
+      "realHeight": "about 6 cm",
+      "labels": [
+        {
+          "text": "a tiny golden key",
+          "at": [
+            0,
+            0.45,
+            0
+          ],
+          "quote": true
+        },
+        {
+          "text": "too small for the locks of the hall",
+          "at": [
+            0,
+            -0.45,
+            0
+          ]
+        }
+      ],
+      "licence": "original model made for Fable (blender/build_hall_of_doors.py)"
+    },
+    {
+      "id": "alice.glass-table",
+      "book": "alice",
+      "kind": "prefab",
+      "scene": "hall-of-doors",
+      "asset": "prop.glass-table",
+      "title": "the glass table",
+      "aliases": [
+        "little three-legged table",
+        "three-legged table",
+        "glass table",
+        "table"
+      ],
+      "notBefore": "alice:c01.p013.s01",
+      "heightMetres": 0.3,
+      "realHeight": "about a metre",
+      "labels": [
+        {
+          "text": "a little three-legged table, all made of solid glass",
+          "at": [
+            0,
+            0.5,
+            0
+          ],
+          "quote": true
+        },
+        {
+          "text": "nothing on it except a tiny golden key",
+          "at": [
+            0.4,
+            0.5,
+            0
+          ],
+          "quote": true
+        }
+      ],
+      "licence": "original model made for Fable (blender/build_hall_of_doors.py)"
+    },
+    {
+      "id": "alice.curtain",
+      "book": "alice",
+      "kind": "prefab",
+      "scene": "hall-of-doors",
+      "asset": "prop.curtain",
+      "title": "the low curtain",
+      "aliases": [
+        "low curtain",
+        "curtain"
+      ],
+      "notBefore": "alice:c01.p013.s02",
+      "heightMetres": 0.25,
+      "realHeight": "low, hiding a little door",
+      "labels": [
+        {
+          "text": "a low curtain she had not noticed before",
+          "at": [
+            0,
+            0.45,
+            0
+          ],
+          "quote": true
+        },
+        {
+          "text": "behind it was a little door about fifteen inches high",
+          "at": [
+            0,
+            -0.3,
+            0.2
+          ],
+          "quote": true
+        }
+      ],
+      "licence": "original model made for Fable (blender/build_hall_of_doors.py)"
+    },
+    {
+      "id": "alice.drink-me",
+      "book": "alice",
+      "kind": "prefab",
+      "scene": "hall-of-doors",
+      "asset": "prop.drink-me-bottle",
+      "title": "the DRINK ME bottle",
+      "aliases": [
+        "little bottle",
+        "bottle",
+        "drink me"
+      ],
+      "notBefore": "alice:c01.p015.s01",
+      "heightMetres": 0.2,
+      "realHeight": "about 12 cm",
+      "labels": [
+        {
+          "text": "“which certainly was not here before,”",
+          "at": [
+            0,
+            0.2,
+            0
+          ],
+          "quote": true
+        },
+        {
+          "text": "a paper label, with the words “Drink Me”",
+          "at": [
+            0,
+            0,
+            0.5
+          ],
+          "quote": true
+        },
+        {
+          "text": "round the neck of the bottle",
+          "at": [
+            0,
+            0.45,
+            0
+          ],
+          "quote": true
+        }
+      ],
+      "licence": "original model made for Fable (blender/build_hall_of_doors.py)"
+    },
+    {
+      "id": "alice.white-rabbit",
+      "book": "alice",
+      "kind": "clay",
+      "mock": "clay/alice.white-rabbit.json",
+      "title": "the White Rabbit",
+      "aliases": [
+        "white rabbit",
+        "rabbit"
+      ],
+      "notBefore": "alice:c01.p002.s01",
+      "licence": "written for Fable by Claude in a Claude Code session; no third-party material"
+    },
+    {
+      "id": "alice.pocket-watch",
+      "book": "alice",
+      "kind": "clay",
+      "mock": "clay/alice.pocket-watch.json",
+      "title": "the Rabbit's watch",
+      "aliases": [
+        "watch",
+        "pocket watch",
+        "waistcoat-pocket"
+      ],
+      "notBefore": "alice:c01.p003.s03",
+      "licence": "written for Fable by Claude in a Claude Code session; no third-party material"
+    },
+    {
+      "id": "alice.mushroom",
+      "book": "alice",
+      "kind": "clay",
+      "mock": "clay/alice.mushroom.json",
+      "title": "the mushroom and the Caterpillar",
+      "aliases": [
+        "mushroom",
+        "large mushroom",
+        "caterpillar",
+        "blue caterpillar",
+        "hookah"
+      ],
+      "notBefore": "alice:c04.p042.s01",
+      "licence": "written for Fable by Claude in a Claude Code session; no third-party material"
+    },
+    {
+      "id": "oz.farmhouse",
+      "book": "oz",
+      "kind": "clay",
+      "mock": "clay/oz.farmhouse.json",
+      "title": "the farmhouse",
+      "aliases": [
+        "house",
+        "farmhouse",
+        "cyclone cellar",
+        "trap door",
+        "room"
+      ],
+      "notBefore": "oz:c01.p001.s06",
+      "licence": "written for Fable by Claude in a Claude Code session; no third-party material"
+    },
+    {
+      "id": "oz.silver-shoes",
+      "book": "oz",
+      "kind": "clay",
+      "mock": "clay/oz.silver-shoes.json",
+      "title": "the silver shoes",
+      "aliases": [
+        "silver shoes",
+        "shoes"
+      ],
+      "notBefore": "oz:c02.p011.s02",
+      "licence": "written for Fable by Claude in a Claude Code session; no third-party material"
+    },
+    {
+      "id": "oz.scarecrow",
+      "book": "oz",
+      "kind": "clay",
+      "mock": "clay/oz.scarecrow.json",
+      "title": "the Scarecrow",
+      "aliases": [
+        "scarecrow"
+      ],
+      "notBefore": "oz:c03.p028.s04",
+      "licence": "written for Fable by Claude in a Claude Code session; no third-party material"
+    },
+    {
+      "id": "odyssey.raft",
+      "book": "odyssey",
+      "kind": "clay",
+      "mock": "clay/odyssey.raft.json",
+      "title": "the raft",
+      "aliases": [
+        "raft"
+      ],
+      "notBefore": "odyssey:c05.p020.s12",
+      "licence": "written for Fable by Claude in a Claude Code session; no third-party material"
+    },
+    {
+      "id": "odyssey.bronze-axe",
+      "book": "odyssey",
+      "kind": "clay",
+      "mock": "clay/odyssey.bronze-axe.json",
+      "title": "the bronze axe",
+      "aliases": [
+        "bronze axe",
+        "axe"
+      ],
+      "notBefore": "odyssey:c05.p020.s03",
+      "licence": "written for Fable by Claude in a Claude Code session; no third-party material"
+    },
+    {
+      "id": "gulliver.lilliputian",
+      "book": "gulliver",
+      "kind": "clay",
+      "mock": "clay/gulliver.lilliputian.json",
+      "title": "a Lilliputian",
+      "aliases": [
+        "human creature",
+        "lilliputian",
+        "creature"
+      ],
+      "notBefore": "gulliver:c01.p006.s08",
+      "licence": "written for Fable by Claude in a Claude Code session; no third-party material"
+    },
+    {
+      "id": "gulliver.travelling-box",
+      "book": "gulliver",
+      "kind": "clay",
+      "mock": "clay/gulliver.travelling-box.json",
+      "title": "the travelling-box",
+      "aliases": [
+        "travelling-box",
+        "travelling box",
+        "closet",
+        "box"
+      ],
+      "notBefore": "gulliver:c16.p002.s04",
+      "licence": "written for Fable by Claude in a Claude Code session; no third-party material"
+    }
+  ]
+}

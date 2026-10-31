@@ -1,0 +1,165 @@
+{
+  "version": 1,
+  "id": "oz.silver-shoes",
+  "title": "the silver shoes",
+  "book": "oz",
+  "phrase": "silver shoes",
+  "sentenceId": "oz:c02.p011.s02",
+  "heightMetres": 0.18,
+  "realHeight": "a pair of shoes",
+  "source": "fixture",
+  "author": "written by Claude (Claude Code session, 2026-10-31) as an offline library fixture; not interpreter output",
+  "parts": [
+    {
+      "id": "beam",
+      "shape": "box",
+      "size": [
+        7,
+        1.2,
+        1.4
+      ],
+      "position": [
+        0,
+        2.6,
+        -0.8
+      ],
+      "color": "#7a5a3a"
+    },
+    {
+      "id": "leg-l",
+      "shape": "cylinder",
+      "size": [
+        0.5,
+        2.2,
+        0.5
+      ],
+      "position": [
+        -0.7,
+        1.3,
+        0.2
+      ],
+      "color": "#3a3040",
+      "rotation": [
+        70,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "leg-r",
+      "shape": "cylinder",
+      "size": [
+        0.5,
+        2.2,
+        0.5
+      ],
+      "position": [
+        0.7,
+        1.3,
+        0.2
+      ],
+      "color": "#3a3040",
+      "rotation": [
+        70,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "shoe-l",
+      "shape": "capsule",
+      "size": [
+        0.7,
+        1.7,
+        0.6
+      ],
+      "position": [
+        -0.7,
+        0.35,
+        1.4
+      ],
+      "color": "#c8ccd4",
+      "rotation": [
+        90,
+        0,
+        0
+      ],
+      "material": "metal"
+    },
+    {
+      "id": "shoe-r",
+      "shape": "capsule",
+      "size": [
+        0.7,
+        1.7,
+        0.6
+      ],
+      "position": [
+        0.7,
+        0.35,
+        1.4
+      ],
+      "color": "#c8ccd4",
+      "rotation": [
+        90,
+        0,
+        0
+      ],
+      "material": "metal"
+    },
+    {
+      "id": "toe-l",
+      "shape": "cone",
+      "size": [
+        0.5,
+        0.8,
+        0.45
+      ],
+      "position": [
+        -0.7,
+        0.35,
+        2.4
+      ],
+      "color": "#c8ccd4",
+      "rotation": [
+        90,
+        0,
+        0
+      ],
+      "material": "metal"
+    },
+    {
+      "id": "toe-r",
+      "shape": "cone",
+      "size": [
+        0.5,
+        0.8,
+        0.45
+      ],
+      "position": [
+        0.7,
+        0.35,
+        2.4
+      ],
+      "color": "#c8ccd4",
+      "rotation": [
+        90,
+        0,
+        0
+      ],
+      "material": "metal"
+    }
+  ],
+  "labels": [
+    {
+      "text": "the great beam the house rested on",
+      "part": "beam",
+      "quote": true
+    },
+    {
+      "text": "shod in silver shoes with pointed toes",
+      "part": "toe-r",
+      "quote": true
+    }
+  ]
+}
