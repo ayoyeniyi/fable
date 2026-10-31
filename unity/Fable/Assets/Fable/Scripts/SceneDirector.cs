@@ -46,6 +46,13 @@ namespace Fable
 
         public IEnumerator Load(string sceneId, Passage book)
         {
+            // A tester can point a built headset at a live interpreter without rebuilding:
+            //   adb push url.txt /sdcard/Android/data/com.fable.alice/files/interpreter.txt   (one line, e.g. http://10.20.11.177:8787)
+            if (string.IsNullOrEmpty(InterpreterUrl))
+            {
+                var f = Path.Combine(Application.persistentDataPath, "interpreter.txt");
+                if (File.Exists(f)) { InterpreterUrl = File.ReadAllText(f).Trim(); Debug.Log($"[Fable] interpreter url from device file: {InterpreterUrl}"); }
+            }
             PassageScene = book.Scenes.First(s => s.Id == sceneId);
             var manifest = JsonConvert.DeserializeObject<SceneManifest>(ReadStreaming($"scripts/manifest.{sceneId}.json"));
             Manifest = manifest;

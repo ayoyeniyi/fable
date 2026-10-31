@@ -94,3 +94,14 @@ func TestRejectsEarlyOrFastReaderScale(t *testing.T) {
 		t.Fatalf("expected early and too-fast readerScale errors, got %q", all)
 	}
 }
+
+func TestUnknownFieldsNamesEveryKey(t *testing.T) {
+	raw := `{"version":1,"sceneId":"hall-of-doors","environment":{"prefab":"env.hall-of-doors","ambience":"amb.hall-lamps","mood":"dark"},
+	"beats":[{"sentence":"hall-of-doors:000","actions":[{"type":"light","light":"lamp.row","intensity":0.2,"duration":1},{"type":"sound","sfx":"x"}]}]}`
+	got := strings.Join(UnknownFields([]byte(raw)), "\n")
+	for _, want := range []string{`"mood"`, `"sentence" (use "sentenceId")`, `"duration" (use "durationSeconds")`, `"sfx" (use "sound")`} {
+		if !strings.Contains(got, want) {
+			t.Errorf("missing %s in:\n%s", want, got)
+		}
+	}
+}

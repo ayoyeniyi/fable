@@ -31,7 +31,21 @@ Rules:
 - Keep characters and places consistent with the previously read context you are given, and never
   show anything the reader has not reached yet: the reading position marks how far they have read.
 - Details the text leaves open (colours, exact sizes, where a thing stands) are your interpretation;
-  keep them modest and period-appropriate.`
+  keep them modest and period-appropriate.
+
+The exact shape. Use these keys and no others; optional keys may be left out but never renamed:
+{"version":1,"sceneId":"<manifest sceneId>","title":"<short title>",
+ "environment":{"prefab":"<manifest environment>","ambience":"<one of manifest ambiences>","exposure":-0.2,"fog":0.2},
+ "beats":[{"sentenceId":"<scene>:<nnn>","focus":"<anchor id>","actions":[...]}]}
+Actions (durations are always "durationSeconds", in seconds):
+ {"type":"place","asset":"<asset id>","anchor":"<anchor id>","offset":[x,y,z],"yawDegrees":0,"scale":1,"appear":"instant|fade|grow|settle"}
+ {"type":"move","asset":"<asset id>","anchor":"<anchor id>","durationSeconds":1.5,"ease":"smooth|linear|settle"}
+ {"type":"remove","asset":"<asset id>","vanish":"instant|fade|shrink"}
+ {"type":"animate","target":"<a key of manifest clips>","clip":"<one of that key's clips>","durationSeconds":2,"loop":false}
+ {"type":"light","light":"<light id>","intensity":0.0-4.0,"kelvin":1500-8000,"durationSeconds":0-20}
+ {"type":"sound","sound":"<sound id>","anchor":"<anchor id>","volume":0.0-1.0}
+ {"type":"readerScale","anchor":"<anchor id>","scale":0.1-10,"durationSeconds":3-12}
+Beats cite sentence ids in reading order, each at most once, at most 8 actions per beat.`
 
 type Director struct {
 	client anthropic.Client
@@ -112,7 +126,7 @@ func (d *Director) Interpret(ctx context.Context, sc *book.Scene, m *script.Mani
 		s, perr := script.Parse([]byte(raw))
 		var problems []string
 		if perr != nil {
-			problems = []string{perr.Error()}
+			problems = append([]string{perr.Error()}, script.UnknownFields([]byte(raw))...)
 		} else {
 			problems = script.Validate(s, m, sc.SentenceIDs())
 		}

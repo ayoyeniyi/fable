@@ -26,30 +26,30 @@ namespace Fable
         {
             ["hall-of-doors"] = new[]
             {
-                new Task { Sentence = "hall-of-doors:002", Verb = Verb.Touch, Target = "doors", Prompt = "Alice tried every door. Reach out and try one.", Radius = 0.22f },
+                new Task { Sentence = "hall-of-doors:002", Verb = Verb.Touch, Target = "doors", Prompt = "Alice tried every door. Point at one and pinch to try it.", Radius = 0.22f },
                 new Task { Sentence = "hall-of-doors:004", Verb = Verb.Grab, Target = "prop.golden-key", Prompt = "Pick up the tiny golden key." },
-                new Task { Sentence = "hall-of-doors:005", Verb = Verb.BringTo, Target = "prop.golden-key", Dest = "door.little", Prompt = "Take the key to the little door.", Radius = 0.28f },
-                new Task { Sentence = "hall-of-doors:006", Verb = Verb.LookAt, Target = "door.little", Prompt = "Kneel and look through the little door.", Radius = 1.1f },
+                new Task { Sentence = "hall-of-doors:005", Verb = Verb.BringTo, Target = "prop.golden-key", Dest = "door.little", Prompt = "Hold the key and aim it at the little door.", Radius = 0.28f },
+                new Task { Sentence = "hall-of-doors:006", Verb = Verb.LookAt, Target = "door.little", Prompt = "Look through the little door into the garden.", Radius = 30f },
                 new Task { Sentence = "hall-of-doors:009", Verb = Verb.Grab, Target = "prop.drink-me-bottle", Prompt = "Pick up the little bottle." },
                 new Task { Sentence = "hall-of-doors:011", Verb = Verb.BringTo, Target = "prop.drink-me-bottle", Dest = "head", Prompt = "DRINK ME: bring the bottle to your lips.", Radius = 0.26f },
-                new Task { Sentence = "hall-of-doors:012", Verb = Verb.GoThrough, Target = "door.little", Passage = "queens-croquet-ground", Prompt = "You are small enough now. Go through the little door into the garden.", Radius = 0.7f },
+                new Task { Sentence = "hall-of-doors:012", Verb = Verb.GoThrough, Target = "door.little", Passage = "queens-croquet-ground", Prompt = "You are small enough now. Keep your eyes on the little door to go through into the garden.", Radius = 30f },
             },
             ["mad-tea-party"] = new[]
             {
                 new Task { Sentence = "mad-tea-party:000", Verb = Verb.LookAt, Target = "char.dormouse", Prompt = "Look at the Dormouse, fast asleep between them.", Radius = 3.5f },
                 new Task { Sentence = "mad-tea-party:002", Verb = Verb.LookAt, Target = "prop.armchair", Prompt = "\"There's plenty of room!\" Find the big armchair at the end of the table.", Radius = 4f },
-                new Task { Sentence = "mad-tea-party:004", Verb = Verb.Touch, Target = "char.march-hare", Prompt = "The March Hare offers you wine. Reach out to him.", Radius = 0.3f },
-                new Task { Sentence = "mad-tea-party:005", Verb = Verb.Touch, Target = "prop.tea-service", Prompt = "Look all round the table: touch the tea things. There is nothing but tea.", Radius = 0.25f },
+                new Task { Sentence = "mad-tea-party:004", Verb = Verb.Touch, Target = "char.march-hare", Prompt = "The March Hare offers you wine. Point at him and pinch.", Radius = 0.3f },
+                new Task { Sentence = "mad-tea-party:005", Verb = Verb.Touch, Target = "prop.tea-service", Prompt = "Look all round the table: point at the tea things and pinch. Nothing but tea.", Radius = 0.25f },
                 new Task { Sentence = "mad-tea-party:011", Verb = Verb.LookAt, Target = "char.hatter", Prompt = "The Hatter is staring at you. Look back at him.", Radius = 3.5f },
-                new Task { Sentence = "mad-tea-party:014", Verb = Verb.Touch, Target = "prop.tea-service", Prompt = "A riddle! Pick up your cup while you think.", Radius = 0.25f },
+                new Task { Sentence = "mad-tea-party:014", Verb = Verb.Touch, Target = "prop.tea-service", Prompt = "A riddle! Point at your cup and pinch while you think.", Radius = 0.25f },
             },
             ["queens-croquet-ground"] = new[]
             {
                 new Task { Sentence = "queens-croquet-ground:000", Verb = Verb.LookAt, Target = "prop.rose-tree", Prompt = "Three gardeners are painting the roses. Go nearer and watch.", Radius = 2.6f },
-                new Task { Sentence = "queens-croquet-ground:001", Verb = Verb.Touch, Target = "prop.paint-pot", Prompt = "Red paint, for white roses. Touch the pot.", Radius = 0.25f },
+                new Task { Sentence = "queens-croquet-ground:001", Verb = Verb.Touch, Target = "prop.paint-pot", Prompt = "Red paint, for white roses. Point at the pot and pinch.", Radius = 0.25f },
                 new Task { Sentence = "queens-croquet-ground:009", Verb = Verb.LookAt, Target = "char.seven", Prompt = "Seven has seen you. Look at him.", Radius = 4f },
                 new Task { Sentence = "queens-croquet-ground:011", Verb = Verb.LookAt, Target = "char.two", Prompt = "They all look at Two. So do you.", Radius = 4f },
-                new Task { Sentence = "queens-croquet-ground:012", Verb = Verb.Touch, Target = "prop.rose-tree", Prompt = "Touch a painted rose. The red comes off on your fingers.", Radius = 0.3f },
+                new Task { Sentence = "queens-croquet-ground:012", Verb = Verb.Touch, Target = "prop.rose-tree", Prompt = "Point at a painted rose and pinch. The red comes off on your fingers.", Radius = 0.3f },
             },
         };
 
@@ -70,7 +70,7 @@ namespace Fable
 
         void OnBeat(int index, Beat beat)
         {
-            ClearGlow(); active = null; done = false;
+            ClearGlow(); active = null; done = false; dwell = 0;
             if (director.PassageScene == null || !Tables.TryGetValue(director.PassageScene.Id, out var tasks)) return;
             foreach (var t in tasks) if (t.Sentence == beat.SentenceId) { active = t; activeSince = Time.time; break; }
             if (active != null && active.Target != "doors") Glow(director.Registry.Asset(active.Target));
@@ -87,11 +87,11 @@ namespace Fable
             float radius = active.Radius * scale;
             bool ok = active.Verb switch
             {
-                Verb.Touch => active.Target == "doors" ? Touching(radius) : TouchingAsset(director.Registry.Asset(active.Target), radius),
+                Verb.Touch => active.Target == "doors" ? (Touching(radius) || PointingAt(DoorRenderers())) : (TouchingAsset(director.Registry.Asset(active.Target), radius) || PointingAt(Renderers(director.Registry.Asset(active.Target)))),
                 Verb.Grab => Holding(active.Target),
-                Verb.BringTo => Holding(active.Target) && Near(director.Registry.Asset(active.Target), DestPoint(), radius),
+                Verb.BringTo => Holding(active.Target) && (Near(director.Registry.Asset(active.Target), DestPoint(), radius) || (active.Dest != "head" && Aiming(director.Registry.Asset(active.Target), Renderers(director.Registry.Anchor(active.Dest) ?? director.Registry.Asset(active.Dest))))),
                 Verb.LookAt => LookingAt(director.Registry.Anchor(active.Target) ?? director.Registry.Asset(active.Target), radius),
-                Verb.GoThrough => flow && flow.Current == FlowController.State.Scene && Near(head, (director.Registry.Anchor(active.Target) ?? director.Registry.Asset(active.Target))?.position ?? Vector3.positiveInfinity, radius),
+                Verb.GoThrough => flow && flow.Current == FlowController.State.Scene && Dwell(LookingAt(director.Registry.Anchor(active.Target) ?? director.Registry.Asset(active.Target), radius), 1.4f),
                 _ => false
             };
             if (!ok) return;
@@ -120,7 +120,7 @@ namespace Fable
         {
             if (!t || !head) return false;
             var to = t.position - head.position;
-            return to.magnitude < radius && Vector3.Dot(head.forward, to.normalized) > 0.82f;
+            return to.magnitude < radius && Vector3.Dot(head.forward, to.normalized) > 0.94f;   // about 20 degrees
         }
 
         IEnumerable<Vector3> Hands()
@@ -144,6 +144,41 @@ namespace Fable
                 foreach (var r in root.GetComponentsInChildren<Renderer>())
                     if (r.name.StartsWith("MESH_Door") && !r.name.Contains("Little") && Vector3.Distance(r.bounds.ClosestPoint(h), h) < radius) return true;
             return false;
+        }
+
+        /// Seated readers cannot walk to things, so a hand that points at the target while pinching counts as touching it.
+        Renderer[] Renderers(Transform t) => t ? t.GetComponentsInChildren<Renderer>() : new Renderer[0];
+        Renderer[] DoorRenderers()
+        {
+            var root = director.Registry.EnvironmentRoot; if (!root) return new Renderer[0];
+            var list = new List<Renderer>();
+            foreach (var r in root.GetComponentsInChildren<Renderer>()) if (r.name.StartsWith("MESH_Door") && !r.name.Contains("Little")) list.Add(r);
+            return list.ToArray();
+        }
+        bool PointingAt(Renderer[] targets)
+        {
+            if (!head || targets.Length == 0 || !reader || !(reader.LeftPinching || reader.RightPinching)) return false;
+            foreach (var h in Hands())
+            {
+                var ray = new Ray(head.position, (h - head.position).normalized);
+                foreach (var r in targets) if (r && r.bounds.IntersectRay(ray, out float d) && d < 40f) return true;
+            }
+            return false;
+        }
+        /// Aim a held object at a destination: the line from the head through the object meets the destination.
+        bool Aiming(Transform held, Renderer[] dest)
+        {
+            if (!held || !head || dest.Length == 0) return false;
+            var ray = new Ray(head.position, (held.position - head.position).normalized);
+            foreach (var r in dest) if (r && r.bounds.IntersectRay(ray, out float d) && d < 40f) return true;
+            var a = director.Registry.Anchor(active.Dest) ?? director.Registry.Asset(active.Dest);
+            return a && Vector3.Dot(ray.direction, (a.position - head.position).normalized) > 0.995f;
+        }
+        float dwell;
+        bool Dwell(bool condition, float seconds)
+        {
+            dwell = condition ? dwell + Time.deltaTime : Mathf.Max(0, dwell - Time.deltaTime * 2f);
+            return dwell >= seconds;
         }
 
         bool TouchingAsset(Transform t, float radius)

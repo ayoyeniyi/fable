@@ -268,3 +268,53 @@ func Validate(s *SceneScript, m *Manifest, sentenceIDs []string) []string {
 	}
 	return errs
 }
+
+var allowedKeys = map[string]map[string]bool{
+	"script":      {"version": true, "sceneId": true, "title": true, "environment": true, "beats": true},
+	"environment": {"prefab": true, "ambience": true, "exposure": true, "fog": true},
+	"beat":        {"sentenceId": true, "focus": true, "actions": true},
+	"action":      {"type": true, "asset": true, "anchor": true, "offset": true, "yawDegrees": true, "scale": true, "appear": true, "ease": true, "vanish": true, "target": true, "clip": true, "durationSeconds": true, "loop": true, "light": true, "intensity": true, "kelvin": true, "sound": true, "volume": true},
+}
+
+// UnknownFields lists every key the strict parser would reject, with its location and the key it was probably meant
+// to be, so one repair round can fix them all. It never fails: unparseable input yields nothing.
+func UnknownFields(data []byte) []string {
+	var root map[string]any
+	if err := json.Unmarshal(data, &root); err != nil {
+		return nil
+	}
+	hints := map[string]string{"sentence": "sentenceId", "sentence_id": "sentenceId", "id": "sentenceId", "duration": "durationSeconds", "seconds": "durationSeconds", "time": "durationSeconds", "prop": "asset", "object": "asset", "position": "anchor", "at": "anchor", "yaw": "yawDegrees", "animation": "clip", "sfx": "sound", "audio": "sound"}
+	var out []string
+	check := func(level, where string, m map[string]any) {
+		for k := range m {
+			if !allowedKeys[level][k] {
+				msg := fmt.Sprintf("%s has unknown key %q", where, k)
+				if h, ok := hints[k]; ok {
+					msg += fmt.Sprintf(" (use %q)", h)
+				}
+				out = append(out, msg)
+			}
+		}
+	}
+	check("script", "the script", root)
+	if env, ok := root["environment"].(map[string]any); ok {
+		check("environment", "environment", env)
+	}
+	if beats, ok := root["beats"].([]any); ok {
+		for i, b := range beats {
+			bm, ok := b.(map[string]any)
+			if !ok {
+				continue
+			}
+			check("beat", fmt.Sprintf("beats[%d]", i), bm)
+			if acts, ok := bm["actions"].([]any); ok {
+				for j, a := range acts {
+					if am, ok := a.(map[string]any); ok {
+						check("action", fmt.Sprintf("beats[%d].actions[%d]", i, j), am)
+					}
+				}
+			}
+		}
+	}
+	return out
+}
