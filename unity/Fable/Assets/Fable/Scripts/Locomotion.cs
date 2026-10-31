@@ -63,12 +63,7 @@ namespace Fable
             ray = default;
 #if FABLE_META_XR
             foreach (var right in rightSource ? new[] { true, false } : new[] { false, true })
-            {
-                var hand = right ? reader.RightHand : reader.LeftHand; var anchor = right ? reader.RightPointer : reader.LeftPointer;
-                if (hand && hand.IsTracked && hand.IsPointerPoseValid && hand.PointerPose) { ray = new Ray(hand.PointerPose.position, hand.PointerPose.forward); rightSource = right; return true; }
-                var ctrl = right ? OVRInput.Controller.RTouch : OVRInput.Controller.LTouch;
-                if (anchor && OVRInput.IsControllerConnected(ctrl) && (hand == null || !hand.IsTracked)) { ray = new Ray(anchor.position, anchor.forward); rightSource = right; return true; }
-            }
+                if (reader.PointRay(right, out ray)) { rightSource = right; return true; }
 #endif
             return false;
         }

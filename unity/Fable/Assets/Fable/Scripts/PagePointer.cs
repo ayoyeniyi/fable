@@ -44,14 +44,7 @@ namespace Fable
             ray = default;
             if (right && TestRay.HasValue) { ray = TestRay.Value; return true; }
 #if FABLE_META_XR
-            if (Reader)
-            {
-                var hand = right ? Reader.RightHand : Reader.LeftHand;
-                if (hand && hand.IsTracked && hand.IsPointerPoseValid && hand.PointerPose) { ray = new Ray(hand.PointerPose.position, hand.PointerPose.forward); return true; }
-                var ctrl = right ? OVRInput.Controller.RTouch : OVRInput.Controller.LTouch;
-                var anchor = right ? Reader.RightPointer : Reader.LeftPointer;
-                if (anchor && OVRInput.IsControllerConnected(ctrl) && (!hand || !hand.IsTracked)) { ray = new Ray(anchor.position, anchor.forward); return true; }
-            }
+            if (Reader && Reader.PointRay(right, out ray)) return true;
 #endif
 #if UNITY_EDITOR || UNITY_STANDALONE
             if (right && !UnityEngine.XR.XRSettings.isDeviceActive && Camera.main && UnityEngine.InputSystem.Mouse.current != null)

@@ -36,6 +36,52 @@ namespace Fable
         float rDown = -1, lDown = -1, bothDown = -1; bool bothFired, rDragging, lDragging; Vector3 rStart, rLast, lStart, lLast; float rAccum, lAccum;
         bool suppressed;   // a pinch that grabbed a prop is not also a page turn or a scrub
 
+#if FABLE_META_XR
+        /// The ray a hand or controller points along, in world space, shared by the page pointer and the room pointer.
+        /// Hands: the system pointer pose (the ray the Quest's own menus use). The SDK reports it in tracking-space
+        /// coordinates and leaves it unparented, so it is mapped through the rig's tracking space here; read raw, it was
+        /// off by the rig's offset and hands never reached the page while controllers did. While the system has no valid
+        /// pointer pose for a tracked hand, the ray runs from the eyes through the hand instead, which is what a first-time
+        /// pointer expects anyway: the target sits behind your hand.
+        public bool PointRay(bool right, out Ray ray)
+        {
+            ray = default;
+            var hand = right ? RightHand : LeftHand; var anchor = right ? RightPointer : LeftPointer;
+            var space = anchor ? anchor.parent : null;
+            if (hand && hand.IsTracked && hand.PointerPose)
+            {
+                var pp = hand.PointerPose; Vector3 pos, dir;
+                if (pp.parent == null && space) { pos = space.TransformPoint(pp.localPosition); dir = space.rotation * pp.localRotation * Vector3.forward; }
+                else { pos = pp.position; dir = pp.forward; }
+                if (hand.IsPointerPoseValid && dir.sqrMagnitude > 0.5f) { ray = new Ray(pos, dir.normalized); return true; }
+                var head = Camera.main ? Camera.main.transform : null;
+                if (head)
+                {
+                    var from = pp.localPosition.sqrMagnitude > 1e-6f ? pos : (anchor ? anchor.position : pos);
+                    var d = from - head.position;
+                    if (d.sqrMagnitude > 0.01f) { ray = new Ray(head.position, d.normalized); return true; }
+                }
+            }
+            var ctrl = right ? OVRInput.Controller.RTouch : OVRInput.Controller.LTouch;
+            if (anchor && OVRInput.IsControllerConnected(ctrl) && (hand == null || !hand.IsTracked)) { ray = new Ray(anchor.position, anchor.forward); return true; }
+            return false;
+        }
+
+        float nextDiag;
+        /// A line in the log every few seconds for the first minutes, so a tester can see what the headset makes of each hand.
+        void Diagnose()
+        {
+            if (Time.time < nextDiag || Time.time > 240f) return; nextDiag = Time.time + 3f;
+            foreach (var right in new[] { true, false })
+            {
+                var hand = right ? RightHand : LeftHand; var anchor = right ? RightPointer : LeftPointer;
+                if (!hand) { Debug.Log($"[Fable] point {(right ? "R" : "L")}: no OVRHand"); continue; }
+                var pp = hand.PointerPose; bool got = PointRay(right, out var r);
+                Debug.Log($"[Fable] point {(right ? "R" : "L")}: tracked={hand.IsTracked} valid={hand.IsPointerPoseValid} conf={hand.HandConfidence} ppLocal={(pp ? pp.localPosition.ToString("F2") : "-")} ppParent={(pp && pp.parent ? pp.parent.name : "none")} anchor={(anchor ? anchor.position.ToString("F2") : "-")} head={(Camera.main ? Camera.main.transform.position.ToString("F2") : "-")} ray={(got ? r.origin.ToString("F2") + "->" + r.direction.ToString("F2") : "none")}");
+            }
+        }
+#endif
+
         /// Called when a pinch picks something up (or puts it down): that pinch no longer counts as a tap or drag.
         public void SuppressCurrentPinch() { suppressed = true; rDown = lDown = bothDown = -1; rDragging = false; }
 
@@ -74,6 +120,9 @@ namespace Fable
             InputMode = "keyboard";
 #endif
             if (InputMode != lastMode) { lastMode = InputMode; Debug.Log($"[Fable] input: {InputMode}"); ModeChanged?.Invoke(InputMode); }
+#if FABLE_META_XR
+            Diagnose();
+#endif
             float now = Time.time;
             if (suppressed) { if (!l && !r) suppressed = false; return; }
 
