@@ -8,6 +8,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Fable/Scenes/HallOfDoors.unity
     guid: 8e9cf8bcc560745bfa3c0ee218435a55
+  - enabled: 1
+    path: Assets/Fable/Scenes/MadTeaParty.unity
+    guid: 5ade11381dd2e490285b49a11a57d64b
+  - enabled: 1
+    path: Assets/Fable/Scenes/QueensCroquetGround.unity
+    guid: 254b7e42fee1c4d8194d894f329c7991
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 26154d77f6c974987ae91a02379cdc30, type: 2}

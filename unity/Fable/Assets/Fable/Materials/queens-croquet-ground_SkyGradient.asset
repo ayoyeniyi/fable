@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!28 &2800000
+Texture2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: queens-croquet-ground_SkyGradient
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 4
+  m_Width: 1
+  m_Height: 128
+  m_CompleteImageSize: 512
+  m_MipsStripped: 0
+  m_TextureFormat: 4
+  m_MipCount: 1
+  m_IsReadable: 1
+  m_IsPreProcessed: 0
+  m_IgnoreMipmapLimit: 1
+  m_MipmapLimitGroupName: 
+  m_StreamingMipmaps: 0
+  m_StreamingMipmapsPriority: 0
+  m_VTOnly: 0
+  m_AlphaIsTransparency: 0
+  m_ImageCount: 1
+  m_TextureDimension: 2
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_LightmapFormat: 0
+  m_ColorSpace: 1
+  m_PlatformBlob: 
+  image data: 512
+  _typelessdata: dbe3e0ffd9e2e1ffd7e1e1ffd6e0e1ffd4dfe2ffd2dee2ffd0dde2ffcedce3ffccdbe3ffcadae3ffc8d9e4ffc6d7e4ffc4d6e4ffc2d5e5ffc0d4e5ffbed3e5ffbcd2e6ffbbd1e6ffb9d0e6ffb7cfe7ffb5cee7ffb3cde7ffb1cce7ffafcbe8ffadcae8ffabc9e8ffa9c8e9ffa7c7e9ffa5c6e9ffa3c5eaffa1c4eaffa0c3eaff9ec2ebff9dc1eaff9dc1eaff9cc0eaff9bbfeaff9abfeaff9abee9ff99bee9ff98bde9ff98bde9ff97bce9ff96bbe8ff96bbe8ff95bae8ff94bae8ff93b9e8ff93b9e8ff92b8e7ff91b8e7ff91b7e7ff90b6e7ff8fb6e7ff8fb5e6ff8eb5e6ff8db4e6ff8db4e6ff8cb3e6ff8bb2e5ff8ab2e5ff8ab1e5ff89b1e5ff88b0e5ff88b0e5ff87afe4ff86afe4ff86aee4ff85ade4ff84ade4ff83ace3ff83ace3ff82abe3ff81abe3ff81aae3ff80a9e2ff7fa9e2ff7fa8e2ff7ea8e2ff7da7e2ff7da7e2ff7ca6e1ff7ba6e1ff7aa5e1ff7aa4e1ff79a4e1ff78a3e0ff78a3e0ff77a2e0ff76a2e0ff76a1e0ff75a0dfff74a0dfff739fdfff739fdfff729edfff719edfff719ddeff709ddeff6f9cdeff6f9bdeff6e9bdeff6d9addff6d9addff6c99ddff6b99ddff6a98ddff6a97dcff6997dcff6896dcff6896dcff6795dcff6695dcff6694dbff6594dbff6493dbff6392dbff6392dbff6291daff6191daff6190daff6090daff5f8fdaff5f8ed9ff5e8ed9ff5d8dd9ff5c8dd9ff5c8cd9ff
+  m_StreamData:
+    serializedVersion: 2
+    offset: 0
+    size: 0
+    path: 

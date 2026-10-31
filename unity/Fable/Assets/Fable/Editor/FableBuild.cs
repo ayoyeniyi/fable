@@ -21,8 +21,19 @@ namespace Fable.Editor
 {
     public static class FableBuild
     {
-        const string ScenePath = "Assets/Fable/Scenes/HallOfDoors.unity";
-        const string GlbPath = "Assets/Fable/Models/hall_of_doors.glb";
+        // One Unity scene per passage, each with its own lightmaps. Outdoor scenes get daylight, an unlit sky dome and haze.
+        public class SceneDef { public string Id, Scene, Glb; public bool Outdoor; }
+        public static readonly SceneDef[] Scenes =
+        {
+            new SceneDef { Id = "hall-of-doors", Scene = "Assets/Fable/Scenes/HallOfDoors.unity", Glb = "Assets/Fable/Models/hall_of_doors.glb" },
+            new SceneDef { Id = "mad-tea-party", Scene = "Assets/Fable/Scenes/MadTeaParty.unity", Glb = "Assets/Fable/Models/mad_tea_party.glb", Outdoor = true },
+            new SceneDef { Id = "queens-croquet-ground", Scene = "Assets/Fable/Scenes/QueensCroquetGround.unity", Glb = "Assets/Fable/Models/queens_croquet_ground.glb", Outdoor = true },
+        };
+        const string ScenePath = "Assets/Fable/Scenes/HallOfDoors.unity";   // the hall: desktop previews
+        static SceneDef Def(string id) => Scenes.First(d => d.Id == id);
+        /// Scenes whose environment GLB has been exported and imported.
+        static SceneDef[] Available => Scenes.Where(d => AssetDatabase.LoadAssetAtPath<GameObject>(d.Glb)).ToArray();
+        static SceneDef[] Built => Scenes.Where(d => File.Exists(d.Scene)).ToArray();
         const string Defines = "FABLE_META_XR";
 
         [MenuItem("Fable/1 Configure Project")]
@@ -123,20 +134,44 @@ namespace Fable.Editor
         public static void BuildScene()
         {
             SyncData();
+            foreach (var d in Available) BuildScene(d.Id);
+            SetBuildScenes();
+        }
+
+        /// Hall first: it is the scene the APK opens on; the passage picker loads the others.
+        static void SetBuildScenes() =>
+            EditorBuildSettings.scenes = Built.Select(d => new EditorBuildSettingsScene(d.Scene, true)).ToArray();
+
+        static void NotInPlayMode() { if (EditorApplication.isPlayingOrWillChangePlaymode) throw new Exception("exit play mode first (unity command editor.playmode stop)"); }
+
+        public static void BuildScene(string sceneId)
+        {
+            NotInPlayMode();
+            var def = Def(sceneId); bool outdoor = def.Outdoor, hall = sceneId == "hall-of-doors";
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            RenderSettings.ambientMode = AmbientMode.Flat; RenderSettings.ambientLight = new Color(0.09f, 0.07f, 0.05f);
             RenderSettings.defaultReflectionMode = DefaultReflectionMode.Custom; RenderSettings.reflectionIntensity = 1f;
-            RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Exponential; RenderSettings.fogDensity = 0.035f; RenderSettings.fogColor = new Color(0.06f, 0.045f, 0.03f);
-            RenderSettings.skybox = null;
+            RenderSettings.skybox = null; RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Exponential;
+            if (outdoor)
+            {
+                // a soft English afternoon: sky above, warm ground bounce, a little haze so the far hedges sit back
+                RenderSettings.ambientMode = AmbientMode.Trilight;
+                RenderSettings.ambientSkyColor = new Color(0.46f, 0.55f, 0.66f); RenderSettings.ambientEquatorColor = new Color(0.42f, 0.45f, 0.38f); RenderSettings.ambientGroundColor = new Color(0.20f, 0.18f, 0.12f);
+                RenderSettings.fogDensity = 0.008f; RenderSettings.fogColor = new Color(0.70f, 0.76f, 0.80f);
+            }
+            else
+            {
+                RenderSettings.ambientMode = AmbientMode.Flat; RenderSettings.ambientLight = new Color(0.09f, 0.07f, 0.05f);
+                RenderSettings.fogDensity = 0.035f; RenderSettings.fogColor = new Color(0.06f, 0.045f, 0.03f);
+            }
 
             // environment from the Blender GLB (glTFast importer creates a prefab-like asset)
-            var glb = AssetDatabase.LoadAssetAtPath<GameObject>(GlbPath);
-            if (!glb) throw new Exception($"GLB missing at {GlbPath}; run the Blender export first");
+            var glb = AssetDatabase.LoadAssetAtPath<GameObject>(def.Glb);
+            if (!glb) throw new Exception($"GLB missing at {def.Glb}; run the Blender export first");
             var env = (GameObject)PrefabUtility.InstantiatePrefab(glb);
-            env.name = "env.hall-of-doors";
+            env.name = "env." + sceneId;
             foreach (var t in env.GetComponentsInChildren<Transform>(true))
             {
-                bool dynamic = t.name.StartsWith("prop.") || t.name.StartsWith("fx.") || t.name == "door.little" || (t.parent && (t.parent.name.StartsWith("prop.") || t.parent.name.StartsWith("fx.") || t.parent.name == "door.little"));
+                bool dynamic = SceneRegistry.IsAssetName(t.name) || (t.parent && SceneRegistry.IsAssetName(t.parent.name));
                 GameObjectUtility.SetStaticEditorFlags(t.gameObject, dynamic ? 0 : StaticEditorFlags.BatchingStatic | StaticEditorFlags.ContributeGI | StaticEditorFlags.OccludeeStatic | StaticEditorFlags.OccluderStatic);
             }
             // the flame sits inside the glass chimney: glass and flame must not occlude the lightmapper or cast shadows
@@ -146,7 +181,34 @@ namespace Fable.Editor
                     r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; r.receiveShadows = false;
                     GameObjectUtility.SetStaticEditorFlags(r.gameObject, StaticEditorFlags.BatchingStatic);
                 }
-            foreach (var l in env.GetComponentsInChildren<Light>(true))
+            if (outdoor)
+            {
+                foreach (var l in env.GetComponentsInChildren<Light>(true))
+                {
+                    l.lightmapBakeType = LightmapBakeType.Mixed; l.shadows = LightShadows.Soft;
+                    if (l.name.StartsWith("light.sun")) { l.type = LightType.Directional; l.intensity = 1.5f; l.color = new Color(1f, 0.93f, 0.80f); }
+                    else if (l.name.StartsWith("light.sky")) { l.type = LightType.Directional; l.intensity = 0.35f; l.color = new Color(0.62f, 0.74f, 1f); l.shadows = LightShadows.None; }
+                    else { l.intensity = 0.5f; l.range = 12f; l.color = new Color(1f, 0.95f, 0.86f); l.shadows = LightShadows.None; }
+                }
+                // the sky dome and far scenery are unlit backdrop: no lightmap, no shadows, shown only at full scale
+                var unlit = Shader.Find("Universal Render Pipeline/Unlit");
+                foreach (var r in env.GetComponentsInChildren<Renderer>(true))
+                    if (FlowControllerBackdrop(r.name))
+                    {
+                        r.shadowCastingMode = ShadowCastingMode.Off; r.receiveShadows = false;
+                        GameObjectUtility.SetStaticEditorFlags(r.gameObject, StaticEditorFlags.BatchingStatic);
+                        if (r.name.Contains("Sky") && r.sharedMaterial && unlit)
+                        {
+                            var path = $"Assets/Fable/Materials/{sceneId}_Sky.mat"; Directory.CreateDirectory("Assets/Fable/Materials");
+                            var src = r.sharedMaterial; var tex = src.HasProperty("baseColorTexture") ? src.GetTexture("baseColorTexture") : src.mainTexture;
+                            var m = AssetDatabase.LoadAssetAtPath<Material>(path); if (!m) { m = new Material(unlit); AssetDatabase.CreateAsset(m, path); }
+                            m.SetTexture("_BaseMap", tex); m.SetColor("_BaseColor", tex ? Color.white : new Color(0.62f, 0.75f, 0.9f)); EditorUtility.SetDirty(m);
+                            r.sharedMaterial = m;
+                        }
+                    }
+            }
+            if (outdoor && !env.GetComponentsInChildren<Renderer>(true).Any(r => r.name.Contains("Sky"))) AddSkyDome(env.transform, sceneId);
+            if (!outdoor) foreach (var l in env.GetComponentsInChildren<Light>(true))
             {
                 l.lightmapBakeType = LightmapBakeType.Mixed; l.shadows = LightShadows.Soft; l.intensity = l.name.StartsWith("Lamp") ? 2.2f : 0f; l.range = l.name.StartsWith("Lamp") ? 7.5f : 3f;
                 l.color = l.name.StartsWith("Lamp") ? new Color(1f, 0.72f, 0.45f) : new Color(0.72f, 0.9f, 1f);
@@ -179,10 +241,10 @@ namespace Fable.Editor
                 }
                 if (changed) r.sharedMaterials = mats;
             }
-            // one baked reflection probe for the whole hall: brass, glass and the stone floor read their surroundings
-            var probeGo = new GameObject("HallReflectionProbe"); probeGo.transform.SetParent(env.transform, false);
-            var centreAnchor = FindDeep(env.transform, "anchor.hall.centre"); probeGo.transform.position = (centreAnchor ? centreAnchor.position : env.transform.position) + Vector3.up * 1.4f;
-            var probe = probeGo.AddComponent<ReflectionProbe>(); probe.mode = UnityEngine.Rendering.ReflectionProbeMode.Baked; probe.size = new Vector3(16, 4, 6); probe.resolution = 128; probe.boxProjection = true; probe.intensity = 1f;
+            // one baked reflection probe per scene: brass, glass, porcelain and the floor read their surroundings
+            var probeGo = new GameObject(hall ? "HallReflectionProbe" : "SceneReflectionProbe"); probeGo.transform.SetParent(env.transform, false);
+            var centreAnchor = FindDeep(env.transform, "anchor.hall.centre") ?? FindDeep(env.transform, "anchor.scene.centre"); probeGo.transform.position = (centreAnchor ? centreAnchor.position : env.transform.position) + Vector3.up * 1.4f;
+            var probe = probeGo.AddComponent<ReflectionProbe>(); probe.mode = UnityEngine.Rendering.ReflectionProbeMode.Baked; probe.size = hall ? new Vector3(16, 4, 6) : new Vector3(30, 12, 30); probe.resolution = 128; probe.boxProjection = hall; probe.intensity = 1f;
 
             // camera rig
             GameObject rig; Transform head;
@@ -206,6 +268,20 @@ namespace Fable.Editor
             PrefabUtility.UnpackPrefabInstance(isdk, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
             var doomed = isdk.GetComponentsInChildren<Transform>(true).Where(t => t.name == "Locomotor" || t.name.Contains("Locomotion")).ToList();
             foreach (var t in doomed) if (t) UnityEngine.Object.DestroyImmediate(t.gameObject);
+            // drop the now-empty references those objects left in interactor groups and gates (the SDK asserts on null items)
+            foreach (var mb in isdk.GetComponentsInChildren<MonoBehaviour>(true))
+            {
+                if (!mb) continue;
+                var so = new SerializedObject(mb); var it = so.GetIterator(); bool changed = false;
+                while (it.Next(true))
+                {
+                    if (!it.isArray || it.propertyType != SerializedPropertyType.Generic || it.arraySize == 0) continue;
+                    if (it.GetArrayElementAtIndex(0).propertyType != SerializedPropertyType.ObjectReference) continue;
+                    for (int i = it.arraySize - 1; i >= 0; i--)
+                        if (it.GetArrayElementAtIndex(i).objectReferenceValue == null) { it.DeleteArrayElementAtIndex(i); changed = true; }
+                }
+                if (changed) so.ApplyModifiedPropertiesWithoutUndo();
+            }
             OVRHand lh = null, rh = null;
             foreach (var h in isdk.GetComponentsInChildren<OVRHand>(true)) { if (h.name.Contains("Left")) lh = h; else if (h.name.Contains("Right")) rh = h; }
             if (!lh || !rh) throw new Exception("Interaction rig has no OVRHand data sources");
@@ -213,7 +289,8 @@ namespace Fable.Editor
             rig = new GameObject("CameraRig"); var camGo = new GameObject("CenterEye"); camGo.transform.SetParent(rig.transform); camGo.transform.localPosition = new Vector3(0, 1.62f, 0);
             var cam = camGo.AddComponent<Camera>(); cam.nearClipPlane = 0.05f; cam.farClipPlane = 60f; camGo.AddComponent<AudioListener>(); head = camGo.transform;
 #endif
-            var entrance = env.transform.Find("anchor.reader.entrance") ?? FindDeep(env.transform, "anchor.reader.entrance");
+            var entrance = new[] { "anchor.reader.entrance", "anchor.reader.path", "anchor.reader.gate" }.Select(n => FindDeep(env.transform, n)).FirstOrDefault(t => t)
+                           ?? env.GetComponentsInChildren<Transform>(true).FirstOrDefault(t => t.name.StartsWith("anchor.reader."));
             if (entrance) rig.transform.position = entrance.position;
             var cameras = rig.GetComponentsInChildren<Camera>(true);
             foreach (var c in cameras) { c.nearClipPlane = 0.05f; c.farClipPlane = 60f; c.clearFlags = CameraClearFlags.SolidColor; c.backgroundColor = Color.black; var d = c.GetUniversalAdditionalCameraData(); if (d) { d.renderPostProcessing = false; d.antialiasing = AntialiasingMode.None; } }
@@ -239,11 +316,12 @@ namespace Fable.Editor
 #endif
             var panel = BuildPanel(head);
             var flow = systems.AddComponent<FlowController>(); flow.Director = director; flow.Input = input; flow.Panel = panel; flow.Head = head; flow.ReadingRoom = reading;
+            flow.SceneId = sceneId;
 
-            Directory.CreateDirectory(Path.GetDirectoryName(ScenePath));
-            EditorSceneManager.SaveScene(scene, ScenePath);
-            EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
-            Debug.Log($"[FableBuild] scene saved: {ScenePath} with {registry.AssetIds.Count()} script-controlled assets");
+            Directory.CreateDirectory(Path.GetDirectoryName(def.Scene));
+            EditorSceneManager.SaveScene(scene, def.Scene);
+            SetBuildScenes();
+            Debug.Log($"[FableBuild] scene saved: {def.Scene} with {registry.AssetIds.Count()} script-controlled assets");
         }
 
 #if FABLE_META_XR
@@ -301,20 +379,67 @@ namespace Fable.Editor
             Debug.Log($"[FableBuild] synced {n} data files into StreamingAssets");
         }
 
-        [MenuItem("Fable/3 Bake Lighting")]
-        public static void BakeLighting()
+        static bool FlowControllerBackdrop(string n) => FlowController.IsBackdrop(n);
+
+        /// An inward-facing sphere with a baked vertical gradient (pale horizon to soft blue zenith), unlit, for outdoor
+        /// scenes whose Blender sky was a world shader that glTF cannot carry. Named SkyDome so it is backdrop: full scale only.
+        static void AddSkyDome(Transform env, string sceneId)
         {
-            EditorSceneManager.OpenScene(ScenePath);
+            const int lon = 32, lat = 16; const float radius = 60f;
+            var verts = new System.Collections.Generic.List<Vector3>(); var uvs = new System.Collections.Generic.List<Vector2>(); var tris = new System.Collections.Generic.List<int>();
+            for (int y = 0; y <= lat; y++)
+                for (int x = 0; x <= lon; x++)
+                {
+                    float v = (float)y / lat, phi = Mathf.Lerp(-0.15f, 1f, v) * Mathf.PI / 2, th = (float)x / lon * Mathf.PI * 2;
+                    verts.Add(new Vector3(Mathf.Cos(phi) * Mathf.Cos(th), Mathf.Sin(phi), Mathf.Cos(phi) * Mathf.Sin(th)) * radius);
+                    uvs.Add(new Vector2((float)x / lon, v));
+                }
+            for (int y = 0; y < lat; y++)
+                for (int x = 0; x < lon; x++)
+                {
+                    int a = y * (lon + 1) + x, b = a + lon + 1;
+                    tris.AddRange(new[] { a, a + 1, b, a + 1, b + 1, b });   // wound to face inward
+                }
+            var mesh = new Mesh { name = "SkyDome" }; mesh.SetVertices(verts); mesh.SetUVs(0, uvs); mesh.SetTriangles(tris, 0); mesh.RecalculateBounds();
+            Directory.CreateDirectory("Assets/Fable/Materials");
+            var meshPath = $"Assets/Fable/Materials/{sceneId}_SkyDome.asset"; AssetDatabase.DeleteAsset(meshPath); AssetDatabase.CreateAsset(mesh, meshPath);
+            var tex = new Texture2D(1, 128, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Clamp, name = "SkyGradient" };
+            for (int i = 0; i < 128; i++)
+            {
+                float v = i / 127f; var horizon = new Color(0.86f, 0.89f, 0.88f); var mid = new Color(0.62f, 0.76f, 0.92f); var zenith = new Color(0.36f, 0.55f, 0.85f);
+                tex.SetPixel(0, i, v < 0.25f ? Color.Lerp(horizon, mid, v / 0.25f) : Color.Lerp(mid, zenith, (v - 0.25f) / 0.75f));
+            }
+            tex.Apply();
+            var texPath = $"Assets/Fable/Materials/{sceneId}_SkyGradient.asset"; AssetDatabase.DeleteAsset(texPath); AssetDatabase.CreateAsset(tex, texPath);
+            var mat = new Material(Shader.Find("Universal Render Pipeline/Unlit")) { name = "SkyDome" }; mat.SetTexture("_BaseMap", tex);
+            var matPath = $"Assets/Fable/Materials/{sceneId}_Sky.mat"; AssetDatabase.DeleteAsset(matPath); AssetDatabase.CreateAsset(mat, matPath);
+            var go = new GameObject("SkyDome"); go.transform.SetParent(env, false);
+            var centre = FindDeep(env, "anchor.scene.centre"); if (centre) go.transform.position = new Vector3(centre.position.x, env.position.y, centre.position.z);
+            go.AddComponent<MeshFilter>().sharedMesh = mesh;
+            var mr = go.AddComponent<MeshRenderer>(); mr.sharedMaterial = mat; mr.shadowCastingMode = ShadowCastingMode.Off; mr.receiveShadows = false;
+            GameObjectUtility.SetStaticEditorFlags(go, StaticEditorFlags.BatchingStatic);
+        }
+
+        [MenuItem("Fable/3 Bake Lighting")]
+        public static void BakeLighting() { foreach (var d in Built) BakeLighting(d.Id); }
+
+        public static void BakeLighting(string sceneId)
+        {
+            NotInPlayMode();
+            var def = Def(sceneId); bool hall = sceneId == "hall-of-doors";
+            EditorSceneManager.OpenScene(def.Scene);
             Lightmapping.lightingSettings = new LightingSettings
             {
                 lightmapper = LightingSettings.Lightmapper.ProgressiveGPU, lightmapMaxSize = 2048, lightmapResolution = 12, lightmapPadding = 2,
                 directSampleCount = 32, indirectSampleCount = 256, environmentSampleCount = 64, maxBounces = 3, denoiserTypeDirect = LightingSettings.DenoiserType.OpenImage,
                 denoiserTypeIndirect = LightingSettings.DenoiserType.OpenImage, lightmapCompression = LightmapCompression.HighQuality, mixedBakeMode = MixedLightingMode.Shadowmask, ao = true, aoMaxDistance = 0.6f
             };
-            Lightmapping.lightingSettings.name = "FableLighting"; AssetDatabase.CreateAsset(Lightmapping.lightingSettings, "Assets/Fable/Scenes/FableLighting.lighting");
-            if (!Lightmapping.Bake()) throw new Exception("lightmap bake failed");
+            if (def.Outdoor) { Lightmapping.lightingSettings.lightmapResolution = 6; Lightmapping.lightingSettings.aoMaxDistance = 1.2f; }   // larger area, same atlas budget
+            var name = hall ? "FableLighting" : Path.GetFileNameWithoutExtension(def.Scene) + "Lighting";
+            Lightmapping.lightingSettings.name = name; AssetDatabase.CreateAsset(Lightmapping.lightingSettings, $"Assets/Fable/Scenes/{name}.lighting");
+            if (!Lightmapping.Bake()) throw new Exception($"lightmap bake failed for {sceneId}");
             EditorSceneManager.SaveOpenScenes();
-            Debug.Log("[FableBuild] lightmaps baked");
+            Debug.Log($"[FableBuild] lightmaps baked for {sceneId}: {LightmapSettings.lightmaps.Length} maps");
         }
 
         [MenuItem("Fable/4 Build APK")]
@@ -322,7 +447,8 @@ namespace Fable.Editor
         {
             SyncData();
             Directory.CreateDirectory("out");
-            var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions { scenes = new[] { ScenePath }, locationPathName = "out/fable-hall-of-doors.apk", target = BuildTarget.Android, options = BuildOptions.None });
+            SetBuildScenes();
+            var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions { scenes = Built.Select(d => d.Scene).ToArray(), locationPathName = "out/fable.apk", target = BuildTarget.Android, options = BuildOptions.None });
             Debug.Log($"[FableBuild] {report.summary.result}: {report.summary.totalSize / 1e6:F1} MB, {report.summary.totalErrors} errors, {report.summary.totalTime.TotalSeconds:F0}s");
             if (report.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded) throw new Exception("APK build failed");
         }

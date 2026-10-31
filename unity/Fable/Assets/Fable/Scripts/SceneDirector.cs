@@ -318,7 +318,7 @@ namespace Fable
             var root = Registry.EnvironmentRoot;
             var pivot = ReaderHead ? new Vector3(ReaderHead.position.x, root.position.y, ReaderHead.position.z) : root.position;
             float from = root.localScale.x; target *= baseScale;
-            if (Mathf.Abs(baseScale - 1f) > 0.01f) pivot = root.TransformPoint(Registry.Anchor("hall.centre") ? root.InverseTransformPoint(Registry.Anchor("hall.centre").position) : Vector3.zero);
+            if (Mathf.Abs(baseScale - 1f) > 0.01f) pivot = Registry.Centre.position;
             for (float e = 0; e < dur; e += Time.deltaTime)
             {
                 float s = Mathf.Lerp(from, target, Mathf.SmoothStep(0, 1, e / Mathf.Max(dur, 0.001f)));

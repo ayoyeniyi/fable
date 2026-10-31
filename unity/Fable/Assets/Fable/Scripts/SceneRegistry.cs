@@ -57,6 +57,20 @@ namespace Fable
         }
 
         public Transform Anchor(string id) => anchors.TryGetValue(id, out var t) ? t : null;
+
+        /// Diorama pivot: the hall has hall.centre; newer scenes author scene.centre.
+        public Transform Centre => Anchor("scene.centre") ?? Anchor("hall.centre") ?? EnvironmentRoot;
+
+        /// Where the reader stands once the scene is full size.
+        public Transform ReaderStand
+        {
+            get
+            {
+                foreach (var id in new[] { "reader.table", "reader.entrance", "reader.path", "reader.gate" }) { var a = Anchor(id); if (a) return a; }
+                foreach (var kv in anchors) if (kv.Key.StartsWith("reader.")) return kv.Value;
+                return EnvironmentRoot;
+            }
+        }
         public Transform Asset(string id) => assets.TryGetValue(id, out var t) ? t : null;
         public List<Light> Lights(string id) => lightGroups.TryGetValue(id, out var l) ? l : null;
         public AudioClip Clip(string id) => clips.TryGetValue(id, out var c) ? c : null;

@@ -18,3 +18,8 @@ interpreter/fable-interpreter
 .env
 out/
 audio/out/
+
+# editor-local
+unity/Fable/.vscode/
+unity/Fable/.utmp/RelWithDebInfo/
+unity/Fable/out/
