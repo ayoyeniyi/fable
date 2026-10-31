@@ -781,8 +781,8 @@ def bake_and_export():
         if trans > 0.5 or alpha < 1: m.blend_method = 'BLEND'
     # remove cameras from export, keep lights
     for c in cams: bpy.data.objects.remove(c)
-    glb = os.path.join(OUT, "hall_of_doors.glb")
-    bpy.ops.export_scene.gltf(filepath=glb, export_format='GLB', export_apply=True, export_yup=True,
+    glb = os.path.join(OUT, "hall_of_doors.gltf")   # .gltf + textures/: Unity imports the images as compressed (ASTC) textures; embedded GLB images import uncompressed
+    bpy.ops.export_scene.gltf(filepath=glb, export_format='GLTF_SEPARATE', export_texture_dir='textures', export_apply=True, export_yup=True,
                               export_materials='EXPORT', export_image_format='AUTO', export_lights=True, export_cameras=False)
     allm = merged + dynamic_members
     tris = sum(len(o.data.polygons) for o in allm)

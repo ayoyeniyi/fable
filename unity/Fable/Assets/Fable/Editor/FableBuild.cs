@@ -25,9 +25,9 @@ namespace Fable.Editor
         public class SceneDef { public string Id, Scene, Glb; public bool Outdoor; }
         public static readonly SceneDef[] Scenes =
         {
-            new SceneDef { Id = "hall-of-doors", Scene = "Assets/Fable/Scenes/HallOfDoors.unity", Glb = "Assets/Fable/Models/hall_of_doors.glb" },
-            new SceneDef { Id = "mad-tea-party", Scene = "Assets/Fable/Scenes/MadTeaParty.unity", Glb = "Assets/Fable/Models/mad_tea_party.glb", Outdoor = true },
-            new SceneDef { Id = "queens-croquet-ground", Scene = "Assets/Fable/Scenes/QueensCroquetGround.unity", Glb = "Assets/Fable/Models/queens_croquet_ground.glb", Outdoor = true },
+            new SceneDef { Id = "hall-of-doors", Scene = "Assets/Fable/Scenes/HallOfDoors.unity", Glb = "Assets/Fable/Models/HallOfDoors/hall_of_doors.gltf" },
+            new SceneDef { Id = "mad-tea-party", Scene = "Assets/Fable/Scenes/MadTeaParty.unity", Glb = "Assets/Fable/Models/MadTeaParty/mad_tea_party.gltf", Outdoor = true },
+            new SceneDef { Id = "queens-croquet-ground", Scene = "Assets/Fable/Scenes/QueensCroquetGround.unity", Glb = "Assets/Fable/Models/QueensCroquetGround/queens_croquet_ground.gltf", Outdoor = true },
         };
         const string ScenePath = "Assets/Fable/Scenes/HallOfDoors.unity";   // the hall: desktop previews
         static SceneDef Def(string id) => Scenes.First(d => d.Id == id);

@@ -1279,8 +1279,8 @@ def bake_and_export():
         lbl = e.name.replace(".", "_").replace("-", "_")
         bake_object(o, lbl, max(64, group_size.get(e.name, T // 4)))
     for c in cams: bpy.data.objects.remove(c)
-    glb = os.path.join(OUT, "mad_tea_party.glb")
-    bpy.ops.export_scene.gltf(filepath=glb, export_format='GLB', export_apply=True, export_yup=True,
+    glb = os.path.join(OUT, "mad_tea_party.gltf")   # .gltf + textures/: Unity imports the images as compressed (ASTC) textures; embedded GLB images import uncompressed
+    bpy.ops.export_scene.gltf(filepath=glb, export_format='GLTF_SEPARATE', export_texture_dir='textures', export_apply=True, export_yup=True,
                               export_materials='EXPORT', export_image_format='JPEG', export_jpeg_quality=90, export_lights=True, export_cameras=False)  # JPEG: keeps the GLB under GitHub's 100 MB file limit; Unity recompresses to ASTC anyway
     allm = merged + group_meshes
     tris = sum(tri_count(o) for o in allm)

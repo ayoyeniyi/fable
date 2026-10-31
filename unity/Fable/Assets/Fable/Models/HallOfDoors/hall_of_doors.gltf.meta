@@ -1,0 +1,456 @@
+fileFormatVersion: 2
+guid: fb3c9e356b8f946509ad20a2ffd3d148
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies:
+  - type: 0
+    originalUri: Assets/Fable/Models/HallOfDoors/hall_of_doors.bin
+    assetPath: Assets/Fable/Models/HallOfDoors/hall_of_doors.bin
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_LittleDoor_Escutcheon_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_LittleDoor_Escutcheon_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_LittleDoor_Escutcheon_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_LittleDoor_Escutcheon_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_LittleDoor_Escutcheon_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_LittleDoor_Escutcheon_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_LittleDoor_Knob_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_LittleDoor_Knob_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_LittleDoor_Knob_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_LittleDoor_Knob_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_LittleDoor_Knob_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_LittleDoor_Knob_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_LittleDoor_KnobStem_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_LittleDoor_KnobStem_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_LittleDoor_KnobStem_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_LittleDoor_KnobStem_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_LittleDoor_KnobStem_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_LittleDoor_KnobStem_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_LittleDoor_Leaf_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_LittleDoor_Leaf_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_LittleDoor_Leaf_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_LittleDoor_Leaf_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_LittleDoor_Leaf_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_LittleDoor_Leaf_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_LittleDoor_Panel00_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_LittleDoor_Panel00_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_LittleDoor_Panel00_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_LittleDoor_Panel00_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_LittleDoor_Panel00_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_LittleDoor_Panel00_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_LittleDoor_Panel01_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_LittleDoor_Panel01_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_LittleDoor_Panel01_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_LittleDoor_Panel01_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_LittleDoor_Panel01_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_LittleDoor_Panel01_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_GardenGlow_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_GardenGlow_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_GardenGlow_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_GardenGlow_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_GardenGlow_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_GardenGlow_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Beam_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Beam_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Beam_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Beam_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Beam_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Beam_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorBlack_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorBlack_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorBlack_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorBlack_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorBlack_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorBlack_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorBlue_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorBlue_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorBlue_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorBlue_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorBlue_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorBlue_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorGreen_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorGreen_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorGreen_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorGreen_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorGreen_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorGreen_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorMahogany_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorMahogany_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorMahogany_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorMahogany_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorMahogany_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorMahogany_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_DoorOak_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Flame_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Flame_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Flame_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Flame_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Flame_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Flame_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Ink_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Ink_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Ink_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Ink_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Ink_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Ink_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_LampGlass_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_LampGlass_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_LampGlass_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_LampGlass_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_LampGlass_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_LampGlass_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_OakPanel_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_OakPanel_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_OakPanel_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_OakPanel_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_OakPanel_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_OakPanel_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Plaster_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Plaster_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Plaster_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Plaster_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Plaster_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Plaster_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_StoneFloor_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_StoneFloor_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_StoneFloor_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_StoneFloor_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_StoneFloor_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_StoneFloor_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Velvet_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Velvet_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Velvet_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Velvet_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Velvet_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Velvet_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing0_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing0_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing0_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing0_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing0_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing0_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing1_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing1_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing1_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing1_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing1_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing1_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing2_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing2_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing2_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing2_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing2_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing2_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing3_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing3_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing3_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing3_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing3_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing3_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing4_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing4_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing4_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing4_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing4_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing4_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing5_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing5_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing5_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing5_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing5_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing5_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing6_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing6_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing6_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing6_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing6_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing6_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing7_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing7_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing7_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing7_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing7_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing7_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing8_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing8_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing8_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing8_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing8_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Brass_CurtainRing8_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Glass_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Glass_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Glass_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Glass_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Glass_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Glass_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Liquid_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Liquid_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Liquid_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Liquid_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Liquid_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Liquid_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Cork_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Cork_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Cork_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Cork_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Cork_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Cork_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Paper_Label_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Paper_Label_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Paper_Label_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Paper_Label_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Paper_Label_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Paper_Label_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Paper_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Paper_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Paper_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Paper_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Paper_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Paper_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Ink_Label_Text_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Ink_Label_Text_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Ink_Label_Text_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Ink_Label_Text_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Ink_Label_Text_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Ink_Label_Text_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableLeg0_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableLeg0_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableLeg0_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableLeg0_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableLeg0_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableLeg0_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableLeg1_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableLeg1_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableLeg1_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableLeg1_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableLeg1_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableLeg1_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableLeg2_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableLeg2_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableLeg2_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableLeg2_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableLeg2_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableLeg2_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableTop_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableTop_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableTop_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableTop_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableTop_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Glass_TableTop_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Key_Bit1_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Key_Bit1_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Key_Bit1_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Key_Bit1_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Key_Bit1_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Key_Bit1_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Gold_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Gold_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Key_Bow_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Key_Bow_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Key_Bow_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Key_Bow_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Key_Bow_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Key_Bow_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Key_Shaft_Normal.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Key_Shaft_Normal.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Key_Shaft_BaseColor.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Key_Shaft_BaseColor.png
+  - type: 1
+    originalUri: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Key_Shaft_Roughness.png
+    assetPath: Assets/Fable/Models/HallOfDoors/textures/T_Gold_Key_Shaft_Roughness.png
+  reportItems:
+  - type: 2
+    code: 20
+    messages:
+    - KHR_materials_emissive_strength
+  - type: 2
+    code: 20
+    messages:
+    - KHR_materials_ior
+  - type: 2
+    code: 31
+    messages: []
+  - type: 2
+    code: 31
+    messages: []
+  - type: 2
+    code: 31
+    messages: []
+  - type: 2
+    code: 31
+    messages: []
+  - type: 2
+    code: 31
+    messages: []
+  - type: 2
+    code: 31
+    messages: []
+  - type: 2
+    code: 31
+    messages: []

@@ -17,6 +17,15 @@ import argparse, json, struct, sys
 
 
 def read_glb(path):
+    """Reads a .glb, or a .gltf (size = the .gltf plus its buffers and images)."""
+    if path.endswith(".gltf"):
+        import os
+        with open(path) as f:
+            doc = json.load(f)
+        base = os.path.dirname(path)
+        uris = [b.get("uri") for b in doc.get("buffers", [])] + [i.get("uri") for i in doc.get("images", [])]
+        size = os.path.getsize(path) + sum(os.path.getsize(os.path.join(base, u)) for u in uris if u and not u.startswith("data:"))
+        return doc, size
     with open(path, "rb") as f:
         data = f.read()
     magic, version, length = struct.unpack_from("<III", data, 0)

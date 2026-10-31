@@ -1,0 +1,409 @@
+fileFormatVersion: 2
+guid: d4e496da443ea4a83ac3aa8f18bd306d
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies:
+  - type: 0
+    originalUri: Assets/Fable/Models/QueensCroquetGround/queens_croquet_ground.bin
+    assetPath: Assets/Fable/Models/QueensCroquetGround/queens_croquet_ground.bin
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CardBack_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CardBack_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CardBack_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CardBack_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CardBack_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CardBack_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CardFace_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CardFace_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CardFace_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CardFace_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CardFace_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CardFace_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Ink_Five_Ink_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Ink_Five_Ink_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Ink_Five_Ink_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Ink_Five_Ink_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Ink_Five_Ink_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Ink_Five_Ink_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_PaintArm_Five_PaintArm_Mesh_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_PaintArm_Five_PaintArm_Mesh_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_PaintArm_Five_PaintArm_Mesh_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_PaintArm_Five_PaintArm_Mesh_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_PaintArm_Five_PaintArm_Mesh_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_PaintArm_Five_PaintArm_Mesh_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Skin_Five_Skin_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Skin_Five_Skin_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Skin_Five_Skin_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Skin_Five_Skin_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Skin_Five_Skin_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Skin_Five_Skin_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CardBack_Seven_CardBack_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CardBack_Seven_CardBack_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CardBack_Seven_CardBack_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CardBack_Seven_CardBack_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CardBack_Seven_CardBack_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CardBack_Seven_CardBack_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CardFace_Seven_CardFace_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CardFace_Seven_CardFace_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CardFace_Seven_CardFace_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CardFace_Seven_CardFace_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CardFace_Seven_CardFace_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CardFace_Seven_CardFace_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Ink_Seven_Ink_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Ink_Seven_Ink_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Ink_Seven_Ink_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Ink_Seven_Ink_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Ink_Seven_Ink_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Ink_Seven_Ink_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_PaintArm_Seven_PaintArm_Mesh_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_PaintArm_Seven_PaintArm_Mesh_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_PaintArm_Seven_PaintArm_Mesh_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_PaintArm_Seven_PaintArm_Mesh_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_PaintArm_Seven_PaintArm_Mesh_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_PaintArm_Seven_PaintArm_Mesh_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Skin_Seven_Skin_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Skin_Seven_Skin_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Skin_Seven_Skin_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Skin_Seven_Skin_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Skin_Seven_Skin_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Skin_Seven_Skin_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CardBack_Two_CardBack_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CardBack_Two_CardBack_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CardBack_Two_CardBack_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CardBack_Two_CardBack_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CardBack_Two_CardBack_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CardBack_Two_CardBack_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CardFace_Two_CardFace_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CardFace_Two_CardFace_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CardFace_Two_CardFace_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CardFace_Two_CardFace_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CardFace_Two_CardFace_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CardFace_Two_CardFace_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Ink_Two_Ink_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Ink_Two_Ink_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Ink_Two_Ink_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Ink_Two_Ink_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Ink_Two_Ink_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Ink_Two_Ink_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_PaintArm_Two_PaintArm_Mesh_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_PaintArm_Two_PaintArm_Mesh_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_PaintArm_Two_PaintArm_Mesh_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_PaintArm_Two_PaintArm_Mesh_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_PaintArm_Two_PaintArm_Mesh_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_PaintArm_Two_PaintArm_Mesh_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Skin_Two_Skin_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Skin_Two_Skin_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Skin_Two_Skin_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Skin_Two_Skin_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Skin_Two_Skin_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Skin_Two_Skin_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Paint_Splash_Paint_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Paint_Splash_Paint_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Paint_Splash_Paint_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Paint_Splash_Paint_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Paint_Splash_Paint_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Paint_Splash_Paint_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseRed_RedRoses_RoseRed_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseRed_RedRoses_RoseRed_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseRed_RedRoses_RoseRed_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseRed_RedRoses_RoseRed_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseRed_RedRoses_RoseRed_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseRed_RedRoses_RoseRed_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Bark_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Bark_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Bark_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Bark_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Bark_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Bark_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Brick_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Brick_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Brick_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Brick_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Brick_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Brick_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CroquetLawn_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CroquetLawn_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CroquetLawn_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CroquetLawn_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_CroquetLawn_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_CroquetLawn_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_DoorGreen_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_DoorGreen_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_DoorGreen_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_DoorGreen_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_DoorGreen_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_DoorGreen_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Gravel_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Gravel_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Gravel_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Gravel_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Gravel_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Gravel_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Hedge_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Hedge_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Hedge_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Hedge_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Hedge_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Hedge_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Hoop_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Hoop_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Hoop_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Hoop_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Hoop_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Hoop_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Iron_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Iron_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Iron_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Iron_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Iron_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Iron_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Lawn_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Lawn_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Lawn_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Lawn_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Lawn_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Lawn_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Peg_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Peg_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Peg_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Peg_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Peg_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Peg_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseBed_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseBed_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseBed_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseBed_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseBed_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseBed_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseLeaves_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseLeaves_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseLeaves_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseLeaves_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseLeaves_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseLeaves_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseRed_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseRed_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseRed_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseRed_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseRed_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseRed_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseWhite_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseWhite_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseWhite_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseWhite_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseWhite_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseWhite_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Soil_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Soil_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Soil_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Soil_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Soil_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Soil_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Stone_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Stone_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Stone_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Stone_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Stone_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Stone_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Terracotta_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Terracotta_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Terracotta_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Terracotta_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Terracotta_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Terracotta_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_TreeLeaves_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_TreeLeaves_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_TreeLeaves_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_TreeLeaves_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_TreeLeaves_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_TreeLeaves_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_BrushWood_Pot_BrushWood_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_BrushWood_Pot_BrushWood_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_BrushWood_Pot_BrushWood_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_BrushWood_Pot_BrushWood_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_BrushWood_Pot_BrushWood_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_BrushWood_Pot_BrushWood_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Paint_Pot_Paint_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Paint_Pot_Paint_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Paint_Pot_Paint_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Paint_Pot_Paint_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Paint_Pot_Paint_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Paint_Pot_Paint_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Tin_Pot_Tin_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Tin_Pot_Tin_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Tin_Pot_Tin_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Tin_Pot_Tin_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Tin_Pot_Tin_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Tin_Pot_Tin_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Bark_RoseTree_Bark_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Bark_RoseTree_Bark_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Bark_RoseTree_Bark_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Bark_RoseTree_Bark_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_Bark_RoseTree_Bark_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_Bark_RoseTree_Bark_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseLeaves_RoseTree_RoseLeaves_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseLeaves_RoseTree_RoseLeaves_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseLeaves_RoseTree_RoseLeaves_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseLeaves_RoseTree_RoseLeaves_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseLeaves_RoseTree_RoseLeaves_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseLeaves_RoseTree_RoseLeaves_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseRed_RoseTree_RoseRed_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseRed_RoseTree_RoseRed_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseRed_RoseTree_RoseRed_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseRed_RoseTree_RoseRed_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseRed_RoseTree_RoseRed_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseRed_RoseTree_RoseRed_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseWhite_RoseTree_RoseWhite_Normal.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseWhite_RoseTree_RoseWhite_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseWhite_RoseTree_RoseWhite_BaseColor.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseWhite_RoseTree_RoseWhite_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseWhite_RoseTree_RoseWhite_Roughness.jpg
+    assetPath: Assets/Fable/Models/QueensCroquetGround/textures/T_RoseWhite_RoseTree_RoseWhite_Roughness.jpg
+  reportItems: []

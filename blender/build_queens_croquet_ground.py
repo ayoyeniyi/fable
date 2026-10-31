@@ -1164,6 +1164,12 @@ def patch_sun_intensities(glb):
     Rewrite the directional intensities in the GLB's JSON chunk from the Blender lights (W/m2 * 683 = lux)."""
     import json, struct
     want = {o.name: o.data.energy * 683.0 for o in COLL.objects if o.type == 'LIGHT' and o.data.type == 'SUN'}
+    if glb.endswith(".gltf"):
+        with open(glb) as f: g = json.load(f)
+        for l in g.get("extensions", {}).get("KHR_lights_punctual", {}).get("lights", []):
+            if l.get("type") == "directional" and l.get("name") in want: l["intensity"] = want[l["name"]]
+        with open(glb, "w") as f: json.dump(g, f, indent=1)
+        print("patched sun intensities (lux)", want); return
     with open(glb, "rb") as f: data = f.read()
     jlen = struct.unpack_from("<I", data, 12)[0]
     g = json.loads(data[20:20 + jlen]); rest = data[20 + jlen:]
@@ -1250,8 +1256,8 @@ def bake_and_export():
         nm = nt.nodes.new("ShaderNodeNormalMap"); nt.links.new(baked["Normal"].outputs["Color"], nm.inputs["Color"]); nt.links.new(nm.outputs["Normal"], nb.inputs["Normal"])
         nb.inputs["Metallic"].default_value = metallic
     for c in cams: bpy.data.objects.remove(c)
-    glb = os.path.join(OUT, "queens_croquet_ground.glb")
-    bpy.ops.export_scene.gltf(filepath=glb, export_format='GLB', export_apply=True, export_yup=True,
+    glb = os.path.join(OUT, "queens_croquet_ground.gltf")   # .gltf + textures/: Unity imports the images as compressed (ASTC) textures; embedded GLB images import uncompressed
+    bpy.ops.export_scene.gltf(filepath=glb, export_format='GLTF_SEPARATE', export_texture_dir='textures', export_apply=True, export_yup=True,
                               export_materials='EXPORT', export_image_format='JPEG', export_jpeg_quality=90, export_lights=True, export_cameras=False)  # JPEG: keeps the GLB under GitHub's 100 MB file limit; Unity recompresses to ASTC anyway
     patch_sun_intensities(glb)
     allm = merged + dynamic_members
