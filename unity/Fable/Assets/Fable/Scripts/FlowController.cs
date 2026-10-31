@@ -32,7 +32,12 @@ namespace Fable
         // passage picker: every passage of the book whose Unity scene is in the build
         public static readonly Dictionary<string, string> UnityScenes = new()
         {
-            ["hall-of-doors"] = "HallOfDoors", ["mad-tea-party"] = "MadTeaParty", ["queens-croquet-ground"] = "QueensCroquetGround"
+            ["hall-of-doors"] = "HallOfDoors", ["mad-tea-party"] = "MadTeaParty", ["queens-croquet-ground"] = "QueensCroquetGround",
+            // every other chapter is staged in one of those three rooms (tools/chapter_passages.py cuts the passages)
+            ["pool-of-tears"] = "HallOfDoors",
+            ["caucus-race"] = "QueensCroquetGround", ["rabbits-house"] = "QueensCroquetGround", ["caterpillar"] = "QueensCroquetGround",
+            ["cheshire-cat"] = "QueensCroquetGround", ["mock-turtle"] = "QueensCroquetGround", ["lobster-quadrille"] = "QueensCroquetGround",
+            ["the-trial"] = "MadTeaParty", ["alices-evidence"] = "MadTeaParty",
         };
         /// Where a place's door leads: the hall's little door opens on the garden, the garden path leads to the tea table,
         /// and the tea party's house door takes you back to the hall. A loop through the book's three places.
@@ -49,12 +54,16 @@ namespace Fable
 
         static readonly Dictionary<string, string> Places = new()
         {
-            ["hall-of-doors"] = "the hall", ["mad-tea-party"] = "the tea-party", ["queens-croquet-ground"] = "the rose garden"
+            ["hall-of-doors"] = "the hall", ["mad-tea-party"] = "the tea-party", ["queens-croquet-ground"] = "the rose garden",
+            ["pool-of-tears"] = "the hall", ["caucus-race"] = "the shore", ["rabbits-house"] = "the Rabbit's garden", ["caterpillar"] = "the mushroom",
+            ["cheshire-cat"] = "the wood", ["mock-turtle"] = "the seaside", ["lobster-quadrille"] = "the seaside", ["the-trial"] = "the court", ["alices-evidence"] = "the court",
         };
         /// set before loading another passage's scene so it opens straight into the miniature
         static bool openOnLoad;
         /// the book sentence the reader stepped in from, carried across a scene load (null: resume the passage)
         static string pendingBookSentence;
+        /// the passage to stage after a scene load when it is not the scene's own (several chapters share a room)
+        static string pendingPassage;
 
         /// The whole book on the page while reading; the passage view takes over in the miniature and the scene.
         public BookReader Reader { get; private set; }
@@ -187,7 +196,8 @@ namespace Fable
             env = Director.Registry.EnvironmentRoot;
             if (!UnityEngine.XR.XRSettings.isDeviceActive && Head && Head.localPosition.y < 0.5f) Head.localPosition = new Vector3(0, 1.25f, 0);
             Director.Flow = this; Director.Panel = Panel; Director.Reader = Input;
-            yield return Director.Load(SceneId, book);
+            var passageId = pendingPassage ?? SceneId; pendingPassage = null;
+            yield return Director.Load(passageId, book);
             env.gameObject.SetActive(false);
             env.gameObject.SetActive(true); PrepareDiorama(); env.gameObject.SetActive(false);
             passages = book.Scenes.Where(p => p.Id == SceneId || (UnityScenes.TryGetValue(p.Id, out var n) && Application.CanStreamedLevelBeLoaded(n))).ToList();
@@ -213,9 +223,9 @@ namespace Fable
             Director.BeatChanged += (i, b) =>
             {
                 Panel.Show(Director.PassageScene, b.SentenceId, Hint());
-                ProgressStore.Save(SceneId, i, b.SentenceId);
+                ProgressStore.Save(CurrentPassageId, i, b.SentenceId);
             };
-            chosen = Mathf.Max(0, passages.FindIndex(p => p.Id == SceneId));
+            chosen = Mathf.Max(0, passages.FindIndex(p => p.Id == passageId));
             if (openOnLoad)
             {
                 openOnLoad = false;
@@ -245,7 +255,7 @@ namespace Fable
             Reader.Deactivate();
             int i = passages.FindIndex(p => p.Id == id); if (i < 0) return;
             chosen = i;
-            if (id == SceneId) { StartCoroutine(Grow(BeatForBookSentence(from))); return; }
+            if (id == CurrentPassageId) { StartCoroutine(Grow(BeatForBookSentence(from))); return; }
             pendingBookSentence = from;
             OpenChosen();
         }
@@ -272,12 +282,28 @@ namespace Fable
             return null;
         }
 
+        /// The passage the director has staged (the scene's own until another chapter in the same room is opened).
+        string CurrentPassageId => Director != null && Director.PassageScene != null ? Director.PassageScene.Id : SceneId;
+
         void OpenChosen()
         {
-            if (Chosen.Id == SceneId) { StartCoroutine(Grow()); return; }
-            busy = true; openOnLoad = true;
+            if (Chosen.Id == CurrentPassageId) { StartCoroutine(Grow()); return; }
+            // another chapter staged in this same room: reload the passage in place, no scene load
+            if (UnityScenes.TryGetValue(Chosen.Id, out var sceneName) && sceneName == UnityEngine.SceneManagement.SceneManager.GetActiveScene().name) { StartCoroutine(SwitchPassage(Chosen.Id)); return; }
+            busy = true; openOnLoad = true; pendingPassage = Chosen.Id;
             Director.Audio.StopAmbience();
             UnityEngine.SceneManagement.SceneManager.LoadScene(UnityScenes[Chosen.Id]);
+        }
+
+        IEnumerator SwitchPassage(string id)
+        {
+            busy = true; Director.Audio.StopAmbience();
+            yield return Director.Load(id, book);
+            env.gameObject.SetActive(false);
+            env.gameObject.SetActive(true); PrepareDiorama(); env.gameObject.SetActive(false);
+            int beat = pendingBookSentence != null ? BeatForBookSentence(pendingBookSentence) : -1; pendingBookSentence = null;
+            busy = false;
+            StartCoroutine(Grow(beat));
         }
 
         // The same action named for whatever the reader is holding: a pinch for hands, the index trigger for controllers.
@@ -383,7 +409,7 @@ namespace Fable
             }
             ScaleAbout(env, miniaturePivot, MiniatureScale);
             Current = State.Miniature; busy = false;
-            var saved = ProgressStore.Load(SceneId);
+            var saved = ProgressStore.Load(CurrentPassageId);
             if (startBeat >= 0) Director.JumpTo(startBeat);
             else if (saved.BeatIndex >= 0) Director.JumpTo(saved.BeatIndex); else Director.Next();
         }
@@ -460,7 +486,7 @@ namespace Fable
             env.gameObject.SetActive(false);
             Director.Audio.StopAmbience();
             Current = State.Reading; busy = false;
-            chosen = Mathf.Max(0, passages.FindIndex(p => p.Id == SceneId));
+            chosen = Mathf.Max(0, passages.FindIndex(p => p.Id == CurrentPassageId));
             ShowBook(ReachedBookSentence());
         }
 

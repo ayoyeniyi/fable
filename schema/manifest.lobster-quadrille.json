@@ -1,0 +1,77 @@
+{
+  "sceneId": "lobster-quadrille",
+  "environment": "env.queens-croquet-ground",
+  "ambiences": [
+    "amb.formal-garden"
+  ],
+  "anchors": {
+    "reader.gate": "just inside the garden entrance",
+    "reader.rose-tree": "a few steps from the rose tree",
+    "rose-tree.base": "foot of the large rose tree",
+    "rose-tree.crown": "the white roses, head height",
+    "gardener.two": "where Two stands with his brush",
+    "gardener.five": "where Five stands",
+    "gardener.seven": "where Seven stands",
+    "paint.pot": "the pot of red paint on the ground",
+    "garden.path": "the gravel path into the croquet ground",
+    "sky": "overhead"
+  },
+  "assets": {
+    "prop.rose-tree": "large rose tree with white roses",
+    "prop.paint-pot": "pot of red paint with brushes",
+    "char.two": "playing-card gardener Two",
+    "char.five": "playing-card gardener Five",
+    "char.seven": "playing-card gardener Seven",
+    "fx.red-roses": "roses turning red one by one",
+    "fx.paint-splash": "a splash of red paint on Five"
+  },
+  "clips": {
+    "char.two": [
+      "card.paint",
+      "card.look-up",
+      "card.speak",
+      "card.bow"
+    ],
+    "char.five": [
+      "card.paint",
+      "card.look-up",
+      "card.speak",
+      "card.sulk"
+    ],
+    "char.seven": [
+      "card.paint",
+      "card.look-up",
+      "card.speak",
+      "card.fling-brush"
+    ],
+    "prop.rose-tree": [
+      "roses.redden",
+      "roses.rustle"
+    ],
+    "fx.red-roses": [
+      "roses.redden"
+    ]
+  },
+  "lights": [
+    "light.sun",
+    "light.sky",
+    "light.fill"
+  ],
+  "sounds": [
+    "sfx.brush-strokes",
+    "sfx.brush-fling",
+    "sfx.gravel-steps",
+    "sfx.garden-birds",
+    "sfx.wind-hedges",
+    "sfx.card-shuffle"
+  ],
+  "introducedBy": {
+    "prop.rose-tree": "queens-croquet-ground:000",
+    "prop.paint-pot": "queens-croquet-ground:000",
+    "char.two": "queens-croquet-ground:000",
+    "char.five": "queens-croquet-ground:000",
+    "char.seven": "queens-croquet-ground:000",
+    "fx.red-roses": "queens-croquet-ground:000",
+    "fx.paint-splash": "queens-croquet-ground:001"
+  }
+}

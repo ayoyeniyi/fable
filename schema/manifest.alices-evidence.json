@@ -1,0 +1,77 @@
+{
+  "sceneId": "alices-evidence",
+  "environment": "env.mad-tea-party",
+  "ambiences": [
+    "amb.garden-afternoon"
+  ],
+  "anchors": {
+    "reader.path": "standing on the path, facing the table under the tree",
+    "reader.armchair": "seated at the large arm-chair at the end of the table",
+    "table.corner": "the crowded corner where the three sit",
+    "table.centre": "middle of the long tea table",
+    "table.end": "the empty end of the table by the arm-chair",
+    "seat.hatter": "the Hatter's chair",
+    "seat.march-hare": "the March Hare's chair",
+    "seat.dormouse": "between the two, where the Dormouse sleeps",
+    "tree.canopy": "under the tree branches above the table",
+    "house.front": "the March Hare's house behind the table"
+  },
+  "assets": {
+    "prop.tea-table": "long table laid for many, white cloth",
+    "prop.armchair": "large arm-chair at the end",
+    "prop.tea-service": "teapots, cups and saucers along the table",
+    "char.hatter": "the Hatter, seated, top hat with price ticket",
+    "char.march-hare": "the March Hare, seated, straw in his hair",
+    "char.dormouse": "the Dormouse, asleep on the table",
+    "fx.dappled-light": "sunlight through leaves moving on the cloth",
+    "fx.steam": "steam from the teapot"
+  },
+  "clips": {
+    "char.hatter": [
+      "hatter.look",
+      "hatter.eyes-wide",
+      "hatter.speak"
+    ],
+    "char.march-hare": [
+      "hare.offer",
+      "hare.speak",
+      "hare.elbow"
+    ],
+    "char.dormouse": [
+      "dormouse.breathe",
+      "dormouse.twitch"
+    ],
+    "prop.armchair": [
+      "armchair.sit"
+    ],
+    "prop.tea-service": [
+      "tea.rattle",
+      "tea.pour"
+    ],
+    "fx.dappled-light": [
+      "dapple.sway"
+    ]
+  },
+  "lights": [
+    "light.sun",
+    "light.sky",
+    "light.fill"
+  ],
+  "sounds": [
+    "sfx.cups-rattle",
+    "sfx.tea-pour",
+    "sfx.chair-creak",
+    "sfx.no-room-shout",
+    "sfx.leaves",
+    "sfx.birdsong",
+    "sfx.dormouse-snore"
+  ],
+  "introducedBy": {
+    "prop.tea-table": "mad-tea-party:000",
+    "prop.tea-service": "mad-tea-party:000",
+    "char.hatter": "mad-tea-party:000",
+    "char.march-hare": "mad-tea-party:000",
+    "char.dormouse": "mad-tea-party:000",
+    "prop.armchair": "mad-tea-party:003"
+  }
+}
