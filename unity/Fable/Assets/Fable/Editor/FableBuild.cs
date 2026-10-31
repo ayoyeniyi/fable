@@ -296,7 +296,7 @@ namespace Fable.Editor
                            ?? env.GetComponentsInChildren<Transform>(true).FirstOrDefault(t => t.name.StartsWith("anchor.reader."));
             if (entrance) rig.transform.position = entrance.position;
             var cameras = rig.GetComponentsInChildren<Camera>(true);
-            foreach (var c in cameras) { c.nearClipPlane = 0.05f; c.farClipPlane = 60f; c.clearFlags = CameraClearFlags.SolidColor; c.backgroundColor = Color.black; var d = c.GetUniversalAdditionalCameraData(); if (d) { d.renderPostProcessing = false; d.antialiasing = AntialiasingMode.None; } }
+            foreach (var c in cameras) { c.nearClipPlane = 0.05f; c.farClipPlane = 150f; c.clearFlags = CameraClearFlags.SolidColor; c.backgroundColor = Color.black; var d = c.GetUniversalAdditionalCameraData(); if (d) { d.renderPostProcessing = false; d.antialiasing = AntialiasingMode.None; } }
 
             // reading room: a dark floor disc and a soft overhead light around the page
             var reading = new GameObject("ReadingRoom");
@@ -397,7 +397,7 @@ namespace Fable.Editor
         /// scenes whose Blender sky was a world shader that glTF cannot carry. Named SkyDome so it is backdrop: full scale only.
         static void AddSkyDome(Transform env, string sceneId)
         {
-            const int lon = 32, lat = 16; const float radius = 60f;
+            const int lon = 32, lat = 16; const float radius = 60f;   // keep well inside the cameras' far plane (150 m)
             var verts = new System.Collections.Generic.List<Vector3>(); var uvs = new System.Collections.Generic.List<Vector2>(); var tris = new System.Collections.Generic.List<int>();
             for (int y = 0; y <= lat; y++)
                 for (int x = 0; x <= lon; x++)

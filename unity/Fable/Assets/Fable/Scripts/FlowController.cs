@@ -192,6 +192,8 @@ namespace Fable
             passages = book.Scenes.Where(p => p.Id == SceneId || (UnityScenes.TryGetValue(p.Id, out var n) && Application.CanStreamedLevelBeLoaded(n))).ToList();
             if (Panel && !Panel.GetComponent<GestureCues>()) Panel.gameObject.AddComponent<GestureCues>();   // animated gesture row under the passage
             Tasks = GetComponent<StoryTasks>() ? GetComponent<StoryTasks>() : gameObject.AddComponent<StoryTasks>(); Tasks.Init(Director, this, Input, Head);   // do-what-Alice-does tasks
+            // the generated sky dome is 60 m out; a 60 m far plane clipped a black hole in it overhead
+            foreach (var cam in FindObjectsByType<Camera>(FindObjectsSortMode.None)) if (cam.farClipPlane < 150f) cam.farClipPlane = 150f;
             Transform rigRoot = Head ? Head.parent : null;
 #if FABLE_META_XR
             var ovrRig = Head ? Head.GetComponentInParent<OVRCameraRig>() : null; if (ovrRig) rigRoot = ovrRig.transform;

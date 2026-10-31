@@ -65,7 +65,7 @@ namespace Fable
                 var position = ProgressStore.Load(sceneId).SentenceId;
                 var body = JsonConvert.SerializeObject(new Dictionary<string, string> { ["sceneId"] = sceneId, ["readingPosition"] = position ?? "" });
                 req.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(body));
-                req.downloadHandler = new DownloadHandlerBuffer(); req.SetRequestHeader("Content-Type", "application/json"); req.timeout = 120;
+                req.downloadHandler = new DownloadHandlerBuffer(); req.SetRequestHeader("Content-Type", "application/json"); req.timeout = 8;   // an unreachable server must never hold the page; the bundled script takes over
                 yield return req.SendWebRequest();
                 if (req.result == UnityWebRequest.Result.Success && req.responseCode == 202)
                     Debug.Log("[Fable] interpreter still generating this scene; using the saved or bundled script for now");
