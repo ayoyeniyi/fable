@@ -51,8 +51,13 @@ Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs
 ## Not done / not verified
 
 1. **No headset run.** No Quest has been attached, and on this Mac security software kills and deletes `adb` (it needs whitelisting). There are no headset captures, no frame timings, and no physical test of pinch, grab or comfort.
-2. **Live generation untested** (no API key). `SceneDirector` sends only `sceneId` to `/interpret`; it does not send the reading position yet.
-3. **Miniature needs a dollhouse cut.** The hall diorama is seen from above, so the reader sees the ceiling slab. Export the ceiling as its own mesh and hide it while in the miniature. Also move the reading panel out of the line of sight (`Height = 0.28`).
+2. **Live generation untested** (no API key). The plumbing is tested: Unity posts `sceneId` and `readingPosition`, the server answered from its validated cache, and with no key the server returned 502 and Unity fell back to the bundled baseline within 5 s. The page shows where the scene came from ("live interpretation", "interpreter cache", "saved on this headset", "bundled baseline"), so a demo never passes a prepared scene off as live.
+3. **Miniature, now fixed in the editor** (it was broken before, though the state strings looked right):
+   - Static-batched environment meshes didn't scale with the diorama. Environments are no longer `BatchingStatic`.
+   - The reading panel was set to about 600× its size in the miniature.
+   - Long passages overflowed the page.
+
+   The diorama now sits about 43° below the eye with a dollhouse cut (`MESH_Ceiling`, the tea party's `MESH_Leaves`), and outdoor scenes stand on a lawn plinth. Untested in a headset: comfort, panel legibility, and whether 43° suits a seated reader. The tea party's main tree trunk is cut along with the far trees, because they share `MESH_Bark`.
 4. **Visual tuning from the headset.** Brass reflections, milky glass, the hall is bright for a "dark hall" (lamp 2.2), lightmap resolution. In the croquet ground, the rose tree reads as topiary and Seven partly hides Two. In the tea party, the dappled light is opaque petals.
 5. **Triangle budget.** The hall at 61k is double the ARCHITECTURE target; profile on Quest 2 before cutting.
 6. **The little door is visible before the curtain appears** (sentence 005). It is architecture, but the curtain could arguably be present from the start.

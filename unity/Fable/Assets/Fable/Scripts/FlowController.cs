@@ -163,7 +163,8 @@ namespace Fable
             var p = Chosen; var saved = ProgressStore.Load(p.Id);
             string pick = passages.Count > 1 ? $"\u2039 {chosen + 1} of {passages.Count} \u203a   drag or tap left for another passage.   " : "";
             string open = saved.SentenceId != null ? (welcome ? $"welcome back. pinch to open {Place(p.Id)} where you left it" : $"pinch to open {Place(p.Id)} where you left it") : $"pinch to open {Place(p.Id)}";
-            Panel.Show(p, saved.SentenceId, pick + open);
+            string source = p.Id == SceneId && Director.ScriptSource != "" ? $"   (scene: {Director.ScriptSource})" : "";
+            Panel.Show(p, saved.SentenceId, pick + open + source);
         }
 
         void ChoosePassage(int dir)
@@ -225,7 +226,7 @@ namespace Fable
         public void StepReturn() => OnReturn();
         public void StepChoose(int dir) => OnScrub(dir);
         public string ChosenId => Chosen?.Id;
-        public string Describe() => $"state={Current} beat={Director.BeatIndex + 1}/{(Director.Script != null ? Director.Script.Beats.Count : 0)} envScale={(env != null ? env.localScale.x.ToString("F2") : "n/a")} active={(env != null && env.gameObject.activeSelf)} playing={Application.isPlaying}";
+        public string Describe() => $"state={Current} beat={Director.BeatIndex + 1}/{(Director.Script != null ? Director.Script.Beats.Count : 0)} envScale={(env != null ? env.localScale.x.ToString("F2") : "n/a")} active={(env != null && env.gameObject.activeSelf)} playing={Application.isPlaying} source={Director.ScriptSource}";
 
         /// The diorama grows out of the table in front of the reader; its hall centre sits at chest height, a little below the page.
         IEnumerator Grow()

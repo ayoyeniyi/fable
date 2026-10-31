@@ -21,6 +21,9 @@ namespace Fable
         public string InterpreterUrl = "";
 
         public SceneScript Script { get; private set; }
+        /// Where the running script came from, shown on the page so a demo never passes a prepared scene off as live:
+        /// "live interpretation", "interpreter cache", "saved on this headset" or "bundled baseline".
+        public string ScriptSource { get; private set; } = "";
         public SceneManifest Manifest { get; private set; }
         public FlowController Flow;
         public ReadingPanel Panel;
@@ -51,7 +54,10 @@ namespace Fable
             if (!string.IsNullOrEmpty(InterpreterUrl))
             {
                 using var req = new UnityWebRequest(InterpreterUrl.TrimEnd('/') + "/interpret", "POST");
-                req.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes($"{{\"sceneId\":\"{sceneId}\"}}"));
+                // the reading position lets the interpreter keep to what the reader has reached; ids are [a-z-]+:[0-9]{3}
+                var position = ProgressStore.Load(sceneId).SentenceId;
+                var body = JsonConvert.SerializeObject(new Dictionary<string, string> { ["sceneId"] = sceneId, ["readingPosition"] = position ?? "" });
+                req.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(body));
                 req.downloadHandler = new DownloadHandlerBuffer(); req.SetRequestHeader("Content-Type", "application/json"); req.timeout = 120;
                 yield return req.SendWebRequest();
                 if (req.result == UnityWebRequest.Result.Success)
@@ -62,7 +68,11 @@ namespace Fable
                     {
                         var errs = ScriptValidator.Validate(candidate, manifest, ids);
                         if (errs.Count > 0) { Debug.LogWarning("[Fable] interpreter script failed validation:\n" + string.Join("\n", errs)); candidate = null; }
-                        else Debug.Log("[Fable] using interpreter script");
+                        else
+                        {
+                            ScriptSource = req.GetResponseHeader("X-Fable-Cache") == "miss" ? "live interpretation" : "interpreter cache";
+                            Debug.Log($"[Fable] using interpreter script ({ScriptSource})");
+                        }
                     }
                 }
                 else Debug.LogWarning($"[Fable] interpreter unreachable: {req.error}");
@@ -73,7 +83,7 @@ namespace Fable
                 var cached = ProgressStore.LoadCachedScript(sceneId);
                 if (cached != null)
                 {
-                    try { var cs = ScriptValidator.Parse(cached); if (ScriptValidator.Validate(cs, manifest, ids).Count == 0) { candidate = cs; Debug.Log("[Fable] using cached interpreter script"); } }
+                    try { var cs = ScriptValidator.Parse(cached); if (ScriptValidator.Validate(cs, manifest, ids).Count == 0) { candidate = cs; ScriptSource = "saved on this headset"; Debug.Log("[Fable] using cached interpreter script"); } }
                     catch (Exception e) { Debug.LogWarning($"[Fable] cache unreadable: {e.Message}"); }
                 }
             }
@@ -82,6 +92,7 @@ namespace Fable
                 candidate = ScriptValidator.Parse(ReadStreaming($"scripts/{sceneId}.baseline.json"));
                 var errs = ScriptValidator.Validate(candidate, manifest, ids);
                 if (errs.Count > 0) throw new Exception("baseline script invalid:\n" + string.Join("\n", errs));
+                ScriptSource = "bundled baseline";
                 Debug.Log("[Fable] using bundled baseline script");
             }
             Script = candidate;
