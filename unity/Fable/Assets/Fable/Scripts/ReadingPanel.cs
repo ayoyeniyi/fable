@@ -24,6 +24,9 @@ namespace Fable
         /// The page holds still. It glides to a new spot only when the reader turns well away from it, when their
         /// height changes, or when the flow asks (Recentre); a page that trails every head movement cannot be read.
         public float DeadZoneDegrees = 28f;
+        /// The diorama table in the reading room tops out at 0.72 m; a page that follows a low, seated head would sink
+        /// its footer and gesture cues into it, so over the table the page's bottom edge never drops below this height.
+        public float MinBottom = 0.76f; public bool ClampToTable = true;
         bool recentring = true;
         public void Recentre() { recentring = true; }
 
@@ -35,9 +38,10 @@ namespace Fable
             if (fwd.sqrMagnitude < 0.01f) fwd = Vector3.forward;
             var right = Vector3.Cross(Vector3.up, fwd);
             var target = Head.position + fwd * Distance + Vector3.up * Height + right * Side;
+            if (ClampToTable) { float half = ((RectTransform)transform).rect.height * baseScale * Scale * 0.5f; target.y = Mathf.Max(target.y, MinBottom + half); }
             var toPanel = transform.position - Head.position;
             float off = Vector3.Angle(fwd, Vector3.ProjectOnPlane(toPanel, Vector3.up));
-            if (!recentring && (off > DeadZoneDegrees || Mathf.Abs(toPanel.y - Height) > 0.35f)) recentring = true;
+            if (!recentring && (off > DeadZoneDegrees || Mathf.Abs(toPanel.y - (target.y - Head.position.y)) > 0.35f)) recentring = true;
             if (!recentring) return;
             transform.position = Vector3.Lerp(transform.position, target, Time.deltaTime * Follow);
             var look = Quaternion.LookRotation(transform.position - Head.position, Vector3.up);

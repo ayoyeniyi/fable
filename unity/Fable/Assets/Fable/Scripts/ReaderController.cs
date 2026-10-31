@@ -1,6 +1,7 @@
 // Hand-controlled story progression, seated, hands only.
 //   right pinch tap        next beat          left pinch tap        previous beat
 //   right pinch and drag   scroll the story (5 cm = one sentence; up or right = forward, down or left = back)
+//   left pinch and drag    turn on the spot (10 cm sideways = one 45 degree step), in the full-size room
 //   both hands pinch, quick release   toggle miniature / immersive      (one hand: hold the right pinch ~1 s)
 //   both hands pinch, hold 1 s        close the scene, back to the page  (one hand: hold the left pinch ~1 s)
 // Controllers (index triggers) mirror the pinches so testers without hand tracking are not stuck.
@@ -14,7 +15,8 @@ namespace Fable
     {
         public event Action Next, Previous, ReturnToReading, Select, ToggleView;
         public event Action<int> Scrub;                 // +1 / -1 per scrub step while dragging
-        public float TapSeconds = 0.35f, DragStepMetres = 0.05f, HoldToReturn = 1.0f, HoldOneHand = 0.9f;
+        public event Action<int> Turn;                  // +1 (right) / -1 (left) per step of a left-hand sideways drag
+        public float TapSeconds = 0.35f, DragStepMetres = 0.05f, TurnStepMetres = 0.10f, HoldToReturn = 1.0f, HoldOneHand = 0.9f;
         bool rHeld, lHeld;   // a one-hand hold already fired for this pinch
 
 #if FABLE_META_XR
@@ -31,7 +33,7 @@ namespace Fable
         public Func<bool> TapInterceptor;
         string lastMode;
 
-        float rDown = -1, lDown = -1, bothDown = -1; bool bothFired, rDragging; Vector3 rStart, rLast; float rAccum;
+        float rDown = -1, lDown = -1, bothDown = -1; bool bothFired, rDragging, lDragging; Vector3 rStart, rLast, lStart, lLast; float rAccum, lAccum;
         bool suppressed;   // a pinch that grabbed a prop is not also a page turn or a scrub
 
         /// Called when a pinch picks something up (or puts it down): that pinch no longer counts as a tap or drag.
@@ -62,7 +64,7 @@ namespace Fable
 
         void Update()
         {
-            bool r = Pinch(false, out var rPos), l = Pinch(true, out _);
+            bool r = Pinch(false, out var rPos), l = Pinch(true, out var lPos);
             LeftPinching = l; RightPinching = r;
 #if FABLE_META_XR
             bool handsSeen = (LeftHand && LeftHand.IsTracked) || (RightHand && RightHand.IsTracked);
@@ -114,10 +116,22 @@ namespace Fable
                 rDown = -1; rDragging = false; rHeld = false;
             }
 
-            // left hand: tap = previous, hold = close the scene
-            if (l && lDown < 0) { lDown = now; lHeld = false; }
-            else if (l && !lHeld && now - lDown > HoldOneHand) { lHeld = true; ReturnToReading?.Invoke(); }
-            else if (!l && lDown >= 0) { if (!lHeld && now - lDown < TapSeconds) Previous?.Invoke(); lDown = -1; lHeld = false; }
+            // left hand: tap = previous, hold = close the scene, sideways drag = turn
+            if (l && lDown < 0) { lDown = now; lHeld = false; lDragging = false; lStart = lLast = lPos; lAccum = 0; }
+            else if (l)
+            {
+                if (!lDragging && (lPos - lStart).magnitude > 0.025f) lDragging = true;
+                if (!lDragging && !lHeld && now - lDown > HoldOneHand) { lHeld = true; ReturnToReading?.Invoke(); }
+                if (lDragging)
+                {
+                    var right = Camera.main ? Camera.main.transform.right : Vector3.right; right.y = 0; right.Normalize();
+                    lAccum += Vector3.Dot(lPos - lLast, right);
+                    while (lAccum > TurnStepMetres) { lAccum -= TurnStepMetres; Turn?.Invoke(+1); }
+                    while (lAccum < -TurnStepMetres) { lAccum += TurnStepMetres; Turn?.Invoke(-1); }
+                    lLast = lPos;
+                }
+            }
+            else if (lDown >= 0) { if (!lDragging && !lHeld && now - lDown < TapSeconds) Previous?.Invoke(); lDown = -1; lHeld = false; lDragging = false; }
         }
     }
 }

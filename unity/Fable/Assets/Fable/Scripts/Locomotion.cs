@@ -4,7 +4,9 @@
 //   the little door              -> you go through it into the next place
 //   a locked door                -> it rattles
 // Nothing here needs two hands or a combination. Walking is arm-swinging (both hands pumping, seated or standing) or
-// the controller thumbstick. Pointing at nothing leaves the pinch to the page (next sentence).
+// the right thumbstick. Turning on the spot, for a seated reader who cannot swivel: the left thumbstick snaps 45
+// degrees, or the left hand pinches and drags sideways (10 cm per step); looking round still turns you for free.
+// Pointing at nothing leaves the pinch to the page (next sentence).
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,7 +15,10 @@ namespace Fable
     public class Locomotion : MonoBehaviour
     {
         public enum HitKind { None, Floor, LittleDoor, LockedDoor }
-        public float TeleportDiscMetres = 0.34f, WalkSpeed = 1.6f, SwingThreshold = 0.45f;
+        public float TeleportDiscMetres = 0.34f, WalkSpeed = 1.6f, SwingThreshold = 0.45f, SnapDegrees = 45f;
+        /// Left stick turns, right stick moves (what the reader asked for). false = the Quest's usual layout, swapped.
+        public bool LeftStickTurns = true;
+        bool stickTurnArmed = true;
         public Color Brass = new(0.85f, 0.62f, 0.22f), Go = new(0.95f, 0.9f, 0.75f), Locked = new(0.8f, 0.3f, 0.2f);
 
         FlowController flow; SceneDirector director; ReaderController reader; Transform head, rig;
@@ -34,6 +39,17 @@ namespace Fable
             d0.GetComponent<Renderer>().material = discMat; d0.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; disc = d0.transform;
             Show(false);
             reader.TapInterceptor = Activate;
+            reader.Turn += Snap;
+        }
+
+        void OnDestroy() { if (reader) reader.Turn -= Snap; }
+
+        /// Turn on the spot about the reader's own head, so the room pivots around them rather than them orbiting the rig.
+        public void Snap(int dir)
+        {
+            if (!rig || !head || flow == null || flow.Current != FlowController.State.Scene || dir == 0) return;
+            rig.RotateAround(head.position, Vector3.up, SnapDegrees * Mathf.Sign(dir));
+            Debug.Log($"[Fable] turn {(dir > 0 ? "right" : "left")} {SnapDegrees}");
         }
 
         void Show(bool on) { if (line) line.enabled = on; if (disc) disc.gameObject.SetActive(on); }
@@ -149,8 +165,12 @@ namespace Fable
             var fwd = Vector3.ProjectOnPlane(head.forward, Vector3.up).normalized; var right = Vector3.Cross(Vector3.up, fwd);
             Vector3 move = Vector3.zero;
 #if FABLE_META_XR
-            var stick = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.RTouch) + OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.LTouch);
-            if (stick.sqrMagnitude > 0.04f) move = (fwd * stick.y + right * stick.x) * WalkSpeed;
+            Vector2 lStick = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.LTouch), rStick = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.RTouch);
+            Vector2 turnStick = LeftStickTurns ? lStick : rStick, moveStick = LeftStickTurns ? rStick : lStick;
+            if (moveStick.sqrMagnitude > 0.04f) move = (fwd * moveStick.y + right * moveStick.x) * WalkSpeed;
+            // snap turn: one step per push, re-armed when the stick comes back to centre
+            if (stickTurnArmed && Mathf.Abs(turnStick.x) > 0.6f) { stickTurnArmed = false; Snap(turnStick.x > 0 ? 1 : -1); }
+            else if (Mathf.Abs(turnStick.x) < 0.3f) stickTurnArmed = true;
             bool hands = reader.LeftPointer && reader.RightPointer && reader.LeftHand && reader.RightHand && reader.LeftHand.IsTracked && reader.RightHand.IsTracked && !reader.LeftPinching && !reader.RightPinching;
             if (hands)
             {

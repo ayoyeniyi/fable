@@ -3,6 +3,7 @@
 // task moves the story to the next sentence (a pinch still works; the task is an invitation, never a lock). After the
 // last sentence of the hall the little door becomes a real door: small enough now, the reader goes through into the garden.
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace Fable
@@ -66,6 +67,67 @@ namespace Fable
         {
             director = d; flow = f; reader = r; head = h;
             director.BeatChanged += OnBeat;
+            var panel = FindFirstObjectByType<ReadingPanel>(); if (panel && panel.Hint) font = panel.Hint.font;
+        }
+
+        // A sign above whatever the task is about, for a first-time reader who does not know where to look: a brass orb
+        // bobbing over the target with a small paper tag saying what to do. It scales with the room (diorama or full size)
+        // and always faces the reader.
+        Transform beacon, orb, card; TextMeshPro tag; TMP_FontAsset font; float bobPhase;
+        public Color Brass = new(0.85f, 0.62f, 0.22f), Paper = new(0.96f, 0.93f, 0.86f), InkColour = new(0.13f, 0.11f, 0.09f);
+
+        void EnsureBeacon()
+        {
+            if (beacon) return;
+            beacon = new GameObject("TaskBeacon").transform; beacon.SetParent(transform, false);
+            var shader = Shader.Find("Universal Render Pipeline/Unlit") ?? Shader.Find("Unlit/Color");
+            var o = GameObject.CreatePrimitive(PrimitiveType.Sphere); Destroy(o.GetComponent<Collider>()); o.name = "Orb"; o.transform.SetParent(beacon, false);
+            var om = new Material(shader) { color = Brass }; o.GetComponent<Renderer>().material = om; o.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; orb = o.transform;
+            var c = GameObject.CreatePrimitive(PrimitiveType.Quad); Destroy(c.GetComponent<Collider>()); c.name = "Card"; c.transform.SetParent(beacon, false);
+            var cm = new Material(shader) { color = Paper }; c.GetComponent<Renderer>().material = cm; c.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; card = c.transform;
+            var tg = new GameObject("Tag"); tg.transform.SetParent(beacon, false);
+            tag = tg.AddComponent<TextMeshPro>(); if (font) tag.font = font; tag.color = InkColour; tag.alignment = TextAlignmentOptions.Center; tag.textWrappingMode = TextWrappingModes.Normal;
+            tag.enableAutoSizing = true; tag.fontSizeMin = 0.4f; tag.fontSizeMax = 2.6f; tag.rectTransform.sizeDelta = new Vector2(11f, 2.4f); tag.transform.localScale = Vector3.one * 0.1f;
+            beacon.gameObject.SetActive(false);
+        }
+
+        /// The instruction inside a prompt: the sentence that tells the hands what to do, else the whole prompt.
+        static string Instruction(string prompt)
+        {
+            var parts = prompt.Split(new[] { ". ", "! ", "? " }, System.StringSplitOptions.RemoveEmptyEntries);
+            string[] verbs = { "point", "pick", "look", "hold", "bring", "find", "keep", "go ", "touch", "drink" };
+            foreach (var p in parts) { var l = p.ToLowerInvariant(); foreach (var v in verbs) if (l.Contains(v)) return p.TrimEnd('.').Trim(); }
+            return prompt.TrimEnd('.');
+        }
+
+        /// Where the sign hangs: above the target asset, or above whichever big door is nearest the reader.
+        bool TargetTop(out Vector3 top, out float scale)
+        {
+            top = Vector3.zero; scale = director.Registry.EnvironmentRoot ? director.Registry.EnvironmentRoot.lossyScale.x : 1f;
+            Renderer[] rends = active.Target == "doors" ? DoorRenderers() : Renderers(director.Registry.Anchor(active.Target) ?? director.Registry.Asset(active.Target));
+            if (rends.Length == 0) { var a = director.Registry.Anchor(active.Target) ?? director.Registry.Asset(active.Target); if (!a) return false; top = a.position + Vector3.up * 0.2f * scale; return true; }
+            Renderer best = null; float bd = float.PositiveInfinity;
+            foreach (var r in rends) { if (!r) continue; float d = head ? Vector3.Distance(r.bounds.center, head.position) : 0; if (d < bd) { bd = d; best = r; } }
+            if (!best) return false;
+            var b = best.bounds; top = new Vector3(b.center.x, b.max.y, b.center.z);
+            if (active.Target == "doors") top = new Vector3(b.center.x, Mathf.Min(b.max.y, b.min.y + 2.2f * scale), b.center.z);   // door tops are high; hang the sign at eye-ish height
+            return true;
+        }
+
+        void UpdateBeacon(bool show)
+        {
+            EnsureBeacon();
+            if (!show || !TargetTop(out var top, out float scale)) { beacon.gameObject.SetActive(false); return; }
+            beacon.gameObject.SetActive(true);
+            bobPhase += Time.deltaTime * 2.4f;
+            float s = Mathf.Clamp(scale, 0.04f, 3f);
+            var pos = top + Vector3.up * (0.22f + 0.03f * Mathf.Sin(bobPhase)) * s;
+            beacon.position = pos;
+            if (head) { var to = pos - head.position; to.y *= 0.3f; if (to.sqrMagnitude > 0.0001f) beacon.rotation = Quaternion.LookRotation(to.normalized, Vector3.up); }
+            orb.localPosition = Vector3.zero; orb.localScale = Vector3.one * 0.07f * s;
+            card.localPosition = new Vector3(0, 0.2f * s, 0.002f * s); card.localScale = new Vector3(1.15f * s, 0.26f * s, 1);
+            tag.transform.localPosition = new Vector3(0, 0.2f * s, 0); tag.transform.localScale = Vector3.one * 0.1f * s;
+            tag.text = Instruction(active.Prompt);
         }
 
         void OnDestroy() { if (director) director.BeatChanged -= OnBeat; }
@@ -80,9 +142,11 @@ namespace Fable
 
         void Update()
         {
+            bool inRoom = flow && (flow.Current == FlowController.State.Scene || flow.Current == FlowController.State.Miniature);
+            UpdateBeacon(active != null && !done && director && director.Registry != null && inRoom);
             if (active == null || done || !director || director.Registry == null) return;
             // tasks need a room the hands can reach: the diorama or the full-scale scene, never the bare page
-            if (flow && flow.Current != FlowController.State.Scene && flow.Current != FlowController.State.Miniature) return;
+            if (!inRoom) return;
             if (Time.time - activeSince < 0.6f) return;   // let the sentence land before judging a hand that was already there
             Pulse();
             float scale = director.Registry.EnvironmentRoot ? director.Registry.EnvironmentRoot.lossyScale.x : 1f;

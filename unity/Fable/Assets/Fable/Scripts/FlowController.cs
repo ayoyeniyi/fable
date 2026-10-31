@@ -160,10 +160,10 @@ namespace Fable
         }
 
         // reading panel placements: on its own, beside the diorama (to the left, out of the line of sight), and inside the scene
-        void PanelAlone() { Panel.Distance = 1.15f; Panel.Height = -0.08f; Panel.Side = 0f; Panel.Scale = 1f; Panel.Recentre(); }
+        void PanelAlone() { Panel.Distance = 1.15f; Panel.Height = -0.08f; Panel.Side = 0f; Panel.Scale = 1f; Panel.ClampToTable = true; Panel.Recentre(); }
         // centred above the diorama (the hall's roofline sits about 0.43 m below the eye), not off to one side
-        void PanelBesideDiorama() { Panel.Distance = 1.0f; Panel.Height = -0.02f; Panel.Side = 0f; Panel.Scale = 0.6f; Panel.Recentre(); }
-        void PanelInScene() { Panel.Distance = 0.9f; Panel.Height = -0.32f; Panel.Side = 0f; Panel.Scale = 0.55f; Panel.Recentre(); }
+        void PanelBesideDiorama() { Panel.Distance = 1.0f; Panel.Height = -0.02f; Panel.Side = 0f; Panel.Scale = 0.6f; Panel.ClampToTable = true; Panel.Recentre(); }
+        void PanelInScene() { Panel.Distance = 0.9f; Panel.Height = -0.32f; Panel.Side = 0f; Panel.Scale = 0.55f; Panel.ClampToTable = false; Panel.Recentre(); }   // no table in the staged room
 
         IEnumerator Start()
         {
@@ -288,8 +288,9 @@ namespace Fable
         void OnInputMode(string mode) { if (busy) return; if (Current == State.Reading) return; else if (Director.Script != null && Director.BeatIndex >= 0) Panel.Show(Director.PassageScene, Director.Script.Beats[Director.BeatIndex].SentenceId, Hint()); }
 
         string TaskNote => Tasks != null && Tasks.Prompt != "" ? $"<b>{Tasks.Prompt}</b>   " : "";
+        string Walk => Input.InputMode == "controllers" ? "right stick: walk \u00b7 left stick: turn" : "swing your arms: walk \u00b7 left pinch and slide sideways: turn";
         string Hint() => TaskNote + InputNote + (Current == State.Scene
-            ? $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   point at the floor and {Pinch}: go there \u00b7 swing your arms: walk \u00b7 point at the little door and {Pinch}: go through \u00b7 {Pinch}: next sentence \u00b7 hold right {Pinch}: back to the table \u00b7 hold left {Pinch}: close the book"
+            ? $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   point at the floor and {Pinch}: go there \u00b7 {Walk} \u00b7 point at the little door and {Pinch}: go through \u00b7 {Pinch}: next sentence \u00b7 hold right {Pinch}: back to the table \u00b7 hold left {Pinch}: close the book"
             : $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   point into the little room and {Pinch}: step in there \u00b7 {Pinch}: next sentence \u00b7 {Pinch} and drag: scroll \u00b7 hold left {Pinch}: close the book");
 
         // A right tap fires Next and Select together; on the page, Next does the work (Select stays for the scene states).

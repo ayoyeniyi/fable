@@ -1,6 +1,7 @@
 // Where each hand points on the reading page. Hands use the system pointer pose (the same ray the Quest's own menus
-// use), controllers their own forward ray; in the editor the mouse stands in for the right hand. The page shows a small
-// dot where the active ray lands, so the reader can see which control a pinch will press.
+// use), controllers their own forward ray; in the editor the mouse stands in for the right hand. A thin ray runs from
+// the hand to the page and a dot marks where it lands, growing when it rests on a control, so the reader can see what
+// a pinch will press. Controls are padded a little: a hand held in the air is never pixel-steady.
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,10 +11,10 @@ namespace Fable
     {
         public ReaderController Reader;
         public RectTransform Page;          // the reading panel's canvas
-        public float MaxDistance = 3f;
+        public float MaxDistance = 3f, Padding = 16f;   // Padding: extra page pixels around each control that still count as over it
         public Color Dot = new(0.62f, 0.42f, 0.10f, 0.85f);
 
-        Image cursor;
+        Image cursor; LineRenderer ray; Material rayMat; BookReader reader;
 
         /// Editor tests: a right-hand ray to use instead of the hand or mouse (null = live input).
         public Ray? TestRay;
@@ -29,6 +30,12 @@ namespace Fable
             cursor.rectTransform.sizeDelta = new Vector2(14, 14);
             cursor.sprite = MakeDot(); cursor.color = Dot; cursor.raycastTarget = false;
             cursor.gameObject.SetActive(false);
+            var shader = Shader.Find("Universal Render Pipeline/Unlit") ?? Shader.Find("Unlit/Color");
+            rayMat = new Material(shader) { color = new Color(Dot.r, Dot.g, Dot.b, 0.7f) };
+            var lg = new GameObject("PageRay"); lg.transform.SetParent(transform, false);
+            ray = lg.AddComponent<LineRenderer>(); ray.material = rayMat; ray.positionCount = 2; ray.useWorldSpace = true; ray.widthMultiplier = 0.004f; ray.numCapVertices = 2;
+            ray.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; ray.receiveShadows = false; ray.enabled = false;
+            reader = FindFirstObjectByType<BookReader>();
         }
 
         /// The ray a hand is pointing along, if that hand is tracked (or the mouse, in the editor without a headset).
@@ -73,15 +80,23 @@ namespace Fable
         {
             if (!target || !target.gameObject.activeInHierarchy || !OnPage(right, out var local)) return false;
             var world = Page.TransformPoint(local);
-            return target.rect.Contains(target.InverseTransformPoint(world));
+            var r = target.rect; r.xMin -= Padding; r.xMax += Padding; r.yMin -= Padding; r.yMax += Padding;
+            return r.Contains(target.InverseTransformPoint(world));
         }
 
         void LateUpdate()
         {
             if (!cursor) return;
-            bool on = OnPage(true, out var p) || OnPage(false, out p);
+            bool right = true;
+            bool on = OnPage(true, out var p); if (!on) { right = false; on = OnPage(false, out p); }
             cursor.gameObject.SetActive(on);
-            if (on) { cursor.rectTransform.localPosition = new Vector3(p.x, p.y, -1f); cursor.transform.SetAsLastSibling(); }
+            if (ray) ray.enabled = on;
+            if (!on) return;
+            bool overControl = reader && reader.Active && (reader.PressAt(right, dryRun: true) || reader.OverStepIn(right));
+            cursor.rectTransform.localPosition = new Vector3(p.x, p.y, -1f); cursor.transform.SetAsLastSibling();
+            cursor.rectTransform.sizeDelta = Vector2.one * (overControl ? 26f : 16f);
+            cursor.color = overControl ? new Color(0.80f, 0.36f, 0.08f, 0.95f) : Dot;
+            if (Ray(right, out var r)) { ray.SetPosition(0, r.origin + r.direction * 0.04f); ray.SetPosition(1, Page.TransformPoint(new Vector3(p.x, p.y, -1f))); }
         }
 
         static Sprite MakeDot()
