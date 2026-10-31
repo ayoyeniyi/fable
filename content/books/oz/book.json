@@ -13933,7 +13933,8 @@
       },
       {
        "id": "oz:c20.p034.s02",
-       "text": "You’re quite as stiff\nAnd prim as if\nYou’d eaten up a poker!”"
+       "text": "You’re quite as stiff\nAnd prim as if\nYou’d eaten up a poker!”",
+       "lineBefore": true
       }
      ]
     },

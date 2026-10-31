@@ -47,7 +47,8 @@
       },
       {
        "id": "alice:f01.p002.s03",
-       "text": "Yet what can one poor voice avail\nAgainst three tongues together?"
+       "text": "Yet what can one poor voice avail\nAgainst three tongues together?",
+       "lineBefore": true
       }
      ]
     },
@@ -61,7 +62,8 @@
       },
       {
        "id": "alice:f01.p003.s02",
-       "text": "While Tertia interrupts the tale\nNot more than once a minute."
+       "text": "While Tertia interrupts the tale\nNot more than once a minute.",
+       "lineBefore": true
       }
      ]
     },
@@ -85,7 +87,8 @@
       },
       {
        "id": "alice:f01.p005.s02",
-       "text": "The happy voices cry."
+       "text": "The happy voices cry.",
+       "lineBefore": true
       }
      ]
     },
@@ -1536,11 +1539,13 @@
       },
       {
        "id": "alice:c03.p034.s02",
-       "text": "Said the\nmouse to\nthe cur,\n‘Such a\ntrial,\ndear Sir,\nWith no\njury or\njudge,\nwould be\nwasting\nour breath.’"
+       "text": "Said the\nmouse to\nthe cur,\n‘Such a\ntrial,\ndear Sir,\nWith no\njury or\njudge,\nwould be\nwasting\nour breath.’",
+       "lineBefore": true
       },
       {
        "id": "alice:c03.p034.s03",
-       "text": "‘I’ll be\njudge,\nI’ll be\njury,’\nSaid\ncunning\nold Fury:\n‘I’ll try\nthe whole\ncause,\nand\ncondemn\nyou\nto\ndeath.’ ”"
+       "text": "‘I’ll be\njudge,\nI’ll be\njury,’\nSaid\ncunning\nold Fury:\n‘I’ll try\nthe whole\ncause,\nand\ncondemn\nyou\nto\ndeath.’ ”",
+       "lineBefore": true
       }
      ]
     },
@@ -2890,11 +2895,13 @@
       },
       {
        "id": "alice:c05.p034.s02",
-       "text": "Do you think I can listen all day to such stuff?"
+       "text": "Do you think I can listen all day to such stuff?",
+       "lineBefore": true
       },
       {
        "id": "alice:c05.p034.s03",
-       "text": "Be off, or I’ll kick you down stairs!”"
+       "text": "Be off, or I’ll kick you down stairs!”",
+       "lineBefore": true
       }
      ]
     },
@@ -5076,7 +5083,8 @@
       },
       {
        "id": "alice:c07.p049.s02",
-       "text": "How I wonder what you’re at!’"
+       "text": "How I wonder what you’re at!’",
+       "lineBefore": true
       }
      ]
     },
@@ -5120,7 +5128,8 @@
       },
       {
        "id": "alice:c07.p053.s02",
-       "text": "Twinkle, twinkle—’ ”"
+       "text": "Twinkle, twinkle—’ ”",
+       "lineBefore": true
       }
      ]
     },
@@ -8037,7 +8046,8 @@
       },
       {
        "id": "alice:c10.p024.s02",
-       "text": "‘There’s a porpoise close behind us, and he’s treading on my tail."
+       "text": "‘There’s a porpoise close behind us, and he’s treading on my tail.",
+       "lineBefore": true
       }
      ]
     },
@@ -8051,7 +8061,8 @@
       },
       {
        "id": "alice:c10.p025.s02",
-       "text": "They are waiting on the shingle—will you come and join the dance?"
+       "text": "They are waiting on the shingle—will you come and join the dance?",
+       "lineBefore": true
       }
      ]
     },
@@ -8065,7 +8076,8 @@
       },
       {
        "id": "alice:c10.p026.s02",
-       "text": "Will you, won’t you, will you, won’t you, won’t you join the dance?"
+       "text": "Will you, won’t you, will you, won’t you, won’t you join the dance?",
+       "lineBefore": true
       }
      ]
     },
@@ -8079,7 +8091,8 @@
       },
       {
        "id": "alice:c10.p027.s02",
-       "text": "But the snail replied ‘Too far, too far!’ and gave a look askance—\nSaid he thanked the whiting kindly, but he would not join the dance."
+       "text": "But the snail replied ‘Too far, too far!’ and gave a look askance—\nSaid he thanked the whiting kindly, but he would not join the dance.",
+       "lineBefore": true
       }
      ]
     },
@@ -8093,7 +8106,8 @@
       },
       {
        "id": "alice:c10.p028.s02",
-       "text": "Would not, could not, would not, could not, could not join the dance."
+       "text": "Would not, could not, would not, could not, could not join the dance.",
+       "lineBefore": true
       }
      ]
     },
@@ -8107,11 +8121,13 @@
       },
       {
        "id": "alice:c10.p029.s02",
-       "text": "‘There is another shore, you know, upon the other side."
+       "text": "‘There is another shore, you know, upon the other side.",
+       "lineBefore": true
       },
       {
        "id": "alice:c10.p029.s03",
-       "text": "The further off from England the nearer is to France—\nThen turn not pale, beloved snail, but come and join the dance."
+       "text": "The further off from England the nearer is to France—\nThen turn not pale, beloved snail, but come and join the dance.",
+       "lineBefore": true
       }
      ]
     },
@@ -8125,7 +8141,8 @@
       },
       {
        "id": "alice:c10.p030.s02",
-       "text": "Will you, won’t you, will you, won’t you, won’t you join the dance?’ ”"
+       "text": "Will you, won’t you, will you, won’t you, won’t you join the dance?’ ”",
+       "lineBefore": true
       }
      ]
     },
@@ -8541,7 +8558,8 @@
       },
       {
        "id": "alice:c10.p062.s02",
-       "text": "As a duck with its eyelids, so he with his nose\nTrims his belt and his buttons, and turns out his toes.”"
+       "text": "As a duck with its eyelids, so he with his nose\nTrims his belt and his buttons, and turns out his toes.”",
+       "lineBefore": true
       }
      ]
     },
@@ -8663,7 +8681,8 @@
       },
       {
        "id": "alice:c10.p073.s02",
-       "text": "When the pie was all finished, the Owl, as a boon,\nWas kindly permitted to pocket the spoon:\nWhile the Panther received knife and fork with a growl,\nAnd concluded the banquet—”"
+       "text": "When the pie was all finished, the Owl, as a boon,\nWas kindly permitted to pocket the spoon:\nWhile the Panther received knife and fork with a growl,\nAnd concluded the banquet—”",
+       "lineBefore": true
       }
      ]
     },
@@ -8743,27 +8762,33 @@
       },
       {
        "id": "alice:c10.p079.s02",
-       "text": "Who for such dainties would not stoop?"
+       "text": "Who for such dainties would not stoop?",
+       "lineBefore": true
       },
       {
        "id": "alice:c10.p079.s03",
-       "text": "Soup of the evening, beautiful Soup!"
+       "text": "Soup of the evening, beautiful Soup!",
+       "lineBefore": true
       },
       {
        "id": "alice:c10.p079.s04",
-       "text": "Soup of the evening, beautiful Soup!"
+       "text": "Soup of the evening, beautiful Soup!",
+       "lineBefore": true
       },
       {
        "id": "alice:c10.p079.s05",
-       "text": "Beau-ootiful Soo-oop!"
+       "text": "Beau-ootiful Soo-oop!",
+       "lineBefore": true
       },
       {
        "id": "alice:c10.p079.s06",
-       "text": "Beau-ootiful Soo-oop!"
+       "text": "Beau-ootiful Soo-oop!",
+       "lineBefore": true
       },
       {
        "id": "alice:c10.p079.s07",
-       "text": "Soo—oop of the e-e-evening,\nBeautiful, beautiful Soup!"
+       "text": "Soo—oop of the e-e-evening,\nBeautiful, beautiful Soup!",
+       "lineBefore": true
       }
      ]
     },
@@ -8781,23 +8806,28 @@
       },
       {
        "id": "alice:c10.p080.s03",
-       "text": "Who would not give all else for two\nPennyworth only of beautiful Soup?"
+       "text": "Who would not give all else for two\nPennyworth only of beautiful Soup?",
+       "lineBefore": true
       },
       {
        "id": "alice:c10.p080.s04",
-       "text": "Pennyworth only of beautiful Soup?"
+       "text": "Pennyworth only of beautiful Soup?",
+       "lineBefore": true
       },
       {
        "id": "alice:c10.p080.s05",
-       "text": "Beau-ootiful Soo-oop!"
+       "text": "Beau-ootiful Soo-oop!",
+       "lineBefore": true
       },
       {
        "id": "alice:c10.p080.s06",
-       "text": "Beau-ootiful Soo-oop!"
+       "text": "Beau-ootiful Soo-oop!",
+       "lineBefore": true
       },
       {
        "id": "alice:c10.p080.s07",
-       "text": "Soo—oop of the e-e-evening,\nBeautiful, beauti-ful soup!”"
+       "text": "Soo—oop of the e-e-evening,\nBeautiful, beauti-ful soup!”",
+       "lineBefore": true
       }
      ]
     },

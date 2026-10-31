@@ -11,7 +11,7 @@ out/sources/ (git-ignored); the SHA-256 of the exact file used goes into SOURCE.
 book.json:
   { slug, title, author, translator?, year, source{...}, stats{...},
     chapters: [ { id, index, kind: front|chapter, label, title, subtitle?, part?,
-                  paragraphs: [ { id, style: prose|verse|heading, sentences: [ {id, text} ] } ] } ] }
+                  paragraphs: [ { id, style: prose|verse|heading, sentences: [ {id, text, lineBefore?} ] } ] } ] }
 
 Ids are <slug>:<chapter>.p<nnn>.s<nn>, e.g. alice:c01.p004.s02 (front matter uses f01, f02...).
 They depend only on the source text, so re-running on the same file gives the same ids.
@@ -72,22 +72,26 @@ def protect(s):
 def sentences(text):
     """Split a paragraph into sentences. A break needs terminal punctuation, optional closing quotes,
     whitespace, then a capital (or an opening quote before one): “Oh!” said Alice stays one sentence."""
+    return [t for t, _ in sentences_with_breaks(text)]
+
+def sentences_with_breaks(text):
+    """As sentences(), but also says whether a line break (verse) came before each sentence."""
     s = protect(text)
-    parts, last = [], 0
+    parts, last, brk = [], 0, False
     for m in SPLIT_RE.finditer(s):
-        end = m.end(1)
-        parts.append(s[last:end])
+        parts.append((s[last:m.end(1)], brk))
+        brk = "\n" in m.group(2)
         last = m.end(2)
-    parts.append(s[last:])
+    parts.append((s[last:], brk))
     out = []
-    for p in parts:
+    for p, b in parts:
         p = p.replace(DOT, ".").strip()
         if not p:
             continue
         if out and len(p) < 3:          # stray punctuation: attach to the previous sentence
-            out[-1] += p
+            out[-1] = (out[-1][0] + p, out[-1][1])
         else:
-            out.append(p)
+            out.append((p, b))
     return out
 
 # --------------------------------------------------------------------------- Standard Ebooks EPUB
@@ -314,8 +318,14 @@ def build(slug, cfg, chapters):
             ch["title"] = "Chapter " + ch["label"]
         for pi, (style, text) in enumerate(ch["paras"], 1):
             pid = "%s:%s.p%03d" % (slug, cid, pi)
-            ss = [text] if style == "heading" else sentences(text)
-            sents = [{"id": "%s.s%02d" % (pid, si), "text": s} for si, s in enumerate(ss, 1)]
+            sb = [(text, False)] if style == "heading" else sentences_with_breaks(text)
+            ss = [t for t, _ in sb]
+            sents = []
+            for si, (t, b) in enumerate(sb, 1):
+                sent = {"id": "%s.s%02d" % (pid, si), "text": t}
+                if b and si > 1:
+                    sent["lineBefore"] = True     # verse: this sentence starts a new line
+                sents.append(sent)
             paras.append({"id": pid, "style": style, "sentences": sents})
             stats["sentences"] += len(sents)
             stats["words"] += sum(len(s.split()) for s in ss)
