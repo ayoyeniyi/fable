@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using TMPro;
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -45,7 +46,7 @@ namespace Fable.Editor
             EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android, BuildTarget.Android);
             QualitySettings.SetQualityLevel(0);
             QualitySettings.antiAliasing = 4;
-            QualitySettings.shadows = ShadowQuality.Disable;
+            QualitySettings.shadows = UnityEngine.ShadowQuality.Disable;
             QualitySettings.vSyncCount = 0;
             Application.targetFrameRate = -1;
             // URP asset: the template's Mobile asset, tuned for Quest 2
@@ -187,8 +188,8 @@ namespace Fable.Editor
             Lightmapping.lightingSettings = new LightingSettings
             {
                 lightmapper = LightingSettings.Lightmapper.ProgressiveGPU, lightmapMaxSize = 2048, lightmapResolution = 12, lightmapPadding = 2,
-                directSampleCount = 32, indirectSampleCount = 256, environmentSampleCount = 64, bounces = 3, denoiserTypeDirect = LightingSettings.DenoiserType.OpenImageDenoise,
-                denoiserTypeIndirect = LightingSettings.DenoiserType.OpenImageDenoise, lightmapCompression = LightmapCompression.HighQuality, mixedBakeMode = MixedLightingMode.Shadowmask, ao = true, aoMaxDistance = 0.6f
+                directSampleCount = 32, indirectSampleCount = 256, environmentSampleCount = 64, bounces = 3, denoiserTypeDirect = LightingSettings.DenoiserType.OpenImage,
+                denoiserTypeIndirect = LightingSettings.DenoiserType.OpenImage, lightmapCompression = LightmapCompression.HighQuality, mixedBakeMode = MixedLightingMode.Shadowmask, ao = true, aoMaxDistance = 0.6f
             };
             Lightmapping.lightingSettings.name = "FableLighting"; AssetDatabase.CreateAsset(Lightmapping.lightingSettings, "Assets/Fable/Scenes/FableLighting.lighting");
             if (!Lightmapping.Bake()) throw new Exception("lightmap bake failed");

@@ -57,7 +57,7 @@ except Exception as e:
     print("Metal not available, CPU render:", e)
 scene.view_settings.view_transform = 'AgX'
 scene.view_settings.look = 'AgX - Medium High Contrast'
-scene.view_settings.exposure = 0.35
+scene.view_settings.exposure = -0.05
 
 COLL = bpy.data.collections.new("HallOfDoors")
 scene.collection.children.link(COLL)
@@ -103,13 +103,13 @@ def texcoord_obj(nt, loc=(-1400, 0)):
     nt.links.new(tc.outputs["Object"], mp.inputs["Vector"])
     return mp
 
-def wood(name, base=(0.32, 0.17, 0.08), dark=(0.09, 0.045, 0.02), light=(0.55, 0.33, 0.15), scale=1.0, rough=(0.35, 0.6), grain_dir=(1, 14, 1)):
+def wood(name, base=(0.32, 0.17, 0.08), dark=(0.09, 0.045, 0.02), light=(0.55, 0.33, 0.15), scale=1.0, rough=(0.35, 0.6), grain_dir=(1, 1, 14), bands='Z'):
     m, nt, b = new_mat(name)
     mp = texcoord_obj(nt)
     mp.inputs["Scale"].default_value = (grain_dir[0] * scale, grain_dir[1] * scale, grain_dir[2] * scale)
-    wave = node(nt, "ShaderNodeTexWave", (-1000, 200), wave_type='BANDS', bands_direction='Y')
+    wave = node(nt, "ShaderNodeTexWave", (-1000, 200), wave_type='BANDS', bands_direction=bands)
     wave.inputs["Scale"].default_value = 1.2
-    wave.inputs["Distortion"].default_value = 6.0
+    wave.inputs["Distortion"].default_value = 9.0
     wave.inputs["Detail"].default_value = 6.0
     wave.inputs["Detail Scale"].default_value = 1.5
     nt.links.new(mp.outputs["Vector"], wave.inputs["Vector"])
@@ -119,10 +119,11 @@ def wood(name, base=(0.32, 0.17, 0.08), dark=(0.09, 0.045, 0.02), light=(0.55, 0
     fine.inputs["Roughness"].default_value = 0.7
     nt.links.new(mp.outputs["Vector"], fine.inputs["Vector"])
     mix = node(nt, "ShaderNodeMix", (-700, 100), data_type='FLOAT')
-    mix.inputs["Factor"].default_value = 0.35
+    mix.inputs["Factor"].default_value = 0.22
     nt.links.new(wave.outputs["Fac"], mix.inputs[2])
     nt.links.new(fine.outputs["Fac"], mix.inputs[3])
-    r = ramp(nt, [(0.0, (*dark, 1)), (0.45, (*base, 1)), (0.8, (*light, 1))], (-450, 100))
+    mid = tuple((b + l) / 2 for b, l in zip(base, light))
+    r = ramp(nt, [(0.0, (*dark, 1)), (0.25, (*base, 1)), (0.55, (*mid, 1)), (0.75, (*light, 1)), (0.9, (*base, 1))], (-450, 100))
     nt.links.new(mix.outputs[0], r.inputs["Fac"])
     # wear: pointiness lifts edges, dust in crevices via AO
     geo = node(nt, "ShaderNodeNewGeometry", (-700, -350))
@@ -143,7 +144,7 @@ def wood(name, base=(0.32, 0.17, 0.08), dark=(0.09, 0.045, 0.02), light=(0.55, 0
     rr.inputs["To Min"].default_value, rr.inputs["To Max"].default_value = rough[1], rough[0]
     nt.links.new(wave.outputs["Fac"], rr.inputs["Value"])
     nt.links.new(rr.outputs["Result"], b.inputs["Roughness"])
-    bump = node(nt, "ShaderNodeBump", (50, -300)); bump.inputs["Strength"].default_value = 0.25; bump.inputs["Distance"].default_value = 0.002
+    bump = node(nt, "ShaderNodeBump", (50, -300)); bump.inputs["Strength"].default_value = 0.45; bump.inputs["Distance"].default_value = 0.003
     nt.links.new(mix.outputs[0], bump.inputs["Height"])
     nt.links.new(bump.outputs["Normal"], b.inputs["Normal"])
     b.inputs["Coat Weight"].default_value = 0.15
@@ -151,7 +152,7 @@ def wood(name, base=(0.32, 0.17, 0.08), dark=(0.09, 0.045, 0.02), light=(0.55, 0
     return m
 
 def painted_wood(name, paint=(0.12, 0.2, 0.14)):
-    m = wood(name, base=paint, dark=tuple(c * 0.55 for c in paint), light=tuple(min(1, c * 1.25) for c in paint), rough=(0.3, 0.5))
+    m = wood(name, base=paint, dark=tuple(c * 0.55 for c in paint), light=tuple(min(1, c * 1.25) for c in paint), rough=(0.3, 0.5), grain_dir=(14, 1, 1), bands='X')
     return m
 
 def brass(name="M_Brass", color=(0.83, 0.58, 0.22), rough=(0.18, 0.45)):
@@ -222,7 +223,7 @@ def stone_floor(name="M_StoneFloor"):
     nt.links.new(hmix.outputs[0], bump.inputs["Height"]); nt.links.new(bump.outputs["Normal"], b.inputs["Normal"])
     return m
 
-def plaster(name="M_Plaster", color=(0.72, 0.66, 0.55)):
+def plaster(name="M_Plaster", color=(0.60, 0.54, 0.43)):
     m, nt, b = new_mat(name)
     mp = texcoord_obj(nt)
     n = node(nt, "ShaderNodeTexNoise", (-900, 0)); n.inputs["Scale"].default_value = 18; n.inputs["Detail"].default_value = 10; n.inputs["Roughness"].default_value = 0.65
@@ -232,7 +233,7 @@ def plaster(name="M_Plaster", color=(0.72, 0.66, 0.55)):
     r = ramp(nt, [(0.3, (color[0] * 0.78, color[1] * 0.74, color[2] * 0.7, 1)), (0.7, (*color, 1))], (-600, -300))
     nt.links.new(s.outputs["Fac"], r.inputs["Fac"])
     ao = node(nt, "ShaderNodeAmbientOcclusion", (-600, -600)); ao.inputs["Distance"].default_value = 0.4
-    soot = node(nt, "ShaderNodeMix", (-300, -300), data_type='RGBA', blend_type='MULTIPLY'); soot.inputs["Factor"].default_value = 0.5
+    soot = node(nt, "ShaderNodeMix", (-300, -300), data_type='RGBA', blend_type='MULTIPLY'); soot.inputs["Factor"].default_value = 0.6
     nt.links.new(r.outputs["Color"], soot.inputs[6]); nt.links.new(ao.outputs["Color"], soot.inputs[7])
     nt.links.new(soot.outputs[2], b.inputs["Base Color"])
     b.inputs["Roughness"].default_value = 0.92
@@ -297,7 +298,7 @@ def flame(name="M_Flame"):
     m, nt, b = new_mat(name)
     b.inputs["Base Color"].default_value = (1, 0.6, 0.2, 1)
     b.inputs["Emission Color"].default_value = (1.0, 0.62, 0.22, 1)
-    b.inputs["Emission Strength"].default_value = 18.0
+    b.inputs["Emission Strength"].default_value = 7.0
     return m
 
 def lamp_glass(name="M_LampGlass"):
@@ -306,7 +307,8 @@ def lamp_glass(name="M_LampGlass"):
     b.inputs["Roughness"].default_value = 0.08
     b.inputs["Transmission Weight"].default_value = 1.0
     b.inputs["IOR"].default_value = 1.45
-    b.inputs["Alpha"].default_value = 0.4
+    b.inputs["Alpha"].default_value = 0.45
+    b.inputs["Roughness"].default_value = 0.25
     m.blend_method = 'BLEND'
     return m
 
@@ -319,13 +321,13 @@ def liquid(name="M_Liquid"):
     m.blend_method = 'BLEND'
     return m
 
-M_OAK = wood("M_OakPanel")
-M_DOOR_OAK = wood("M_DoorOak", base=(0.28, 0.14, 0.06), dark=(0.07, 0.03, 0.015), light=(0.5, 0.28, 0.12), scale=1.4)
-M_DOOR_MAHOG = wood("M_DoorMahogany", base=(0.30, 0.09, 0.05), dark=(0.09, 0.025, 0.015), light=(0.48, 0.18, 0.1), scale=1.3)
-M_DOOR_GREEN = painted_wood("M_DoorGreen", (0.10, 0.17, 0.12))
+M_OAK = wood("M_OakPanel", base=(0.20, 0.115, 0.055), dark=(0.055, 0.03, 0.016), light=(0.36, 0.22, 0.11), scale=1.1, rough=(0.3, 0.55))
+M_DOOR_OAK = wood("M_DoorOak", base=(0.19, 0.105, 0.05), dark=(0.05, 0.025, 0.012), light=(0.34, 0.2, 0.1), scale=1.4, grain_dir=(14, 1, 1), bands='X')
+M_DOOR_MAHOG = wood("M_DoorMahogany", base=(0.20, 0.065, 0.04), dark=(0.06, 0.02, 0.012), light=(0.33, 0.13, 0.08), scale=1.3, grain_dir=(14, 1, 1), bands='X')
+M_DOOR_GREEN = painted_wood("M_DoorGreen", (0.075, 0.13, 0.095))
 M_DOOR_BLACK = painted_wood("M_DoorBlack", (0.03, 0.03, 0.035))
-M_DOOR_BLUE = painted_wood("M_DoorBlue", (0.08, 0.11, 0.18))
-M_BEAM = wood("M_Beam", base=(0.2, 0.11, 0.05), dark=(0.05, 0.025, 0.01), light=(0.35, 0.2, 0.09), scale=0.7, rough=(0.55, 0.8))
+M_DOOR_BLUE = painted_wood("M_DoorBlue", (0.06, 0.085, 0.14))
+M_BEAM = wood("M_Beam", base=(0.14, 0.08, 0.04), dark=(0.035, 0.018, 0.008), light=(0.26, 0.15, 0.07), scale=0.7, rough=(0.55, 0.8))
 M_BRASS = brass()
 M_GOLD = brass("M_Gold", color=(1.0, 0.76, 0.33), rough=(0.12, 0.3))
 M_STONE = stone_floor()
@@ -444,23 +446,32 @@ box("Wall_E", (T, HALL_W + 0.4, HALL_H), (hx + T / 2, 0, HALL_H / 2), M_PLASTER)
 box("Wall_W", (T, HALL_W + 0.4, HALL_H), (-hx - T / 2, 0, HALL_H / 2), M_PLASTER)
 
 # wainscot (oak panelling) along both long walls and ends, with rail and skirting
-def wainscot_run(name, length, centre, along_x=True):
+def wainscot_run(name, length, centre, along_x=True, gap=None):
     if along_x:
-        box(f"{name}_Panel", (length, 0.03, WAINSCOT_H), (centre[0], centre[1], WAINSCOT_H / 2), M_OAK)
+        yoff = 0.012 if centre[1] < 0 else -0.012
+        x0, x1 = centre[0] - length / 2, centre[0] + length / 2
+        segments = [(x0, x1)] if gap is None else [(x0, gap[0]), (gap[1], x1)]
+        for k, (a, b_) in enumerate(segments):
+            box(f"{name}_Panel{k}", (b_ - a, 0.03, WAINSCOT_H), ((a + b_) / 2, centre[1], WAINSCOT_H / 2), M_OAK)
+            box(f"{name}_Skirt{k}", (b_ - a, 0.05, 0.14), ((a + b_) / 2, centre[1] + yoff, 0.07), M_OAK, bevel=0.003)
         box(f"{name}_Rail", (length, 0.06, 0.05), (centre[0], centre[1] + (0.02 if centre[1] < 0 else -0.02), WAINSCOT_H + 0.025), M_OAK, bevel=0.004)
-        box(f"{name}_Skirt", (length, 0.05, 0.14), (centre[0], centre[1] + (0.012 if centre[1] < 0 else -0.012), 0.07), M_OAK, bevel=0.003)
         n = int(length / 0.62)
         for i in range(n):
-            x = centre[0] - length / 2 + (i + 0.5) * (length / n)
-            yoff = 0.012 if centre[1] < 0 else -0.012
+            x = x0 + (i + 0.5) * (length / n)
+            if gap and gap[0] - 0.05 < x < gap[1] + 0.05: continue
             box(f"{name}_Stile{i}", (0.07, 0.025, WAINSCOT_H - 0.2), (x, centre[1] + yoff, WAINSCOT_H / 2 + 0.05), M_OAK, bevel=0.003)
+        if gap:
+            for gx in gap:
+                box(f"{name}_GapStile{gx:.2f}", (0.07, 0.025, WAINSCOT_H - 0.2), (gx + (0.035 if gx == gap[0] else -0.035) * -1, centre[1] + yoff, WAINSCOT_H / 2 + 0.05), M_OAK, bevel=0.003)
     else:
         box(f"{name}_Panel", (0.03, length, WAINSCOT_H), (centre[0], centre[1], WAINSCOT_H / 2), M_OAK)
         box(f"{name}_Rail", (0.06, length, 0.05), (centre[0] + (0.02 if centre[0] < 0 else -0.02), centre[1], WAINSCOT_H + 0.025), M_OAK, bevel=0.004)
         box(f"{name}_Skirt", (0.05, length, 0.14), (centre[0] + (0.012 if centre[0] < 0 else -0.012), centre[1], 0.07), M_OAK, bevel=0.003)
 
 wainscot_run("Wainscot_N", HALL_L, (0, hy - 0.015))
-wainscot_run("Wainscot_S", HALL_L, (0, -hy + 0.015))
+CURTAIN_X = 3.9
+LD_W = 0.26
+wainscot_run("Wainscot_S", HALL_L, (0, -hy + 0.015), gap=(CURTAIN_X - LD_W / 2 - 0.12, CURTAIN_X + LD_W / 2 + 0.12))
 wainscot_run("Wainscot_E", HALL_W, (hx - 0.015, 0), along_x=False)
 wainscot_run("Wainscot_W", HALL_W, (-hx + 0.015, 0), along_x=False)
 # cornice and ceiling beams
@@ -480,7 +491,7 @@ def make_door(name, w, h, pos, yaw, mat, panels=4, knob_side=1):
         wx = pos[0] + local[0] * cz - local[1] * sz
         wy = pos[1] + local[0] * sz + local[1] * cz
         objs.append(box(f"{name}_{nm}", size, (wx, wy, local[2]), m, bevel=bevel, rot=(0, 0, yaw)))
-    ft = 0.11; fd = 0.16
+    ft = min(0.11, w * 0.12); fd = min(0.16, w * 0.17)
     place((-(w / 2 + ft / 2), fd / 2 - 0.04, h / 2), (ft, fd, h), mat, "FrameL", 0.006)
     place(((w / 2 + ft / 2), fd / 2 - 0.04, h / 2), (ft, fd, h), mat, "FrameR", 0.006)
     place((0, fd / 2 - 0.04, h + ft / 2), (w + 2 * ft, fd, ft), mat, "FrameTop", 0.006)
@@ -496,11 +507,11 @@ def make_door(name, w, h, pos, yaw, mat, panels=4, knob_side=1):
     # brass knob, escutcheon, keyhole
     kx = knob_side * (w / 2 - 0.09)
     wx = pos[0] + kx * cz - 0.07 * sz; wy = pos[1] + kx * sz + 0.07 * cz
-    objs.append(cyl(f"{name}_KnobStem", 0.012, 0.06, (wx, wy, 1.02), M_BRASS, rot=(math.pi / 2 * cz if abs(cz) > 0.5 else 0, math.pi / 2 * sz if abs(sz) > 0.5 else 0, 0)))
+    objs.append(cyl(f"{name}_KnobStem", min(0.012, w * 0.013), 0.06 * min(1, w), (wx, wy, h * 0.47), M_BRASS, rot=(math.pi / 2, 0, yaw)))
     wx2 = pos[0] + kx * cz - 0.105 * sz; wy2 = pos[1] + kx * sz + 0.105 * cz
-    objs.append(sphere(f"{name}_Knob", 0.032, (wx2, wy2, 1.02), M_BRASS, scale=(1, 1, 0.8)))
+    objs.append(sphere(f"{name}_Knob", min(0.032, w * 0.035), (wx2, wy2, h * 0.47), M_BRASS, scale=(1, 1, 0.8)))
     wx3 = pos[0] + kx * cz - 0.046 * sz; wy3 = pos[1] + kx * sz + 0.046 * cz
-    objs.append(box(f"{name}_Escutcheon", (0.07, 0.004, 0.18), (wx3, wy3, 0.98), M_BRASS, bevel=0.002, rot=(0, 0, yaw)))
+    objs.append(box(f"{name}_Escutcheon", (min(0.07, w * 0.075), 0.004, min(0.18, w * 0.19)), (wx3, wy3, h * 0.45), M_BRASS, bevel=0.002, rot=(0, 0, yaw)))
     return objs
 
 doors = []
@@ -512,7 +523,7 @@ for i, x in enumerate(xs):
 for i, x in enumerate(xs):
     w, h = random.uniform(0.82, 0.98), random.uniform(1.95, 2.25)
     doors += make_door(f"DoorS{i}", w, h, (-x + random.uniform(-0.15, 0.15), -hy), 0.0, DOOR_MATS[(i + 3) % len(DOOR_MATS)], panels=random.choice([4, 6]), knob_side=random.choice([-1, 1]))
-doors += make_door("DoorE", 1.0, 2.3, (hx, 0.3), -math.pi / 2, M_DOOR_BLACK, panels=6)
+doors += make_door("DoorE", 1.0, 2.3, (hx, 0.3), math.pi / 2, M_DOOR_BLACK, panels=6)
 # the way Alice came in: an arched dark passage at the west end instead of a door
 box("Passage_Dark", (0.6, 1.2, 2.1), (-hx - 0.3, -0.6, 1.05), M_INK)
 box("PassageArch_L", (0.1, 0.12, 2.1), (-hx + 0.02, -0.6 - 0.62, 1.05), M_OAK, bevel=0.006)
@@ -520,10 +531,9 @@ box("PassageArch_R", (0.1, 0.12, 2.1), (-hx + 0.02, -0.6 + 0.62, 1.05), M_OAK, b
 box("PassageArch_T", (0.1, 1.36, 0.14), (-hx + 0.02, -0.6, 2.17), M_OAK, bevel=0.006)
 
 # ----------------------------------------------------------------------------- the low curtain and the little door
-CURTAIN_X = 3.9
-curtain_rod = cyl("CurtainRod", 0.012, 1.3, (CURTAIN_X, -hy + 0.07, 0.86), M_BRASS, rot=(0, math.pi / 2, 0))
-sphere("CurtainFinialL", 0.025, (CURTAIN_X - 0.66, -hy + 0.07, 0.86), M_BRASS)
-sphere("CurtainFinialR", 0.025, (CURTAIN_X + 0.66, -hy + 0.07, 0.86), M_BRASS)
+curtain_rod = cyl("CurtainRod", 0.012, 1.3, (CURTAIN_X, -hy + 0.11, 0.86), M_BRASS, rot=(0, math.pi / 2, 0))
+sphere("CurtainFinialL", 0.025, (CURTAIN_X - 0.66, -hy + 0.11, 0.86), M_BRASS)
+sphere("CurtainFinialR", 0.025, (CURTAIN_X + 0.66, -hy + 0.11, 0.86), M_BRASS)
 # curtain: a subdivided plane with sinusoidal folds and a heavier hem
 def make_curtain(name, w, h, loc):
     me = bpy.data.meshes.new(name); bm = bmesh.new()
@@ -549,12 +559,11 @@ def make_curtain(name, w, h, loc):
     for p in me.polygons: p.use_smooth = True
     sol = o.modifiers.new("Solidify", 'SOLIDIFY'); sol.thickness = 0.006
     return link(o)
-curtain = make_curtain("Curtain", 1.24, 0.80, (CURTAIN_X, -hy + 0.085, 0.03))
+curtain = make_curtain("Curtain", 1.24, 0.80, (CURTAIN_X, -hy + 0.125, 0.03))
 # brass rings
-_rings = [torus(f"CurtainRing{i}", 0.022, 0.003, (CURTAIN_X - 0.6 + i * 0.15, -hy + 0.07, 0.86), M_BRASS, rot=(0, math.pi / 2, 0), seg=20, rseg=8) for i in range(9)]
-DYNAMIC.append(group("prop.curtain", [curtain] + _rings, (CURTAIN_X, -hy + 0.085, 0.0)))
+_rings = [torus(f"CurtainRing{i}", 0.022, 0.003, (CURTAIN_X - 0.6 + i * 0.15, -hy + 0.11, 0.86), M_BRASS, rot=(0, math.pi / 2, 0), seg=20, rseg=8) for i in range(9)]
+DYNAMIC.append(group("prop.curtain", [curtain] + _rings, (CURTAIN_X, -hy + 0.125, 0.0)))
 # little door behind the curtain (15 inches high), own tiny frame, brass knob, keyhole
-LD_W = 0.26
 little = make_door("LittleDoor", LD_W, LITTLE_DOOR_H, (CURTAIN_X, -hy), 0.0, M_DOOR_OAK, panels=2, knob_side=1)
 _leaf = [o for o in little if any(k in o.name for k in ("Leaf", "Panel", "Knob", "Escutcheon"))]
 DYNAMIC.append(group("door.little", _leaf, (CURTAIN_X - LD_W / 2, -hy + 0.02, 0.0)))
@@ -568,10 +577,10 @@ DYNAMIC.append(group("fx.garden-glow", [box("GardenCard", (0.26, 0.01, LITTLE_DO
 
 # ----------------------------------------------------------------------------- the three-legged glass table, key, bottle
 TX, TY = 0.9, 0.15
-table_top = cyl("TableTop", 0.36, 0.03, (TX, TY, TABLE_H - 0.015), M_GLASS, verts=64)
+table_top = cyl("TableTop", 0.27, 0.025, (TX, TY, TABLE_H - 0.0125), M_GLASS, verts=64)
 tt = table_top.modifiers["Bevel"]; tt.width = 0.008; tt.segments = 4
 leg_profile = [(0.045, 0.0), (0.05, 0.012), (0.028, 0.03), (0.022, 0.12), (0.03, 0.2), (0.022, 0.28), (0.02, 0.42), (0.032, 0.5), (0.02, 0.56), (0.024, TABLE_H - 0.03)]
-_legs = [lathe(f"TableLeg{i}", leg_profile, (TX + 0.24 * math.cos(math.radians(90 + i * 120)), TY + 0.24 * math.sin(math.radians(90 + i * 120)), 0.0), M_GLASS) for i in range(3)]
+_legs = [lathe(f"TableLeg{i}", leg_profile, (TX + 0.17 * math.cos(math.radians(90 + i * 120)), TY + 0.17 * math.sin(math.radians(90 + i * 120)), 0.0), M_GLASS) for i in range(3)]
 DYNAMIC.append(group("prop.glass-table", [table_top] + _legs, (TX, TY, 0.0)))
 # tiny golden key (6 cm)
 KX, KY, KZ = TX - 0.06, TY + 0.05, TABLE_H + 0.004
@@ -619,28 +628,29 @@ lamp_lights = []
 for i, x in enumerate(LAMP_XS):
     # chain + ceiling rose
     cyl(f"Lamp{i}_Rose", 0.07, 0.025, (x, 0, HALL_H - 0.0125), M_BRASS)
-    cyl(f"Lamp{i}_Chain", 0.006, HALL_H - LAMP_Z - 0.3, (x, 0, (HALL_H + LAMP_Z + 0.3) / 2), M_BRASS, verts=10)
+    cyl(f"Lamp{i}_Chain", 0.006, HALL_H - LAMP_Z - 0.66, (x, 0, (HALL_H + LAMP_Z + 0.66) / 2), M_BRASS, verts=10)
     # brass font (oil reservoir) and gallery
     lathe(f"Lamp{i}_Font", [(0.0, LAMP_Z - 0.02), (0.05, LAMP_Z - 0.02), (0.075, LAMP_Z + 0.02), (0.07, LAMP_Z + 0.09), (0.035, LAMP_Z + 0.12), (0.03, LAMP_Z + 0.15), (0.045, LAMP_Z + 0.155), (0.045, LAMP_Z + 0.17), (0.0, LAMP_Z + 0.17)], (x, 0, 0), M_BRASS)
-    lathe(f"Lamp{i}_Cap", [(0.0, LAMP_Z + 0.3), (0.12, LAMP_Z + 0.3), (0.09, LAMP_Z + 0.31), (0.03, LAMP_Z + 0.33), (0.0, LAMP_Z + 0.33)], (x, 0, 0), M_BRASS)
+    lathe(f"Lamp{i}_Shade", [(0.17, LAMP_Z + 0.27), (0.17, LAMP_Z + 0.275), (0.09, LAMP_Z + 0.34), (0.04, LAMP_Z + 0.37), (0.04, LAMP_Z + 0.39), (0.0, LAMP_Z + 0.39)], (x, 0, 0), M_BRASS)
+    lathe(f"Lamp{i}_SmokeBell", [(0.0, LAMP_Z + 0.62), (0.075, LAMP_Z + 0.62), (0.09, LAMP_Z + 0.64), (0.0, LAMP_Z + 0.66)], (x, 0, 0), M_BRASS)
     # glass chimney
-    lathe(f"Lamp{i}_Chimney", [(0.03, LAMP_Z + 0.17), (0.045, LAMP_Z + 0.2), (0.04, LAMP_Z + 0.26), (0.025, LAMP_Z + 0.3)], (x, 0, 0), M_LAMPGLASS)
+    lathe(f"Lamp{i}_Chimney", [(0.03, LAMP_Z + 0.17), (0.042, LAMP_Z + 0.21), (0.036, LAMP_Z + 0.3), (0.024, LAMP_Z + 0.42)], (x, 0, 0), M_LAMPGLASS)
     # flame
     sphere(f"Lamp{i}_Flame", 0.012, (x, 0, LAMP_Z + 0.2), M_FLAME, seg=12, scale=(1, 1, 1.8))
     # light
     ld = bpy.data.lights.new(f"Lamp{i}_Light", 'POINT')
-    ld.energy = random.uniform(38, 46)                     # watts, warm oil flame
+    ld.energy = random.uniform(68, 76)                     # watts, warm oil flame under a brass shade
     ld.color = (1.0, 0.70, 0.42)
-    ld.shadow_soft_size = 0.045
+    ld.shadow_soft_size = 0.06
     lo = bpy.data.objects.new(f"Lamp{i}_Light", ld); lo.location = (x, 0, LAMP_Z + 0.2); link(lo)
     lamp_lights.append(lo)
 # cool fill from the little door's garden
-gl = bpy.data.lights.new("GardenLight", 'SPOT'); gl.energy = 60; gl.color = (0.7, 0.9, 1.0); gl.spot_size = math.radians(70); gl.shadow_soft_size = 0.1
+gl = bpy.data.lights.new("GardenLight", 'SPOT'); gl.energy = 160; gl.color = (0.7, 0.9, 1.0); gl.spot_size = math.radians(70); gl.shadow_soft_size = 0.1
 glo = bpy.data.objects.new("GardenLight", gl); glo.location = (CURTAIN_X, -hy - 0.55, 0.25); glo.rotation_euler = (math.radians(-85), 0, 0); link(glo)
 
 # world: near-black with a whisper of dust haze (render only)
 world = bpy.data.worlds.new("Hall"); scene.world = world; world.use_nodes = True
-wn = world.node_tree; bg = wn.nodes["Background"]; bg.inputs["Color"].default_value = (0.004, 0.003, 0.002, 1); bg.inputs["Strength"].default_value = 1
+wn = world.node_tree; bg = wn.nodes["Background"]; bg.inputs["Color"].default_value = (0.03, 0.02, 0.013, 1); bg.inputs["Strength"].default_value = 1
 vs = wn.nodes.new("ShaderNodeVolumeScatter"); vs.inputs["Density"].default_value = 0.025; vs.inputs["Anisotropy"].default_value = 0.4
 wn.links.new(vs.outputs["Volume"], wn.nodes["World Output"].inputs["Volume"])
 
@@ -665,11 +675,17 @@ bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT, "hall_of_doors_source.ble
 if args.render:
     scene.render.resolution_x = args.res; scene.render.resolution_y = int(args.res * 9 / 16)
     scene.render.image_settings.file_format = 'PNG'
+    curtain_grp = bpy.data.objects["prop.curtain"]; door_grp = bpy.data.objects["door.little"]
     for c in cams:
+        opened = c.name == "Cam_Curtain"
+        if opened:
+            curtain_grp.location.x -= 0.95; door_grp.rotation_euler.z = math.radians(78)
         scene.camera = c
-        scene.render.filepath = os.path.join(OUT, f"render_{c.name[4:].lower()}.png")
+        scene.render.filepath = os.path.join(OUT, f"render_{c.name[4:].lower()}{'_open' if opened else ''}.png")
         bpy.ops.render.render(write_still=True)
         print("rendered", scene.render.filepath)
+        if opened:
+            curtain_grp.location.x += 0.95; door_grp.rotation_euler.z = 0
 
 # ----------------------------------------------------------------------------- bake + merge + export for Unity
 def bake_and_export():
