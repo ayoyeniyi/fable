@@ -35,7 +35,11 @@ namespace Fable
         readonly Dictionary<string, Vector3> assetHomeScale = new();
         readonly Dictionary<string, float> lightHome = new();
         Coroutine scaleRoutine;
-        float baseScale = 1f;   // the room's scale before any readerScale action (1 immersive, ~0.09 miniature)
+        /// The reader's size as the text has it at the current beat (4 once Alice has drunk). Part of the beat state:
+        /// replayed deterministically, applied to the room only when the reader is inside it (Immersive).
+        public float ReaderFactor { get; private set; } = 1f;
+        /// Set by FlowController: true at full scale around the reader, false on the page or with the diorama.
+        public bool Immersive { get; set; }
 
         public IEnumerator Load(string sceneId, Passage book)
         {
@@ -147,7 +151,8 @@ namespace Fable
             foreach (var kv in lightHome) { }
             var garden = Registry.Lights("light.garden"); if (garden != null) foreach (var l in garden) l.intensity = 0;
             var lamps = Registry.Lights("lamp.row"); if (lamps != null) foreach (var l in lamps) l.intensity = lightHome[l.name] * 0.2f;
-            baseScale = Registry.EnvironmentRoot.localScale.x;
+            StopScaling();
+            ReaderFactor = 1f;
             BeatIndex = -1;
         }
 
@@ -167,6 +172,7 @@ namespace Fable
             index = Mathf.Clamp(index, 0, Script.Beats.Count - 1);
             ResetRoom();
             for (int i = 0; i <= index; i++) Apply(Script.Beats[i], instant: i < index);
+            SettleReaderScale();
             BeatIndex = index;
             BeatChanged?.Invoke(BeatIndex, Script.Beats[BeatIndex]);
         }
@@ -177,6 +183,7 @@ namespace Fable
             int target = BeatIndex - 1;
             ResetRoom();
             for (int i = 0; i <= target; i++) Apply(Script.Beats[i], instant: i < target);
+            SettleReaderScale();
             BeatIndex = target;
             BeatChanged?.Invoke(BeatIndex, Script.Beats[BeatIndex]);
             return true;
@@ -309,16 +316,29 @@ namespace Fable
         /// under the head so the floor never moves under the reader; vection is kept gentle by the long duration.
         void ReaderScale(float worldScale, string anchorId, float dur)
         {
-            if (scaleRoutine != null) StopCoroutine(scaleRoutine);
+            ReaderFactor = worldScale;
+            if (!Immersive || dur <= 0) return;          // replays and the diorama only record it; SettleReaderScale applies it
+            StopScaling();
             scaleRoutine = StartCoroutine(ScaleRoutine(worldScale, dur));
+        }
+
+        public void StopScaling() { if (scaleRoutine != null) StopCoroutine(scaleRoutine); scaleRoutine = null; }
+
+        /// After a replay (going back, resuming) the room eases to the reader's size at that beat, never snapping:
+        /// stepping back past the DRINK ME beat shrinks the hall back around the reader over the comfort minimum.
+        void SettleReaderScale()
+        {
+            if (!Immersive) return;
+            if (Mathf.Abs(Registry.EnvironmentRoot.localScale.x - ReaderFactor) < 0.001f) return;
+            StopScaling();
+            scaleRoutine = StartCoroutine(ScaleRoutine(ReaderFactor, 3f));
         }
 
         IEnumerator ScaleRoutine(float target, float dur)
         {
             var root = Registry.EnvironmentRoot;
             var pivot = ReaderHead ? new Vector3(ReaderHead.position.x, root.position.y, ReaderHead.position.z) : root.position;
-            float from = root.localScale.x; target *= baseScale;
-            if (Mathf.Abs(baseScale - 1f) > 0.01f) pivot = Registry.Centre.position;
+            float from = root.localScale.x;
             for (float e = 0; e < dur; e += Time.deltaTime)
             {
                 float s = Mathf.Lerp(from, target, Mathf.SmoothStep(0, 1, e / Mathf.Max(dur, 0.001f)));

@@ -145,7 +145,7 @@ namespace Fable
         /// The diorama grows out of the table in front of the reader; its hall centre sits at chest height, a little below the page.
         IEnumerator Grow()
         {
-            busy = true; Current = State.Growing;
+            busy = true; Current = State.Growing; Director.Immersive = false;
             Director.ResetRoom();
             var fwd = Vector3.ProjectOnPlane(Head.forward, Vector3.up).normalized; if (fwd.sqrMagnitude < 0.01f) fwd = Vector3.forward;
             var centre = Director.Registry.Centre;
@@ -178,7 +178,7 @@ namespace Fable
             var standAnchor = Director.Registry.ReaderStand; ShowBackdrop(true);
             // at full scale we want standAnchor under the reader: compute the final env position, then blend
             var startPos = env.position; var startScale = env.localScale.x;
-            var endScale = 1f;
+            var endScale = Director.ReaderFactor;   // 1, or 4 once Alice has drunk
             var endPos = feet - (standAnchor.position - env.position) / startScale * endScale;
             Panel.transform.localScale = Vector3.one * 0.55f; Panel.Distance = 0.9f; Panel.Height = -0.32f;
             Director.Audio.PlayAmbience(Director.Script.Environment.Ambience, 0.6f);
@@ -189,15 +189,15 @@ namespace Fable
                 env.position = Vector3.Lerp(startPos, endPos, x);
                 yield return null;
             }
-            env.localScale = Vector3.one; env.position = endPos;
-            Current = State.Scene; busy = false;
+            env.localScale = Vector3.one * endScale; env.position = endPos;
+            Current = State.Scene; busy = false; Director.Immersive = true;
             Panel.Show(Director.PassageScene, Director.Script.Beats[Mathf.Max(0, Director.BeatIndex)].SentenceId, Hint());
         }
 
         /// Back to the diorama on the table.
         IEnumerator Shrink()
         {
-            busy = true; Current = State.Shrinking;
+            busy = true; Current = State.Shrinking; Director.Immersive = false; Director.StopScaling();
             ReadingRoom.SetActive(true);
             var fwd = Vector3.ProjectOnPlane(Head.forward, Vector3.up).normalized; if (fwd.sqrMagnitude < 0.01f) fwd = Vector3.forward;
             var target = Head.position + fwd * 0.95f + Vector3.down * 0.55f;
@@ -222,7 +222,7 @@ namespace Fable
         IEnumerator Return()
         {
             bool fromScene = Current == State.Scene;
-            busy = true; Current = State.Returning;
+            busy = true; Current = State.Returning; Director.Immersive = false; Director.StopScaling();
             ReadingRoom.SetActive(true);
             var pivot = fromScene ? new Vector3(Head.position.x, env.position.y, Head.position.z) : miniaturePivot;
             float from = env.localScale.x;
