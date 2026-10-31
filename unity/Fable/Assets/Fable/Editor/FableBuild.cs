@@ -212,8 +212,9 @@ namespace Fable.Editor
             if (outdoor && !env.GetComponentsInChildren<Renderer>(true).Any(r => r.name.Contains("Sky"))) AddSkyDome(env.transform, sceneId);
             if (!outdoor) foreach (var l in env.GetComponentsInChildren<Light>(true))
             {
-                l.lightmapBakeType = LightmapBakeType.Mixed; l.shadows = LightShadows.Soft; l.intensity = l.name.StartsWith("Lamp") ? 2.2f : 0f; l.range = l.name.StartsWith("Lamp") ? 7.5f : 3f;
-                l.color = l.name.StartsWith("Lamp") ? new Color(1f, 0.72f, 0.45f) : new Color(0.72f, 0.9f, 1f);
+                // Fully baked: seven realtime point lights cost ~25 ms a frame on Quest 2 and blew the hall out to yellow at 2.2.
+                l.lightmapBakeType = LightmapBakeType.Baked; l.shadows = LightShadows.Soft; l.intensity = l.name.StartsWith("Lamp") ? 1.0f : 0f; l.range = l.name.StartsWith("Lamp") ? 7.5f : 3f;
+                l.color = l.name.StartsWith("Lamp") ? new Color(1f, 0.84f, 0.64f) : new Color(0.72f, 0.9f, 1f);
             }
             // glass and transparent props: switch to URP Lit transparent so the table and bottle read as glass
             Directory.CreateDirectory("Assets/Fable/Materials");
@@ -304,7 +305,7 @@ namespace Fable.Editor
             var table = GameObject.CreatePrimitive(PrimitiveType.Cylinder); table.name = "DioramaTable"; table.transform.SetParent(reading.transform);
             table.transform.position = rig.transform.position + new Vector3(0, 0.36f, 0.95f); table.transform.localScale = new Vector3(1.5f, 0.36f, 1.5f);
             var tableMat = new Material(Shader.Find("Universal Render Pipeline/Lit")); tableMat.color = new Color(0.16f, 0.12f, 0.09f); tableMat.SetFloat("_Smoothness", 0.35f); table.GetComponent<Renderer>().sharedMaterial = tableMat; UnityEngine.Object.DestroyImmediate(table.GetComponent<Collider>());
-            var soft = new GameObject("ReadingLight").AddComponent<Light>(); soft.transform.SetParent(reading.transform); soft.transform.position = rig.transform.position + new Vector3(0, 2.4f, 0.6f); soft.type = LightType.Point; soft.range = 5; soft.intensity = 1.1f; soft.color = new Color(1f, 0.92f, 0.8f); soft.lightmapBakeType = LightmapBakeType.Realtime; soft.shadows = LightShadows.None;
+            var soft = new GameObject("ReadingLight").AddComponent<Light>(); soft.transform.SetParent(reading.transform); soft.transform.position = rig.transform.position + new Vector3(0, 2.4f, 0.6f); soft.type = LightType.Point; soft.range = 5; soft.intensity = 0.7f; soft.color = new Color(1f, 0.92f, 0.8f); soft.lightmapBakeType = LightmapBakeType.Realtime; soft.shadows = LightShadows.None;
 
             // systems
             var systems = new GameObject("Fable");
@@ -362,7 +363,7 @@ namespace Fable.Editor
             panel.Chapter = Make("Chapter", 44, 28, 15, FontStyles.SmallCaps, new Color(0.45f, 0.38f, 0.3f), TextAlignmentOptions.Center);
             panel.Title = Make("Title", 76, 52, 34, FontStyles.Normal, new Color(0.13f, 0.11f, 0.09f), TextAlignmentOptions.Center);
             panel.Body = Make("Body", 150, 560, 19.5f, FontStyles.Normal, new Color(0.13f, 0.11f, 0.09f), TextAlignmentOptions.TopJustified);
-            panel.Hint = Make("Hint", 730, 30, 13, FontStyles.Italic, new Color(0.45f, 0.38f, 0.3f), TextAlignmentOptions.Center);
+            panel.Hint = Make("Hint", 726, 40, 15, FontStyles.Italic, new Color(0.36f, 0.29f, 0.21f), TextAlignmentOptions.Center);
             return panel;
         }
 

@@ -64,7 +64,7 @@ namespace Fable
             foreach (var c in running.Values) if (c != null) StopCoroutine(c);
             running.Clear();
             foreach (var r in tinted) if (r) r.SetPropertyBlock(null);   // reset is total: replay re-applies tints
-            tinted.Clear();
+            tinted.Clear(); SetFlame(1f);
         }
 
         readonly List<Renderer> tinted = new();
@@ -160,32 +160,56 @@ namespace Fable
             t.localRotation = rest;
         }
 
+        // The lamps are baked (realtime point lights are too costly on Quest 2), so the visible flicker is the flames'
+        // emission; the Light components are still modulated for any realtime light a scene may keep.
+        Renderer flame; Color flameBase; bool flameLooked;
+        void FindFlame()
+        {
+            if (flameLooked || !reg || !reg.EnvironmentRoot) return;
+            flameLooked = true;
+            foreach (var r in reg.EnvironmentRoot.GetComponentsInChildren<Renderer>(true))
+                if (r.name == "MESH_Flame" && r.sharedMaterial && r.sharedMaterial.HasProperty("_EmissionColor")) { flame = r; flameBase = r.sharedMaterial.GetColor("_EmissionColor"); break; }
+        }
+        void SetFlame(float k)
+        {
+            if (!flame) return;
+            var b = new MaterialPropertyBlock(); flame.GetPropertyBlock(b); b.SetColor("_EmissionColor", flameBase * k); flame.SetPropertyBlock(b);
+        }
+
         IEnumerator Flicker(string group, float dur, bool loop)
         {
-            var lights = reg.Lights(group); if (lights == null) yield break;
-            foreach (var l in lights) if (!baseIntensity.ContainsKey(l.name)) baseIntensity[l.name] = l.intensity;
+            var lights = reg.Lights(group); FindFlame();
+            if (lights == null && !flame) yield break;
+            if (lights != null) foreach (var l in lights) if (!baseIntensity.ContainsKey(l.name)) baseIntensity[l.name] = l.intensity;
             float e = 0;
             while (loop || e < dur)
             {
                 e += Time.deltaTime;
-                for (int i = 0; i < lights.Count; i++)
+                float n0 = 0;
+                if (lights != null) for (int i = 0; i < lights.Count; i++)
                 {
                     float n = Mathf.PerlinNoise(Time.time * 7f, i * 3.1f) * 0.22f + Mathf.PerlinNoise(Time.time * 1.3f, i) * 0.1f;
+                    if (i == 0) n0 = n;
                     lights[i].intensity = baseIntensity[lights[i].name] * (0.86f + n);
                 }
+                else n0 = Mathf.PerlinNoise(Time.time * 7f, 0) * 0.22f + Mathf.PerlinNoise(Time.time * 1.3f, 0) * 0.1f;
+                SetFlame(0.7f + n0 * 2.2f);
                 yield return null;
             }
+            SetFlame(1f);
         }
 
         IEnumerator Steady(string group, float dur)
         {
-            var lights = reg.Lights(group); if (lights == null) yield break;
+            var lights = reg.Lights(group); FindFlame();
+            if (lights == null) { SetFlame(1f); yield break; }
             var start = new List<float>(); foreach (var l in lights) start.Add(l.intensity);
             for (float e = 0; e < dur; e += Time.deltaTime)
             {
                 for (int i = 0; i < lights.Count; i++) lights[i].intensity = Mathf.Lerp(start[i], baseIntensity.GetValueOrDefault(lights[i].name, start[i]), e / dur);
                 yield return null;
             }
+            SetFlame(1f);
         }
 
         IEnumerator Slide(string target, Vector3 delta, float dur)
