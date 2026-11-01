@@ -50,6 +50,13 @@ namespace Fable
             if (!string.IsNullOrEmpty(InterpreterUrl)) return;
             var f = Path.Combine(Application.persistentDataPath, "interpreter.txt");
             if (File.Exists(f)) { InterpreterUrl = File.ReadAllText(f).Trim(); Debug.Log($"[Fable] interpreter url from device file: {InterpreterUrl}"); }
+#if UNITY_ANDROID && !UNITY_EDITOR
+            // No device file: try the Mac over the USB cable (`adb reverse tcp:8787 tcp:8787` and `fable-interpreter serve
+            // --addr 127.0.0.1:8787`). On a headset in a secondary account the app's files folder cannot be written over adb,
+            // so this default is how it finds the interpreter. With nothing listening the connection is refused at once and
+            // the saved or bundled script is used, so it costs nothing offline.
+            else { InterpreterUrl = "http://127.0.0.1:8787"; Debug.Log("[Fable] interpreter url: default http://127.0.0.1:8787 (adb reverse)"); }
+#endif
         }
 
         public IEnumerator Load(string sceneId, Passage book)
