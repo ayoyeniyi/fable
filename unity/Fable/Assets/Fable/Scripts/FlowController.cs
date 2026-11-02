@@ -265,7 +265,12 @@ namespace Fable
             View.Init(Input, Head, RigRoot(), (RectTransform)Panel.transform, Panel.Body ? Panel.Body.font : null);
             View.Recentred += () => Panel.Recentre();
             View.Turned += _ => Panel.HoldStill();
+            // a book sent from the phone finishing while the reader is in another one: say so on the bar
+            if (Library.Exists) Library.Instance.BookReady += OnBookReady;
         }
+
+        void OnBookReady(LibraryEntry e) { if (View) View.Tip(null, $"\u201c{e.Title}\u201d is ready on your library shelf.", 7f); }
+        void OnDestroy() { if (Library.Exists) Library.Instance.BookReady -= OnBookReady; }
 
         string viewState;
         /// The toolbar's actions follow the state: the visible way back from every place the reader can be.

@@ -24,7 +24,9 @@ namespace Fable.Editor
         // One Unity scene per passage, each with its own lightmaps. Outdoor scenes get daylight, an unlit sky dome and haze.
         /// Room: a book's own room with no staged passage (the page floats in it; FlowController.RoomOnly). LightScale
         /// stretches indoor light ranges for rooms built at giant scale (Glumdalclitch's room is 12x).
-        public class SceneDef { public string Id, Scene, Glb, Book; public bool Outdoor, Lobby, Room; public float LightScale = 1f; }
+        /// LobbyLook: lit like the lobby (the library room, where imported books are read). Sound: the RoomSound id, when
+        /// it is not the scene's own.
+        public class SceneDef { public string Id, Scene, Glb, Book, Sound; public bool Outdoor, Lobby, Room, LobbyLook; public float LightScale = 1f; }
         public static readonly SceneDef[] Scenes =
         {
             // first in the build: the app opens in the lobby (blender/build_lobby.py)
@@ -35,6 +37,8 @@ namespace Fable.Editor
             // step 7: one room per book for the other three books
             new SceneDef { Id = "kansas-farmhouse", Scene = "Assets/Fable/Scenes/KansasFarmhouse.unity", Glb = "Assets/Fable/Models/KansasFarmhouse/kansas_farmhouse.gltf", Outdoor = true, Room = true, Book = "oz" },
             new SceneDef { Id = "calypsos-cave", Scene = "Assets/Fable/Scenes/CalypsosCave.unity", Glb = "Assets/Fable/Models/CalypsosCave/calypsos_cave.gltf", Outdoor = true, Room = true, Book = "odyssey" },
+            // the reader's own books are read in the library itself: a neutral room with no staged passages
+            new SceneDef { Id = "library-room", Scene = "Assets/Fable/Scenes/LibraryRoom.unity", Glb = "Assets/Fable/Models/Lobby/lobby.gltf", Room = true, LobbyLook = true, Sound = "lobby" },
             new SceneDef { Id = "glumdalclitchs-room", Scene = "Assets/Fable/Scenes/GlumdalclitchsRoom.unity", Glb = "Assets/Fable/Models/GlumdalclitchsRoom/glumdalclitchs_room.gltf", Room = true, Book = "gulliver", LightScale = 12f },
         };
         const string ScenePath = "Assets/Fable/Scenes/HallOfDoors.unity";   // the hall: desktop previews
@@ -236,9 +240,9 @@ namespace Fable.Editor
                 l.lightmapBakeType = LightmapBakeType.Baked; l.shadows = LightShadows.Soft; l.intensity = l.name.StartsWith("Lamp") ? 1.0f : 0f; l.range = (l.name.StartsWith("Lamp") ? 7.5f : 3f) * def.LightScale;
                 l.color = l.name.StartsWith("Lamp") ? new Color(1f, 0.84f, 0.64f) : new Color(0.72f, 0.9f, 1f);
                 // the lobby: the table lamp and the two wall sconces light the room; the four picture lamps (Lamp1-4) the covers
-                if (def.Lobby) { l.range = 6f; l.intensity = l.name.StartsWith("Lamp0") ? 4f : l.name.StartsWith("Lamp5") || l.name.StartsWith("Lamp6") ? 5f : 1.1f; }
+                if (def.Lobby || def.LobbyLook) { l.range = 6f; l.intensity = l.name.StartsWith("Lamp0") ? 4f : l.name.StartsWith("Lamp5") || l.name.StartsWith("Lamp6") ? 5f : 1.1f; }
             }
-            if (def.Lobby) RenderSettings.ambientLight = new Color(0.20f, 0.165f, 0.13f);
+            if (def.Lobby || def.LobbyLook) RenderSettings.ambientLight = new Color(0.20f, 0.165f, 0.13f);
             if (!outdoor && def.LightScale > 1f)
             {
                 // a room at giant scale: the window light travels tens of metres, so it needs far more intensity than a lamp
@@ -290,8 +294,8 @@ namespace Fable.Editor
             // one baked reflection probe per scene: brass, glass, porcelain and the floor read their surroundings
             var probeGo = new GameObject(hall ? "HallReflectionProbe" : "SceneReflectionProbe"); probeGo.transform.SetParent(env.transform, false);
             var centreAnchor = FindDeep(env.transform, "anchor.hall.centre") ?? FindDeep(env.transform, "anchor.scene.centre"); probeGo.transform.position = (centreAnchor ? centreAnchor.position : env.transform.position) + Vector3.up * 1.4f;
-            var probe = probeGo.AddComponent<ReflectionProbe>(); probe.mode = UnityEngine.Rendering.ReflectionProbeMode.Baked; probe.size = hall ? new Vector3(16, 4, 6) : def.Lobby ? new Vector3(6, 3.2f, 5.4f) : new Vector3(30, 12, 30); probe.resolution = 128; probe.boxProjection = hall || def.Lobby; probe.intensity = 1f;
-            if (def.Lobby) probeGo.transform.position = (centreAnchor ? centreAnchor.position : env.transform.position) + Vector3.up * 1.5f;
+            var probe = probeGo.AddComponent<ReflectionProbe>(); probe.mode = UnityEngine.Rendering.ReflectionProbeMode.Baked; probe.size = hall ? new Vector3(16, 4, 6) : def.Lobby || def.LobbyLook ? new Vector3(6, 3.2f, 5.4f) : new Vector3(30, 12, 30); probe.resolution = 128; probe.boxProjection = hall || def.Lobby || def.LobbyLook; probe.intensity = 1f;
+            if (def.Lobby || def.LobbyLook) probeGo.transform.position = (centreAnchor ? centreAnchor.position : env.transform.position) + Vector3.up * 1.5f;
             if (def.Room)
             {
                 // fit the probe to the room itself (not the sky dome or far scenery)
@@ -390,7 +394,7 @@ namespace Fable.Editor
             var panel = BuildPanel(head);
             var flow = systems.AddComponent<FlowController>(); flow.Director = director; flow.Input = input; flow.Panel = panel; flow.Head = head; flow.ReadingRoom = reading;
             flow.SceneId = sceneId;
-            if (def.Room) { flow.RoomOnly = true; flow.RoomBook = def.Book; systems.AddComponent<RoomSound>().Id = sceneId; }
+            if (def.Room) { flow.RoomOnly = true; flow.RoomBook = def.Book; systems.AddComponent<RoomSound>().Id = def.Sound ?? sceneId; }
 
             Directory.CreateDirectory(Path.GetDirectoryName(def.Scene));
             EditorSceneManager.SaveScene(scene, def.Scene);

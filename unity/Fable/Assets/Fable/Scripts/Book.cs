@@ -29,6 +29,8 @@ namespace Fable
             [JsonProperty("subtitle")] public string Subtitle;
             [JsonProperty("part")] public string Part;
             [JsonProperty("paragraphs")] public List<Paragraph> Paragraphs = new();
+            /// A PDF's page this chapter's text comes from (1-based); 0 for books that are not PDFs.
+            [JsonProperty("pdfPage")] public int PdfPage;
 
             /// "Chapter I", "Book IV", or the front matter's own title.
             public string Heading => Kind == "front" || string.IsNullOrEmpty(Label) ? Title : (Title != null && Title.EndsWith(" " + Label) ? Title : "Chapter " + Label);
@@ -42,6 +44,11 @@ namespace Fable
         [JsonProperty("translator")] public string Translator;
         [JsonProperty("year")] public int Year;
         [JsonProperty("chapters")] public List<Chapter> Chapters = new();
+        /// "epub" for flowing text (the four bundled books and imported EPUBs), "pdf" for an imported PDF.
+        [JsonProperty("format")] public string Format = "epub";
+        /// PDF: how many pages the file has (pages with no extractable text have no chapter).
+        [JsonProperty("pdfPages")] public int PdfPages;
+        public bool IsPdf => Format == "pdf";
 
         // ---- lookups built once after loading
 

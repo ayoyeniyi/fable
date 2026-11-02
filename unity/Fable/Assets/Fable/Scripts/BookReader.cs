@@ -55,7 +55,8 @@ namespace Fable
 
         // page widgets built at runtime
         TMP_Text measure;
-        RectTransform contentsBtn, sizeBtn, markBtn, stepBtn, shelfBtn;
+        RectTransform contentsBtn, sizeBtn, markBtn, stepBtn, shelfBtn, viewBtn;
+        TMP_Text viewLbl; RawImage pageImage;
         /// The page's "shelf" control: back to the lobby. Shown only when the flow sets ShelfAvailable (a lobby is in the build).
         public event System.Action ShelfPressed;
         public bool ShelfAvailable;
@@ -78,6 +79,18 @@ namespace Fable
 
         public IEnumerator Load(string slug)
         {
+            ClosePdf();
+            if (Library.IsImported(slug))
+            {
+                // an imported book: read from the headset's own storage (Library.cs), never from the APK
+                var dir = Library.BookDir(Library.Instance.Find(slug)?.Slug ?? slug);
+                var bj = System.IO.Path.Combine(dir, "book.json");
+                if (!System.IO.File.Exists(bj)) { Debug.LogError($"[Fable] imported book {slug} missing: {bj}"); yield break; }
+                string text = null; var job = System.Threading.Tasks.Task.Run(() => text = System.IO.File.ReadAllText(bj));
+                while (!job.IsCompleted) yield return null;
+                LoadParsed(slug, text);
+                yield break;
+            }
             var path = System.IO.Path.Combine(Application.streamingAssetsPath, "books", slug, "book.json");
             string json;
 #if UNITY_ANDROID && !UNITY_EDITOR
@@ -92,8 +105,14 @@ namespace Fable
             json = System.IO.File.ReadAllText(path);
             yield return null;
 #endif
+            LoadParsed(slug, json);
+        }
+
+        void LoadParsed(string slug, string json)
+        {
             var t0 = Time.realtimeSinceStartup;
             Book = Book.Parse(json);
+            Imported = Library.IsImported(slug);
             Progress = ProgressStore.LoadBook(slug);
             Progress.TextSize = Mathf.Clamp(Progress.TextSize, 0, TextSizes.Length - 1);
             Debug.Log($"[Fable] book {slug}: {Book.Chapters.Count} chapters, {Book.SentenceCount} sentences, parsed in {(Time.realtimeSinceStartup - t0) * 1000:F0} ms");
@@ -110,6 +129,9 @@ namespace Fable
 
         string[] searchText;   // by ordinal; null until built
 
+        /// The book was imported by the reader (no rooms, no Peek library): the highlight menu says so.
+        public bool Imported { get; private set; }
+
         // ---------------------------------------------------------------- activation
 
         /// Turn the panel into the book page, at the saved place (or at a given sentence).
@@ -120,7 +142,14 @@ namespace Fable
             SetWidgets(true);
             ApplyLayout();
             InContents = false;
+            if (Book.IsPdf && (PdfPageView || atSentence == null && !Progress.PdfTextView))
+            {
+                if (atSentence != null && Book.TryFind(atSentence, out var l)) Progress.PdfPage = Book.Chapters[l.Chapter].PdfPage;
+                PdfPageView = true; ShowPdfPage(Progress.PdfPage); return;
+            }
+            PdfPageView = false;
             var at = atSentence ?? Progress.SentenceId ?? FirstSentence();
+            if (at == null) { PdfPageView = true; ShowPdfPage(Progress.PdfPage); return; }   // a PDF with no text at all
             OpenAt(at);
         }
 
@@ -130,6 +159,7 @@ namespace Fable
             if (!Active) return;
             Active = false;
             SetWidgets(false);
+            if (pageImage) pageImage.gameObject.SetActive(false);
             RestoreLayout();
         }
 
@@ -318,7 +348,8 @@ namespace Fable
         /// keep: a sentence to stay anchored to if it starts on this page (re-layouts must not drift backwards).
         void ShowPage(int i, string keep = null)
         {
-            InContents = false; SetContentsRows(false);
+            InContents = false; SetContentsRows(false); HidePdfPage();
+            if (sizeBtn) sizeBtn.gameObject.SetActive(true);
             if (contentsLbl) contentsLbl.text = "contents";
             if (markBtn) markBtn.gameObject.SetActive(true);
             PageIndex = Mathf.Clamp(i, 0, Mathf.Max(0, pages.Count - 1));
@@ -361,6 +392,8 @@ namespace Fable
             if (sizeLbl) sizeLbl.text = "text: " + TextSizeNames[Progress.TextSize];
             if (stepBtn) stepBtn.gameObject.SetActive(StepInPassage != null);
             if (stepLbl) stepLbl.text = StepInLabel + " ›";
+            if (viewBtn) { viewBtn.gameObject.SetActive(Book.IsPdf); if (viewLbl) viewLbl.text = "\u2039 page view"; }
+            if (Book.IsPdf) Progress.PdfPage = Book.Chapters[ChapterIndex].PdfPage;
         }
 
         bool StartsOn(string sentenceId, Page pg)
@@ -437,6 +470,7 @@ namespace Fable
         public void NextPage()
         {
             if (InContents) { ContentsTurn(+1); return; }
+            if (PdfPageView) { if (Progress.PdfPage < Book.PdfPages) ShowPdfPage(Progress.PdfPage + 1); return; }
             if (PageIndex + 1 < pages.Count) { ShowPage(PageIndex + 1); return; }
             if (!ChapterPaginated) { PaginateUntil(pg => pages.Count > PageIndex + 1); if (PageIndex + 1 < pages.Count) { ShowPage(PageIndex + 1); return; } }
             if (ChapterIndex + 1 < Book.Chapters.Count) OpenChapter(ChapterIndex + 1);
@@ -445,6 +479,7 @@ namespace Fable
         public void PreviousPage()
         {
             if (InContents) { ContentsTurn(-1); return; }
+            if (PdfPageView) { if (Progress.PdfPage > 1) ShowPdfPage(Progress.PdfPage - 1); return; }
             if (PageIndex > 0) { ShowPage(PageIndex - 1); return; }
             if (ChapterIndex > 0) OpenChapter(ChapterIndex - 1, atEnd: true);
         }
@@ -459,14 +494,27 @@ namespace Fable
 
         public void ToggleBookmark()
         {
-            var id = Progress.SentenceId; if (id == null) return;
+            var id = PdfPageView ? "pdfpage:" + Progress.PdfPage : Progress.SentenceId; if (id == null) return;
             if (!Progress.Bookmarks.Remove(id)) Progress.Bookmarks.Add(id);
-            Progress.Bookmarks.Sort((x, y) => Book.Ordinal(x).CompareTo(Book.Ordinal(y)));
+            Progress.Bookmarks.Sort((x, y) => BookmarkOrder(x).CompareTo(BookmarkOrder(y)));
             ProgressStore.SaveBook(Progress);
-            ShowFooter();
+            if (PdfPageView) PdfFooter(); else ShowFooter();
         }
 
-        public void GoToSentence(string id) { if (Book.TryFind(id, out _)) OpenAt(id); }
+        public void GoToSentence(string id)
+        {
+            if (!Book.TryFind(id, out _)) return;
+            if (PdfPageView) { PdfPageView = false; Progress.PdfTextView = true; HidePdfPage(); }
+            OpenAt(id);
+        }
+
+        /// Bookmarks in reading order: sentence ids by their place in the book, PDF pages by page.
+        float BookmarkOrder(string id)
+        {
+            if (id.StartsWith("pdfpage:") && int.TryParse(id.Substring(8), out var pg)) return pg;
+            if (Book.IsPdf && Book.TryFind(id, out var l)) return Book.Chapters[l.Chapter].PdfPage + 0.5f;
+            return Book.Ordinal(id);
+        }
 
         // ---------------------------------------------------------------- contents
 
@@ -477,7 +525,7 @@ namespace Fable
             if (markBtn) markBtn.gameObject.SetActive(false);
             int perPage = ContentsPerPage;
             var entries = ContentsEntries();
-            int current = entries.FindIndex(e => e.target == ChapterIndex);
+            int current = PdfPageView ? entries.FindIndex(e => e.target <= -100 && -100 - e.target <= Progress.PdfPage && Progress.PdfPage < -100 - e.target + 10) : entries.FindIndex(e => e.target == ChapterIndex);
             contentsPage = Mathf.Max(0, current) / perPage;
             RenderContents();
         }
@@ -485,13 +533,21 @@ namespace Fable
         List<(string text, int target, string sentence)> ContentsEntries()
         {
             var list = new List<(string, int, string)>();
+            if (PdfPageView)
+            {
+                // a PDF's pages in tens (target = -100 - first page), then its bookmarks
+                for (int a = 1; a <= Book.PdfPages; a += 10) list.Add((Book.PdfPages <= 1 ? "page 1" : $"pages {a}–{Mathf.Min(a + 9, Book.PdfPages)}", -100 - a, null));
+                foreach (var b in Progress.Bookmarks) if (b.StartsWith("pdfpage:")) list.Add(($"bookmark  ·  page {b.Substring(8)}", -1, b));
+                return list;
+            }
             for (int i = 0; i < Book.Chapters.Count; i++)
             {
                 var c = Book.Chapters[i];
                 list.Add((c.Name != null ? $"{c.Heading}  ·  {c.Name}" : (c.Part != null && (i == 0 || Book.Chapters[i - 1].Part != c.Part) ? $"{c.Part}  ·  {c.Heading}" : c.Heading), i, null));
             }
             foreach (var b in Progress.Bookmarks)
-                if (Book.TryFind(b, out var l))
+                if (b.StartsWith("pdfpage:")) list.Add(($"bookmark  ·  page {b.Substring(8)}", -1, b));
+                else if (Book.TryFind(b, out var l))
                 {
                     var t = Book.Chapters[l.Chapter].Paragraphs[l.Paragraph].Sentences[l.Sentence].Text;
                     list.Add(($"bookmark  ·  {Book.Chapters[l.Chapter].Heading}: “{(t.Length > 40 ? t.Substring(0, 40) + "…" : t)}”", -1, b));
@@ -506,7 +562,7 @@ namespace Fable
             contentsPage = Mathf.Clamp(contentsPage, 0, pagesN - 1);
             Panel.Title.gameObject.SetActive(true); Panel.Title.fontSize = 30; Panel.Title.text = "Contents";
             Panel.Chapter.text = Book.Title + (Book.Translator != null ? $"  ·  translated by {Book.Translator}" : $"  ·  {Book.Author}");
-            Panel.Body.text = "";
+            Panel.Body.text = ""; HidePdfPage();
             Place(Panel.Body, BodyTopFirst, BodyBottom - BodyTopFirst);
             SetContentsRows(true);
             for (int r = 0; r < contentsRows.Count; r++)
@@ -519,10 +575,11 @@ namespace Fable
                 var e = entries[k];
                 contentsRows[r] = (row.rt, k);
                 lbl.text = e.text;
-                lbl.fontStyle = e.target == ChapterIndex ? FontStyles.Bold : FontStyles.Normal;
+                lbl.fontStyle = (PdfPageView ? e.target <= -100 && -100 - e.target <= Progress.PdfPage && Progress.PdfPage < -100 - e.target + 10 : e.target == ChapterIndex) ? FontStyles.Bold : FontStyles.Normal;
             }
             Panel.Hint.text = $"contents {contentsPage + 1} of {pagesN}  ·  point at a chapter and pinch";
             if (stepBtn) stepBtn.gameObject.SetActive(false);
+            if (viewBtn) viewBtn.gameObject.SetActive(false);
             PageChanged?.Invoke();
         }
 
@@ -532,6 +589,8 @@ namespace Fable
         {
             var entries = ContentsEntries(); if (k < 0 || k >= entries.Count) return;
             var e = entries[k];
+            if (e.sentence != null && e.sentence.StartsWith("pdfpage:")) { PdfPageView = true; ShowPdfPage(int.Parse(e.sentence.Substring(8))); return; }
+            if (e.target <= -100) { ShowPdfPage(-100 - e.target); return; }
             if (e.sentence != null) OpenAt(e.sentence); else OpenChapter(e.target);
         }
 
@@ -541,10 +600,11 @@ namespace Fable
         public bool PressAt(bool right, bool dryRun = false)
         {
             if (!Active || !Pointer) return false;
-            if (dryRun) return Pointer.Over(right, contentsBtn) || Pointer.Over(right, sizeBtn) || Pointer.Over(right, markBtn) || Pointer.Over(right, stepBtn) || (ShelfAvailable && Pointer.Over(right, shelfBtn));
+            if (dryRun) return Pointer.Over(right, contentsBtn) || (sizeBtn.gameObject.activeSelf && Pointer.Over(right, sizeBtn)) || Pointer.Over(right, markBtn) || Pointer.Over(right, stepBtn) || (viewBtn && Pointer.Over(right, viewBtn)) || (ShelfAvailable && Pointer.Over(right, shelfBtn));
             if (ShelfAvailable && Pointer.Over(right, shelfBtn)) { ShelfPressed?.Invoke(); return true; }
-            if (Pointer.Over(right, contentsBtn)) { if (InContents) ShowPage(PageIndex, keep: Progress.SentenceId); else ShowContents(); return true; }
-            if (Pointer.Over(right, sizeBtn)) { CycleTextSize(); return true; }
+            if (Pointer.Over(right, contentsBtn)) { if (InContents) BackToPage(); else ShowContents(); return true; }
+            if (viewBtn && viewBtn.gameObject.activeSelf && Pointer.Over(right, viewBtn)) { ToggleView(); return true; }
+            if (sizeBtn.gameObject.activeSelf && Pointer.Over(right, sizeBtn)) { CycleTextSize(); return true; }
             if (Pointer.Over(right, markBtn) && !InContents) { ToggleBookmark(); return true; }
             if (InContents)
                 foreach (var row in contentsRows) if (Pointer.Over(right, row.rt)) { OpenEntry(row.target); return true; }
@@ -559,7 +619,8 @@ namespace Fable
         {
             switch (control)
             {
-                case "contents": if (InContents) ShowPage(PageIndex, keep: Progress.SentenceId); else ShowContents(); break;
+                case "contents": if (InContents) BackToPage(); else ShowContents(); break;
+                case "view": ToggleView(); break;
                 case "size": CycleTextSize(); break;
                 case "bookmark": ToggleBookmark(); break;
                 case "shelf": ShelfPressed?.Invoke(); break;
@@ -595,6 +656,8 @@ namespace Fable
         public string Describe()
         {
             if (Book == null) return "book=none";
+            if (PdfPageView) return $"book={Book.Slug} pdf page={Progress.PdfPage}/{Book.PdfPages} view=page text={(Book.Chapters.Count > 0 ? Book.Chapters.Count + " pages" : "none")} marks={Progress.Bookmarks.Count} contents={InContents} pdf={(pdf != null ? pdf.Error ?? "open" : "closed")}";
+            if (Book.Chapters.Count == 0) return $"book={Book.Slug} (no text)";
             var ch = Book.Chapters[ChapterIndex];
             return $"book={Book.Slug} chapter={ch.Id} page={PageIndex + 1}/{(ChapterPaginated ? pages.Count.ToString() : pages.Count + "+")} anchor={Progress.SentenceId} last={LastVisibleSentence} size={TextSizeNames[Progress.TextSize]} marks={Progress.Bookmarks.Count} contents={InContents} stepIn={StepInPassage ?? "-"}";
         }
@@ -602,7 +665,7 @@ namespace Fable
         // ---------------------------------------------------------------- words on the page (highlighting)
 
         /// True when the page shows the book's text (not the contents list): words can be highlighted.
-        public bool ShowsText => Active && !InContents && pages.Count > 0;
+        public bool ShowsText => Active && !InContents && !PdfPageView && pages.Count > 0;
 
         /// The word under a point on the page (page-local pixels): its index in the body's layout. Points between
         /// lines or past a line's end take the nearest word on the nearest line, so a drag never drops out.
@@ -757,6 +820,132 @@ namespace Fable
         /// The ordinal of the furthest sentence the reader has reached (for spoiler checks outside the reader).
         public int ReachedOrdinal => Mathf.Max(Book.Ordinal(Progress.Furthest), Book.Ordinal(Progress.SentenceId));
 
+        // ---------------------------------------------------------------- a PDF's pages, as laid out
+
+        /// A PDF shown as its pages (true) or as its text, reflowed (false). A PDF with no text has only the page view.
+        public bool PdfPageView { get; private set; }
+        PdfPages pdf; readonly Dictionary<int, Texture2D> pageCache = new();
+        public string LastPdfTiming { get; private set; } = "";
+        /// Pixels across a rendered page: about 2.5x the page's width on the panel, so it stays sharp when leaned into.
+        public int PdfRenderWidth = 1300;
+
+        PdfPages Pdf()
+        {
+            if (pdf != null) return pdf;
+            var src = System.IO.Path.Combine(Library.BookDir(Book.Slug), "source.pdf");
+            var t0 = Time.realtimeSinceStartup;
+            pdf = PdfPages.Open(src);
+            Debug.Log($"[Fable] pdf {Book.Slug}: {(pdf.Error ?? pdf.Count + " pages")} opened in {(Time.realtimeSinceStartup - t0) * 1000:F0} ms");
+            return pdf;
+        }
+
+        void ClosePdf()
+        {
+            foreach (var t in pageCache.Values) if (t) Destroy(t);
+            pageCache.Clear(); pdf?.Dispose(); pdf = null;
+        }
+        void OnDestroy() => ClosePdf();
+
+        Texture2D PageTexture(int page)
+        {
+            if (pageCache.TryGetValue(page, out var t) && t) return t;
+            var p = Pdf(); if (p.Error != null) return null;
+            var t0 = Time.realtimeSinceStartup;
+            t = p.Render(page - 1, PdfRenderWidth);
+            LastPdfTiming = $"page {page} drawn in {(Time.realtimeSinceStartup - t0) * 1000:F0} ms";
+            Debug.Log($"[Fable] pdf {Book.Slug}: {LastPdfTiming}{(t ? $" ({t.width}x{t.height})" : $" (failed: {p.Error})")}");
+            if (t) pageCache[page] = t;
+            // keep only this page and its neighbours
+            foreach (var k in new List<int>(pageCache.Keys)) if (Mathf.Abs(k - page) > 1) { Destroy(pageCache[k]); pageCache.Remove(k); }
+            return t;
+        }
+
+        System.Collections.IEnumerator Prefetch(int page)
+        {
+            yield return null; yield return null;   // after the page on show has reached the eyes
+            if (PdfPageView && page >= 1 && page <= Book.PdfPages && !pageCache.ContainsKey(page) && Mathf.Abs(page - Progress.PdfPage) == 1) PageTexture(page);
+        }
+
+        void ShowPdfPage(int page)
+        {
+            PdfPageView = true; InContents = false; SetContentsRows(false);
+            page = Mathf.Clamp(page, 1, Mathf.Max(1, Book.PdfPages));
+            Progress.PdfPage = page; Progress.PdfTextView = false;
+            // the chapter text and its controls step aside for the page
+            Panel.Body.text = ""; Panel.Title.gameObject.SetActive(false);
+            Panel.Chapter.text = $"{Book.Title}  ·  page {page} of {Book.PdfPages}";
+            if (contentsLbl) contentsLbl.text = "contents";
+            if (markBtn) markBtn.gameObject.SetActive(true);
+            if (sizeBtn) sizeBtn.gameObject.SetActive(false);
+            if (stepBtn) stepBtn.gameObject.SetActive(false);
+            var tex = PageTexture(page);
+            pageImage.gameObject.SetActive(true); pageImage.transform.SetAsFirstSibling();
+            pageImage.transform.SetSiblingIndex(1);   // above the paper, below the controls
+            if (tex)
+            {
+                // fit inside the space between the top controls and the footer, keeping the page's shape
+                const float top = HeadY + HeadH + 4, bottom = FootY - 6; float w = 620 - 2 * 30, h = bottom - top;
+                float aspect = tex.width / (float)tex.height;
+                if (w / h > aspect) w = h * aspect; else h = w / aspect;
+                pageImage.texture = tex; pageImage.color = Color.white; pageImage.uvRect = new Rect(0, 0, 1, 1);
+                pageImage.rectTransform.sizeDelta = new Vector2(w, h); pageImage.rectTransform.anchoredPosition = new Vector2(0, -top - ((bottom - top) - h) / 2);
+            }
+            else
+            {
+                pageImage.gameObject.SetActive(false);
+                Panel.Body.text = $"<i>This page could not be drawn{(pdf != null && pdf.Error != null ? $": {pdf.Error}" : "")}.</i>" + (Book.Chapters.Count > 0 ? "\n\nThe text view (bottom right) still shows the book\u2019s text." : "");
+                Place(Panel.Body, BodyTopFirst, BodyBottom - BodyTopFirst);
+            }
+            // where the text view would open, so the lobby and the bookmarks agree with the page
+            var ch = Book.Chapters.Find(c => c.PdfPage >= page);
+            if (ch != null && ch.Paragraphs.Count > 0 && ch.Paragraphs[0].Sentences.Count > 0) Progress.SentenceId = ch.Paragraphs[0].Sentences[0].Id;
+            var last = Book.Chapters.FindLast(c => c.PdfPage > 0 && c.PdfPage <= page);
+            if (last != null) { var ls = last.Paragraphs[^1].Sentences[^1].Id; if (Book.Ordinal(ls) > Book.Ordinal(Progress.Furthest)) Progress.Furthest = ls; }
+            ProgressStore.SaveBook(Progress);
+            PdfFooter();
+            StartCoroutine(Prefetch(page + 1));
+            PageChanged?.Invoke();
+        }
+
+        bool PageHasText(int page) => Book.Chapters.Exists(c => c.PdfPage == page);
+
+        void PdfFooter()
+        {
+            float pct = Book.PdfPages > 0 ? 100f * Progress.PdfPage / Book.PdfPages : 0;
+            string textNote = Book.Chapters.Count == 0 ? "scanned pages: no text to highlight or search"
+                            : PageHasText(Progress.PdfPage) ? "highlight and search: text view" : "no text on this page (a scan or picture)";
+            Panel.Hint.text = $"page {Progress.PdfPage} of {Book.PdfPages}  ·  {pct:F0}%  ·  {textNote}";
+            bool marked = Progress.Bookmarks.Contains("pdfpage:" + Progress.PdfPage);
+            if (markLbl) markLbl.text = marked ? "bookmarked" : "bookmark";
+            if (ribbon) ribbon.gameObject.SetActive(marked);
+            if (viewBtn) { viewBtn.gameObject.SetActive(Book.Chapters.Count > 0); if (viewLbl) viewLbl.text = "text view \u203a"; }
+        }
+
+        void HidePdfPage() { if (pageImage) pageImage.gameObject.SetActive(false); }
+
+        /// Contents' "back to the page": the page view or the text page the reader came from.
+        void BackToPage() { if (PdfPageView) ShowPdfPage(Progress.PdfPage); else ShowPage(PageIndex, keep: Progress.SentenceId); }
+
+        /// A PDF: switch between its pages as laid out and its text (where it has text), at the same place.
+        public void ToggleView()
+        {
+            if (!Book.IsPdf) return;
+            if (PdfPageView)
+            {
+                if (Book.Chapters.Count == 0) return;
+                var ch = Book.Chapters.Find(c => c.PdfPage >= Progress.PdfPage) ?? Book.Chapters[^1];
+                PdfPageView = false; Progress.PdfTextView = true; HidePdfPage();
+                Debug.Log($"[Fable] pdf {Book.Slug}: text view at page {ch.PdfPage}");
+                OpenChapter(Book.Chapters.IndexOf(ch));
+            }
+            else
+            {
+                Progress.PdfTextView = false;
+                Debug.Log($"[Fable] pdf {Book.Slug}: page view at page {Book.Chapters[ChapterIndex].PdfPage}");
+                ShowPdfPage(Book.Chapters[ChapterIndex].PdfPage);
+            }
+        }
+
         // ---------------------------------------------------------------- widgets
 
         void BuildWidgets()
@@ -792,6 +981,14 @@ namespace Fable
             (markBtn, markLbl) = Button("BtnBookmark", new Vector2(1, 1), new Vector2(-Margin + 8, -TopRow), new Vector2(124, TopRowH), TextAlignmentOptions.Right);
             (stepBtn, stepLbl) = Button("BtnStepIn", new Vector2(1, 1), new Vector2(-Margin + 8, -FootY + 2), new Vector2(150, FootH - 4), TextAlignmentOptions.Right);
             stepLbl.fontSize = 18; stepLbl.color = new Color(0.55f, 0.36f, 0.08f); stepLbl.fontStyle = FontStyles.SmallCaps | FontStyles.Bold;
+            // a PDF's view switch, in the same corner (an imported book has no Step In)
+            (viewBtn, viewLbl) = Button("BtnPdfView", new Vector2(1, 1), new Vector2(-Margin + 8, -FootY + 2), new Vector2(170, FootH - 4), TextAlignmentOptions.Right);
+            viewLbl.fontSize = 18; viewLbl.color = new Color(0.55f, 0.36f, 0.08f); viewLbl.fontStyle = FontStyles.SmallCaps | FontStyles.Bold;
+            // the PDF page, drawn as it was laid out, filling the space between the top controls and the footer
+            var pi = new GameObject("PdfPage", typeof(RectTransform)).AddComponent<RawImage>(); pi.transform.SetParent(page, false); pi.raycastTarget = false;
+            pi.rectTransform.anchorMin = pi.rectTransform.anchorMax = new Vector2(0.5f, 1); pi.rectTransform.pivot = new Vector2(0.5f, 1);
+            pi.gameObject.SetActive(false); pageImage = pi;
+            var pe = pi.gameObject.AddComponent<Outline>(); pe.effectColor = new Color(0.36f, 0.29f, 0.21f, 0.35f); pe.effectDistance = new Vector2(1, -1);
 
             var rib = new GameObject("Ribbon", typeof(RectTransform)).AddComponent<Image>(); rib.transform.SetParent(page, false);
             rib.rectTransform.anchorMin = rib.rectTransform.anchorMax = rib.rectTransform.pivot = new Vector2(1, 1);
@@ -811,6 +1008,7 @@ namespace Fable
         void SetWidgets(bool on)
         {
             foreach (var rt in new[] { contentsBtn, sizeBtn, markBtn }) if (rt) rt.gameObject.SetActive(on);
+            if (viewBtn) viewBtn.gameObject.SetActive(on && Book != null && Book.IsPdf);
             if (shelfBtn) shelfBtn.gameObject.SetActive(on && ShelfAvailable);
             if (stepBtn) stepBtn.gameObject.SetActive(on && StepInPassage != null);
             if (ribbon && !on) ribbon.gameObject.SetActive(false);
@@ -823,7 +1021,7 @@ namespace Fable
         {
             if (!Active) return;
             // keep exactly one page ready ahead of the reader: at most one layout a frame, none while they read on
-            if (!InContents && !ChapterPaginated && pages.Count > 0 && pages.Count <= PageIndex + 1)
+            if (!InContents && !PdfPageView && !ChapterPaginated && pages.Count > 0 && pages.Count <= PageIndex + 1)
             {
                 var at = Normalise(pages[^1].End);
                 if (at.Before(ChapterEnd)) { pages.Add(MeasurePage(at, pages.Count)); measure.text = ""; }
@@ -833,7 +1031,7 @@ namespace Fable
             if (!Pointer) return;
             // hover: the control a pinch would press glows faintly
             void Hover(RectTransform rt) { if (!rt || !rt.gameObject.activeSelf) return; var img = rt.GetComponent<Image>(); var a = Pointer.Over(true, rt) || Pointer.Over(false, rt) ? 0.16f : 0f; if (!Mathf.Approximately(img.color.a, a)) img.color = new Color(img.color.r, img.color.g, img.color.b, a); }
-            Hover(contentsBtn); Hover(sizeBtn); Hover(markBtn); Hover(stepBtn); Hover(shelfBtn);
+            Hover(contentsBtn); Hover(sizeBtn); Hover(markBtn); Hover(stepBtn); Hover(shelfBtn); Hover(viewBtn);
             if (InContents) foreach (var r in contentsRows) Hover(r.rt);
         }
     }

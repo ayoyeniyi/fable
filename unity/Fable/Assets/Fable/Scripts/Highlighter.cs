@@ -225,7 +225,7 @@ namespace Fable
                 petals[i].rt.anchoredPosition = pos;
                 bool enabled = Enabled(petals[i].action);
                 petals[i].label.color = enabled ? new Color(0.20f, 0.14f, 0.08f) : new Color(0.20f, 0.14f, 0.08f, 0.35f);
-                petals[i].label.text = ActionNames[i] + (petals[i].action == "translate" ? "\n<size=60%>coming later</size>" : "");
+                petals[i].label.text = ActionNames[i] + Note(petals[i].action);
             }
         }
 
@@ -233,7 +233,19 @@ namespace Fable
         {
             "translate" => false,                                    // P1
             "stepin" => Reader.StepInPassage != null,
+            // an imported book has no prepared models or rooms, and the interpreter only knows the bundled books' text
+            "peek" => !Reader.Imported && Phrase.Trim().Length > 0,
             _ => Phrase.Trim().Length > 0,
+        };
+
+        /// Why a petal is greyed, in two or three words under its name.
+        string Note(string action) => action switch
+        {
+            "translate" => "\n<size=60%>coming later</size>",
+            "peek" when Reader.Imported => "\n<size=55%>not for your books yet</size>",
+            "stepin" when Reader.Imported => "\n<size=55%>no room for this book</size>",
+            "stepin" when Reader.StepInPassage == null => "\n<size=55%>no scene on this page</size>",
+            _ => "",
         };
 
         /// A right pinch (tap) while the menu or a card is up. Returns true when it was used here (no page turn).
@@ -592,7 +604,7 @@ namespace Fable
             var paper = new Color(0.97f, 0.93f, 0.84f, 0.97f);
             for (int i = 0; i < Actions.Length; i++)
             {
-                var rt = Box("Petal " + Actions[i], menu, new Vector2(118, 44), paper);
+                var rt = Box("Petal " + Actions[i], menu, new Vector2(150, 48), paper);
                 var edge = rt.gameObject.AddComponent<Outline>(); edge.effectColor = new Color(0.45f, 0.33f, 0.18f, 0.9f); edge.effectDistance = new Vector2(2, -2);
                 var lbl = Text(rt, 19, TextAlignmentOptions.Center, new Vector2(4, 2)); lbl.fontStyle = FontStyles.SmallCaps; lbl.lineSpacing = -20;
                 petals.Add((rt, Actions[i], lbl));

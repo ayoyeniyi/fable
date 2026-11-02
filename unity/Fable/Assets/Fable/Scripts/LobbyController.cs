@@ -28,6 +28,8 @@ namespace Fable
             ["alice"] = "HallOfDoors", ["oz"] = "KansasFarmhouse", ["odyssey"] = "CalypsosCave", ["gulliver"] = "GlumdalclitchsRoom",
         };
         const string FallbackScene = "HallOfDoors";
+        /// Where the reader's own books are read: the library room itself, with the page in front of the shelves.
+        public const string ImportedScene = "LibraryRoom";
 
         class Shelved
         {
@@ -48,7 +50,7 @@ namespace Fable
         class BooksIndex
         {
             public class Chapter { [JsonProperty("id")] public string Id; [JsonProperty("heading")] public string Heading; [JsonProperty("name")] public string Name; [JsonProperty("first")] public int First; [JsonProperty("sentences")] public int Sentences; [JsonProperty("paragraphs")] public int Paragraphs; }
-            public class Entry { [JsonProperty("slug")] public string Slug; [JsonProperty("title")] public string Title; [JsonProperty("sentences")] public int Sentences; [JsonProperty("chapters")] public List<Chapter> Chapters = new(); }
+            public class Entry { [JsonProperty("slug")] public string Slug; [JsonProperty("title")] public string Title; [JsonProperty("author")] public string Author; [JsonProperty("sentences")] public int Sentences; [JsonProperty("chapters")] public List<Chapter> Chapters = new(); }
             [JsonProperty("books")] public List<Entry> Books = new();
         }
 
@@ -83,16 +85,31 @@ namespace Fable
             if (Input) Input.PinchBegan += OnPinch;
             // the view toolbar: turn to see the room, and "recentre" faces the shelf again
             View = GetComponent<ViewControls>() ? GetComponent<ViewControls>() : gameObject.AddComponent<ViewControls>();
-            View.Init(Input, Head, RigRoot(), null, Font);
-            View.Recentred += FaceShelf;
+            // the library board: every book, bundled and imported, at lectern height in front of the reader
+            Board = GetComponent<LibraryPanel>() ? GetComponent<LibraryPanel>() : gameObject.AddComponent<LibraryPanel>();
+            Board.Init(Input, Head, Font, this);
+            View.Init(Input, Head, RigRoot(), Board.Root, Font);
+            View.Recentred += () => Board.Recentre();
+            View.SetActions(("face the shelf", FaceShelf));
+            View.Tip("library", "Your books are on the board below the shelf. \u201c+ add a book\u201d sends one from your phone or computer.");
             string json = null; yield return Streaming.Text("books/index.json", s => json = s);
             if (json != null) yield return Streaming.Parse<BooksIndex>(json, i => index = i);
             RefreshLabels();
+            // the board's bundled tiles: titles and authors from the index, covers from the books on the shelf
+            foreach (var b in books)
+            {
+                var e = index?.Books.Find(x => x.Slug == b.Slug);
+                Texture cover = null;
+                foreach (var r in b.T.GetComponentsInChildren<Renderer>()) if (r.name.StartsWith("Cover_") && r.sharedMaterial) { var m = r.sharedMaterial; cover = m.HasProperty("baseColorTexture") ? m.GetTexture("baseColorTexture") : m.mainTexture; break; }
+                Board.Bundled[b.Slug] = (e?.Title ?? b.Slug, e?.Author, cover);
+            }
+            Board.Recentre(true); Board.Refresh();
         }
 
         void OnDestroy() { if (Input) Input.PinchBegan -= OnPinch; }
 
         public ViewControls View { get; private set; }
+        public LibraryPanel Board { get; private set; }
 
         Transform RigRoot()
         {
@@ -199,6 +216,7 @@ namespace Fable
             {
                 if (!PointRay(right, out var r)) continue;
                 if (View && View.RayOnBar(right)) continue;   // the toolbar draws its own ray
+                if (Board && Board.OnBoard(right, out var bp)) { ray.enabled = true; ray.SetPosition(0, r.origin + r.direction * 0.05f); ray.SetPosition(1, bp); dot.gameObject.SetActive(true); dot.position = bp; shown = true; break; }
                 var h = Hit(r, out var p);
                 if (h != null || !shown)
                 {
@@ -231,6 +249,7 @@ namespace Fable
         public void Open(string slug)
         {
             if (opening) return;
+            if (Library.IsImported(slug)) { StartCoroutine(OpenImported(slug)); return; }
             var b = books.Find(x => x.Slug == slug);
             if (b == null || !ReadingScene.TryGetValue(slug, out var scene)) { Debug.LogWarning($"[Fable] lobby: no book {slug}"); return; }
             StartCoroutine(OpenRoutine(b, scene));
@@ -259,6 +278,19 @@ namespace Fable
                 yield return null;
             }
             if (load == null) { Debug.LogError($"[Fable] lobby: scene {scene} is not in the build"); opening = false; b.T.SetPositionAndRotation(from, rotFrom); yield break; }
+            while (load.progress < 0.9f) yield return null;
+            load.allowSceneActivation = true;
+        }
+
+        /// One of the reader's own books: no shelf to fly from, so the board gives way and the library room loads with it on the page.
+        IEnumerator OpenImported(string slug)
+        {
+            opening = true; ray.enabled = false; dot.gameObject.SetActive(false);
+            var scene = Application.CanStreamedLevelBeLoaded(ImportedScene) ? ImportedScene : FallbackScene;
+            Debug.Log($"[Fable] lobby: opening {slug} (imported) in {scene}"); OpenedAt = Time.realtimeSinceStartup;
+            FlowController.PendingBook = slug;
+            var load = SceneManager.LoadSceneAsync(scene); load.allowSceneActivation = false;
+            if (Board) for (float t = 0; t < 0.35f; t += Time.deltaTime) { Board.Root.localScale = Vector3.one * 0.001f * (1f - t / 0.35f * 0.4f); yield return null; }
             while (load.progress < 0.9f) yield return null;
             load.allowSceneActivation = true;
         }

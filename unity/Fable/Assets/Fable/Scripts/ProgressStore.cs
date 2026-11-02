@@ -30,6 +30,9 @@ namespace Fable
         public List<string> Bookmarks = new();
         public int TextSize = 1;
         public string SavedAtUtc;
+        /// PDF: the page on show in page view (1-based), and whether the reader chose the text view.
+        public int PdfPage = 1;
+        public bool PdfTextView;
     }
 
     /// The reader's preferences: kept across restarts with their progress.
