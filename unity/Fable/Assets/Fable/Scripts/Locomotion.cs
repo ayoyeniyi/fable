@@ -5,10 +5,11 @@
 //   a locked door                -> it rattles
 //   the key or the bottle        -> pinch and keep holding: it flies into your hand and rides with it; let go to put it back
 //                                   (a pinching hand closed on the prop picks it up too; controllers: trigger or grip)
-// Nothing here needs two hands or a combination. Walking is arm-swinging (both hands pumping, seated or standing) or
-// the right thumbstick. Turning on the spot, for a seated reader who cannot swivel: the left thumbstick snaps 45
-// degrees, or the left hand pinches and drags sideways (10 cm per step); looking round still turns you for free.
-// Pointing at nothing leaves the pinch to the page (next sentence).
+// Nothing here needs two hands or a combination. Walking is optional (the reader can stay put and point): arm-swinging
+// (both hands pumping, seated or standing) or the right thumbstick. Turning on the spot is the view toolbar's
+// ‹ turn / turn › (ViewControls, 30 degrees per pinch) or one push of the left thumbstick per step. The page moves
+// with the reader when they teleport or walk. Pointing at nothing leaves the pinch to the page (next sentence);
+// pointing at the view toolbar leaves it to the toolbar.
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -99,13 +100,17 @@ namespace Fable
 #endif
         }
 
-        /// Turn on the spot about the reader's own head, so the room pivots around them rather than them orbiting the rig.
+        /// Turn on the spot about the reader's own head (the view toolbar's step), in any state.
         public void Snap(int dir)
         {
-            if (!rig || !head || flow == null || flow.Current != FlowController.State.Scene || dir == 0) return;
+            if (dir == 0) return;
+            if (ViewControls.Instance) { ViewControls.Instance.Turn(dir); return; }
+            if (!rig || !head) return;
             rig.RotateAround(head.position, Vector3.up, SnapDegrees * Mathf.Sign(dir));
-            Debug.Log($"[Fable] turn {(dir > 0 ? "right" : "left")} {SnapDegrees}");
         }
+
+        /// Move the rig over the floor; the page comes along so it is still in front of the reader.
+        void MoveRig(Vector3 delta) { rig.position += delta; if (flow && flow.Panel) flow.Panel.Shift(delta); }
 
         void Show(bool on) { if (line) line.enabled = on; if (disc) disc.gameObject.SetActive(on); }
 
@@ -136,6 +141,7 @@ namespace Fable
         {
             hit = HitKind.None; hitProp = null;
             if (!Pointer(out var ray)) { Show(false); return; }
+            if (ViewControls.Instance && ViewControls.Instance.RayOnBar(rightSource)) { Show(false); return; }   // the toolbar takes this pinch
             // only a hand held up and pointed roughly ahead or down shows the ray; a hand resting in the lap does not
             var fwd = Vector3.ProjectOnPlane(head.forward, Vector3.up).normalized;
             if (Vector3.Dot(Vector3.ProjectOnPlane(ray.direction, Vector3.up).normalized, fwd) < 0.1f || ray.origin.y < head.position.y - 0.55f) { Show(false); return; }
@@ -204,7 +210,7 @@ namespace Fable
             {
                 case HitKind.Floor:
                     if (flow.Current == FlowController.State.Miniature) { flow.ExpandAt(hitPoint); }
-                    else { var delta = hitPoint - new Vector3(head.position.x, hitPoint.y, head.position.z); rig.position += new Vector3(delta.x, 0, delta.z); }
+                    else { var delta = hitPoint - new Vector3(head.position.x, hitPoint.y, head.position.z); MoveRig(new Vector3(delta.x, 0, delta.z)); }
                     Debug.Log($"[Fable] go: {flow.Current} -> {hitPoint}");
                     return true;
                 case HitKind.LittleDoor:
@@ -228,11 +234,8 @@ namespace Fable
             Vector3 move = Vector3.zero;
 #if FABLE_META_XR
             Vector2 lStick = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.LTouch), rStick = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.RTouch);
-            Vector2 turnStick = LeftStickTurns ? lStick : rStick, moveStick = LeftStickTurns ? rStick : lStick;
+            Vector2 moveStick = LeftStickTurns ? rStick : lStick;
             if (moveStick.sqrMagnitude > 0.04f) move = (fwd * moveStick.y + right * moveStick.x) * WalkSpeed;
-            // snap turn: one step per push, re-armed when the stick comes back to centre
-            if (stickTurnArmed && Mathf.Abs(turnStick.x) > 0.6f) { stickTurnArmed = false; Snap(turnStick.x > 0 ? 1 : -1); }
-            else if (Mathf.Abs(turnStick.x) < 0.3f) stickTurnArmed = true;
             bool hands = reader.LeftPointer && reader.RightPointer && reader.LeftHand && reader.RightHand && reader.LeftHand.IsTracked && reader.RightHand.IsTracked && !reader.LeftPinching && !reader.RightPinching;
             if (hands)
             {
@@ -250,7 +253,7 @@ namespace Fable
             else { hadHands = false; swing = Mathf.Lerp(swing, 0, Time.deltaTime * 3f); }
             if (swing > 0.05f) move += fwd * swing;
 #endif
-            if (move.sqrMagnitude > 0) rig.position += move * Time.deltaTime;
+            if (move.sqrMagnitude > 0) MoveRig(move * Time.deltaTime);
         }
     }
 }

@@ -1,7 +1,7 @@
 // Animated gesture cues under the passage, in the manner of the Quest's own hand-tracking tutorials: a small looping
 // picture per available action, drawn as a real hand (palm, four fingers, thumb) or a Touch controller (body, ring,
 // thumbstick, trigger) rather than abstract dots. A pinch closes index to thumb, a hold fills a ring, a drag slides the
-// pinched hand, pointing lays a ray to a disc, walking pumps two arms, turning pushes the stick or slides the left hand.
+// pinched hand, pointing lays a ray to a disc, walking pumps two arms, turning pushes the stick (or points at the bar).
 // Everything is built at runtime from two generated sprites (a disc and a ring), so every scene's page gets the row
 // without a rebuild. Which cues show follows the flow state and whether hands or controllers are being tracked.
 using System.Collections.Generic;
@@ -99,19 +99,18 @@ namespace Fable
                     list.Add(new Cue(Kind.Pinch, true, $"left {g}\npage back"));
                     list.Add(new Cue(Kind.Drag, false, $"{g}, drag over words\nhighlight: define, peek"));
                     list.Add(new Cue(Kind.Point, false, $"point at a button, {g}\ncontents, size, step in"));
+                    list.Add(new Cue(Kind.Point, true, $"point at the bar below, {g}\nturn to look around"));
                     break;
                 case FlowController.State.Miniature:
                     list.Add(new Cue(Kind.Point, false, $"point into the room, {g}\nstand there"));
                     list.Add(new Cue(Kind.Pinch, false, $"right {g}\nnext sentence"));
                     list.Add(new Cue(Kind.Drag, false, $"{g} and drag\nscroll the story"));
-                    list.Add(new Cue(Kind.Hold, true, $"hold left {g}\nclose the book"));
+                    list.Add(new Cue(Kind.Point, true, $"point at the bar below, {g}\nturn, or back to reading"));
                     break;
                 case FlowController.State.Scene:
                     list.Add(new Cue(Kind.Point, false, $"point at the floor, {g}\ngo there"));
-                    if (ctrl) list.Add(new Cue(Kind.Move, false, "right stick\nwalk"));
-                    else list.Add(new Cue(Kind.Swing, false, "swing both arms\nwalk"));
-                    if (ctrl) list.Add(new Cue(Kind.Turn, true, "left stick\nturn"));
-                    else list.Add(new Cue(Kind.Turn, true, "left pinch, slide sideways\nturn"));
+                    if (ctrl) list.Add(new Cue(Kind.Turn, true, "left stick, one push\nturn 30\u00b0"));
+                    else list.Add(new Cue(Kind.Point, true, $"point at the bar below, {g}\nturn, or back to reading"));
                     if (grabbing) list.Add(new Cue(Kind.Hold, false, $"point at it, {g} and hold\npick it up"));
                     else list.Add(new Cue(Kind.Point, false, $"point at the little door, {g}\ngo through"));
                     list.Add(new Cue(Kind.Pinch, false, $"right {g}\nnext sentence"));

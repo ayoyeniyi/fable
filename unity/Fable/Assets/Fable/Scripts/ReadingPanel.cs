@@ -13,35 +13,59 @@ namespace Fable
         public float Distance = 1.15f, Height = -0.08f, Side = 0f, Follow = 2.2f;   // Side: metres to the reader's right (negative = left)
         public Color Ink = new(0.13f, 0.11f, 0.09f), Dim = new(0.13f, 0.11f, 0.09f, 0.62f), Paper = new(0.96f, 0.93f, 0.86f);
 
-        /// Size relative to the authored panel (the canvas itself is scaled ~0.001 to turn pixels into metres).
+        /// Size relative to the authored panel (the canvas itself is scaled ~0.001 to turn pixels into metres). Each
+        /// flow state sets its own; the reader's own size (the resize handle, saved in their preferences) multiplies it.
         public float Scale = 1f;
+        public float UserScale = 1f;
         float baseScale;
 
         Passage.Scene scene; string currentId;
 
-        void Awake() { baseScale = transform.localScale.x; }
+        void Awake() { baseScale = transform.localScale.x; UserScale = Mathf.Clamp(ProgressStore.LoadPrefs().PanelScale, MinUserScale, MaxUserScale); }
+        public const float MinUserScale = 0.7f, MaxUserScale = 1.6f;
 
-        /// The page holds still. It glides to a new spot only when the reader turns well away from it, when their
-        /// height changes, or when the flow asks (Recentre); a page that trails every head movement cannot be read.
-        public float DeadZoneDegrees = 28f;
+        /// The page stays where it is in the room. It does not trail the reader's head: a reader who turns (with the view
+        /// toolbar, or by looking over a shoulder) to see the room finds the page where they left it, and "recentre"
+        /// brings it back in front of them. It moves on its own only when the flow places it (Recentre), when the reader
+        /// moves it by its handle, when the rig moves (teleport, walking: Shift), and when the reader sits down or
+        /// stands up in front of it (their eye height changes by more than ChangeOfHeight while they face it).
+        public float ChangeOfHeight = 0.35f;
         /// The diorama table in the reading room tops out at 0.72 m; a page that follows a low, seated head would sink
         /// its footer and gesture cues into it, so over the table the page's bottom edge never drops below this height.
         public float MinBottom = 0.76f; public bool ClampToTable = true;
         bool recentring = true;
-        public void Recentre() { recentring = true; }
+        /// The reader has put the page somewhere themselves: only Recentre undoes that.
+        public bool PlacedByReader { get; private set; }
+        public void Recentre() { recentring = true; PlacedByReader = false; }
+        /// The view turned: a page still gliding into place stops where it is, rather than following the turn.
+        public void HoldStill() { recentring = false; }
+        /// The rig moved by `delta` (teleport, walking): the page comes along.
+        public void Shift(Vector3 delta) { transform.position += delta; }
+        /// The reader dragged the page by its handle to a new place, facing them.
+        public void PlaceAt(Vector3 world)
+        {
+            recentring = false; PlacedByReader = true;
+            transform.position = world;
+            if (Head) transform.rotation = Quaternion.LookRotation(transform.position - Head.position, Vector3.up);
+        }
+        public float HalfHeightMetres => ((RectTransform)transform).rect.height * baseScale * Scale * UserScale * 0.5f;
 
         void LateUpdate()
         {
-            transform.localScale = Vector3.one * (baseScale * Scale);
+            transform.localScale = Vector3.one * (baseScale * Scale * UserScale);
             if (!Head) return;
             var fwd = Vector3.ProjectOnPlane(Head.forward, Vector3.up).normalized;
             if (fwd.sqrMagnitude < 0.01f) fwd = Vector3.forward;
             var right = Vector3.Cross(Vector3.up, fwd);
             var target = Head.position + fwd * Distance + Vector3.up * Height + right * Side;
-            if (ClampToTable) { float half = ((RectTransform)transform).rect.height * baseScale * Scale * 0.5f; target.y = Mathf.Max(target.y, MinBottom + half); }
-            var toPanel = transform.position - Head.position;
-            float off = Vector3.Angle(fwd, Vector3.ProjectOnPlane(toPanel, Vector3.up));
-            if (!recentring && (off > DeadZoneDegrees || Mathf.Abs(toPanel.y - (target.y - Head.position.y)) > 0.35f)) recentring = true;
+            if (ClampToTable) { float half = HalfHeightMetres; target.y = Mathf.Max(target.y, MinBottom + half); }
+            if (!recentring && !PlacedByReader)
+            {
+                // sitting down or standing up in front of the page: it keeps its place in the room but meets the new eye height
+                var toPanel = transform.position - Head.position;
+                bool facing = Vector3.Angle(fwd, Vector3.ProjectOnPlane(toPanel, Vector3.up)) < 35f;
+                if (facing && Mathf.Abs(toPanel.y - (target.y - Head.position.y)) > ChangeOfHeight) recentring = true;
+            }
             if (!recentring) return;
             transform.position = Vector3.Lerp(transform.position, target, Time.deltaTime * Follow);
             var look = Quaternion.LookRotation(transform.position - Head.position, Vector3.up);

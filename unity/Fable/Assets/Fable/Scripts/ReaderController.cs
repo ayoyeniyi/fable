@@ -1,11 +1,14 @@
-// Hand-controlled story progression, seated, hands only.
-//   right pinch tap        next beat          left pinch tap        previous beat
+// Hand input for a reader who stays in one place, seated or standing. Every essential action has a visible control
+// (the page's buttons, the highlight menu, the view toolbar); the pinches below are the only gestures, and none of
+// them needs two hands, a hold or a pull.
+//   right pinch tap        next page / next beat            left pinch tap        previous page / beat
 //   right pinch and drag   scroll the story (5 cm = one sentence; up or right = forward, down or left = back)
-//   left pinch and drag    turn on the spot (10 cm sideways = one 45 degree step), in the full-size room
-//   both hands pinch, quick release   toggle miniature / immersive      (one hand: hold the right pinch ~1 s)
-//   both hands pinch, hold 1 s        close the scene, back to the page  (one hand: hold the left pinch ~1 s)
-// Controllers (index triggers) mirror the pinches so testers without hand tracking are not stuck.
-// Keyboard fallback in the editor: Space / Backspace, arrows, Tab (toggle), Escape (return).
+// A pinch that starts on a control (toolbar button, panel handle, a Peek model) is claimed by it: it fires that
+// control once, on the pinch's first frame, and is never also a page turn, a scroll or a highlight. Holding the
+// pinch never repeats the action.
+// The old shortcuts (both hands pinch = step in / close; hold right = step in; hold left = close; left drag = turn)
+// are off by default: readers triggered them by accident. LegacyGestures turns them back on for testing.
+// Controllers (index triggers) mirror the pinches. Keyboard in the editor: Space / Backspace, arrows, Escape (return).
 using System;
 using UnityEngine;
 
@@ -18,7 +21,16 @@ namespace Fable
         public event Action<int> Turn;                  // +1 (right) / -1 (left) per step of a left-hand sideways drag
         public event Action<bool> PinchBegan, PinchEnded;   // raw pinch edges per hand (true = right), before taps and holds are judged
         public float TapSeconds = 0.35f, DragStepMetres = 0.05f, TurnStepMetres = 0.10f, HoldToReturn = 1.0f, HoldOneHand = 0.9f;
+        /// The two-hand, hold and drag-to-turn shortcuts of earlier builds. Off: every action has a visible control now.
+        public bool LegacyGestures = false;
         bool rHeld, lHeld;   // a one-hand hold already fired for this pinch
+
+        /// Controls that take a pinch before the page does (the view toolbar, the panel handles, a Peek model). Asked on
+        /// the first frame of a pinch, in order; the first to return true owns that pinch until it is released.
+        public readonly System.Collections.Generic.List<Func<bool, bool>> Claimers = new();
+        /// The hand whose current pinch a control claimed (true = right), or null.
+        public bool? ClaimedHand { get; private set; }
+        public bool Claimed(bool right) => ClaimedHand == right;
 
 #if FABLE_META_XR
         public OVRHand LeftHand, RightHand;
@@ -84,6 +96,23 @@ namespace Fable
         }
 #endif
 
+        /// A pinch starting or ending. A control may claim a starting pinch; a claimed pinch is not reported as a raw
+        /// pinch either (so a grab or a book on the shelf does not also react to it).
+        void Edge(bool right, bool down)
+        {
+            if (down)
+            {
+                foreach (var c in Claimers)
+                    if (c != null && c(right)) { ClaimedHand = right; SuppressCurrentPinch(); return; }
+                PinchBegan?.Invoke(right);
+            }
+            else
+            {
+                if (ClaimedHand == right) { ClaimedHand = null; return; }
+                PinchEnded?.Invoke(right);
+            }
+        }
+
         /// Called when a pinch picks something up (or puts it down): that pinch no longer counts as a tap or drag.
         public void SuppressCurrentPinch() { suppressed = true; rDown = lDown = bothDown = -1; rDragging = false; }
 
@@ -127,8 +156,8 @@ namespace Fable
             InputMode = "keyboard";
 #endif
             if (InputMode != lastMode) { lastMode = InputMode; Debug.Log($"[Fable] input: {InputMode}"); ModeChanged?.Invoke(InputMode); }
-            if (r != wasR) { wasR = r; if (r) PinchBegan?.Invoke(true); else PinchEnded?.Invoke(true); }
-            if (l != wasL) { wasL = l; if (l) PinchBegan?.Invoke(false); else PinchEnded?.Invoke(false); }
+            if (r != wasR) { wasR = r; Edge(true, r); }
+            if (l != wasL) { wasL = l; Edge(false, l); }
 #if FABLE_META_XR
             Diagnose();
 #endif
@@ -136,7 +165,7 @@ namespace Fable
             if (suppressed) { if (!l && !r) suppressed = false; return; }
 
             // both hands: quick release toggles the view, a held pinch closes the scene
-            if (l && r)
+            if (LegacyGestures && l && r)
             {
                 if (bothDown < 0) { bothDown = now; bothFired = false; }
                 else if (!bothFired && now - bothDown > HoldToReturn) { bothFired = true; ReturnToReading?.Invoke(); }
@@ -155,7 +184,7 @@ namespace Fable
             {
                 var moved = rPos - rStart;
                 if (!rDragging && moved.magnitude > 0.02f) rDragging = true;
-                if (!rDragging && !rHeld && now - rDown > HoldOneHand) { rHeld = true; ToggleView?.Invoke(); }
+                if (LegacyGestures && !rDragging && !rHeld && now - rDown > HoldOneHand) { rHeld = true; ToggleView?.Invoke(); }
                 if (rDragging)
                 {
                     // one-hand scrolling, as on a phone: a pinched hand moving up (or to the right) scrolls the story forward,
@@ -179,8 +208,8 @@ namespace Fable
             else if (l)
             {
                 if (!lDragging && (lPos - lStart).magnitude > 0.025f) lDragging = true;
-                if (!lDragging && !lHeld && now - lDown > HoldOneHand) { lHeld = true; ReturnToReading?.Invoke(); }
-                if (lDragging)
+                if (LegacyGestures && !lDragging && !lHeld && now - lDown > HoldOneHand) { lHeld = true; ReturnToReading?.Invoke(); }
+                if (LegacyGestures && lDragging)
                 {
                     var right = Camera.main ? Camera.main.transform.right : Vector3.right; right.y = 0; right.Normalize();
                     lAccum += Vector3.Dot(lPos - lLast, right);

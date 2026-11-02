@@ -62,7 +62,9 @@ namespace Fable
             Flow = flow; Reader = reader; Pointer = pointer; Input = input; Director = director;
             Build();
             if (!loading) StartCoroutine(LoadData());
+            if (Input && !Input.Claimers.Contains(ClaimPeek)) Input.Claimers.Add(ClaimPeek);
         }
+        void OnDestroy() { if (Input) Input.Claimers.Remove(ClaimPeek); }
 
         IEnumerator LoadData()
         {
@@ -93,7 +95,7 @@ namespace Fable
                     { startWord = endWord = w; pinchAt = Time.time; Current = Mode.Pending; }
                     break;
                 case Mode.Pending:
-                    if (up) { Current = Mode.Idle; break; }   // a quick pinch: the page turn happens as before
+                    if (up || Input.Claimed(true)) { Current = Mode.Idle; break; }   // a quick pinch turns the page; a pinch a control took is not a highlight
                     if (Pointer.OnPage(true, out var a2) && Reader.WordAt(a2, out var w2, nearest: true)) endWord = w2;
                     float held = Time.time - pinchAt; int moved = Mathf.Abs(endWord - startWord);
                     if ((moved >= 1 && held > DragClaimSeconds) || moved >= 3 || held > HoldToSelect)
@@ -110,6 +112,53 @@ namespace Fable
             }
             if (Current == Mode.Menu || Current == Mode.Card) Hover();
             if (peekRoot) TurnPeek();
+            if (PeekStatus == "generating" && cardBody && Time.time >= nextTick) { nextTick = Time.time + 1f; cardBody.text = generatingText + $"\n<size=80%>{Mathf.FloorToInt(Time.realtimeSinceStartup - peekStarted)} s so far</size>"; }
+        }
+        float nextTick, peekStarted; string generatingText = "";
+
+        // ---------------------------------------------------------------- turning the Peek model by hand
+
+        /// Editor tests: stands in for the pinch of the hand that holds the model (null = live input).
+        public bool? TestPeekPinch;
+        bool peekHeld, peekHeldRight, peekHover, peekTouched; float peekGrabDist; Vector3 peekLast;
+        public string PeekHand => peekHeld ? "held" : peekHover ? "over" : peekRoot ? "free" : "none";
+
+        /// The ray from a hand meets the model's bounds (a little generous), or the hand itself is at the model.
+        bool PeekHit(bool right, out Ray ray, out float dist)
+        {
+            ray = default; dist = 0;
+            var model = PeekModel; if (!model || !Pointer.Ray(right, out ray)) return false;
+            var b = ClayBuilder.Bounds(model, peekRoot); b.Expand(0.05f);
+            var local = new Ray(peekRoot.InverseTransformPoint(ray.origin), peekRoot.InverseTransformDirection(ray.direction));
+            if (b.IntersectRay(local, out dist) && dist < 3f) return true;
+#if FABLE_META_XR
+            var anchor = right ? Input.RightPointer : Input.LeftPointer;
+            if (anchor && b.Contains(peekRoot.InverseTransformPoint(anchor.position))) { dist = Vector3.Distance(ray.origin, anchor.position); return true; }
+#endif
+            return false;
+        }
+
+        bool ClaimPeek(bool right)
+        {
+            if (!peekRoot || !PeekHit(right, out var ray, out var d)) return false;
+            peekHeld = true; peekHeldRight = right; peekTouched = true; peekGrabDist = Mathf.Max(0.1f, d); peekLast = ray.GetPoint(peekGrabDist);
+            Debug.Log("[Fable] peek: model held");
+            return true;
+        }
+
+        void HoldPeek()
+        {
+            var model = PeekModel; if (!model) { peekHeld = false; return; }
+            bool pinching = TestPeekPinch ?? (peekHeldRight ? Input.RightPinching : Input.LeftPinching);
+            if (!pinching) { peekHeld = false; if (grabScaled) model.localScale /= 1.05f; grabScaled = false; Debug.Log("[Fable] peek: model let go"); return; }
+            if (!Pointer.Ray(peekHeldRight, out var ray)) return;
+            var p = ray.GetPoint(peekGrabDist); var delta = p - peekLast; peekLast = p;
+            var head = Camera.main ? Camera.main.transform : null; if (!head) return;
+            var right = Vector3.ProjectOnPlane(head.right, Vector3.up).normalized;
+            var centre = peekRoot.TransformPoint(ClayBuilder.Bounds(model, peekRoot).center);
+            // 0.25 m of hand travel is a full turn round; up and down tips it, at most a quarter turn either way
+            model.RotateAround(centre, Vector3.up, -Vector3.Dot(delta, right) * 1440f);
+            model.RotateAround(centre, right, Vector3.Dot(delta, Vector3.up) * 720f);
         }
 
         bool OverControl() => Reader.PressAt(true, dryRun: true);
@@ -315,8 +364,9 @@ namespace Fable
         {
             var url = Director ? Director.InterpreterUrl : "";
             if (string.IsNullOrEmpty(url)) { ShowCard("Peek", $"No model for “{Phrase.Trim()}” in the library, and the interpreter is not set up, so one cannot be made now."); PeekStatus = "no-match-offline"; yield break; }
-            ShowCard("Peek", $"Making a clay model of “{Phrase.Trim()}”…\n<size=80%><i>Claude is shown the book up to the end of your highlight, and nothing after it.</i></size>");
-            PeekStatus = "generating";
+            generatingText = $"Making a clay model of “{Phrase.Trim()}”…\n<size=80%><i>Claude is shown the book up to the end of your highlight, and nothing after it.</i></size>";
+            ShowCard("Peek", generatingText);
+            PeekStatus = "generating"; peekStarted = t0; nextTick = Time.time + 1f;
             var body = JsonConvert.SerializeObject(new { book = Reader.Book.Slug, sentenceId = LastSentence, phrase = Phrase.Trim(), waitSeconds = 8 });
             while (Time.realtimeSinceStartup - t0 < PeekWaitSeconds)
             {
@@ -370,7 +420,7 @@ namespace Fable
             if (tris < 0) { ClosePeek(); ShowCard("Peek", "That model is over the triangle budget, so it is not shown."); PeekStatus = "over-budget"; return; }
             PeekTriangles = tris; PeekStatus = "clay";
             foreach (var l in m.Labels) if (peekParts.TryGetValue(l.Part, out var t)) AddLabel(l.Text, l.Quote, t);
-            ShowCard("Peek", $"<b>{m.Title}</b>{(string.IsNullOrEmpty(m.RealHeight) ? "" : $"  ·  {m.RealHeight}")}\n<size=80%><i>A clay model {from}: {tris} triangles. It turns slowly beside the page.</i></size>");
+            ShowCard("Peek", $"<b>{m.Title}</b>{(string.IsNullOrEmpty(m.RealHeight) ? "" : $"  ·  {m.RealHeight}")}\n<size=80%><i>A clay model {from}: {tris} triangles. Pinch and hold it to turn it.</i></size>");
             LayoutLabels();
         }
 
@@ -405,7 +455,7 @@ namespace Fable
                 anchor.position = root.TransformPoint(b.center + Vector3.Scale(b.size, at));
                 AddLabel(l.Text, l.Quote, anchor);
             }
-            ShowCard("Peek", $"<b>{e.Title}</b>{(string.IsNullOrEmpty(e.RealHeight) ? "" : $"  ·  {e.RealHeight}")}\n<size=80%><i>The model from this room: {tris} triangles. It turns slowly beside the page.</i></size>");
+            ShowCard("Peek", $"<b>{e.Title}</b>{(string.IsNullOrEmpty(e.RealHeight) ? "" : $"  ·  {e.RealHeight}")}\n<size=80%><i>The model from this room: {tris} triangles. Pinch and hold it to turn it.</i></size>");
             LayoutLabels();
         }
 
@@ -440,9 +490,14 @@ namespace Fable
 
         void TurnPeek()
         {
-            // the model turns; the labels stay put and their lines follow the parts
+            // the model turns slowly until the reader takes hold of it; the labels stay put and their lines follow the parts
             var model = PeekModel;
-            if (model) model.Rotate(Vector3.up, 14f * Time.deltaTime, Space.World);
+            if (peekHeld) HoldPeek();
+            if (peekHeld && model && !grabScaled) { model.localScale *= 1.05f; grabScaled = true; }   // it lifts a little in the hand
+            peekHover = !peekHeld && (PeekHit(true, out _, out _) || PeekHit(false, out _, out _));
+            var lamp = peekRoot.GetComponentInChildren<Light>();
+            if (lamp) lamp.intensity = peekHeld ? 5.2f : peekHover ? 4.3f : 3.2f;
+            if (model && !peekTouched) model.Rotate(Vector3.up, 14f * Time.deltaTime, Space.World);
             foreach (var (text, line, target) in peekLabels)
             {
                 if (!target) continue;
@@ -450,6 +505,8 @@ namespace Fable
                 line.SetPosition(0, start); line.SetPosition(1, target.position);
             }
         }
+
+        bool grabScaled;
 
         Transform PeekModel
         {
@@ -466,6 +523,7 @@ namespace Fable
                 Destroy(peekRoot.gameObject);
             }
             peekRoot = null; peekParts.Clear(); peekLabels.Clear(); PeekTriangles = 0;
+            peekHeld = peekHover = peekTouched = grabScaled = false;
         }
 
         // ---------------------------------------------------------------- card

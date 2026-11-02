@@ -81,12 +81,37 @@ namespace Fable
             Debug.Log($"[Fable] lobby: {books.Count} books on the shelf");
             MakeRay();
             if (Input) Input.PinchBegan += OnPinch;
+            // the view toolbar: turn to see the room, and "recentre" faces the shelf again
+            View = GetComponent<ViewControls>() ? GetComponent<ViewControls>() : gameObject.AddComponent<ViewControls>();
+            View.Init(Input, Head, RigRoot(), null, Font);
+            View.Recentred += FaceShelf;
             string json = null; yield return Streaming.Text("books/index.json", s => json = s);
             if (json != null) yield return Streaming.Parse<BooksIndex>(json, i => index = i);
             RefreshLabels();
         }
 
         void OnDestroy() { if (Input) Input.PinchBegan -= OnPinch; }
+
+        public ViewControls View { get; private set; }
+
+        Transform RigRoot()
+        {
+            Transform rig = Head ? Head.parent : null;
+#if FABLE_META_XR
+            var ovr = Head ? Head.GetComponentInParent<OVRCameraRig>() : null; if (ovr) rig = ovr.transform;
+#endif
+            return rig;
+        }
+
+        /// Turn the view (about the head) so the reader faces the bookcase again.
+        public void FaceShelf()
+        {
+            var rig = RigRoot(); if (!rig || !Head || books.Count == 0) return;
+            var c = Vector3.zero; foreach (var b in books) c += b.T.position; c /= books.Count;
+            var want = Vector3.ProjectOnPlane(c - Head.position, Vector3.up); var have = Vector3.ProjectOnPlane(Head.forward, Vector3.up);
+            if (want.sqrMagnitude < 1e-4f || have.sqrMagnitude < 1e-4f) return;
+            rig.RotateAround(Head.position, Vector3.up, Vector3.SignedAngle(have, want, Vector3.up));
+        }
 
         static IEnumerable<Vector3> Corners(Bounds b)
         {
@@ -173,6 +198,7 @@ namespace Fable
             foreach (var right in new[] { true, false })
             {
                 if (!PointRay(right, out var r)) continue;
+                if (View && View.RayOnBar(right)) continue;   // the toolbar draws its own ray
                 var h = Hit(r, out var p);
                 if (h != null || !shown)
                 {

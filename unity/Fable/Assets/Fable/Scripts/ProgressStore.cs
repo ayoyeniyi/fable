@@ -32,6 +32,18 @@ namespace Fable
         public string SavedAtUtc;
     }
 
+    /// The reader's preferences: kept across restarts with their progress.
+    [Serializable]
+    public class Prefs
+    {
+        /// Degrees per view turn (the toolbar's ‹ turn / turn › and the controller stick).
+        public float TurnDegrees = 30f;
+        /// The reader's own size for the page, on top of each state's placement (the page's resize handle).
+        public float PanelScale = 1f;
+        /// Contextual hints already shown once.
+        public List<string> HintsShown = new();
+    }
+
     /// progress.json: the passage read last, and where the reader is in each passage.
     /// Older files held a single Progress at the top level; they are read as that passage's entry.
     [Serializable]
@@ -41,6 +53,7 @@ namespace Fable
         public Dictionary<string, Progress> Scenes = new();
         public string LastBook;
         public Dictionary<string, BookProgress> Books = new();
+        public Prefs Prefs = new();
         // legacy single-passage fields
         public string SceneId; public int BeatIndex = -1; public string SentenceId; public string SavedAtUtc;
     }
@@ -60,6 +73,7 @@ namespace Fable
                     var f = JsonConvert.DeserializeObject<ProgressFile>(File.ReadAllText(ProgressPath)) ?? new ProgressFile();
                     f.Scenes ??= new Dictionary<string, Progress>();
                     f.Books ??= new Dictionary<string, BookProgress>();
+                    f.Prefs ??= new Prefs(); f.Prefs.HintsShown ??= new List<string>();
                     if (!string.IsNullOrEmpty(f.SceneId) && !f.Scenes.ContainsKey(f.SceneId))
                     {
                         f.Scenes[f.SceneId] = new Progress { SceneId = f.SceneId, BeatIndex = f.BeatIndex, SentenceId = f.SentenceId, SavedAtUtc = f.SavedAtUtc };
@@ -87,15 +101,29 @@ namespace Fable
                 f.Scenes[sceneId] = new Progress { SceneId = sceneId, BeatIndex = beatIndex, SentenceId = sentenceId, SavedAtUtc = DateTime.UtcNow.ToString("o") };
                 f.LastSceneId = sceneId;
                 f.SceneId = null; f.BeatIndex = -1; f.SentenceId = null; f.SavedAtUtc = null;
-                File.WriteAllText(ProgressPath, JsonConvert.SerializeObject(f, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                WriteFile(f);
             }
             catch (Exception e) { Debug.LogWarning($"[Fable] progress not saved: {e.Message}"); }
         }
 
         static void WriteFile(ProgressFile f)
         {
-            try { File.WriteAllText(ProgressPath, JsonConvert.SerializeObject(f, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })); }
+            // written beside and then swapped in, so a crash mid-write never leaves a half file behind
+            try
+            {
+                var tmp = ProgressPath + ".tmp";
+                File.WriteAllText(tmp, JsonConvert.SerializeObject(f, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+                Swap(tmp, ProgressPath);
+            }
             catch (Exception e) { Debug.LogWarning($"[Fable] progress not saved: {e.Message}"); }
+        }
+
+        /// Move a freshly written file over the old one (rename on the same volume; falls back to delete-and-move).
+        public static void Swap(string tmp, string path)
+        {
+            if (!File.Exists(path)) { File.Move(tmp, path); return; }
+            try { File.Replace(tmp, path, null); }
+            catch (Exception) { File.Delete(path); File.Move(tmp, path); }
         }
 
         /// Where the reader is in a book (SentenceId null if never opened).
@@ -115,6 +143,12 @@ namespace Fable
             f.Books[b.Slug] = b; f.LastBook = b.Slug;
             WriteFile(f);
         }
+
+        public static Prefs LoadPrefs() => ReadFile().Prefs;
+        public static void SavePrefs(Prefs p) { var f = ReadFile(); f.Prefs = p; WriteFile(f); }
+
+        /// Forget one book's place, bookmarks and settings (an imported book being removed).
+        public static void ForgetBook(string slug) { var f = ReadFile(); if (f.Books.Remove(slug)) { if (f.LastBook == slug) f.LastBook = null; WriteFile(f); } }
 
         public static string LoadCachedScript(string sceneId)
         {

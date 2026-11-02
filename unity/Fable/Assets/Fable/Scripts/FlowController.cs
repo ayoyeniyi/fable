@@ -211,14 +211,12 @@ namespace Fable
             Tasks = GetComponent<StoryTasks>() ? GetComponent<StoryTasks>() : gameObject.AddComponent<StoryTasks>(); Tasks.Init(Director, this, Input, Head);   // do-what-Alice-does tasks
             // the generated sky dome is 60 m out; a 60 m far plane clipped a black hole in it overhead
             foreach (var cam in FindObjectsByType<Camera>(FindObjectsSortMode.None)) if (cam.farClipPlane < 150f) cam.farClipPlane = 150f;
-            Transform rigRoot = Head ? Head.parent : null;
-#if FABLE_META_XR
-            var ovrRig = Head ? Head.GetComponentInParent<OVRCameraRig>() : null; if (ovrRig) rigRoot = ovrRig.transform;
-#endif
+            Transform rigRoot = RigRoot();
             Move = GetComponent<Locomotion>() ? GetComponent<Locomotion>() : gameObject.AddComponent<Locomotion>(); Move.Init(this, Director, Input, Head, rigRoot);   // point and pinch to go there
             // the book: the passage's own book, read cover to cover on the page
             Pointer = Panel.GetComponent<PagePointer>() ? Panel.GetComponent<PagePointer>() : Panel.gameObject.AddComponent<PagePointer>();
             Pointer.Reader = Input; Pointer.Page = (RectTransform)Panel.transform;
+            SetUpControls();
             Reader = GetComponent<BookReader>() ? GetComponent<BookReader>() : gameObject.AddComponent<BookReader>();
             Reader.Panel = Panel; Reader.Pointer = Pointer; Reader.Input = Input;
             Reader.StagePassages = passages;
@@ -246,6 +244,56 @@ namespace Fable
             if (LobbyController.OpenedAt >= 0) { Debug.Log($"[Fable] {Reader.Book.Slug} on the page {(Time.realtimeSinceStartup - LobbyController.OpenedAt) * 1000:F0} ms after the pinch on the shelf"); LobbyController.OpenedAt = -1; }
         }
 
+        public ViewControls View { get; private set; }
+        public PanelHandles Handles { get; private set; }
+
+        Transform RigRoot()
+        {
+            Transform rigRoot = Head ? Head.parent : null;
+#if FABLE_META_XR
+            var ovrRig = Head ? Head.GetComponentInParent<OVRCameraRig>() : null; if (ovrRig) rigRoot = ovrRig.transform;
+#endif
+            return rigRoot;
+        }
+
+        /// The page's handles and the view toolbar, the same in every reading scene.
+        void SetUpControls()
+        {
+            Handles = Panel.GetComponent<PanelHandles>() ? Panel.GetComponent<PanelHandles>() : Panel.gameObject.AddComponent<PanelHandles>();
+            Handles.Init(Panel, Pointer, Input, Head); Pointer.Handles = Handles;
+            View = GetComponent<ViewControls>() ? GetComponent<ViewControls>() : gameObject.AddComponent<ViewControls>();
+            View.Init(Input, Head, RigRoot(), (RectTransform)Panel.transform, Panel.Body ? Panel.Body.font : null);
+            View.Recentred += () => Panel.Recentre();
+            View.Turned += _ => Panel.HoldStill();
+        }
+
+        string viewState;
+        /// The toolbar's actions follow the state: the visible way back from every place the reader can be.
+        void Update()
+        {
+            if (!View) return;
+            View.MinY = ReadingRoom && ReadingRoom.activeInHierarchy && ReadingRoom.transform.Find("DioramaTable") ? 0.74f : float.NegativeInfinity;
+            var key = busy ? "busy" : Current.ToString();
+            if (key == viewState) return;
+            viewState = key;
+            switch (key)
+            {
+                case "Miniature":
+                    View.SetActions(("\u2039 return to reading", () => OnReturn()), ("stand in the room \u203a", () => { if (Current == State.Miniature && !busy) StartCoroutine(Expand()); }));
+                    View.Tip("miniature", "Point into the little room and pinch to stand there, or pinch \u201cstand in the room\u201d.");
+                    break;
+                case "Scene":
+                    View.SetActions(("\u2039 return to reading", () => OnReturn()), ("back to the table", () => { if (Current == State.Scene && !busy) StartCoroutine(Shrink()); }));
+                    View.Tip("scene", "Point at the floor and pinch to go there. \u201creturn to reading\u201d closes the scene.");
+                    break;
+                case "Reading":
+                    View.SetActions();
+                    View.Tip("view", "\u2039 turn and turn \u203a show you the room around you. Recentre brings the page back.");
+                    break;
+                default: View.SetActions(); break;   // moving between states: only the view buttons
+            }
+        }
+
         /// A book's own room: the room is the reading space. Same page, pointer, highlight menu and gestures as the passage
         /// scenes, without the director's passage, the diorama or the tasks.
         IEnumerator RoomStart()
@@ -263,6 +311,7 @@ namespace Fable
             if (Panel && !Panel.GetComponent<GestureCues>()) Panel.gameObject.AddComponent<GestureCues>();
             Pointer = Panel.GetComponent<PagePointer>() ? Panel.GetComponent<PagePointer>() : Panel.gameObject.AddComponent<PagePointer>();
             Pointer.Reader = Input; Pointer.Page = (RectTransform)Panel.transform;
+            SetUpControls();
             Reader = GetComponent<BookReader>() ? GetComponent<BookReader>() : gameObject.AddComponent<BookReader>();
             Reader.Panel = Panel; Reader.Pointer = Pointer; Reader.Input = Input;
             Reader.StagePassages = passages;   // none: no Step In from a room yet
@@ -358,10 +407,10 @@ namespace Fable
         void OnInputMode(string mode) { if (busy) return; if (Current == State.Reading) return; else if (Director.Script != null && Director.BeatIndex >= 0) Panel.Show(Director.PassageScene, Director.Script.Beats[Director.BeatIndex].SentenceId, Hint()); }
 
         string TaskNote => Tasks != null && Tasks.Prompt != "" ? $"<b>{Tasks.Prompt}</b>   " : "";
-        string Walk => Input.InputMode == "controllers" ? "right stick: walk \u00b7 left stick: turn" : "swing your arms: walk \u00b7 left pinch and slide sideways: turn";
+        string Walk => Input.InputMode == "controllers" ? "right stick: walk (optional)" : "swing your arms: walk (optional)";
         string Hint() => TaskNote + InputNote + (Current == State.Scene
-            ? $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   point at the floor and {Pinch}: go there \u00b7 {Walk} \u00b7 point at the key or bottle, {Pinch} and keep holding: pick it up \u00b7 point at the little door and {Pinch}: go through \u00b7 {Pinch}: next sentence \u00b7 hold right {Pinch}: back to the table \u00b7 hold left {Pinch}: close the book"
-            : $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   point into the little room and {Pinch}: step in there \u00b7 {Pinch}: next sentence \u00b7 {Pinch} and drag: scroll \u00b7 hold left {Pinch}: close the book");
+            ? $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   point at the floor and {Pinch}: go there \u00b7 point at the key or bottle, {Pinch} and keep holding: pick it up \u00b7 point at the little door and {Pinch}: go through \u00b7 {Pinch}: next sentence \u00b7 {Walk} \u00b7 the bar below: turn, back to the table, return to reading"
+            : $"{Director.BeatIndex + 1} / {Director.Script.Beats.Count}   point into the little room and {Pinch}: stand there \u00b7 {Pinch}: next sentence \u00b7 {Pinch} and drag: scroll \u00b7 the bar below: turn, stand in the room, return to reading");
 
         // A right tap fires Next and Select together; on the page, Next does the work (Select stays for the scene states).
         void OnSelect() { }
@@ -398,7 +447,7 @@ namespace Fable
             if (busy) return;
             if (Current == State.Miniature) StartCoroutine(Expand());
             else if (Current == State.Scene) StartCoroutine(Shrink());
-            else if (Current == State.Reading && !(Highlight && Highlight.Busy)) StepIn();
+            // Step In from the page is the menu's label or the page's "Step in ›" button, never a gesture
         }
         void OnReturn() { if ((Current == State.Scene || Current == State.Miniature) && !busy) StartCoroutine(Return()); }
 

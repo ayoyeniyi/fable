@@ -15,6 +15,8 @@ namespace Fable
         public Color Dot = new(0.62f, 0.42f, 0.10f, 0.85f);
 
         Image cursor; LineRenderer ray; Material rayMat; BookReader reader;
+        /// The page's move and resize handles: the cursor grows over them as over any control.
+        public PanelHandles Handles;
 
         /// Editor tests: a right-hand ray to use instead of the hand or mouse (null = live input).
         public Ray? TestRay;
@@ -82,10 +84,11 @@ namespace Fable
             if (!cursor) return;
             bool right = true;
             bool on = OnPage(true, out var p); if (!on) { right = false; on = OnPage(false, out p); }
+            if (on && ViewControls.Instance && ViewControls.Instance.RayOnBar(right)) on = false;   // the bar draws its own ray
             cursor.gameObject.SetActive(on);
             if (ray) ray.enabled = on;
             if (!on) return;
-            bool overControl = reader && reader.Active && (reader.PressAt(right, dryRun: true) || reader.OverStepIn(right));
+            bool overControl = (reader && reader.Active && (reader.PressAt(right, dryRun: true) || reader.OverStepIn(right))) || (Handles && Handles.Over(right));
             cursor.rectTransform.localPosition = new Vector3(p.x, p.y, -1f); cursor.transform.SetAsLastSibling();
             cursor.rectTransform.sizeDelta = Vector2.one * (overControl ? 26f : 16f);
             cursor.color = overControl ? new Color(0.80f, 0.36f, 0.08f, 0.95f) : Dot;
