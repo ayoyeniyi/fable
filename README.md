@@ -63,9 +63,23 @@ adb shell screencap -p /sdcard/fable.png && adb pull /sdcard/fable.png captures/
 
 In the lobby (where the app opens): point at a book on the shelf and it slides forward; pinch to open it. A card on the shelf edge under each book says how far you have read. On the page, **‹ shelf** goes back to the lobby. Each book opens in its own room: Alice in the Hall of Doors, Oz in the Kansas farmhouse with the storm coming, the Odyssey in Calypso's cave, Gulliver on the table in Glumdalclitch's room at doll scale. In the three new rooms the page floats in the room itself; Step In is Alice's only (P1 for the others). Credits for every text, image, font and piece of music: `CREDITS.md`.
 
-On the page: point with a hand (or controller) and pinch. A pinch on **contents**, **text size** or **bookmark** presses it; a pinch anywhere else turns the page, a left pinch turns back, and a pinch-drag flips pages. When the page holds a staged passage, **Step in ›** (or holding the right pinch) opens it as a miniature. In the scene: point and pinch on the floor to go there, on the little door to go through; a pinch at nothing reads on; hold left pinch to close and return to the page at the sentence reached. In the editor: the mouse is the right hand's ray; Space / Backspace / Tab / Escape.
+Fable is designed to be used from one place, seated or standing. A bar of buttons under the page (or low in front of you, once you have turned away from the page) holds:
+- **‹ turn** and **turn ›**: 30° about your head, one turn per pinch.
+- **recentre**: brings the page back in front of you.
+- the way back from wherever you are: **‹ return to reading**, **back to the table**, **stand in the room ›**.
 
-**Highlighting.** Pinch on the text and drag the ray across words (or hold still on one word for half a second); release, and a ring opens around the words: **Define** (Webster 1913, offline), **Translate** (shown, not built yet: P1), **Search** (sentences already read that contain the words; pinch one to go there), **Peek** (a low-fi model with labels beside the page), **Step in** (stage the passage from the highlighted sentence). A quick pinch still turns the page. Pinch away from the ring, or left pinch, to close.
+The page stays where you put it. Move it with the bar under it, and resize it with its bottom-right corner.
+
+On the page: point with a hand (or controller) and pinch. A pinch on **contents**, **text size** or **bookmark** presses it; a pinch anywhere else turns the page, a left pinch turns back, and a pinch-drag flips pages. When the page holds a staged passage, **Step in ›** (or the highlight menu's Step in) opens it as a miniature. In the scene: point and pinch on the floor to go there, on the little door to go through; a pinch at nothing reads on. In the editor: the mouse is the right hand's ray; Space / Backspace / Escape.
+
+**Your own books.** The lobby is your library: a board in front of you lists the four Fable editions and every book you add.
+1. Pinch **+ add a book**. The headset shows an address and a code.
+2. On a phone or computer on the same Wi-Fi, open the address, type the code and send an EPUB (DRM-free) or a PDF, up to 150 MB.
+3. Keep reading while it imports.
+
+Imported books open in the library room. PDFs show their pages as laid out, and have a text view for highlighting where the PDF has real text. Formats, limits and what happens when something goes wrong: `docs/LIBRARY.md`.
+
+**Highlighting.** Pinch on the text and drag the ray across words (or hold still on one word for half a second); release, and a ring opens around the words: **Define** (Webster 1913, offline), **Translate** (shown, not built yet: P1), **Search** (sentences already read that contain the words; pinch one to go there), **Peek** (a low-fi model with labels beside the page: point at it, pinch and hold to turn it), **Step in** (stage the passage from the highlighted sentence). For your own books Peek and Step In are shown greyed, with the reason. A quick pinch still turns the page. Pinch away from the ring, or left pinch, to close.
 
 Peek looks in the library first: a prop of the room that is loaded, or a shipped clay model; otherwise it asks the interpreter (`POST /peek`), which asks Claude for a clay model shown only the book up to the end of the highlight. Library entries are never offered before the sentence that introduces them, and the interpreter's cache never serves a model made from further on than the reader has read.
 

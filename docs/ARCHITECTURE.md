@@ -29,7 +29,22 @@
 
 **Build.** `FableBuild.cs` exposes ConfigureProject, ConfigureXR, BuildScene, BakeLighting, BuildApk, CaptureDesktopPreviews as `-executeMethod` entry points, and the same calls work live through the Unity CLI's Pipeline package (`unity command eval 'Fable.Editor.FableBuild.BuildScene();'`). Quest settings: Android, ARM64, IL2CPP, Vulkan, ASTC, URP with MSAA 4x, single-pass instanced stereo, OpenXR with the Meta XR feature and hand tracking.
 
-**Budgets (Quest 2).** Target about 35k triangles and under 50 meshes per environment. The lobby (10k / 35), Kansas farmhouse (30k / 28), Calypso's cave (34k / 34), Glumdalclitch's room (30k / 31), tea party (35k / 26) and croquet ground (36k / 42) meet it; the hall is 61k / 44 and is the first to cut if Quest 2 profiling demands it. Textures are compressed to ASTC on import (6x6 colour and data, 4x4 normals), with mipmaps, 2K max, plus one 4K ground per scene. Lights are baked (Mixed) with no realtime shadows; there is one baked reflection probe per scene and 6 pooled spatial audio sources. APK: 175 MB for all three scenes.
+**Input for a reader in one place.** `ReaderController` turns hands and controllers into pinches, taps and drags. A pinch is first offered to the controls in `ReaderController.Claimers`, in this order:
+1. the view toolbar
+2. the library board
+3. the page handles
+4. a Peek model
+
+The first control to take the pinch owns it until release; only unclaimed pinches turn pages, highlight, grab or open books. `ViewControls` turns the rig about the head (30° steps). `ReadingPanel` is world-anchored and recentred on request. Rooms follow `docs/ENVIRONMENT_BRIEF.md`.
+
+**The personal library.** `Library` (a scene-surviving singleton) owns:
+- the imported books' index
+- the upload server (`UploadServer`: HTTP on the local Wi-Fi, code-gated)
+- imports, done on a worker thread into a staging folder and swapped in
+
+`EpubImport` and `PdfText`/`PdfImport` produce the same `Book` shape and id scheme as `tools/ingest_book.py`, so the reader, highlighting, Search and progress are shared code. `PdfPages` draws PDF pages with the platform renderer: Android `PdfRenderer` on the headset, PDFKit in the editor. Details: `docs/LIBRARY.md`.
+
+**Budgets (Quest 2).** Target about 35k triangles and under 50 meshes per environment. The lobby (10k / 35), Kansas farmhouse (30k / 28), Calypso's cave (34k / 34), Glumdalclitch's room (30k / 31), tea party (35k / 26) and croquet ground (36k / 42) meet it; the hall is 61k / 44 and is the first to cut if Quest 2 profiling demands it. Textures are compressed to ASTC on import (6x6 colour and data, 4x4 normals), with mipmaps, 2K max, plus one 4K ground per scene. Lights are baked (Mixed) with no realtime shadows; there is one baked reflection probe per scene and 6 pooled spatial audio sources. APK: 343 MB with all eight scenes (lobby, library room, the three Alice places, the three step 7 rooms).
 
 **Interpret protocol.** `POST /interpret {sceneId, readingPosition, noCache?, waitSeconds?}`. A valid cached script answers `200` with `X-Fable-Cache: hit`. Otherwise the server starts (or joins) the single generation for that scene, which runs on its own 8-minute context, and waits up to `waitSeconds` (server default 3 s, cap 120 s): a finished script answers `200` with `X-Fable-Cache: miss`, a failure `502`, and anything still running `202 {"status":"generating","retryAfterSeconds":15}` with `X-Fable-Cache: pending`. The reader is never kept on a blank page by a slow model: the client shows its cached or bundled script, and the live one is there the next time the passage opens. Every script is validated twice server-side (interpreter output, then before caching) and once more in Unity.
 

@@ -1,4 +1,4 @@
-# Fable handover (updated 2026-10-31, step 7: the three new rooms, sound and credits)
+# Fable handover (updated 2026-11-02: stationary controls, the personal library and book uploads)
 
 Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs/TOOLING.md`. Everything below was true at the commit that last touched this file. "Verified" always says where: **editor** (Unity play mode on a Mac, desktop camera, no HMD) or **headset**. Nothing has been verified on a headset yet.
 
@@ -141,9 +141,96 @@ The reader found two-hand gestures unintuitive and reached the garden by acciden
 
 **Live interpreter on this Mac (2026-10-31, evening).** An API key now lives in `~/.config/fable/env` here (created in the Anthropic Console for this machine; never in the repo). First live Peek: `mock --book alice --passage "little golden key" --phrase "golden key"` made a valid 6-part, 600-triangle model with 3 labels on the first attempt in 13.5 s (claude-opus-5-5). The server runs as `fable-interpreter serve --addr 127.0.0.1:8787 --wait 20s` with `adb reverse tcp:8787 tcp:8787`. The headset runs Fable in a secondary account (user 10), whose app folder adb cannot write, so `interpreter.txt` cannot be pushed there; the app now defaults to `http://127.0.0.1:8787` on Android when that file is absent (a refused connection falls back to the bundled script at once). The old Fable on the headset (signed on another machine, installed for user 0) was uninstalled to install this Mac's build; its progress was lost.
 
+**Stationary controls (2026-11-01, owner's brief: a reader who stays in one place, seated or standing): built, editor-verified; not tried on the headset.**
+- **Every essential action has a visible control.** The pinch-and-pull-apart (both hands) Step In, the hold-right Step In, the hold-left close and the left-hand drag-to-turn are off (`ReaderController.LegacyGestures = false`). Step In is the highlight menu's label or the page's **Step in ›**.
+- **View toolbar** (`ViewControls.cs`, in every reading scene and the lobby):
+  - Buttons: **‹ turn**, **recentre**, **turn ›**, plus the way back from wherever the reader is:
+    - Miniature: **‹ return to reading**, **stand in the room ›**
+    - Scene: **‹ return to reading**, **back to the table**
+    - Lobby: **face the shelf**
+  - A turn rotates the rig 30° about the tracked head, on the vertical axis only, with no translation, pitch or roll. The step is saved in `Prefs.TurnDegrees`; headset testing should confirm it.
+  - Each pinch fires once, on its first frame, and holding never repeats.
+  - The controller's left stick turns one step per push, in every state.
+  - The bar docks under the page and floats low in front of the reader once they turn away. Over the Alice reading room's diorama table it rises and comes forward rather than sinking into it.
+- **Pinch claiming** (`ReaderController.Claimers`): a pinch that starts on the toolbar, a page handle, a Peek model or the library board belongs to that control. It is never also a page turn, scroll, highlight, grab, or book opened on the shelf behind.
+- **The page stays put in the room.** It no longer trails the head; **recentre** brings it back. It still follows teleports and walking (`ReadingPanel.Shift`) and a change of eye height while the reader faces it.
+- **Page handles** (`PanelHandles.cs`): a bar under the page (pinch, hold and move) and a corner at bottom right (pinch, hold, and drag out or in, 0.7x to 1.6x). The size is saved in `Prefs.PanelScale`. Both brighten on hover and while held.
+- **Peek**: point at the model, pinch and hold, and move the hand. Sideways turns it round (0.25 m of hand travel is a full turn); up and down tips it. The model lifts 5% while held and stays as left; the slow automatic spin stops once it has been touched. The card says "Pinch and hold it to turn it." While a model is being made, the card counts real seconds.
+- **Hints**: one-time tips under the bar (`ViewControls.Tip`, remembered in `Prefs.HintsShown`). The gesture row and the page's hint line no longer mention hold gestures.
+- **Verified in the editor:**
+  - turns, through the real button path: the head did not move (0.0000 m) and the rig turned exactly 30°
+  - recentre, with the bar docking again
+  - Step In → stand in the room → back to the table → return to reading, using only bar buttons
+  - the move handle and the resize handle (scale saved)
+  - Peek grab: a 79° turn from a 6 cm hand move, with no spin after release
+  - the lobby bar and face the shelf
+  - 0 console errors
+
+  Desktop previews: `captures/desktop/desktop-preview_HallOfDoors_{stationary-toolbar,peek-grab}.png`, `desktop-preview_Lobby_lobby-toolbar.png`.
+- **Not verified (needs the headset and a first-time reader):** whether a new reader finds the bar, the handles and the grab without coaching; whether hand-ray jitter makes the 6.6 cm buttons hard to hit; comfort of 30° steps; the palm-up shortcut menu (not built: the bar is always reachable, so it was left out).
+
+**Personal library and book uploads (2026-11-01/02): built, editor-verified end to end over HTTP; the APK builds; not tried on the headset (it was not connected when the build finished).** Full description, formats, limits and failure handling: `docs/LIBRARY.md`.
+- **The library board** (`Scripts/Library/LibraryPanel.cs`): the lobby's board shows bundled and imported books with covers (drawn ones when missing), badges, progress, continue, paging and remove (asks first).
+- **Sending a book:** "+ add a book" starts the headset's upload page (`UploadServer.cs`, port 8642, code-gated) on the local Wi-Fi.
+- **Importing** (`Library.cs`): EPUB (`EpubImport.cs`) or PDF (`PdfText.cs` + `PdfImport.cs`) runs on a worker thread, in a staging folder, and moves into place in one step.
+- **Reading:**
+  - Imported books read in **LibraryRoom** (the lobby room in room mode, `SceneDef library-room`).
+  - PDFs have a page view (`PdfPages.cs`: Android `PdfRenderer` on the headset, PDFKit via `tools/pdf_page.swift` in the editor) and a text view where the text is reliable.
+  - Peek and Step In are greyed with a reason for imported books.
+- **Test set:** in the session scratchpad, rebuilt by the commands in `docs/LIBRARY.md`'s spirit.
+  - EPUBs: Standard Ebooks Oz, Gutenberg Moby-Dick (EPUB 2), Gutenberg Pride and Prejudice (EPUB 3 with images, 24 MB), Moby-Dick with its cover stripped.
+  - PDFs: a Chrome-made PDF (CID fonts + ToUnicode), a Quartz-made PDF (Core Text), a hand-written Type 1 PDF with no ToUnicode, a two-page scanned (image-only) PDF.
+  - Failures: a DRM-marked EPUB, a truncated EPUB, a fake Word file named .pdf, a .mobi, a .txt.
+
+**Editor results** (every file sent through the real HTTP server in play mode):
+
+| File | Result |
+|---|---|
+| Standard Ebooks Oz | 25 chapters / 2,117 sentences: **identical to `tools/ingest_book.py`** |
+| Moby-Dick | 140 chapters, several per file, split at the contents' anchors |
+| Pride and Prejudice | 63 chapters, Gutenberg header and licence dropped |
+| Moby-Dick without its cover | drawn cover |
+| Chrome PDF | 12 pages / 240 sentences, paragraphs joined across lines |
+| Quartz PDF | 9 / 145 |
+| Type 1 PDF | curly quotes from WinAnsi, a hyphenated word rejoined |
+| Scanned PDF | 2 pages, no text, "pages only" |
+| Duplicate | not added again |
+| DRM EPUB | refused: encrypted (DRM) |
+| Truncated EPUB | refused: "not a complete zip archive" |
+| .mobi and .txt | refused before transfer, with Kindle or plain-text advice |
+| Interrupted transfer (raw socket) | "stopped after … nothing was added"; partial file deleted |
+| 400 MB declared | 413 before any byte is stored |
+| Board closed | 409 |
+| Five wrong codes | the code changes |
+
+Imports take 0.4 to 1.0 s on the Mac from the first byte, including the 24 MB EPUB.
+
+- **Reading checks in the editor:**
+  - An imported EPUB opens from the board in LibraryRoom; Define and Search work, and Peek and Step In are greyed with a reason.
+  - PDF page view draws real pages (82 to 95 ms a page via PDFKit on the Mac).
+  - Page turns, bookmarks, contents by tens of pages, and the text view at the same page all work, with Define in the text view and back again.
+  - The scanned PDF is page view only, with the footer saying why.
+  - After a restart, "continue" reopens the PDF at page 3 with its bookmark.
+
+  Desktop previews: `desktop-preview_Lobby_library-{board,add-card}.png`, `desktop-preview_LibraryRoom_{imported-epub-menu,pdf-page-view,pdf-scanned}.png`.
+- **Not verified on the headset:**
+  - **Wi-Fi and the device:** the server on the Quest's Wi-Fi, and that its Wi-Fi address is found (a UDP-connect trick, Dns fallback), with a real phone on the same network.
+  - **PDF rendering on device:** `PdfRenderer` through JNI, including the null-argument `render` call, page draw time on the XR2 (estimate 50 to 150 ms at 1300 px), and texture memory (about 7 MB a page, three kept).
+  - **The board:** cover decode time and legibility at 0.9 m.
+  - **Storage:** free-space reporting through `java.io.File.getUsableSpace`.
+  - **Scale:** a 150 MB PDF read into memory (the parser holds the whole file).
+
+  Known limits: no OCR; PDF text is one chapter per page; multi-column PDFs may interleave; no Kindle, Word or plain text.
+
+**Environment brief (2026-11-01).** `docs/ENVIRONMENT_BRIEF.md` is now the standing rule for every room, whether built by script, subagent or generation. The step 7 rooms predate it, and their known faults are listed there.
+
 ## Not done / not verified
 
-1. **Headset coverage is partial.** Sessions 1-3 above ran on a Quest 2; the whole-book reader (step 4), the highlight menu (step 5), the lobby (step 6) and the step 7 rooms have not been installed on the headset yet, and `adb` is not present on the build Mac in every session (security software has removed it before).
+1. **Headset coverage is partial.** Sessions 1-3 above ran on a Quest 2. The step 7 build was installed and launched on 2026-10-31 but not yet tried by a reader. Not yet seen on a headset:
+   - the stationary controls
+   - the library board, uploads and PDF rendering
+
+   **Still owed:** the first-time-reader check the owner asked for. A new reader must select a book, read, look behind them, return to the page, use Peek, enter Step In and return to reading, all without coaching and without leaving their place. Usability issues found then go here, and `adb` is not present on the build Mac in every session (security software has removed it before).
 2. **Live generation** works on the owner's Mac (see "Input model after headset session 3"); the pinch-to-miniature latencies the brief asks for (cached, live opus, live haiku) are not measured yet. The page shows where the scene came from ("live interpretation", "interpreter cache", "saved on this headset", "bundled baseline").
 3. **Miniature, now fixed in the editor** (it was broken before, though the state strings looked right):
    - Static-batched environment meshes didn't scale with the diorama. Environments are no longer `BatchingStatic`.
