@@ -81,9 +81,16 @@ namespace Fable
             string mode = input.InputMode;
             var verb = flow.Tasks ? flow.Tasks.ActiveVerb : null;
             bool grabbing = verb == StoryTasks.Verb.Grab || verb == StoryTasks.Verb.BringTo;
-            string k = flow.Current + "|" + mode + "|" + flow.CanStepIn + "|" + grabbing;
-            if (k != key) { key = k; Rebuild(Plan(flow.Current, mode, flow.CanStepIn, grabbing), mode == "controllers"); }
+            string k = flow.Current + "|" + mode + "|" + flow.CanStepIn + "|" + grabbing + "|" + flow.InPlace;
+            if (k != key) { key = k; Rebuild(flow.InPlace ? PlacePlan(mode) : Plan(flow.Current, mode, flow.CanStepIn, grabbing), mode == "controllers"); }
             Animate();
+        }
+
+        /// In a chapter's place: read the moment on, look around, go back.
+        static List<Cue> PlacePlan(string mode)
+        {
+            string g = mode == "controllers" ? "trigger" : "pinch";
+            return new List<Cue> { new(Kind.Pinch, false, $"right {g}\nnext sentence"), new(Kind.Pinch, true, $"left {g}\nsentence back"), new(Kind.Point, true, $"point at the bar below, {g}\nturn, or back to reading") };
         }
 
         /// The actions available in this state, in the order a reader needs them. Labels: what you do, then what happens.
@@ -98,7 +105,7 @@ namespace Fable
                     list.Add(new Cue(Kind.Pinch, false, $"right {g}\nturn the page"));
                     list.Add(new Cue(Kind.Pinch, true, $"left {g}\npage back"));
                     list.Add(new Cue(Kind.Drag, false, $"{g}, drag over words\nhighlight: define, peek"));
-                    list.Add(new Cue(Kind.Point, false, $"point at a button, {g}\ncontents, size, step in"));
+                    list.Add(new Cue(Kind.Point, false, $"point at a button, {g}\ncontents, size, bookmark"));
                     list.Add(new Cue(Kind.Point, true, $"point at the bar below, {g}\nturn to look around"));
                     break;
                 case FlowController.State.Miniature:

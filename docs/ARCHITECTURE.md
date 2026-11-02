@@ -37,6 +37,11 @@
 
 The first control to take the pinch owns it until release; only unclaimed pinches turn pages, highlight, grab or open books. `ViewControls` turns the rig about the head (30° steps). `ReadingPanel` is world-anchored and recentred on request. Rooms follow `docs/ENVIRONMENT_BRIEF.md`.
 
+**Chapter experiences.** Step In is per chapter (`docs/CHAPTER_EXPERIENCES.md`):
+- **The service.** `interpreter/internal/chapters` keeps a persistent, bounded queue of one job per chapter, started when the reader enters it. Each job runs plan (Claude, text through the chapter's end only) → script → Blender render → validate → package. Its status answers carry no content.
+- **The headset.** `ChapterExperiences` tracks completion apart from preparation, fetches and checks packages into sealed storage, and refuses them until the chapter is finished.
+- **Adaptation.** Experiences adapt the six built environments (`schema/environments.json`) by mood and haze, plus staging scripts where a manifest exists, and never change a shared room.
+
 **The personal library.** `Library` (a scene-surviving singleton) owns:
 - the imported books' index
 - the upload server (`UploadServer`: HTTP on the local Wi-Fi, code-gated)

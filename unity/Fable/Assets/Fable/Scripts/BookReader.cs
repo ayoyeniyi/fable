@@ -37,6 +37,15 @@ namespace Fable
 
         /// Fired when the page changes (for the flow: Step In availability, the gesture row).
         public event System.Action PageChanged;
+        /// Fired when the reader enters a chapter (its id): chapter experiences start preparing then.
+        public event System.Action<string> ChapterEntered;
+        /// Fired by the end-of-chapter card: Continue (chapter id) and Step into this chapter (chapter id).
+        public event System.Action<string> ChapterFinished, StepIntoChapter;
+        /// Asked by the end-of-chapter card for the chapter's experience: a status line, and whether entry can be offered.
+        public System.Func<string, (string line, bool canEnter, bool canRetry)> ExperienceStatus;
+        public event System.Action<string> RetryExperience;
+        /// The reader is on the card after a chapter's last page.
+        public bool AtChapterEnd { get; private set; }
 
         // ---------------------------------------------------------------- layout (page pixels, 620 wide)
         const float TopRow = 14, TopRowH = 30, HeadY = 50, HeadH = 26, TitleY = 80, TitleH = 56, BodyTopFirst = 150, BodyTopRest = 94, BodyBottom = 716, FootY = 724, FootH = 40, Margin = 48;
@@ -52,6 +61,7 @@ namespace Fable
         readonly List<int> paraOffset = new();   // characters before each paragraph, for page estimates
         readonly List<Run> shownRuns = new();    // rich-text runs of the page on show (for word hit-testing)
         int chapterChars;
+        int loadedChapter = -1;
 
         // page widgets built at runtime
         TMP_Text measure;
@@ -70,7 +80,7 @@ namespace Fable
         struct Saved { public Vector2 pos, size; public float font; public TextAlignmentOptions align; public bool on; }
         Saved bodySaved, hintSaved, titleSaved, chapterSaved;
 
-        /// Step In: the passages that can be staged, and the one whose text is on this page (or null).
+        /// Step In from the page (the old passage Step In): off. Experiences are per chapter now (ChapterExperiences).
         public List<Passage.Scene> StagePassages = new();
         public string StepInPassage { get; private set; }
         public string StepInLabel = "Step in";
@@ -214,7 +224,10 @@ namespace Fable
 
         void LoadChapter(int c)
         {
+            int was = loadedChapter;
             ChapterIndex = Mathf.Clamp(c, 0, Book.Chapters.Count - 1);
+            loadedChapter = ChapterIndex;
+            if (was != ChapterIndex && Book.Chapters[ChapterIndex].Kind == "chapter" && !Book.IsPdf) ChapterEntered?.Invoke(Book.Chapters[ChapterIndex].Id);
             paraText.Clear(); sentStart.Clear(); pages.Clear(); paraOffset.Clear(); ChapterPaginated = false; chapterChars = 0;
             foreach (var p in Book.Chapters[ChapterIndex].Paragraphs)
             {
@@ -348,6 +361,7 @@ namespace Fable
         /// keep: a sentence to stay anchored to if it starts on this page (re-layouts must not drift backwards).
         void ShowPage(int i, string keep = null)
         {
+            HideChapterEnd();
             InContents = false; SetContentsRows(false); HidePdfPage();
             if (sizeBtn) sizeBtn.gameObject.SetActive(true);
             if (contentsLbl) contentsLbl.text = "contents";
@@ -473,11 +487,69 @@ namespace Fable
             if (PdfPageView) { if (Progress.PdfPage < Book.PdfPages) ShowPdfPage(Progress.PdfPage + 1); return; }
             if (PageIndex + 1 < pages.Count) { ShowPage(PageIndex + 1); return; }
             if (!ChapterPaginated) { PaginateUntil(pg => pages.Count > PageIndex + 1); if (PageIndex + 1 < pages.Count) { ShowPage(PageIndex + 1); return; } }
+            // the chapter's end: a real chapter ends on a card (Continue / Step into this chapter); front matter and PDFs run on
+            if (AtChapterEnd) { ContinueFromEnd(); return; }
+            if (Book.Chapters[ChapterIndex].Kind == "chapter" && !Book.IsPdf) { ShowChapterEnd(); return; }
             if (ChapterIndex + 1 < Book.Chapters.Count) OpenChapter(ChapterIndex + 1);
         }
 
+        // ---------------------------------------------------------------- the end of a chapter
+
+        RectTransform endContinueBtn, endStepBtn, endRetryBtn; TMP_Text endContinueLbl, endStepLbl;
+
+        /// After the chapter's last page: the chapter is not marked finished until the reader chooses Continue (or steps in).
+        public void ShowChapterEnd()
+        {
+            AtChapterEnd = true; InContents = false; SetContentsRows(false);
+            var ch = Book.Chapters[ChapterIndex]; bool last = ChapterIndex + 1 >= Book.Chapters.Count;
+            Place(Panel.Body, BodyTopFirst + 60, BodyBottom - BodyTopFirst - 60);
+            Panel.Title.gameObject.SetActive(true); Panel.Title.fontSize = 30;
+            Panel.Title.text = $"End of {ch.Heading}" + (ch.Name != null ? $"\n<size=55%><i>{ch.Name}</i></size>" : "");
+            Panel.Chapter.text = RunningHead(ch);
+            var (line, canEnter, canRetry) = ExperienceStatus != null ? ExperienceStatus(ch.Id) : ("", false, false);
+            Panel.Body.alignment = TextAlignmentOptions.Top;
+            Panel.Body.text = (last ? "<i>The end of the book.</i>\n\n" : "") + (string.IsNullOrEmpty(line) ? "" : $"<size=80%>{line}</size>");
+            Panel.Body.ForceMeshUpdate();
+            if (endContinueLbl) endContinueLbl.text = last ? "finish the book" : "continue reading \u203a";
+            if (endStepLbl) endStepLbl.text = "finish and step into this chapter \u203a";
+            endContinueBtn.gameObject.SetActive(true); endStepBtn.gameObject.SetActive(canEnter); endRetryBtn.gameObject.SetActive(canRetry);
+            if (stepBtn) stepBtn.gameObject.SetActive(false);
+            if (markBtn) markBtn.gameObject.SetActive(false);
+            Panel.Hint.text = "point at a button and pinch \u00b7 left pinch: back to the last page";
+            Debug.Log($"[Fable] end of {ch.Id}: {line} (enter={canEnter})");
+            PageChanged?.Invoke();
+        }
+
+        void HideChapterEnd()
+        {
+            if (!AtChapterEnd) return;
+            AtChapterEnd = false; Panel.Body.alignment = TextAlignmentOptions.TopLeft;
+            foreach (var b in new[] { endContinueBtn, endStepBtn, endRetryBtn }) if (b) b.gameObject.SetActive(false);
+        }
+
+        /// Continue: the chapter is finished, and the next one opens.
+        public void ContinueFromEnd()
+        {
+            var ch = Book.Chapters[ChapterIndex].Id; HideChapterEnd();
+            ChapterFinished?.Invoke(ch);
+            if (ChapterIndex + 1 < Book.Chapters.Count) OpenChapter(ChapterIndex + 1); else ShowPage(PageIndex);
+        }
+
+        void StepFromEnd()
+        {
+            var ch = Book.Chapters[ChapterIndex].Id; HideChapterEnd();
+            ChapterFinished?.Invoke(ch);
+            // the reader's place: the start of the next chapter, so Return to Reading continues the book
+            if (ChapterIndex + 1 < Book.Chapters.Count) { OpenChapter(ChapterIndex + 1); }
+            StepIntoChapter?.Invoke(ch);
+        }
+
+        /// Mark every chapter before the given one as read (a reader resuming a book read elsewhere). Returns how many.
+        public List<string> ChaptersBefore(int index) { var l = new List<string>(); for (int i = 0; i < index && i < Book.Chapters.Count; i++) if (Book.Chapters[i].Kind == "chapter") l.Add(Book.Chapters[i].Id); return l; }
+
         public void PreviousPage()
         {
+            if (AtChapterEnd) { HideChapterEnd(); ShowPage(PageIndex); return; }
             if (InContents) { ContentsTurn(-1); return; }
             if (PdfPageView) { if (Progress.PdfPage > 1) ShowPdfPage(Progress.PdfPage - 1); return; }
             if (PageIndex > 0) { ShowPage(PageIndex - 1); return; }
@@ -600,8 +672,15 @@ namespace Fable
         public bool PressAt(bool right, bool dryRun = false)
         {
             if (!Active || !Pointer) return false;
-            if (dryRun) return Pointer.Over(right, contentsBtn) || (sizeBtn.gameObject.activeSelf && Pointer.Over(right, sizeBtn)) || Pointer.Over(right, markBtn) || Pointer.Over(right, stepBtn) || (viewBtn && Pointer.Over(right, viewBtn)) || (ShelfAvailable && Pointer.Over(right, shelfBtn));
+            if (dryRun) return (AtChapterEnd && (Pointer.Over(right, endContinueBtn) || Pointer.Over(right, endStepBtn) || Pointer.Over(right, endRetryBtn))) || Pointer.Over(right, contentsBtn) || (sizeBtn.gameObject.activeSelf && Pointer.Over(right, sizeBtn)) || Pointer.Over(right, markBtn) || Pointer.Over(right, stepBtn) || (viewBtn && Pointer.Over(right, viewBtn)) || (ShelfAvailable && Pointer.Over(right, shelfBtn));
             if (ShelfAvailable && Pointer.Over(right, shelfBtn)) { ShelfPressed?.Invoke(); return true; }
+            if (AtChapterEnd)
+            {
+                if (Pointer.Over(right, endContinueBtn)) { ContinueFromEnd(); return true; }
+                if (endStepBtn.gameObject.activeSelf && Pointer.Over(right, endStepBtn)) { StepFromEnd(); return true; }
+                if (endRetryBtn.gameObject.activeSelf && Pointer.Over(right, endRetryBtn)) { RetryExperience?.Invoke(Book.Chapters[ChapterIndex].Id); ShowChapterEnd(); return true; }
+                return Pointer.Over(right, contentsBtn) ? false : true;   // a pinch elsewhere on the card does nothing (no accidental Continue)
+            }
             if (Pointer.Over(right, contentsBtn)) { if (InContents) BackToPage(); else ShowContents(); return true; }
             if (viewBtn && viewBtn.gameObject.activeSelf && Pointer.Over(right, viewBtn)) { ToggleView(); return true; }
             if (sizeBtn.gameObject.activeSelf && Pointer.Over(right, sizeBtn)) { CycleTextSize(); return true; }
@@ -621,6 +700,9 @@ namespace Fable
             {
                 case "contents": if (InContents) BackToPage(); else ShowContents(); break;
                 case "view": ToggleView(); break;
+                case "end:continue": if (AtChapterEnd) ContinueFromEnd(); else return "not at a chapter's end"; break;
+                case "end:step": if (AtChapterEnd && endStepBtn.gameObject.activeSelf) StepFromEnd(); else return "no step-in offered"; break;
+                case "end:retry": if (AtChapterEnd) { RetryExperience?.Invoke(Book.Chapters[ChapterIndex].Id); ShowChapterEnd(); } break;
                 case "size": CycleTextSize(); break;
                 case "bookmark": ToggleBookmark(); break;
                 case "shelf": ShelfPressed?.Invoke(); break;
@@ -637,6 +719,7 @@ namespace Fable
         public string PageCensus()
         {
             var keep = Progress.SentenceId; var sb = new StringBuilder(); int total = 0; float worst = 0, sum = 0; string worstId = "";
+            var entered = ChapterEntered; ChapterEntered = null;   // measuring is not reading: no chapter is "entered"
             for (int c = 0; c < Book.Chapters.Count; c++)
             {
                 LoadChapter(c);
@@ -649,6 +732,7 @@ namespace Fable
                 sb.Append($"{Book.Chapters[c].Id}:{pages.Count} ");
             }
             measure.text = "";
+            ChapterEntered = entered; loadedChapter = -2;
             OpenAt(keep);
             return $"{Book.Slug} size={TextSizeNames[Progress.TextSize]} pages={total} layout={sum:F0}ms worst={worst:F1}ms/page ({worstId})\n{sb}";
         }
@@ -658,6 +742,7 @@ namespace Fable
             if (Book == null) return "book=none";
             if (PdfPageView) return $"book={Book.Slug} pdf page={Progress.PdfPage}/{Book.PdfPages} view=page text={(Book.Chapters.Count > 0 ? Book.Chapters.Count + " pages" : "none")} marks={Progress.Bookmarks.Count} contents={InContents} pdf={(pdf != null ? pdf.Error ?? "open" : "closed")}";
             if (Book.Chapters.Count == 0) return $"book={Book.Slug} (no text)";
+            if (AtChapterEnd) return $"book={Book.Slug} chapter={Book.Chapters[ChapterIndex].Id} END-CARD step={(endStepBtn && endStepBtn.gameObject.activeSelf)} retry={(endRetryBtn && endRetryBtn.gameObject.activeSelf)} anchor={Progress.SentenceId}";
             var ch = Book.Chapters[ChapterIndex];
             return $"book={Book.Slug} chapter={ch.Id} page={PageIndex + 1}/{(ChapterPaginated ? pages.Count.ToString() : pages.Count + "+")} anchor={Progress.SentenceId} last={LastVisibleSentence} size={TextSizeNames[Progress.TextSize]} marks={Progress.Bookmarks.Count} contents={InContents} stepIn={StepInPassage ?? "-"}";
         }
@@ -665,7 +750,7 @@ namespace Fable
         // ---------------------------------------------------------------- words on the page (highlighting)
 
         /// True when the page shows the book's text (not the contents list): words can be highlighted.
-        public bool ShowsText => Active && !InContents && !PdfPageView && pages.Count > 0;
+        public bool ShowsText => Active && !InContents && !PdfPageView && !AtChapterEnd && pages.Count > 0;
 
         /// The word under a point on the page (page-local pixels): its index in the body's layout. Points between
         /// lines or past a line's end take the nearest word on the nearest line, so a drag never drops out.
@@ -981,6 +1066,12 @@ namespace Fable
             (markBtn, markLbl) = Button("BtnBookmark", new Vector2(1, 1), new Vector2(-Margin + 8, -TopRow), new Vector2(124, TopRowH), TextAlignmentOptions.Right);
             (stepBtn, stepLbl) = Button("BtnStepIn", new Vector2(1, 1), new Vector2(-Margin + 8, -FootY + 2), new Vector2(150, FootH - 4), TextAlignmentOptions.Right);
             stepLbl.fontSize = 18; stepLbl.color = new Color(0.55f, 0.36f, 0.08f); stepLbl.fontStyle = FontStyles.SmallCaps | FontStyles.Bold;
+            // the end-of-chapter card's buttons, in the body of the page
+            (endContinueBtn, endContinueLbl) = Button("BtnEndContinue", new Vector2(0.5f, 1), new Vector2(0, -BodyTopFirst - 210), new Vector2(380, 54), TextAlignmentOptions.Center);
+            (endStepBtn, endStepLbl) = Button("BtnEndStep", new Vector2(0.5f, 1), new Vector2(0, -BodyTopFirst - 280), new Vector2(460, 54), TextAlignmentOptions.Center);
+            TMP_Text retryLbl; (endRetryBtn, retryLbl) = Button("BtnEndRetry", new Vector2(0.5f, 1), new Vector2(0, -BodyTopFirst - 350), new Vector2(260, 46), TextAlignmentOptions.Center);
+            retryLbl.text = "try preparing it again";
+            foreach (var (b, l) in new[] { (endContinueBtn, endContinueLbl), (endStepBtn, endStepLbl) }) { l.fontSize = 21; l.fontStyle = FontStyles.SmallCaps | FontStyles.Bold; b.GetComponent<Image>().color = new Color(0.45f, 0.36f, 0.24f, 0.10f); }
             // a PDF's view switch, in the same corner (an imported book has no Step In)
             (viewBtn, viewLbl) = Button("BtnPdfView", new Vector2(1, 1), new Vector2(-Margin + 8, -FootY + 2), new Vector2(170, FootH - 4), TextAlignmentOptions.Right);
             viewLbl.fontSize = 18; viewLbl.color = new Color(0.55f, 0.36f, 0.08f); viewLbl.fontStyle = FontStyles.SmallCaps | FontStyles.Bold;
@@ -1012,7 +1103,7 @@ namespace Fable
             if (shelfBtn) shelfBtn.gameObject.SetActive(on && ShelfAvailable);
             if (stepBtn) stepBtn.gameObject.SetActive(on && StepInPassage != null);
             if (ribbon && !on) ribbon.gameObject.SetActive(false);
-            if (!on) SetContentsRows(false);
+            if (!on) { SetContentsRows(false); HideChapterEnd(); }
         }
 
         void SetContentsRows(bool on) { foreach (var r in contentsRows) if (r.rt) r.rt.gameObject.SetActive(on); }
@@ -1032,7 +1123,15 @@ namespace Fable
             // hover: the control a pinch would press glows faintly
             void Hover(RectTransform rt) { if (!rt || !rt.gameObject.activeSelf) return; var img = rt.GetComponent<Image>(); var a = Pointer.Over(true, rt) || Pointer.Over(false, rt) ? 0.16f : 0f; if (!Mathf.Approximately(img.color.a, a)) img.color = new Color(img.color.r, img.color.g, img.color.b, a); }
             Hover(contentsBtn); Hover(sizeBtn); Hover(markBtn); Hover(stepBtn); Hover(shelfBtn); Hover(viewBtn);
+            if (AtChapterEnd) { HoverStrong(endContinueBtn); HoverStrong(endStepBtn); HoverStrong(endRetryBtn); }
             if (InContents) foreach (var r in contentsRows) Hover(r.rt);
+        }
+
+        void HoverStrong(RectTransform rt)
+        {
+            if (!rt || !rt.gameObject.activeSelf) return;
+            var img = rt.GetComponent<Image>(); var a = Pointer.Over(true, rt) || Pointer.Over(false, rt) ? 0.32f : 0.10f;
+            if (!Mathf.Approximately(img.color.a, a)) img.color = new Color(0.45f, 0.36f, 0.24f, a);
         }
     }
 }

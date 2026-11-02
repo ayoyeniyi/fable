@@ -70,7 +70,9 @@ Fable is designed to be used from one place, seated or standing. A bar of button
 
 The page stays where you put it. Move it with the bar under it, and resize it with its bottom-right corner.
 
-On the page: point with a hand (or controller) and pinch. A pinch on **contents**, **text size** or **bookmark** presses it; a pinch anywhere else turns the page, a left pinch turns back, and a pinch-drag flips pages. When the page holds a staged passage, **Step in ›** (or the highlight menu's Step in) opens it as a miniature. In the scene: point and pinch on the floor to go there, on the little door to go through; a pinch at nothing reads on. In the editor: the mouse is the right hand's ray; Space / Backspace / Escape.
+On the page: point with a hand (or controller) and pinch. A pinch on **contents**, **text size** or **bookmark** presses it; a pinch anywhere else turns the page, a left pinch turns back, and a pinch-drag flips pages. **Step In is per chapter.** Each chapter's experience is prepared in the background while you read it, and stays locked (a padlock and its number, nothing else) until you finish the chapter. After a chapter's last page, an end card offers **continue reading ›** and, when its experience is ready, **finish and step into this chapter ›**. Finished chapters' experiences are under **chapters** on the bar (or the highlight menu's **Chapters** petal) for revisiting. Inside one, **‹ return to reading** takes you back to your page. In Alice's scenes: point and pinch on the floor to go there; a pinch at nothing reads on. Details: `docs/CHAPTER_EXPERIENCES.md`.
+
+Choosing a book in the lobby opens its menu first: **resume reading**, **reading rooms** (its own room or the library), **chapter experiences**. Beside the page, the bar's **chapters / rooms / sound** open the same choices, plus music and room-sound settings. In the editor: the mouse is the right hand's ray; Space / Backspace / Escape.
 
 **Your own books.** The lobby is your library: a board in front of you lists the four Fable editions and every book you add.
 1. Pinch **+ add a book**. The headset shows an address and a code.

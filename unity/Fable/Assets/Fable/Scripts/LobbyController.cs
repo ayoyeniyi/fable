@@ -242,16 +242,16 @@ namespace Fable
             if (opening || hovered == null) return;
             // the pinch must be from a hand that is pointing at the book (either hand may hover, either may open)
             if (!PointRay(right, out var r) || Hit(r, out _) != hovered) return;
-            Open(hovered.Slug);
+            if (Board) Board.ShowBookMenu(hovered.Slug); else Open(hovered.Slug);   // the book's menu first, then a room
         }
 
         /// Open a book: it leaves the shelf towards the reader, then its reading scene loads with it on the page.
-        public void Open(string slug)
+        public void Open(string slug, string scene = null)
         {
             if (opening) return;
             if (Library.IsImported(slug)) { StartCoroutine(OpenImported(slug)); return; }
             var b = books.Find(x => x.Slug == slug);
-            if (b == null || !ReadingScene.TryGetValue(slug, out var scene)) { Debug.LogWarning($"[Fable] lobby: no book {slug}"); return; }
+            if (b == null || (scene == null && !ReadingScene.TryGetValue(slug, out scene))) { Debug.LogWarning($"[Fable] lobby: no book {slug}"); return; }
             StartCoroutine(OpenRoutine(b, scene));
         }
 

@@ -21,6 +21,10 @@ type Scene struct {
 	ContextBefore []string     `json:"contextBefore"`
 	// Room is the built environment this passage is staged in when it is not its own (several chapters share a room).
 	Room string `json:"room,omitempty"`
+	// BookSlug, BookFrom, BookTo: the whole book this passage is cut from and the book sentence ids it covers.
+	BookSlug string `json:"book,omitempty"`
+	BookFrom string `json:"bookFrom,omitempty"`
+	BookTo   string `json:"bookTo,omitempty"`
 }
 
 type Book struct {

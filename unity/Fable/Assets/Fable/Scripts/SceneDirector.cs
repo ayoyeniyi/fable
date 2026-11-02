@@ -59,7 +59,8 @@ namespace Fable
 #endif
         }
 
-        public IEnumerator Load(string sceneId, Passage book)
+        /// preset: a script already prepared and validated (a chapter experience's), used instead of asking the interpreter.
+        public IEnumerator Load(string sceneId, Passage book, SceneScript preset = null, string presetSource = null)
         {
             // A tester can point a built headset at a live interpreter without rebuilding:
             //   adb push url.txt /sdcard/Android/data/com.fable.alice/files/interpreter.txt   (one line, e.g. http://10.20.11.177:8787)
@@ -69,7 +70,13 @@ namespace Fable
             Manifest = manifest;
             var ids = PassageScene.Sentences().Select(s => s.Id).ToList();
             SceneScript candidate = null;
-            if (!string.IsNullOrEmpty(InterpreterUrl))
+            if (preset != null)
+            {
+                var perrs = ScriptValidator.Validate(preset, manifest, ids);
+                if (perrs.Count > 0) Debug.LogWarning("[Fable] prepared script failed validation here:\n" + string.Join("\n", perrs));
+                else { candidate = preset; ScriptSource = presetSource ?? "prepared chapter experience"; }
+            }
+            else if (!string.IsNullOrEmpty(InterpreterUrl))
             {
                 using var req = new UnityWebRequest(InterpreterUrl.TrimEnd('/') + "/interpret", "POST");
                 // the reading position lets the interpreter keep to what the reader has reached; ids are [a-z-]+:[0-9]{3}
@@ -97,7 +104,7 @@ namespace Fable
                 }
                 else Debug.LogWarning($"[Fable] interpreter unreachable: {req.error}");
             }
-            if (candidate != null) ProgressStore.CacheScript(sceneId, JsonConvert.SerializeObject(candidate));
+            if (candidate != null && preset == null) ProgressStore.CacheScript(sceneId, JsonConvert.SerializeObject(candidate));
             if (candidate == null)
             {
                 var cached = ProgressStore.LoadCachedScript(sceneId);

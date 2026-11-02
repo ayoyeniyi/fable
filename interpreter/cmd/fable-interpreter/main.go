@@ -6,6 +6,8 @@
 //	    POST /interpret {"sceneId","readingPosition","noCache","waitSeconds"} -> 200 script (X-Fable-Cache hit|miss) or 202 generating
 //	    POST /peek {"book","sentenceId","phrase","noCache","waitSeconds"} -> 200 mock model (X-Fable-Cache hit|miss) or 202
 //	    GET /health, GET /jobs, GET /passages
+//	    POST /chapters/prepare {"book","chapter","completed"}; GET /chapters/status|package|thumb?chapter=; GET /chapters/jobs
+//	    (chapter experiences, prepared in a persistent background queue: internal/chapters)
 //	fable-interpreter mock      --book alice --passage alice:c01.p013.s01 --phrase "golden key" [--out f.json] [--model id]
 //	    --passage may be a phrase in quotes instead of an id: the first sentence containing it
 //	fable-interpreter mock      --check content/library/clay/*.json     validate mock models against the schema rules
@@ -27,6 +29,7 @@ import (
 
 	"github.com/Thabhelo/fable/interpreter/internal/book"
 	"github.com/Thabhelo/fable/interpreter/internal/books"
+	"github.com/Thabhelo/fable/interpreter/internal/chapters"
 	"github.com/Thabhelo/fable/interpreter/internal/llm"
 	"github.com/Thabhelo/fable/interpreter/internal/mock"
 	"github.com/Thabhelo/fable/interpreter/internal/script"
@@ -133,6 +136,7 @@ func main() {
 		model := fs.String("model", os.Getenv("FABLE_MODEL"), "Claude model id")
 		wait := fs.Duration("wait", 3*time.Second, "how long a request waits for a fresh script before answering 202 (the client may ask for more with waitSeconds)")
 		warm := fs.Bool("warm", false, "generate every scene without a valid cache at startup (needs ANTHROPIC_API_KEY)")
+		blender := fs.String("blender", "/Applications/Blender.app/Contents/MacOS/Blender", "Blender binary for chapter-experience renders")
 		fs.Parse(os.Args[2:])
 		bk, err := book.Load(filepath.Join(root, "book", "passages.json"))
 		if err != nil {
@@ -149,6 +153,19 @@ func main() {
 			} else {
 				log.Printf("warming %d scene(s)", srv.Warm())
 			}
+		}
+		// chapter experiences: a persistent queue worked in the background (internal/chapters)
+		if cat, err := chapters.LoadCatalog(root); err != nil {
+			log.Printf("chapter experiences off: %v", err)
+		} else {
+			var planner chapters.Asker
+			if os.Getenv("ANTHROPIC_API_KEY") != "" {
+				planner = dir
+			}
+			cs := chapters.NewService(root, cat, bk, planner, dir, chapters.BlenderRenderer(*blender))
+			cs.Model = dir.Model()
+			srv.Chapters = cs
+			go cs.Run(context.Background())
 		}
 		hs := &http.Server{Addr: *addr, Handler: srv.Handler(), ReadHeaderTimeout: 10 * time.Second, ReadTimeout: 30 * time.Second, WriteTimeout: 3 * time.Minute, IdleTimeout: 2 * time.Minute}
 		go func() {

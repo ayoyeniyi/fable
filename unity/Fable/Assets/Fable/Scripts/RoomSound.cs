@@ -11,6 +11,14 @@ namespace Fable
         public string Id;
         public float AmbienceVolume = 0.5f, MusicVolume = 0.22f, FadeSeconds = 3f;
         AudioSource amb, music;
+        /// The reader's sound settings changed (BookMenu's sound card): every room sound applies them at once.
+        public static event System.Action SettingsChanged;
+        public static void NotifySettings() => SettingsChanged?.Invoke();
+        float AmbTarget => AmbienceVolume * new[] { 0f, 0.45f, 1f }[Mathf.Clamp(ProgressStore.LoadPrefs().AmbienceLevel, 0, 2)];
+        float MusicTarget => ProgressStore.LoadPrefs().MusicOn ? MusicVolume : 0f;
+        void OnEnable() { SettingsChanged += Apply; }
+        void OnDisable() { SettingsChanged -= Apply; }
+        void Apply() { if (amb) amb.volume = AmbTarget; if (music) music.volume = MusicTarget; }
 
         public bool HasMusic => music && music.clip;
         public string Describe() => $"sound {Id}: ambience={(amb && amb.isPlaying ? amb.clip.name : "-")} music={(music && music.isPlaying ? music.clip.name : "-")}";
@@ -18,15 +26,15 @@ namespace Fable
         IEnumerator Start()
         {
             amb = Loop("amb." + Id); music = Loop("music." + Id);
+            float at = AmbTarget, mt = MusicTarget;
             for (float t = 0; t < FadeSeconds; t += Time.deltaTime)
             {
                 float e = t / FadeSeconds;
-                if (amb) amb.volume = AmbienceVolume * e;
-                if (music) music.volume = MusicVolume * e;
+                if (amb) amb.volume = at * e;
+                if (music) music.volume = mt * e;
                 yield return null;
             }
-            if (amb) amb.volume = AmbienceVolume;
-            if (music) music.volume = MusicVolume;
+            Apply();
         }
 
         AudioSource Loop(string clipName)

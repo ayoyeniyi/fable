@@ -33,7 +33,7 @@ namespace Fable
 
         public Ray? TestRay;
         public RectTransform Root => root;
-        public string Describe() => $"library board: {(adding ? "adding" : "shelf")} page {page + 1}/{Pages} tiles=[{string.Join(" | ", shown.Select(t => t.Key + (t.State != null ? ":" + t.State : "")))}] hovered={hoveredKey ?? "-"} status=\"{(statusText ? statusText.text.Replace("\n", " / ") : "")}\"";
+        public string Describe() => $"library board: {(adding ? "adding" : menuSlug != null ? "menu " + menuSlug + " [" + (menuChapters ? menuChapters.text : "") + "]" : "shelf")} page {page + 1}/{Pages} tiles=[{string.Join(" | ", shown.Select(t => t.Key + (t.State != null ? ":" + t.State : "")))}] hovered={hoveredKey ?? "-"} status=\"{(statusText ? statusText.text.Replace("\n", " / ") : "")}\"";
 
         const int Cols = 3, Rows = 2, PerPage = Cols * Rows;
         const float W = 790, H = 470, TileW = 250, TileH = 160, Gap = 10;
@@ -50,7 +50,8 @@ namespace Fable
         TMP_Text headerCount, pageLbl, storageLbl, continueLbl, addTitle, addBody, addAddress, addCode, statusText, addStep1, addStep2, addStep3, addStep4;
         Image statusBar, statusBarBack;
         readonly Dictionary<string, Texture2D> covers = new();
-        int page; bool adding; string hoveredKey; RectTransform hoveredRt; LibraryJob watching;
+        int page; bool adding; string menuSlug; string hoveredKey;
+        RectTransform bookMenu, resumeBtn, ownRoomBtn, libraryRoomBtn, chaptersBtn, menuBackBtn; TMP_Text menuTitle, menuAuthor, menuChapters, ownRoomLbl; RectTransform hoveredRt; LibraryJob watching;
         Library lib;
 
         int Pages => Mathf.Max(1, Mathf.CeilToInt(Entries().Count / (float)PerPage));
@@ -160,6 +161,55 @@ namespace Fable
             (backBtn, _) = Button(addCard, "‹ back to the shelf", new Vector2(-addCard.sizeDelta.x / 2 + 20 + 110, addCard.sizeDelta.y / 2 - 24), new Vector2(220, 40), 17, CloseAdd);
             backBtn.anchoredPosition = new Vector2(addCard.sizeDelta.x / 2 - 20 - 110, addCard.sizeDelta.y / 2 - 26);
             addCard.gameObject.SetActive(false);
+
+            // a book's menu: in place of the grid once a book is chosen, before any room loads
+            bookMenu = Rect(root, "BookMenu", new Vector2(0, -14), new Vector2(W - 40, H - 100));
+            Img(bookMenu, "Bg", Vector2.zero, bookMenu.sizeDelta, TileBg, stretch: true);
+            float mt = bookMenu.sizeDelta.y / 2;
+            menuTitle = Text(bookMenu, "", 26, FontStyles.Bold, Ink, TextAlignmentOptions.Left); Place(menuTitle.rectTransform, new Vector2(-70, mt - 30), new Vector2(560, 36));
+            menuAuthor = Text(bookMenu, "", 16, FontStyles.Italic, Soft, TextAlignmentOptions.Left); Place(menuAuthor.rectTransform, new Vector2(-70, mt - 60), new Vector2(560, 24));
+            (menuBackBtn, _) = Button(bookMenu, "\u2039 shelf", new Vector2(bookMenu.sizeDelta.x / 2 - 80, mt - 30), new Vector2(130, 40), 17, CloseMenu);
+            (resumeBtn, _) = Button(bookMenu, "resume reading \u203a", new Vector2(0, mt - 120), new Vector2(420, 58), 22, () => Open(menuSlug));
+            var roomsLbl = Text(bookMenu, "Reading rooms", 16, FontStyles.SmallCaps, Accent, TextAlignmentOptions.Left); Place(roomsLbl.rectTransform, new Vector2(0, mt - 172), new Vector2(660, 24));
+            (ownRoomBtn, ownRoomLbl) = Button(bookMenu, "", new Vector2(-165, mt - 210), new Vector2(320, 46), 17, () => { if (Lobby) Lobby.Open(menuSlug, LobbyController.ReadingScene[menuSlug]); });
+            (libraryRoomBtn, _) = Button(bookMenu, "the library", new Vector2(165, mt - 210), new Vector2(320, 46), 17, () => { if (Lobby) Lobby.Open(menuSlug, LobbyController.ImportedScene); });
+            var expLbl = Text(bookMenu, "Chapter experiences", 16, FontStyles.SmallCaps, Accent, TextAlignmentOptions.Left); Place(expLbl.rectTransform, new Vector2(0, mt - 262), new Vector2(660, 24));
+            menuChapters = Text(bookMenu, "", 15, FontStyles.Normal, Ink, TextAlignmentOptions.TopLeft); Place(menuChapters.rectTransform, new Vector2(-110, mt - 300), new Vector2(440, 50));
+            (chaptersBtn, _) = Button(bookMenu, "chapter experiences \u203a", new Vector2(220, mt - 296), new Vector2(240, 46), 17, () => { FlowController.PendingMenu = "chapters"; Open(menuSlug); });
+            bookMenu.gameObject.SetActive(false);
+        }
+
+        /// A book was chosen (a tile, or a book on the shelf): its menu, before any room loads.
+        public void ShowBookMenu(string slug)
+        {
+            menuSlug = slug; adding = false; addCard.gameObject.SetActive(false);
+            var e = Entries().FirstOrDefault(x => x.Slug == slug);
+            menuTitle.text = e?.Title ?? slug; menuAuthor.text = (e?.Author ?? "") + (e != null && e.Bundled ? "  \u00b7  Fable edition" : "  \u00b7  your book");
+            bool own = LobbyController.ReadingScene.TryGetValue(slug, out var ownScene) && Application.CanStreamedLevelBeLoaded(ownScene);
+            ownRoomBtn.gameObject.SetActive(own);
+            if (own) ownRoomLbl.text = ownScene switch { "HallOfDoors" => "the Hall of Doors", "KansasFarmhouse" => "the Kansas farmhouse", "CalypsosCave" => "Calypso\u2019s cave", "GlumdalclitchsRoom" => "Glumdalclitch\u2019s room", _ => ownScene };
+            bool supported = ChapterExperiences.Supported.Contains(slug);
+            chaptersBtn.gameObject.SetActive(supported);
+            menuChapters.text = supported ? ChapterSummary(slug) : "Prepared for Fable\u2019s own four books; not yet for books you add.";
+            bookMenu.gameObject.SetActive(true); grid.gameObject.SetActive(false);
+            Debug.Log($"[Fable] library board: menu for {slug}");
+            Refresh();
+        }
+
+        void CloseMenu() { menuSlug = null; bookMenu.gameObject.SetActive(false); Refresh(); }
+
+        /// How many of the book's experiences can be entered and how many are being prepared. Nothing about unfinished chapters.
+        static string ChapterSummary(string slug)
+        {
+            var ce = ChapterExperiences.Instance; int ready = 0, prep = 0, failed = 0;
+            foreach (var r in ce.Records(slug))
+            {
+                if (!r.Completed) continue;
+                var st = ce.StateOf(r.Chapter);
+                if (st == ChapterExperiences.State.Available) ready++; else if (st == ChapterExperiences.State.Preparing) prep++; else if (st == ChapterExperiences.State.Failed) failed++;
+            }
+            if (ready + prep + failed == 0) return "Finish a chapter to unlock its experience. Each one is prepared while you read it.";
+            return $"{ready} ready to step into" + (prep > 0 ? $" \u00b7 {prep} being prepared" : "") + (failed > 0 ? $" \u00b7 {failed} to retry" : "");
         }
 
         Tile MakeTile(int i)
@@ -208,13 +258,14 @@ namespace Fable
             for (int i = 0; i < PerPage; i++)
             {
                 var t = tiles[i]; int k = page * PerPage + i;
-                bool on = !adding && k < all.Count; t.Rt.gameObject.SetActive(on); if (!on) continue;
+                bool on = !adding && menuSlug == null && k < all.Count; t.Rt.gameObject.SetActive(on); if (!on) continue;
                 Fill(t, all[k]); shown.Add(t);
             }
-            grid.gameObject.SetActive(!adding);
-            prevBtn.gameObject.SetActive(!adding && page > 0); nextBtn.gameObject.SetActive(!adding && page < Pages - 1);
-            pageLbl.text = adding ? "" : Pages > 1 ? $"shelf {page + 1} of {Pages}" : "";
-            storageLbl.text = adding ? "" : $"your books use {lib.UsedBytes / 1048576f:F1} MB of {Library.MaxLibraryBytes >> 30} GB" + (lib.FreeBytes < long.MaxValue ? $" · {lib.FreeBytes / 1073741824f:F1} GB free on the headset" : "");
+            grid.gameObject.SetActive(!adding && menuSlug == null);
+            if (menuSlug != null) { addBtn.gameObject.SetActive(false); continueBtn.gameObject.SetActive(false); }
+            prevBtn.gameObject.SetActive(!adding && menuSlug == null && page > 0); nextBtn.gameObject.SetActive(!adding && menuSlug == null && page < Pages - 1);
+            pageLbl.text = adding || menuSlug != null ? "" : Pages > 1 ? $"shelf {page + 1} of {Pages}" : "";
+            storageLbl.text = adding || menuSlug != null ? "" : $"your books use {lib.UsedBytes / 1048576f:F1} MB of {Library.MaxLibraryBytes >> 30} GB" + (lib.FreeBytes < long.MaxValue ? $" · {lib.FreeBytes / 1073741824f:F1} GB free on the headset" : "");
             if (adding) FillAdd();
         }
 
@@ -253,7 +304,7 @@ namespace Fable
             t.Badge.text = e.Badge; t.Badge.color = e.Bundled ? Accent : Soft;
             t.Status.text = e.Progress; t.Status.color = Ink;
             var slug = e.Slug;
-            t.Act = () => Open(slug);
+            t.Act = () => ShowBookMenu(slug);
             if (e.Lib != null)
             {
                 t.Remove.gameObject.SetActive(hoveredKey == e.Key || Time.time < t.ConfirmUntil);
@@ -351,12 +402,13 @@ namespace Fable
         void ContinueReading()
         {
             var slug = ProgressStore.LastBook();
-            if (slug != null && (Bundled.ContainsKey(slug) || lib.Find(slug) != null)) Open(slug);
+            if (slug != null && (Bundled.ContainsKey(slug) || lib.Find(slug) != null)) ShowBookMenu(slug);
         }
 
         /// Test hook: what a pinch on a control or tile would do, by its key ("add", "back", "next", "prev", "continue", a slug, "remove:<slug>").
         public string Press(string key)
         {
+            if (key.StartsWith("menu:")) { var tg = Targets().FirstOrDefault(x => x.key == key); if (tg.act == null) return "no " + key; tg.act(); return Describe(); }
             if (key == "add") OpenAdd(); else if (key == "back") CloseAdd(); else if (key == "next") { page = Mathf.Min(Pages - 1, page + 1); Refresh(); }
             else if (key == "prev") { page = Mathf.Max(0, page - 1); Refresh(); } else if (key == "continue") ContinueReading();
             else if (key.StartsWith("remove:")) { var t = shown.FirstOrDefault(x => x.Key == key.Substring(7)); t?.RemoveAct?.Invoke(); }
@@ -408,6 +460,14 @@ namespace Fable
         IEnumerable<(RectTransform rt, string key, Action act)> Targets()
         {
             if (adding) { yield return (backBtn, "back", CloseAdd); yield break; }
+            if (menuSlug != null)
+            {
+                yield return (menuBackBtn, "menu:back", CloseMenu); yield return (resumeBtn, "menu:resume", () => Open(menuSlug));
+                yield return (ownRoomBtn, "menu:own-room", () => { if (Lobby) Lobby.Open(menuSlug, LobbyController.ReadingScene[menuSlug]); });
+                yield return (libraryRoomBtn, "menu:library-room", () => { if (Lobby) Lobby.Open(menuSlug, LobbyController.ImportedScene); });
+                yield return (chaptersBtn, "menu:chapters", () => { FlowController.PendingMenu = "chapters"; Open(menuSlug); });
+                yield break;
+            }
             yield return (addBtn, "add", OpenAdd);
             yield return (continueBtn, "continue", ContinueReading);
             yield return (prevBtn, "prev", () => { page = Mathf.Max(0, page - 1); Refresh(); });
@@ -438,7 +498,7 @@ namespace Fable
                 if (OnBoard(right, out var w)) { foreach (var (rt, k2, _) in Targets()) if (Over(rt, w)) { key = k2; rtOver = rt; break; } break; }
             if (key != hoveredKey) { var before = hoveredKey; hoveredKey = key; hoveredRt = rtOver; if ((before ?? "").StartsWith("u-") || (key ?? "").StartsWith("u-") || (before ?? "").StartsWith("remove:") || (key ?? "").StartsWith("remove:")) Refresh(); }
             foreach (var t in shown) { var lit = hoveredKey == t.Key; var c = lit ? Lit : TileBg; if (t.Bg.color != c) t.Bg.color = c; t.Rt.localScale = Vector3.one * (lit ? 1.035f : 1f); }
-            foreach (var b in new[] { addBtn, continueBtn, prevBtn, nextBtn, backBtn }) Light(b, hoveredRt == b);
+            foreach (var b in new[] { addBtn, continueBtn, prevBtn, nextBtn, backBtn, resumeBtn, ownRoomBtn, libraryRoomBtn, chaptersBtn, menuBackBtn }) Light(b, hoveredRt == b);
             foreach (var t in shown) Light(t.Remove, hoveredRt == t.Remove);
             // live jobs: progress a few times a second
             if (Time.time > nextRefresh && (adding || lib.ActiveJobs().Any(j => !j.Done))) { nextRefresh = Time.time + 0.25f; Refresh(); }

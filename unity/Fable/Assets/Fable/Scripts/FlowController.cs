@@ -50,6 +50,8 @@ namespace Fable
         };
         public bool OpenLinkedPassage()
         {
+            // inside a chapter experience the little door stays shut: the next place belongs to a later chapter
+            if (Experience != null) return false;
             if (busy || !Links.TryGetValue(Director.PassageScene?.Id ?? SceneId, out var next) || !HasPassage(next)) return false;
             OpenPassage(next); return true;
         }
@@ -69,6 +71,17 @@ namespace Fable
         static string pendingPassage;
         /// the book chosen on the lobby shelf, opened on the page when this scene starts (null: the passage's own book)
         public static string PendingBook;
+        /// a chapter experience to enter as soon as this scene has started (set before loading the experience's room)
+        public static string PendingExperience;
+        /// a book menu tab to open when this scene starts ("chapters" from the lobby's book menu)
+        public static string PendingMenu;
+
+        /// The chapter experience the reader is in, or null.
+        public ChapterPackage Experience { get; private set; }
+        /// A "place" experience (a room with mood, no script): the reader is in the room with the chapter's moment on the page.
+        public bool InPlace { get; private set; }
+        public BookMenu Menu { get; private set; }
+        Passage.Scene placeScene; List<Passage.Sentence> placeSentences; int placeAt;
 
         /// The whole book on the page while reading; the passage view takes over in the miniature and the scene.
         public BookReader Reader { get; private set; }
@@ -219,13 +232,14 @@ namespace Fable
             SetUpControls();
             Reader = GetComponent<BookReader>() ? GetComponent<BookReader>() : gameObject.AddComponent<BookReader>();
             Reader.Panel = Panel; Reader.Pointer = Pointer; Reader.Input = Input;
-            Reader.StagePassages = passages;
+            Reader.StagePassages = new List<Passage.Scene>();   // no Step In from a page: experiences are per chapter now
             var slug = PendingBook ?? (string.IsNullOrEmpty(Director.PassageScene.Book) ? "alice" : Director.PassageScene.Book); PendingBook = null;
             yield return Reader.Load(slug);
             Reader.ShelfAvailable = Application.CanStreamedLevelBeLoaded(LobbyController.SceneName);   // the page's "shelf" control
             Reader.ShelfPressed += GoToLobby;
             Highlight = GetComponent<Highlighter>() ? GetComponent<Highlighter>() : gameObject.AddComponent<Highlighter>();
-            Highlight.Init(this, Reader, Pointer, Input, Director);   // highlight words: Define, Search, Peek, Step In
+            Highlight.Init(this, Reader, Pointer, Input, Director);   // highlight words: Define, Search, Peek, Chapters
+            WireExperiences();
             Input.Select += OnSelect; Input.ModeChanged += OnInputMode; Input.Next += OnNext; Input.Previous += OnPrev; Input.ReturnToReading += OnReturn; Input.ToggleView += OnToggle; Input.Scrub += OnScrub;
             Director.BeatChanged += (i, b) =>
             {
@@ -241,6 +255,7 @@ namespace Fable
                 StartCoroutine(Grow(beat));
             }
             else ShowBook();
+            AfterStart();
             if (LobbyController.OpenedAt >= 0) { Debug.Log($"[Fable] {Reader.Book.Slug} on the page {(Time.realtimeSinceStartup - LobbyController.OpenedAt) * 1000:F0} ms after the pinch on the shelf"); LobbyController.OpenedAt = -1; }
         }
 
@@ -270,7 +285,12 @@ namespace Fable
         }
 
         void OnBookReady(LibraryEntry e) { if (View) View.Tip(null, $"\u201c{e.Title}\u201d is ready on your library shelf.", 7f); }
-        void OnDestroy() { if (Library.Exists) Library.Instance.BookReady -= OnBookReady; }
+        void OnDestroy()
+        {
+            if (Library.Exists) Library.Instance.BookReady -= OnBookReady;
+            ChapterExperiences.Instance.BecameAvailable -= OnExperienceNews;
+            ExperienceMood.Restore();
+        }
 
         string viewState;
         /// The toolbar's actions follow the state: the visible way back from every place the reader can be.
@@ -278,7 +298,7 @@ namespace Fable
         {
             if (!View) return;
             View.MinY = ReadingRoom && ReadingRoom.activeInHierarchy && ReadingRoom.transform.Find("DioramaTable") ? 0.74f : float.NegativeInfinity;
-            var key = busy ? "busy" : Current.ToString();
+            var key = busy ? "busy" : InPlace ? "Place" : Current.ToString();
             if (key == viewState) return;
             viewState = key;
             switch (key)
@@ -291,12 +311,149 @@ namespace Fable
                     View.SetActions(("\u2039 return to reading", () => OnReturn()), ("back to the table", () => { if (Current == State.Scene && !busy) StartCoroutine(Shrink()); }));
                     View.Tip("scene", "Point at the floor and pinch to go there. \u201creturn to reading\u201d closes the scene.");
                     break;
+                case "Place":
+                    View.SetActions(("\u2039 return to reading", () => OnReturn()));
+                    View.Tip("place", "This is the chapter\u2019s place. Look around, turn with the bar; \u201creturn to reading\u201d takes you back to your page.");
+                    break;
                 case "Reading":
-                    View.SetActions();
+                    View.SetActions(("chapters", () => Menu.Open("chapters")), ("rooms", () => Menu.Open("rooms")), ("sound", () => Menu.Open("sound")));
                     View.Tip("view", "\u2039 turn and turn \u203a show you the room around you. Recentre brings the page back.");
                     break;
                 default: View.SetActions(); break;   // moving between states: only the view buttons
             }
+        }
+
+        // ---------------------------------------------------------------- chapter experiences
+
+        string Slug => Reader && Reader.Book != null ? Reader.Book.Slug : null;
+
+        void WireExperiences()
+        {
+            var ce = ChapterExperiences.Instance;
+            Reader.ChapterEntered += ch => ce.Enter(Slug, ch);
+            Reader.ChapterFinished += ch => ce.Complete(Slug, ch, "finished");
+            Reader.StepIntoChapter += EnterExperience;
+            Reader.RetryExperience += ch => ce.Retry(ch);
+            Reader.ExperienceStatus = ExperienceLine;
+            ce.BecameAvailable += OnExperienceNews;
+            Menu = Panel.GetComponent<BookMenu>() ? Panel.GetComponent<BookMenu>() : Panel.gameObject.AddComponent<BookMenu>();
+            Menu.Init(this);
+            // the chapter on the page now is "entered" (the reader opened the book in it)
+            if (Reader.Book != null && !Reader.Book.IsPdf && Reader.Book.Chapters.Count > 0 && Reader.Book.Chapters[Reader.ChapterIndex].Kind == "chapter") ce.Enter(Slug, Reader.Book.Chapters[Reader.ChapterIndex].Id);
+        }
+
+        void AfterStart()
+        {
+            if (PendingExperience != null) { var ch = PendingExperience; PendingExperience = null; EnterExperience(ch); }
+            else if (PendingMenu != null) { var m = PendingMenu; PendingMenu = null; Menu.Open(m); }
+        }
+
+        /// The end-of-chapter card's line about this chapter's experience. Entry is offered there only when it is ready
+        /// (finishing the chapter is what the button does); otherwise the card says how far preparation has got.
+        (string, bool, bool) ExperienceLine(string chapter)
+        {
+            var ce = ChapterExperiences.Instance; var r = ce.Record(chapter);
+            if (!ChapterExperiences.Supported.Contains(Slug)) return ("", false, false);
+            if (r == null || r.Job == "none") return ("This chapter’s experience has not been prepared.", false, false);
+            return r.Job switch
+            {
+                "ready" => ("This chapter’s experience is ready.", true, false),
+                "failed" => ($"This chapter’s experience could not be prepared: {ce.StageOf(chapter)}. Your reading is not affected.", false, true),
+                "unavailable" => ("There is no place built for this chapter yet, so it has no experience.", false, false),
+                _ => ($"This chapter’s experience is being prepared ({ce.StageOf(chapter)}). It will wait for you under “chapters”; keep reading meanwhile.", false, false),
+            };
+        }
+
+        void OnExperienceNews(ChapterRecord r)
+        {
+            if (!View || r.Book != Slug) return;
+            if (r.Job == "ready") View.Tip(null, "A chapter’s experience is ready: “chapters” on the bar below.", 7f);
+            else if (r.Job == "failed") View.Tip(null, "A chapter’s experience could not be prepared: see “chapters” to retry.", 7f);
+        }
+
+        /// Step into a finished chapter's prepared experience: in this room, or after loading the experience's room.
+        public void EnterExperience(string chapter)
+        {
+            var pkg = ChapterExperiences.Instance.OpenPackage(chapter);   // refuses a chapter that is not completed
+            if (pkg == null) { if (View) View.Tip(null, "That chapter’s experience is not ready yet.", 5f); return; }
+            if (busy || Current != State.Reading) return;
+            var here = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            if (pkg.UnityScene != here)
+            {
+                Debug.Log($"[Fable] experience {chapter}: loading {pkg.UnityScene}");
+                busy = true; if (Highlight) Highlight.Clear(); Reader.Deactivate();
+                PendingBook = Slug; PendingExperience = chapter;
+                Director.Audio.StopAmbience();
+                UnityEngine.SceneManagement.SceneManager.LoadScene(pkg.UnityScene);
+                return;
+            }
+            StartCoroutine(pkg.Staging == "scripted" ? ScriptedExperience(pkg) : PlaceExperience(pkg));
+        }
+
+        IEnumerator ScriptedExperience(ChapterPackage pkg)
+        {
+            busy = true; if (Highlight) Highlight.Clear(); Reader.Deactivate();
+            if (book == null)
+            {
+                var path = System.IO.Path.Combine(Application.streamingAssetsPath, "book/passages.json"); string json = null;
+                yield return Streaming.Text("book/passages.json", t => json = t);
+                book = JsonConvert.DeserializeObject<Passage>(json);
+            }
+            Experience = pkg;
+            Director.Audio.StopAmbience();
+            yield return Director.Load(pkg.Passage, book, pkg.Script, "prepared chapter experience");
+            env.gameObject.SetActive(false);
+            env.gameObject.SetActive(true); PrepareDiorama(); env.gameObject.SetActive(false);
+            ExperienceMood.Apply(pkg.Mood, pkg.Fog);
+            busy = false;
+            Debug.Log($"[Fable] experience {pkg.Chapter}: “{pkg.Title}” in {pkg.Environment} (scripted, {pkg.Script.Beats.Count} beats)");
+            yield return Grow(0);
+        }
+
+        IEnumerator PlaceExperience(ChapterPackage pkg)
+        {
+            busy = true; if (Highlight) Highlight.Clear(); Reader.Deactivate();
+            Experience = pkg; InPlace = true;
+            // the chapter's moment, from the book, as a passage the page can show a sentence at a time
+            placeSentences = new List<Passage.Sentence>(); var paras = new List<List<Passage.Sentence>>();
+            int a = Reader.Book.Ordinal(pkg.Moment.From), b = Reader.Book.Ordinal(pkg.Moment.To);
+            foreach (var c in Reader.Book.Chapters) foreach (var p in c.Paragraphs)
+            {
+                List<Passage.Sentence> para = null;
+                foreach (var se in p.Sentences) { int o = Reader.Book.Ordinal(se.Id); if (o < a || o > b) continue; para ??= new List<Passage.Sentence>(); var ps = new Passage.Sentence { Id = se.Id, Text = se.Text, BookSentence = se.Id }; para.Add(ps); placeSentences.Add(ps); }
+                if (para != null) paras.Add(para);
+            }
+            var chap = Reader.Book.Chapters.Find(c => c.Id == pkg.Chapter);
+            placeScene = new Passage.Scene { Id = pkg.Chapter, Title = pkg.Title, Chapter = chap?.Label ?? pkg.ChapterName, Paragraphs = paras, Book = pkg.Book };
+            ExperienceMood.Apply(pkg.Mood, pkg.Fog);
+            Current = State.Scene; placeAt = 0;
+            PanelInRoom(); Panel.Scale = 0.8f;
+            busy = false;
+            ShowPlace();
+            Debug.Log($"[Fable] experience {pkg.Chapter}: “{pkg.Title}” in {pkg.Environment} (a place, {placeSentences.Count} sentences)");
+            yield break;
+        }
+
+        void ShowPlace()
+        {
+            if (placeSentences == null || placeSentences.Count == 0) return;
+            placeAt = Mathf.Clamp(placeAt, 0, placeSentences.Count - 1);
+            Panel.Show(placeScene, placeSentences[placeAt].Id, $"{placeAt + 1} / {placeSentences.Count}   {Experience.Place}   · {Pinch}: next sentence · the bar below: turn, return to reading");
+        }
+
+        void EndPlace()
+        {
+            InPlace = false; Experience = null; placeSentences = null; ExperienceMood.Restore();
+            Current = State.Reading; ShowBook();   // the saved reading position, not the moment
+        }
+
+        /// Read on in another room: the place in the book is saved with every page, so it comes along.
+        public void GoToRoom(string scene)
+        {
+            if (busy || Current != State.Reading || !Application.CanStreamedLevelBeLoaded(scene)) return;
+            busy = true; if (Highlight) Highlight.Clear(); Reader.Deactivate();
+            PendingBook = Slug; Director.Audio.StopAmbience();
+            UnityEngine.SceneManagement.SceneManager.LoadScene(scene);
         }
 
         /// A book's own room: the room is the reading space. Same page, pointer, highlight menu and gestures as the passage
@@ -326,8 +483,10 @@ namespace Fable
             Reader.ShelfPressed += GoToLobby;
             Highlight = GetComponent<Highlighter>() ? GetComponent<Highlighter>() : gameObject.AddComponent<Highlighter>();
             Highlight.Init(this, Reader, Pointer, Input, Director);
+            WireExperiences();
             Input.Select += OnSelect; Input.ModeChanged += OnInputMode; Input.Next += OnNext; Input.Previous += OnPrev; Input.ReturnToReading += OnReturn; Input.ToggleView += OnToggle; Input.Scrub += OnScrub;
             ShowBook();
+            AfterStart();
             if (LobbyController.OpenedAt >= 0) { Debug.Log($"[Fable] {Reader.Book.Slug} on the page {(Time.realtimeSinceStartup - LobbyController.OpenedAt) * 1000:F0} ms after the pinch on the shelf"); LobbyController.OpenedAt = -1; }
         }
 
@@ -422,6 +581,7 @@ namespace Fable
         void OnNext()
         {
             if (busy) return;
+            if (InPlace) { if (placeAt + 1 < placeSentences.Count) { placeAt++; ShowPlace(); } return; }
             if (Current == State.Reading)
             {
                 if (Highlight && Highlight.HandleTap(true)) return;   // the menu or card took the pinch
@@ -434,6 +594,7 @@ namespace Fable
         void OnPrev()
         {
             if (busy) return;
+            if (InPlace) { if (placeAt > 0) { placeAt--; ShowPlace(); } return; }
             if (Current == State.Scene || Current == State.Miniature) Director.Previous();
             else if (Current == State.Reading)
             {
@@ -454,7 +615,12 @@ namespace Fable
             else if (Current == State.Scene) StartCoroutine(Shrink());
             // Step In from the page is the menu's label or the page's "Step in ›" button, never a gesture
         }
-        void OnReturn() { if ((Current == State.Scene || Current == State.Miniature) && !busy) StartCoroutine(Return()); }
+        void OnReturn()
+        {
+            if (busy) return;
+            if (InPlace) { EndPlace(); return; }
+            if (Current == State.Scene || Current == State.Miniature) StartCoroutine(Return());
+        }
 
         /// Back to the passage at the current beat (after a held prop is put down, for instance).
         public void RefreshPanel()
@@ -490,7 +656,7 @@ namespace Fable
         public void StepReturn() => OnReturn();
         public void StepChoose(int dir) => OnScrub(dir);
         public string ChosenId => Chosen?.Id;
-        public string Describe() => (Current == State.Reading && Reader != null && Reader.Active ? Reader.Describe() + " " + (Highlight ? Highlight.Describe() + " " : "") : "") + $"state={Current} beat={Director.BeatIndex + 1}/{(Director.Script != null ? Director.Script.Beats.Count : 0)} envScale={(env != null ? env.localScale.x.ToString("F2") : "n/a")} active={(env != null && env.gameObject.activeSelf)} playing={Application.isPlaying} source={Director.ScriptSource}";
+        public string Describe() => (Experience != null ? $"experience={Experience.Chapter}({Experience.Staging},{ExperienceMood.Current}) " : "") + (InPlace ? $"place={placeAt + 1}/{placeSentences.Count} " : "") + (Current == State.Reading && Reader != null && Reader.Active ? Reader.Describe() + " " + (Highlight ? Highlight.Describe() + " " : "") : "") + $"state={Current} beat={Director.BeatIndex + 1}/{(Director.Script != null ? Director.Script.Beats.Count : 0)} envScale={(env != null ? env.localScale.x.ToString("F2") : "n/a")} active={(env != null && env.gameObject.activeSelf)} playing={Application.isPlaying} source={Director.ScriptSource}";
 
         /// The diorama grows out of the table in front of the reader; its hall centre sits at chest height, a little below the page.
         IEnumerator Grow(int startBeat = -1)
@@ -593,7 +759,9 @@ namespace Fable
             Director.Audio.StopAmbience();
             Current = State.Reading; busy = false;
             chosen = Mathf.Max(0, passages.FindIndex(p => p.Id == CurrentPassageId));
-            ShowBook(ReachedBookSentence());
+            // from a chapter experience: back to the reader's saved place in the book, not the scene's sentence
+            if (Experience != null) { Experience = null; ExperienceMood.Restore(); ShowBook(); }
+            else ShowBook(ReachedBookSentence());
         }
 
         static void ScaleAbout(Transform t, Vector3 pivot, float s)

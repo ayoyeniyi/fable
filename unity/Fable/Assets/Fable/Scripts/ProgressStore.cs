@@ -43,6 +43,9 @@ namespace Fable
         public float TurnDegrees = 30f;
         /// The reader's own size for the page, on top of each state's placement (the page's resize handle).
         public float PanelScale = 1f;
+        /// Room sound: music on or off, and the ambience level (0 off, 1 quiet, 2 normal).
+        public bool MusicOn = true;
+        public int AmbienceLevel = 2;
         /// Contextual hints already shown once.
         public List<string> HintsShown = new();
     }

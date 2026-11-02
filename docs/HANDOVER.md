@@ -1,4 +1,4 @@
-# Fable handover (updated 2026-11-02: stationary controls, the personal library and book uploads)
+# Fable handover (updated 2026-11-02: chapter-based Step In, stationary controls, the personal library)
 
 Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs/TOOLING.md`. Everything below was true at the commit that last touched this file. "Verified" always says where: **editor** (Unity play mode on a Mac, desktop camera, no HMD) or **headset**. Nothing has been verified on a headset yet.
 
@@ -140,6 +140,55 @@ The reader found two-hand gestures unintuitive and reached the garden by acciden
 - **Not verified**: anything on the headset, including frame rate in the three rooms (all inside the 35k budget, but Kansas grass and the cave's leaf cards are alpha-free geometry, untested for cost), comfort standing on a 9 m table, page legibility against the bright cave mouth, and how the sound mixes in the headset.
 
 **Live interpreter on this Mac (2026-10-31, evening).** An API key now lives in `~/.config/fable/env` here (created in the Anthropic Console for this machine; never in the repo). First live Peek: `mock --book alice --passage "little golden key" --phrase "golden key"` made a valid 6-part, 600-triangle model with 3 labels on the first attempt in 13.5 s (claude-opus-5-5). The server runs as `fable-interpreter serve --addr 127.0.0.1:8787 --wait 20s` with `adb reverse tcp:8787 tcp:8787`. The headset runs Fable in a secondary account (user 10), whose app folder adb cannot write, so `interpreter.txt` cannot be pushed there; the app now defaults to `http://127.0.0.1:8787` on Android when that file is absent (a refused connection falls back to the bundled script at once). The old Fable on the headset (signed on another machine, installed for user 0) was uninstalled to install this Mac's build; its progress was lost.
+
+**Step In per chapter (2026-11-02, owner's brief): built, verified in the editor against the live preparation service; the APK builds; not on the headset (not connected).** Full design, states, spoiler boundary and measurements: `docs/CHAPTER_EXPERIENCES.md`.
+
+**What changed:**
+- The page's **Step in ›** and the highlight menu's Step in are gone. The fifth petal is **Chapters**.
+- Entering a chapter queues its experience once, on the service (`interpreter/internal/chapters`, persistent queue in `out/chapters/`). Each job is planned by Claude from text through the end of that chapter only, then scripted (Alice's rooms), rendered in Blender (`blender/render_experience_thumb.py`), validated and packaged.
+- The headset (`ChapterExperiences.cs`) fetches each package into a sealed folder, checks it, and keeps it locked until the chapter is finished.
+- After a chapter's last page comes an end card: **continue reading ›**, **finish and step into this chapter ›** (only when ready), or the preparation stage, or **try preparing it again**.
+- The lobby's book choice opens a **book menu** (resume reading, reading rooms, chapter experiences).
+- The bar under the page has **chapters / rooms / sound** (`BookMenu.cs`; sound settings saved in `Prefs`).
+- An experience is either scripted (Alice: miniature, then the room, with the prepared script) or a **place** (a room with the chapter's mood and its moment on the page). **‹ return to reading** restores the saved page and undoes the mood.
+
+**Interpreter boundary change (deliberate):** chapter planning sees text through the end of the target chapter, before the reader has finished it. Its outputs are held back:
+- status answers carry stages only
+- the headset refuses titles, pictures and packages for uncompleted chapters at the loading boundary
+- Peek keeps the highlight-end boundary
+
+**Verified in the editor**, play mode against `fable-interpreter serve` with the real key and Blender:
+- **Oz, start to finish:**
+  - Entering chapter 1 queued one job. It was delivered sealed and stayed **Locked**: title and package refused.
+  - The end card offered step-in only once ready. Continue unlocked it, and the tile showed the Blender thumbnail and title.
+  - Entering chapter 2 started chapter 2's job.
+  - The place experience applied the storm mood, showed the moment's 21 sentences, and returned to the saved page (Chapter II, first sentence).
+- **Restart:** the state was kept, and revisiting chapter 1 reused the package (generated once).
+- **Service stopped:** chapter 3 showed "waiting to resume: the preparation service can't be reached" while reading went on. It resumed when the service came back, and was judged **unavailable** (the cornfield), still locked as unread.
+- **Alice:** "finish and step into this chapter" opened the miniature with the prepared 9-beat script ("prepared chapter experience"), stand in the room, and return to the saved place.
+- **Mark as read:** asks twice, unlocks into **Preparing**, and the completed chapter went ahead of an earlier-queued one on the service.
+- **Lobby book menu:** "chapter experiences ›" opened the room with the chapters card.
+- **Console:** 0 errors.
+- **Go tests** (`internal/chapters`): one job per chapter, completed first, restart resumes, a bounded queue, failure then retry, unavailable never packaged, and the planner prompt holds nothing after the chapter.
+
+**Measured** (live, the owner's Mac):
+
+| Kind of chapter | Time |
+|---|---|
+| Scripted (Alice) | 36 to 58 s of service work (plan 5, script 24 to 44, Blender 3 to 8) |
+| Place | 5 to 13 s (plan 3 to 10, Blender 2 to 3) |
+| No fitting room | 5 to 8 s |
+
+Package to headset: 3 to 6 s when already built, 18 s and 42 s from first request. Desktop previews: `desktop-preview_KansasFarmhouse_{chapter-end-card,chapter-experiences-menu,experience-place-oz-c01}.png`, `desktop-preview_HallOfDoors_experience-scripted-alice-c01.png` (the editor camera faces a door at the hall's standing spot: the existing Expand keeps the rig's facing; check the facing on the headset), `desktop-preview_Lobby_book-menu-alice.png`.
+
+**Limitations:**
+- No new environments are generated: chapters without a fitting built room are "no place built yet".
+- Imported books have no experiences.
+- Place experiences have no staged interactions.
+- Mood on the headset cannot change baked light.
+- The service is the owner's Mac.
+
+**Not verified on the headset:** everything above, including polling over `adb reverse`, sealed storage, and the end card's buttons with a hand ray.
 
 **Stationary controls (2026-11-01, owner's brief: a reader who stays in one place, seated or standing): built, editor-verified; not tried on the headset.**
 - **Every essential action has a visible control.** The pinch-and-pull-apart (both hands) Step In, the hold-right Step In, the hold-left close and the left-hand drag-to-turn are off (`ReaderController.LegacyGestures = false`). Step In is the highlight menu's label or the page's **Step in ›**.

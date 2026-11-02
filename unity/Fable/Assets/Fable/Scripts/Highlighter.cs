@@ -1,4 +1,4 @@
-// Highlight words on the page and act on them: Define | Translate | Search | Peek | Step In.
+// Highlight words on the page and act on them: Define | Translate | Search | Peek | Chapters (the chapter experiences).
 //
 //   pinch on the text and drag the ray across words    highlight (a quick pinch still turns the page)
 //   pinch and hold still on a word (half a second)      highlight that word
@@ -54,8 +54,8 @@ namespace Fable
         Transform peekRoot; readonly Dictionary<string, Transform> peekParts = new(); readonly List<(TextMeshPro text, LineRenderer line, Transform target)> peekLabels = new();
         Material lineMat; Coroutine peekJob;
 
-        public static readonly string[] Actions = { "define", "translate", "search", "peek", "stepin" };
-        static readonly string[] ActionNames = { "Define", "Translate", "Search", "Peek", "Step in" };
+        public static readonly string[] Actions = { "define", "translate", "search", "peek", "chapters" };
+        static readonly string[] ActionNames = { "Define", "Translate", "Search", "Peek", "Chapters" };
 
         public void Init(FlowController flow, BookReader reader, PagePointer pointer, ReaderController input, SceneDirector director)
         {
@@ -232,7 +232,7 @@ namespace Fable
         bool Enabled(string action) => action switch
         {
             "translate" => false,                                    // P1
-            "stepin" => Reader.StepInPassage != null,
+            "chapters" => true,   // the book's chapter experiences (finished chapters only); Step In is per chapter now
             // an imported book has no prepared models or rooms, and the interpreter only knows the bundled books' text
             "peek" => !Reader.Imported && Phrase.Trim().Length > 0,
             _ => Phrase.Trim().Length > 0,
@@ -243,8 +243,7 @@ namespace Fable
         {
             "translate" => "\n<size=60%>coming later</size>",
             "peek" when Reader.Imported => "\n<size=55%>not for your books yet</size>",
-            "stepin" when Reader.Imported => "\n<size=55%>no room for this book</size>",
-            "stepin" when Reader.StepInPassage == null => "\n<size=55%>no scene on this page</size>",
+            "chapters" => "\n<size=55%>step into a finished chapter</size>",
             _ => "",
         };
 
@@ -280,7 +279,7 @@ namespace Fable
                 case "define": ShowCard("Define", Define(Phrase)); LastTimings = $"define {(Time.realtimeSinceStartup - t0) * 1000:F1} ms"; break;
                 case "search": SearchCard(); LastTimings = $"search {(Time.realtimeSinceStartup - t0) * 1000:F1} ms"; break;
                 case "peek": Peek(); break;
-                case "stepin": { var from = FirstSentence; Clear(); Flow.StepInAt(from); break; }
+                case "chapters": { Clear(); if (Flow.Menu) Flow.Menu.Open("chapters"); break; }
             }
             return Describe();
         }

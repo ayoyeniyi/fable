@@ -1,0 +1,25 @@
+{
+  "about": "The built environments chapter experiences can be staged in (interpreter/internal/chapters). 'scripted' environments have manifests and take a SceneScript (props, clips, lights, sounds per sentence); 'place' environments are rooms the reader inhabits, adapted by mood and haze only. Triangles and meshes are the measured counts from the Blender builds (docs/ARCHITECTURE.md). A chapter whose setting none of these can honestly stand for is reported as having no place built yet, never staged somewhere unrelated.",
+  "budget": { "targetTriangles": 35000, "maxTriangles": 65000, "maxMeshes": 50 },
+  "moods": ["as-built", "dawn", "day", "dusk", "night", "storm"],
+  "environments": [
+    { "id": "hall-of-doors", "unityScene": "HallOfDoors", "staging": "scripted", "books": ["alice"],
+      "place": "A long, low hall lined with locked doors, lamps hanging from the roof; a three-legged glass table, a low curtain with a little door behind it.",
+      "gltf": "unity/Fable/Assets/Fable/Models/HallOfDoors/hall_of_doors.gltf", "eye": "anchor.reader.entrance", "look": "anchor.hall.centre", "triangles": 61000, "meshes": 44 },
+    { "id": "mad-tea-party", "unityScene": "MadTeaParty", "staging": "scripted", "books": ["alice"],
+      "place": "A long table laid for tea under a great tree in front of a house, chairs and cups crowded at one corner, afternoon light.",
+      "gltf": "unity/Fable/Assets/Fable/Models/MadTeaParty/mad_tea_party.gltf", "eye": "anchor.reader.entrance", "look": "anchor.scene.centre", "triangles": 35000, "meshes": 26 },
+    { "id": "queens-croquet-ground", "unityScene": "QueensCroquetGround", "staging": "scripted", "books": ["alice"],
+      "place": "A formal rose garden and croquet lawn: hedges, a rose tree, gravel paths, open sky.",
+      "gltf": "unity/Fable/Assets/Fable/Models/QueensCroquetGround/queens_croquet_ground.gltf", "eye": "anchor.reader.entrance", "look": "anchor.scene.centre", "triangles": 36000, "meshes": 42 },
+    { "id": "kansas-farmhouse", "unityScene": "KansasFarmhouse", "staging": "place", "books": ["oz"],
+      "place": "Inside a one-room Kansas farmhouse on the gray prairie: a cooking stove, a cupboard, a table, beds, a trapdoor to the cyclone cellar; the flat prairie outside.",
+      "gltf": "unity/Fable/Assets/Fable/Models/KansasFarmhouse/kansas_farmhouse.gltf", "eye": "anchor.reader.entrance", "look": "anchor.reader.look", "triangles": 30343, "meshes": 28 },
+    { "id": "calypsos-cave", "unityScene": "CalypsosCave", "staging": "place", "books": ["odyssey"],
+      "place": "The nymph Calypso's cave on the island of Ogygia: a fire on the hearth, a loom, vines and a garden with springs outside the mouth, the sea beyond.",
+      "gltf": "unity/Fable/Assets/Fable/Models/CalypsosCave/calypsos_cave.gltf", "eye": "anchor.reader.entrance", "look": "anchor.reader.look", "triangles": 33772, "meshes": 34 },
+    { "id": "glumdalclitchs-room", "unityScene": "GlumdalclitchsRoom", "staging": "place", "books": ["gulliver"],
+      "place": "A farmhouse bedroom in Brobdingnag seen at Gulliver's size: the reader stands on a giant table among enormous furniture, a candle and a window far above.",
+      "gltf": "unity/Fable/Assets/Fable/Models/GlumdalclitchsRoom/glumdalclitchs_room.gltf", "eye": "anchor.reader.entrance", "look": "anchor.reader.look", "triangles": 30424, "meshes": 31 }
+  ]
+}

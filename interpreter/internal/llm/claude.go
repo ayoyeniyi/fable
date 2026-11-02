@@ -59,6 +59,11 @@ func New(model string) *Director {
 	return &Director{client: anthropic.NewClient(), model: model}
 }
 
+// Ask sends one user message under the given system prompt and returns the text, code fences stripped.
+func (d *Director) Ask(ctx context.Context, system, user string, maxTokens int64) (string, error) {
+	return d.askWith(ctx, system, []anthropic.MessageParam{anthropic.NewUserMessage(anthropic.NewTextBlock(user))}, maxTokens)
+}
+
 func (d *Director) ask(ctx context.Context, msgs []anthropic.MessageParam) (string, error) {
 	return d.askWith(ctx, systemPrompt, msgs, 16000)
 }
