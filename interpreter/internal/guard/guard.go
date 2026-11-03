@@ -41,7 +41,7 @@ func IsLocal(r *http.Request) bool {
 
 // Costly lists the routes that start Claude or Blender work.
 var Costly = map[string]bool{
-	"POST /peek": true, "POST /interpret": true, "POST /chapters/prepare": true, "POST /rooms/prepare": true,
+	"POST /peek": true, "POST /interpret": true, "POST /translate": true, "POST /chapters/prepare": true, "POST /rooms/prepare": true,
 }
 
 // Limits for one client.
