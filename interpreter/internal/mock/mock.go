@@ -70,7 +70,7 @@ func (m *Model) TriangleCount() int {
 var (
 	idRe       = regexp.MustCompile(`^[a-z0-9][a-z0-9\-]*$`)
 	colorRe    = regexp.MustCompile(`^#[0-9a-fA-F]{6}$`)
-	sentenceRe = regexp.MustCompile(`^[a-z]+:c[0-9]{2}\.p[0-9]{3}\.s[0-9]{2}$`)
+	sentenceRe = regexp.MustCompile(`^[a-z]+:[cf][0-9]{2}\.p[0-9]{3}\.s[0-9]{2}$`)
 	materials  = map[string]bool{"": true, "matte": true, "gloss": true, "metal": true, "glass": true, "emissive": true}
 	bookSlugs  = map[string]bool{"alice": true, "oz": true, "odyssey": true, "gulliver": true}
 )

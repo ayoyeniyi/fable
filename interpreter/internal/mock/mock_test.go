@@ -56,3 +56,10 @@ func TestParseRejectsUnknownKeys(t *testing.T) {
 		t.Fatal("unknown key accepted")
 	}
 }
+
+// Peek works in front matter too (Gulliver's letter, Alice's poem), whose sentence ids start with f.
+func TestFrontMatterSentenceIDsAreSentences(t *testing.T) {
+	if !sentenceRe.MatchString("alice:f01.p006.s01") || !sentenceRe.MatchString("gulliver:c29.p001.s02") || sentenceRe.MatchString("alice:x01.p006.s01") {
+		t.Fatal("sentence id pattern wrong")
+	}
+}
