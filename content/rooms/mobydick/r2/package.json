@@ -1,0 +1,229 @@
+{
+  "book": "mobydick",
+  "bytes": 2108845,
+  "chapter": "mobydick:c04",
+  "entrance": [
+    -0.6000000238418579,
+    -1.2000000476837158,
+    0
+  ],
+  "files": [
+    {
+      "path": "room.gltf",
+      "sha256": "1aa97fdaef114465b8c856414fcea233febb711d7cfc993a7d1ca51267714276",
+      "size": 43512
+    },
+    {
+      "path": "room.bin",
+      "sha256": "3b64f80bd9bd8cc9133bd193a3516f3871cd2235892091c0585c0e819933826a",
+      "size": 944864
+    },
+    {
+      "path": "textures/T_MESH_bedwood.jpg",
+      "sha256": "a27ab79c4cc90a84757e45e3a99fbcae8bb6eff328f368c7f07e488479284331",
+      "size": 11422
+    },
+    {
+      "path": "textures/T_MESH_boards.jpg",
+      "sha256": "6fafb3b08dcdf6ce1ad0cadfaf9a32fd800ac629bc3e83768ea5d942e3109ba4",
+      "size": 5705
+    },
+    {
+      "path": "textures/T_MESH_bone.jpg",
+      "sha256": "121fa32eba6d38df8f7c323937c289f2e97cbc7782b608b60d5c0c3c8a748642",
+      "size": 2199
+    },
+    {
+      "path": "textures/T_MESH_canvas.jpg",
+      "sha256": "2a8116ec9b011d78e8f2c765acd88627d6777c2114f7b4e77968c5612e289256",
+      "size": 2230
+    },
+    {
+      "path": "textures/T_MESH_cast_iron.jpg",
+      "sha256": "f51a1033f1415de35aa72b1e20a6ddd73033c571b73bbbeae8af427ef03ccb48",
+      "size": 1101
+    },
+    {
+      "path": "textures/T_MESH_ceiling.jpg",
+      "sha256": "53ee777c42679e0438ccc0620d236890db38e57390834082f085b75dd1b6bb51",
+      "size": 6424
+    },
+    {
+      "path": "textures/T_MESH_china.jpg",
+      "sha256": "b49ace8ebc981090551cf7177c7913402f4ea9b544698fe6bb83a9675b252ac6",
+      "size": 2028
+    },
+    {
+      "path": "textures/T_MESH_door.jpg",
+      "sha256": "f12b9a73692e21d428ca7edc41ec43b185434f21787f0cf18f2177ad5d1a2ac5",
+      "size": 4672
+    },
+    {
+      "path": "textures/T_MESH_fireboard.jpg",
+      "sha256": "a8af8cc9f0e0f98981c51a993078e311a4e4c7c5a9fa44a8e483ae785fba3350",
+      "size": 1520
+    },
+    {
+      "path": "textures/T_MESH_frame.jpg",
+      "sha256": "505d18ca1d0baf10e225d8c7b5ce45eb74ead35eb8ce989a3c3724e1796c4b99",
+      "size": 1950
+    },
+    {
+      "path": "textures/T_MESH_glass.jpg",
+      "sha256": "164ec6c786e11ceaae88265b3622f5701fd012cabccf0eb5d29efccbb6074fb7",
+      "size": 52267
+    },
+    {
+      "path": "textures/T_MESH_hearthstone.jpg",
+      "sha256": "80b83d1846712a30f0559654b3ce7429c9996cf4e2a317528785754976ab926a",
+      "size": 1224
+    },
+    {
+      "path": "textures/T_MESH_house_interior.jpg",
+      "sha256": "99d7bd6e3b41d7149911979c7491d1711ad97230cd5dbb4e40962074ae153fa3",
+      "size": 17189
+    },
+    {
+      "path": "textures/T_MESH_house_opp.jpg",
+      "sha256": "5074284873074e2d9918c778e1c23b7620a4605427fe4adc9d930179214497f6",
+      "size": 103047
+    },
+    {
+      "path": "textures/T_MESH_iron.jpg",
+      "sha256": "0eb992b3a92225727ef4e7f6ff9621865a1f5a3f459539c788c8efbd53ca34fa",
+      "size": 1299
+    },
+    {
+      "path": "textures/T_MESH_linen.jpg",
+      "sha256": "a287cd7b7816f0803739040c0d51aeb166e5a81c24fa1d2fbbc88db9a599abe1",
+      "size": 3128
+    },
+    {
+      "path": "textures/T_MESH_mirror.jpg",
+      "sha256": "a5bd5cb7c690f602b88e0fe101f1c76df2c9cb23a0901692b4291f54fbd0d600",
+      "size": 1243
+    },
+    {
+      "path": "textures/T_MESH_painted_sea.jpg",
+      "sha256": "a868e8b147a933b0328687fdb64effd96dc3d709cef5896486c1382a98622351",
+      "size": 1488
+    },
+    {
+      "path": "textures/T_MESH_patch_brown.jpg",
+      "sha256": "e69f9b83397be698343612423c24a8a7bdb1996504e6f0743259f87d7e955dba",
+      "size": 1610
+    },
+    {
+      "path": "textures/T_MESH_patch_cream.jpg",
+      "sha256": "0d6c5de14f6f849e2aa78f7d4768ad6f8cdff603464cb19905ea51fe02f26d9b",
+      "size": 1610
+    },
+    {
+      "path": "textures/T_MESH_patch_green.jpg",
+      "sha256": "e9a7d43230d4564bee1c7e8c9072490896411a9c687128e224e28ff6f9e2cf98",
+      "size": 1649
+    },
+    {
+      "path": "textures/T_MESH_patch_indigo.jpg",
+      "sha256": "d1842efacb2f7d0c9ecae8e6cad66b07e6954e76d38cf8f7f809ea458ffdec6a",
+      "size": 1685
+    },
+    {
+      "path": "textures/T_MESH_patch_ochre.jpg",
+      "sha256": "193af59d51715822aae259ce039f9c935af61d925423f73687a45aa55c6f0aac",
+      "size": 1702
+    },
+    {
+      "path": "textures/T_MESH_patch_red.jpg",
+      "sha256": "4e3b1a0f4808ecfd88692f1d8d90a65aed935e7dfaefa5021fbae3f2c42702d8",
+      "size": 1674
+    },
+    {
+      "path": "textures/T_MESH_peacoat.jpg",
+      "sha256": "a51bcebff1e562736f08d9df35b463984c4f337a6f302aa6ad49930bd16e2248",
+      "size": 1488
+    },
+    {
+      "path": "textures/T_MESH_ragrug.jpg",
+      "sha256": "2146fe874bac9d543dffcf6b02b57d54ab09075b313f57bf4ef322068d0b5635",
+      "size": 1162
+    },
+    {
+      "path": "textures/T_MESH_seachest.jpg",
+      "sha256": "76ece30845dd276d0f4700754166aa65c017c1edbc25aaee839386faeed926bd",
+      "size": 1719
+    },
+    {
+      "path": "textures/T_MESH_seams.jpg",
+      "sha256": "7acdb147b89094d074c9f8db7d27190b8e24be2d9f4183c198ee53be1aeb7887",
+      "size": 2099
+    },
+    {
+      "path": "textures/T_MESH_shaft.jpg",
+      "sha256": "3c6eb10b677d02e62facedae89597d04ac09fb76a1b7b7c2961a34b30a325690",
+      "size": 995
+    },
+    {
+      "path": "textures/T_MESH_slate.jpg",
+      "sha256": "76b87094dafee5718a5c3bd634a9bdd5b0f5f0b1bf77fb09a34bf029519dd2de",
+      "size": 15918
+    },
+    {
+      "path": "textures/T_MESH_soap.jpg",
+      "sha256": "11a9b083796e64699f612502d835ed5d0f1020d1de3d2b07c422995c6ca61686",
+      "size": 1313
+    },
+    {
+      "path": "textures/T_MESH_street.jpg",
+      "sha256": "0bc96d574b3fccc74ce915afb3592f45a480b31c8bf94e0c58aa487c6c1697cd",
+      "size": 28753
+    },
+    {
+      "path": "textures/T_MESH_surround.jpg",
+      "sha256": "da4b7acbb38d50d5b727e786e71c78691d5dc0c4096724699ff0215a4e89c84c",
+      "size": 4028
+    },
+    {
+      "path": "textures/T_MESH_tallow.jpg",
+      "sha256": "b5333b95473c8b43f175f6bfc43189bc5a669ccbf42c23033fc0d56d1be519e1",
+      "size": 1708
+    },
+    {
+      "path": "textures/T_MESH_trim.jpg",
+      "sha256": "122fd05637d5ccc576122c411bce5429460eabbb45dd565a368d68e0209d7062",
+      "size": 96162
+    },
+    {
+      "path": "textures/T_MESH_wall.jpg",
+      "sha256": "7d857e55e0fbe3e5211b49949fc2823c9644f3826a0e5ffee6ab6745a47bc025",
+      "size": 30211
+    },
+    {
+      "path": "textures/T_MESH_whale.jpg",
+      "sha256": "c13772fd193fc61c83a073190d329dc5ada91677757bead5fab7083b8646ae8a",
+      "size": 1454
+    },
+    {
+      "path": "textures/T_SkyDome.jpg",
+      "sha256": "155aef3a305a4427b29b1a6fb92755ac4139b8f17fe9f9503bed3df896ae6bd8",
+      "size": 45713
+    },
+    {
+      "path": "thumb.png",
+      "sha256": "75cfc4ca03852b8ae6e83fd30017094ab9c33ac341db0968317a0fd32d9fb884",
+      "size": 657680
+    }
+  ],
+  "look": [
+    -0.6000000238418579,
+    2.200000047683716,
+    1.399999976158142
+  ],
+  "meshes": 38,
+  "place": "A small, bare, cold second-floor back room in the old inn. A prodigious bed fills much of the space, big enough for four to sleep abreast, spread with a patchwork counterpane of parti-coloured squares and triangles. A crazy old sea chest serves as washstand and centre table and holds a piece of hard soap. Above the empty, sooty fireplace runs a rude shelf with outlandish bone fish hooks, and a papered fireboard shows a man striking a whale. A tall harpoon leans at the head of the bed, and a lashed-up hammock and a seaman's bag lie in a corner. A bit of mirror glass is stuck against the wall. The window has no curtains, and pale, cold daylight falls in from a very narrow street, where the house opposite stands close.",
+  "room": 2,
+  "title": "The upstairs room with the prodigious bed",
+  "triangles": 13785,
+  "version": 1,
+  "why": "This plain, intimate room seen at a cold dawn offers a quiet contrast in light to the dusky barroom below."
+}

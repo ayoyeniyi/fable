@@ -1,0 +1,47 @@
+[
+  {
+    "title": "The Spouter-Inn entry and public room",
+    "place": "A gable-ended old wooden inn by the New Bedford docks, mid-nineteenth century, low and leaning. You stand in a wide, low, straggling entry lined with old-fashioned wainscots like the bulwarks of a condemned ship. To one side hangs a huge, smoke-blackened oil painting of a foundering Cape-Horner and a dark leaping whale, half-lit by uneven cross-lights. The opposite wall bristles with South Sea clubs and spears, some set with teeth like ivory saws, mixed with rusty, twisted whaling lances and harpoons. Ahead, a low arch cut through an old central chimney opens into a duskier public room. It has heavy low beams, worn wrinkled planks, a long shelf-like table of cracked glass cases holding dusty curiosities, and a great iron stove in the middle. Far in the corner stands the bar, built into the vast arched jawbone of a whale, with shabby shelves of decanters and flasks. An old carved wooden settle sits by the wall. The room is empty and quiet while the wind howls outside.",
+    "why": "The inn is the most richly described interior in the opening, a dim, ship-like room crowded with whaling relics and strange art.",
+    "chapter": "mobydick:c03",
+    "kind": "interior",
+    "time": "night, about nine o'clock",
+    "weather": "bitter cold, howling wind outside",
+    "excerpts": [
+      "a wide, low, straggling entry with old-fashioned wainscots, reminding one of the bulwarks of some condemned old craft.",
+      "The opposite wall of this entry was hung all over with a heathenish array of monstrous clubs and spears.",
+      "A still duskier place is this, with such low ponderous beams above, and such old wrinkled planks beneath",
+      "there stands the vast arched bone of the whale’s jaw, so wide, a coach might almost drive beneath it."
+    ]
+  },
+  {
+    "title": "The upstairs room with the prodigious bed",
+    "place": "A small, bare, cold second-floor back room in the old inn. A prodigious bed fills much of the space, big enough for four to sleep abreast, spread with a patchwork counterpane of parti-coloured squares and triangles. A crazy old sea chest serves as washstand and centre table and holds a piece of hard soap. Above the empty, sooty fireplace runs a rude shelf with outlandish bone fish hooks, and a papered fireboard shows a man striking a whale. A tall harpoon leans at the head of the bed, and a lashed-up hammock and a seaman's bag lie in a corner. A bit of mirror glass is stuck against the wall. The window has no curtains, and pale, cold daylight falls in from a very narrow street, where the house opposite stands close.",
+    "why": "This plain, intimate room seen at a cold dawn offers a quiet contrast in light to the dusky barroom below.",
+    "chapter": "mobydick:c04",
+    "kind": "interior",
+    "time": "early morning, just after daylight",
+    "weather": "bitter cold, clear",
+    "excerpts": [
+      "a small room, cold as a clam, and furnished, sure enough, with a prodigious bed, almost big enough indeed for any four harpooneers to sleep abreast.",
+      "a rude shelf, the four walls, and a papered fireboard representing a man striking a whale.",
+      "The counterpane was of patchwork, full of odd little parti-coloured squares and triangles",
+      "there were no curtains to the window, and that the street being very narrow, the house opposite commanded a plain view into the room"
+    ]
+  },
+  {
+    "title": "The Battery waterfront, Manhattan",
+    "place": "The southern tip of mid-nineteenth-century Manhattan, where streets run down to the water. You stand on the Battery's broad stone mole as waves wash against it and a sea breeze blows in. Along the shore, timber spiles and pier-heads reach out into the harbour. Tall-masted merchant ships from China lie moored with their rigging against the sky. Behind you, shady warehouses line the waterfront, and the city stretches back in lath and plaster. Before you, the open water runs out toward the unseen sea. The scene is quiet and empty, like a dreamy Sunday afternoon.",
+    "why": "Ishmael's opening meditation on water and reverie makes this calm, open shore the natural exterior counterpart to the inn.",
+    "chapter": "mobydick:c01",
+    "kind": "exterior",
+    "time": "Sunday afternoon",
+    "weather": "clear and breezy",
+    "excerpts": [
+      "Its extreme downtown is the battery, where that noble mole is washed by waves, and cooled by breezes, which a few hours previous were out of sight of land.",
+      "Circumambulate the city of a dreamy Sabbath afternoon.",
+      "Some leaning against the spiles; some seated upon the pier-heads; some looking over the bulwarks of ships from China",
+      "loitering under the shady lee of yonder warehouses will not suffice."
+    ]
+  }
+]

@@ -1,0 +1,194 @@
+{
+  "book": "mobydick",
+  "bytes": 1920112,
+  "chapter": "mobydick:c03",
+  "entrance": [
+    0,
+    -4.800000190734863,
+    0
+  ],
+  "files": [
+    {
+      "path": "room.gltf",
+      "sha256": "8a1158c3e686f0f50c2691ed3e096ba3eef9b3ca87329cfcf06aa36ccbd51b0d",
+      "size": 35724
+    },
+    {
+      "path": "room.bin",
+      "sha256": "13ff6eb2766e897e6153e66dc0c75762e3391cc4cd6be05720646b1c46b1b2be",
+      "size": 989764
+    },
+    {
+      "path": "textures/T_MESH_beams.jpg",
+      "sha256": "6c38771ab93b31c2082fa0a21a1bdf4cae918b90f7a4ffd06cc2bee8af60ef2b",
+      "size": 31775
+    },
+    {
+      "path": "textures/T_MESH_bone.jpg",
+      "sha256": "9eda00bb50060a06cab4798354d83acfd9279494b525b8bc09e4c855b4237c14",
+      "size": 1839
+    },
+    {
+      "path": "textures/T_MESH_bottle_amber.jpg",
+      "sha256": "5c6411f82ae27f94654639c9ba994ab79dc7a7588727a1a102f2592a09024e36",
+      "size": 2313
+    },
+    {
+      "path": "textures/T_MESH_bottle_green.jpg",
+      "sha256": "0a196bf94b9dd07fe6a7d8b36c088e61b1c0a77404d5b376e93c76e8837e47e8",
+      "size": 1993
+    },
+    {
+      "path": "textures/T_MESH_brick.jpg",
+      "sha256": "7cc8911e795a7c454cc31f4aaa78ebe0e33340a9dd07ab39ca90708aefc8407d",
+      "size": 15131
+    },
+    {
+      "path": "textures/T_MESH_candle_flame.jpg",
+      "sha256": "097610de4d8caa34e6c430659e98437a0e1b2201b65f5c1dfbb6c0ed5e68bc19",
+      "size": 1293
+    },
+    {
+      "path": "textures/T_MESH_canvas.jpg",
+      "sha256": "f0488e094ae76f4c1ec32b86849c4d5850af24dcb49897ccf98cf036d711750c",
+      "size": 3671
+    },
+    {
+      "path": "textures/T_MESH_ceiling.jpg",
+      "sha256": "80010d4803f03c452fba3108d9272af9f58f2f7ba52d844d38eb3c3ce497b24b",
+      "size": 14703
+    },
+    {
+      "path": "textures/T_MESH_curtain.jpg",
+      "sha256": "573e36b6943626ab917ccd1f5aeea8bfdcae293e32fa6f26d83231ca392a2c47",
+      "size": 3976
+    },
+    {
+      "path": "textures/T_MESH_darkwood.jpg",
+      "sha256": "6e3dc7a49766707b1384a41adf24369f4bf7ab4ff45d915662f3bbc4184ea249",
+      "size": 14605
+    },
+    {
+      "path": "textures/T_MESH_frame.jpg",
+      "sha256": "9c5ff9d2e76f8d02d2a1c9e9cbad67ab800f168cd186ba49ed96ba7544f8e749",
+      "size": 11461
+    },
+    {
+      "path": "textures/T_MESH_glass.jpg",
+      "sha256": "aba82ed0fcc34d26ac18bec8db5197be50f05a5441cece8b80867c174521d8e3",
+      "size": 3099
+    },
+    {
+      "path": "textures/T_MESH_iron.jpg",
+      "sha256": "46aeaccace26542aa21f18ba0f60af89a9e25d133cc024e259b6718715b950aa",
+      "size": 4258
+    },
+    {
+      "path": "textures/T_MESH_lanternglow.jpg",
+      "sha256": "3f71721507a138270b7e12ddc1f360102a23d542d3acf98e2da54a253aa39727",
+      "size": 929
+    },
+    {
+      "path": "textures/T_MESH_paintdark.jpg",
+      "sha256": "5d2f40226a11f333551cee5c87a2aca298ddc9d92b11586b08544b91b6637b65",
+      "size": 1797
+    },
+    {
+      "path": "textures/T_MESH_paintsea.jpg",
+      "sha256": "3fc34141299e4ef065db536d836a71e5eba7e014efc6dc465718bacd5a6b15d2",
+      "size": 1288
+    },
+    {
+      "path": "textures/T_MESH_paintsky.jpg",
+      "sha256": "e94d5cd0ddd8ed09156b64de48b8ed69fcf2682e402f734537f4375e6d175a48",
+      "size": 1333
+    },
+    {
+      "path": "textures/T_MESH_paper.jpg",
+      "sha256": "73e02709bd60615bb6734648a6bfd3da07f3935a1053a4770d64d4dd2a78ae86",
+      "size": 1994
+    },
+    {
+      "path": "textures/T_MESH_pewter.jpg",
+      "sha256": "f7b6616c9d5d74c8d11a572fd8f998aa2aace336d86f3f2e294d8629af7b98e3",
+      "size": 2168
+    },
+    {
+      "path": "textures/T_MESH_planks.jpg",
+      "sha256": "1b881e34da809fb0c22fe4ea968267c5b8bdaa779d8ff6ae05deaad7ba8ed76c",
+      "size": 10940
+    },
+    {
+      "path": "textures/T_MESH_planks2.jpg",
+      "sha256": "c00ca5d90ff96c123e0901292842de8859c5988a9539a2f5f6ba815546e35bba",
+      "size": 12495
+    },
+    {
+      "path": "textures/T_MESH_plaster.jpg",
+      "sha256": "6b14bf83394f4d0a24c81efe5da66ff0ef45685e5df1dc40c8fe55c2bc9d3c7a",
+      "size": 34740
+    },
+    {
+      "path": "textures/T_MESH_rope.jpg",
+      "sha256": "bd441dc78470c9aae2a80403d730e26b26a08e1bba9b6d43b843e697dc5689cf",
+      "size": 1510
+    },
+    {
+      "path": "textures/T_MESH_runner.jpg",
+      "sha256": "c09d581b60a3ebfb9a60147ec6d174ca1d5ace22a19514231870d0c53e85c4ff",
+      "size": 2154
+    },
+    {
+      "path": "textures/T_MESH_rust.jpg",
+      "sha256": "ed42c9ef1459c6ad939ef0faabbb9ae62805334dff253f7aef4528939c238acf",
+      "size": 1170
+    },
+    {
+      "path": "textures/T_MESH_seatfabric.jpg",
+      "sha256": "61166d4d7d9b9b4f97e4ad3f9cd8dbd914c0db72049261e91223cddc001079ec",
+      "size": 1243
+    },
+    {
+      "path": "textures/T_MESH_stoveglow.jpg",
+      "sha256": "0e2a35d189805faaddd8fc1e1311d2ba2b3614cda2810d0af4c48f1452242a0a",
+      "size": 1095
+    },
+    {
+      "path": "textures/T_MESH_wainscot.jpg",
+      "sha256": "26318ac42ff73c908098f50975220f24124d8ef6931a2894afbb8aa36f031245",
+      "size": 50585
+    },
+    {
+      "path": "textures/T_MESH_wax.jpg",
+      "sha256": "9e6cf51cc4320d1c499a55cd484a7fb01b08e7aa872804065ce11c478497c55e",
+      "size": 1480
+    },
+    {
+      "path": "textures/T_MESH_winglass.jpg",
+      "sha256": "2f79b58fe38827dd554fc9e4e0204954030b65ef5634a9a067b229ff78376dd7",
+      "size": 3042
+    },
+    {
+      "path": "textures/T_SkyDome.jpg",
+      "sha256": "82ced398eb5cb1123744981b21a13e92cc3d602f40f6f997b2908ab7a06956f3",
+      "size": 22616
+    },
+    {
+      "path": "thumb.png",
+      "sha256": "57fca2da56f5ec5eea511705add9dd4b4929d2c06228fddc9d21654253b636c8",
+      "size": 631928
+    }
+  ],
+  "look": [
+    0,
+    4,
+    1.5
+  ],
+  "meshes": 31,
+  "place": "A gable-ended old wooden inn by the New Bedford docks, mid-nineteenth century, low and leaning. You stand in a wide, low, straggling entry lined with old-fashioned wainscots like the bulwarks of a condemned ship. To one side hangs a huge, smoke-blackened oil painting of a foundering Cape-Horner and a dark leaping whale, half-lit by uneven cross-lights. The opposite wall bristles with South Sea clubs and spears, some set with teeth like ivory saws, mixed with rusty, twisted whaling lances and harpoons. Ahead, a low arch cut through an old central chimney opens into a duskier public room. It has heavy low beams, worn wrinkled planks, a long shelf-like table of cracked glass cases holding dusty curiosities, and a great iron stove in the middle. Far in the corner stands the bar, built into the vast arched jawbone of a whale, with shabby shelves of decanters and flasks. An old carved wooden settle sits by the wall. The room is empty and quiet while the wind howls outside.",
+  "room": 1,
+  "title": "The Spouter-Inn entry and public room",
+  "triangles": 16570,
+  "version": 1,
+  "why": "The inn is the most richly described interior in the opening, a dim, ship-like room crowded with whaling relics and strange art."
+}

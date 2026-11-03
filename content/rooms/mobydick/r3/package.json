@@ -1,0 +1,189 @@
+{
+  "book": "mobydick",
+  "bytes": 6295085,
+  "chapter": "mobydick:c01",
+  "entrance": [
+    0,
+    0,
+    0
+  ],
+  "files": [
+    {
+      "path": "room.gltf",
+      "sha256": "fd1ee686ae68520acd70863d5fe840247aa8192a81fecdec25bf0e0202e225c0",
+      "size": 34779
+    },
+    {
+      "path": "room.bin",
+      "sha256": "e60d9953d29556c4518832048bbcc06404cb4500c76172cfe0eff35978190079",
+      "size": 3704616
+    },
+    {
+      "path": "textures/T_MESH_bark.jpg",
+      "sha256": "63aac82ddb69787bbe904cfc0d6aabb832181b7a1327b328bebe4f61f2e31040",
+      "size": 8238
+    },
+    {
+      "path": "textures/T_MESH_bench.jpg",
+      "sha256": "fa1f5197f4d63587ce9c911833ddef8f681029f0142a4f1543f37eb0a94847de",
+      "size": 2489
+    },
+    {
+      "path": "textures/T_MESH_brick.jpg",
+      "sha256": "58607693760652e6876eebdc999ca7280a291972888566b0ba7f73cbc51c1208",
+      "size": 167971
+    },
+    {
+      "path": "textures/T_MESH_canvas.jpg",
+      "sha256": "76e55d24eced1353d781b9f606080a91fe7e0f09a4a2b14d77000b84711b1379",
+      "size": 57028
+    },
+    {
+      "path": "textures/T_MESH_casks.jpg",
+      "sha256": "46ce67a5e766d82f85ba350bcc15ba6f55c025c0691ca0d52ceb66a439a80561",
+      "size": 10080
+    },
+    {
+      "path": "textures/T_MESH_cobbles.jpg",
+      "sha256": "3c38fc365a8e69809234e58e6109cd0c2baec30c434c46d150876e809b6bdefb",
+      "size": 7438
+    },
+    {
+      "path": "textures/T_MESH_crates.jpg",
+      "sha256": "d6573852c6df1a00b5d3cfa580f621dcb1a72eeb7a5d0f050f8b154497614477",
+      "size": 9966
+    },
+    {
+      "path": "textures/T_MESH_far_hills.jpg",
+      "sha256": "f5958a38c8ccc62ef4d39c0679055a334b2fae32f886f1d815666f8aa745984f",
+      "size": 112767
+    },
+    {
+      "path": "textures/T_MESH_flags.jpg",
+      "sha256": "783acfed918ed5c625adc3db2176e0bef691f452504254d9891683aaa9bc03cb",
+      "size": 33553
+    },
+    {
+      "path": "textures/T_MESH_flags2.jpg",
+      "sha256": "7c5e837312f57dd314b8f4508081041f8d0f3701e52cdb0a93c08c3a723791a8",
+      "size": 55315
+    },
+    {
+      "path": "textures/T_MESH_glass.jpg",
+      "sha256": "4a7afd4278f74f683517623eb990aca387f8d36c584c45664b4e826bbfda66d6",
+      "size": 182937
+    },
+    {
+      "path": "textures/T_MESH_granite.jpg",
+      "sha256": "a44de23bd8e5e7115274f4156602b77c4a2ba23a015961b655964c219299b5e7",
+      "size": 36551
+    },
+    {
+      "path": "textures/T_MESH_harbour.jpg",
+      "sha256": "d0d63f523d5ce8a454abeec9051649efc3a95f63f0171e640b364f1fc80af27f",
+      "size": 92625
+    },
+    {
+      "path": "textures/T_MESH_house_interior.jpg",
+      "sha256": "8afbb3101b52418809882030b7f8ed2305d282d5c2a110ad1271d34656cbce85",
+      "size": 66341
+    },
+    {
+      "path": "textures/T_MESH_hull_black.jpg",
+      "sha256": "a6aac591e4cbb2de5caa971572499fe895cb85f79bea5393cb24529c897e3e46",
+      "size": 39930
+    },
+    {
+      "path": "textures/T_MESH_hull_green.jpg",
+      "sha256": "b7c065934524ccbd377368d520580c710300c53c0c0268ed8abd8bce64bb981e",
+      "size": 35681
+    },
+    {
+      "path": "textures/T_MESH_iron.jpg",
+      "sha256": "683bddbb6222ec995f57f51ad4cb2b194f738f7f759e5284a39bade0799fd8b2",
+      "size": 3227
+    },
+    {
+      "path": "textures/T_MESH_leaves_sprays.jpg",
+      "sha256": "a46952078353701952f6a982981d412926d09f00ef0ebc61c8069fccddbe147e",
+      "size": 833
+    },
+    {
+      "path": "textures/T_MESH_leaves.jpg",
+      "sha256": "57c7de5bec35c1a9baf19d3703455184805cb4268a88a9cdf50a1a3d6257bef3",
+      "size": 86858
+    },
+    {
+      "path": "textures/T_MESH_paving.jpg",
+      "sha256": "a7710071841cac19f3f8f229f217a116cb8e6ea6d6696543d1d078f6eceab852",
+      "size": 116384
+    },
+    {
+      "path": "textures/T_MESH_pierdeck.jpg",
+      "sha256": "9df0ef31c1595a2dd61154d597689bd18f9fb6738cfb3cf4821b828fa01d3162",
+      "size": 50447
+    },
+    {
+      "path": "textures/T_MESH_puddle.jpg",
+      "sha256": "e28be607c40c508513c24f9e92575cab2f36b3a6c624e6f208f136b80419dcfc",
+      "size": 2486
+    },
+    {
+      "path": "textures/T_MESH_rope.jpg",
+      "sha256": "941b5fcc248d5d982b9c9dbf9b7560e18e2b56763ff8af4f02e7556223a1393e",
+      "size": 29711
+    },
+    {
+      "path": "textures/T_MESH_sacking.jpg",
+      "sha256": "f464a07840620b4a5bec713a1b3cc7ae19c3ea400f21c0682d7065594108b350",
+      "size": 1832
+    },
+    {
+      "path": "textures/T_MESH_slate.jpg",
+      "sha256": "317cd225adeb8a4cb1aaacebe1119742e62ee929d1a6fe1e948ec3abb67b6187",
+      "size": 148071
+    },
+    {
+      "path": "textures/T_MESH_spars.jpg",
+      "sha256": "47ebddb6d7071d677e30a8cc0927f38b586f9550ae5d497827ed65264299b08b",
+      "size": 136984
+    },
+    {
+      "path": "textures/T_MESH_spiles.jpg",
+      "sha256": "532ac9ab98d77f5c021fc96fdd9c57311155e925f1caa4d2d8deddd786576c4b",
+      "size": 25447
+    },
+    {
+      "path": "textures/T_MESH_trim.jpg",
+      "sha256": "fe465d5f404b65ae590d36921dd8a530006eb424f6148a8fc5399e472b50fc7e",
+      "size": 250827
+    },
+    {
+      "path": "textures/T_MESH_weeds.jpg",
+      "sha256": "06c4c63c9a4f23e61f3005de1ac2394962ee4cdb6539143178e83e0417f0c6ce",
+      "size": 833
+    },
+    {
+      "path": "textures/T_SkyDome.jpg",
+      "sha256": "95f8474ab4f0779130c1a4bcdb31c0e3dad751ae4942116a08bb5c181f04070d",
+      "size": 46568
+    },
+    {
+      "path": "thumb.png",
+      "sha256": "0cc03465dbb767ac8b30dcab59074ec8bef3780029f8337e1a8640a2850ff33b",
+      "size": 736272
+    }
+  ],
+  "look": [
+    0,
+    14,
+    1.2999999523162842
+  ],
+  "meshes": 30,
+  "place": "The southern tip of mid-nineteenth-century Manhattan, where streets run down to the water. You stand on the Battery's broad stone mole as waves wash against it and a sea breeze blows in. Along the shore, timber spiles and pier-heads reach out into the harbour. Tall-masted merchant ships from China lie moored with their rigging against the sky. Behind you, shady warehouses line the waterfront, and the city stretches back in lath and plaster. Before you, the open water runs out toward the unseen sea. The scene is quiet and empty, like a dreamy Sunday afternoon.",
+  "room": 3,
+  "title": "The Battery waterfront, Manhattan",
+  "triangles": 60092,
+  "version": 1,
+  "why": "Ishmael's opening meditation on water and reverie makes this calm, open shore the natural exterior counterpart to the inn."
+}
