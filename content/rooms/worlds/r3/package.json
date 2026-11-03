@@ -1,0 +1,224 @@
+{
+  "book": "worlds",
+  "bytes": 2245125,
+  "chapter": "worlds:c07",
+  "entrance": [
+    1.399999976158142,
+    -1.899999976158142,
+    0
+  ],
+  "files": [
+    {
+      "path": "room.gltf",
+      "sha256": "0eace5692bd592ec250987745fbb658a21818ca07f360a44e21b58526c65ab39",
+      "size": 42318
+    },
+    {
+      "path": "room.bin",
+      "sha256": "04510b037bca332ea0555ae2f419c6690db774e1ad6c572bb092cc2439b821aa",
+      "size": 1398060
+    },
+    {
+      "path": "textures/T_MESH_book1.jpg",
+      "sha256": "59cfdd296bda8ee41b8b7d5c6a4464f96069e14ea76bd44fa172213004268ea4",
+      "size": 1822
+    },
+    {
+      "path": "textures/T_MESH_book2.jpg",
+      "sha256": "c6ebecfee24371fe354c74e849a6ec463063eee84c3de4b00d310833666c9db0",
+      "size": 1822
+    },
+    {
+      "path": "textures/T_MESH_book3.jpg",
+      "sha256": "3182e414a48e7a0df8809678f034701662020dbda8754e6b2fcde2a15ac7ebd7",
+      "size": 1822
+    },
+    {
+      "path": "textures/T_MESH_book4.jpg",
+      "sha256": "c0cd52a09dcad2e42ee35bf804b9c12564e04e3933f3343e31d9e9ac897cbb5f",
+      "size": 1687
+    },
+    {
+      "path": "textures/T_MESH_brass.jpg",
+      "sha256": "e6e38a24fcaf04503aad031dbdd1c2c4f0083f19ed19a2312ae9b0ea2f3611d9",
+      "size": 2513
+    },
+    {
+      "path": "textures/T_MESH_bread.jpg",
+      "sha256": "83cf1eb6b3e245afb658eb4190adedc4f065e7475ef70f6cfb3be112c8ec5f31",
+      "size": 1952
+    },
+    {
+      "path": "textures/T_MESH_candle_flame.jpg",
+      "sha256": "78474d725c1e5ea75d5136a5d18739d69827fbe47e159cbd85fdaffb6781b493",
+      "size": 1131
+    },
+    {
+      "path": "textures/T_MESH_cast_iron.jpg",
+      "sha256": "74e01d3409c2af53376680598203c75a4313b1af9aa412d40ba0db5521ff626f",
+      "size": 1178
+    },
+    {
+      "path": "textures/T_MESH_ceiling.jpg",
+      "sha256": "24b63f297b623ce8c0fb83cfcbe1f30f0169a37e3879ab84ff7ee796cb583725",
+      "size": 12428
+    },
+    {
+      "path": "textures/T_MESH_china.jpg",
+      "sha256": "2b0d9d7dac4e54e40e34c1966b8c1f0e42c5eea40c005b29478e9f213973bc1e",
+      "size": 2868
+    },
+    {
+      "path": "textures/T_MESH_coldmeat.jpg",
+      "sha256": "14fd01e75984d2805526a43a1e5a585ed1e5b289b68942d7b1bff392d7554ab5",
+      "size": 1837
+    },
+    {
+      "path": "textures/T_MESH_curtains.jpg",
+      "sha256": "aa7a263d8da24e07d4cf2e675ea821b31dbce7ab9fbf1519d7857e6298e09412",
+      "size": 4341
+    },
+    {
+      "path": "textures/T_MESH_floorboards.jpg",
+      "sha256": "4e971914721e862192077ee0e3554e90fe195d1210a3239e27d5a61739953d37",
+      "size": 10391
+    },
+    {
+      "path": "textures/T_MESH_gilt.jpg",
+      "sha256": "0d9a540cb2346943ec98bcf79d8fd1771b0f5206355c9f9b183ced72e6cdb681",
+      "size": 5415
+    },
+    {
+      "path": "textures/T_MESH_glassware.jpg",
+      "sha256": "9d4906b6f39f181d9cc9199cfc33703a9be98ab7138e5ed15b2df9c902016aba",
+      "size": 2596
+    },
+    {
+      "path": "textures/T_MESH_hearthstone.jpg",
+      "sha256": "d60a27b187face52b9e73b7b0ae7826668ba9f219697f338f4904c8d5cea0620",
+      "size": 1186
+    },
+    {
+      "path": "textures/T_MESH_joinery.jpg",
+      "sha256": "9eed2fd924841bde0a41fc03efc7c688dc54117282bbc32dd02ba8d5c893f653",
+      "size": 28232
+    },
+    {
+      "path": "textures/T_MESH_mahogany.jpg",
+      "sha256": "2d878238a28e81cb522a24bccf600e6dbdb6e882c967214484a0dc56b3760587",
+      "size": 12875
+    },
+    {
+      "path": "textures/T_MESH_marble.jpg",
+      "sha256": "2c0bbc93c9e21e2d0cf108acfd6ed342531c14006494035653a776d742ed5c26",
+      "size": 5129
+    },
+    {
+      "path": "textures/T_MESH_mirror.jpg",
+      "sha256": "38c0424f556d0aa419bc3cb54c7bcfd8e0f10fb442b5a78227cc99bf435b2fce",
+      "size": 1127
+    },
+    {
+      "path": "textures/T_MESH_nuts.jpg",
+      "sha256": "f630e072c613ea55d144dd55e5789a4f7bad8323e5a5939f5c746382c7ce4d51",
+      "size": 2547
+    },
+    {
+      "path": "textures/T_MESH_pages.jpg",
+      "sha256": "d4c1f4dcfe641c57e5536e0e6419078b3e072a5d820d6a5e9b8eb4ef75ec54f8",
+      "size": 2083
+    },
+    {
+      "path": "textures/T_MESH_painting1.jpg",
+      "sha256": "ba06c5ff2b24731e1a47a30d5ad9c12a09ac044e0c26a67ad0458a3f98a8d060",
+      "size": 1383
+    },
+    {
+      "path": "textures/T_MESH_painting2.jpg",
+      "sha256": "b728a4fe87eab8d8890f3124f9d043887fd86aecea31a72f23a40e5702c31a2a",
+      "size": 1534
+    },
+    {
+      "path": "textures/T_MESH_painting3.jpg",
+      "sha256": "253ac049fc108500e595cbd2f371496b4bd16248d257eb68825c5a01beeaa4e2",
+      "size": 1313
+    },
+    {
+      "path": "textures/T_MESH_pinkshade.jpg",
+      "sha256": "1dce22d9d98b084ad121b853a28a7c69639590d0129c231a9c86d5b54a6efc4a",
+      "size": 1151
+    },
+    {
+      "path": "textures/T_MESH_rug.jpg",
+      "sha256": "5ae7a72566a2b3e33deaf1b7ed7ecced35b5ad398ce788fdd64db44e7ba94c32",
+      "size": 1790
+    },
+    {
+      "path": "textures/T_MESH_rugborder.jpg",
+      "sha256": "706cf2594d5e9fe313e552a4fe265024ec4be13803b946641220d0a00765b1dd",
+      "size": 3713
+    },
+    {
+      "path": "textures/T_MESH_seatfabric.jpg",
+      "sha256": "48d19e5b66ce60a07154533ba4ab958fa0741d34e77acbe113cbfe9f145d8df3",
+      "size": 3729
+    },
+    {
+      "path": "textures/T_MESH_silver.jpg",
+      "sha256": "b0ada5f8849687dd149507bd54a8f658eb4c3ab4527ac0ad9a98fb9a8298c36f",
+      "size": 2508
+    },
+    {
+      "path": "textures/T_MESH_tablecloth.jpg",
+      "sha256": "870c11c187aa318561edfa7fbcdb1cd9c50f169b6e0cf3dc8dfe98acf71b9dd8",
+      "size": 1855
+    },
+    {
+      "path": "textures/T_MESH_wallpaper.jpg",
+      "sha256": "a29f13348f518116b821e0bc09e772878394da461fa482d11065bf1990f1d013",
+      "size": 24022
+    },
+    {
+      "path": "textures/T_MESH_wax.jpg",
+      "sha256": "4949721b925d4f72a8b41d5cde125512c5ec468c843f2d36fad999908289f18a",
+      "size": 1895
+    },
+    {
+      "path": "textures/T_MESH_whitepaint.jpg",
+      "sha256": "1f515591f11ddcbd86453abefbdb821b8d9aaed512bd00cd9f9c0f3919cad30c",
+      "size": 4940
+    },
+    {
+      "path": "textures/T_MESH_windowglass.jpg",
+      "sha256": "2ea4764a13e1c8fc04db17613b7a9b2f83bb00767e956fdcddf0223ba254fa4d",
+      "size": 1615
+    },
+    {
+      "path": "textures/T_MESH_wine.jpg",
+      "sha256": "bc33547eae75404d989fd8599f76fdf98b5a40a91dc7985381ae917b05448867",
+      "size": 2054
+    },
+    {
+      "path": "textures/T_SkyDome.jpg",
+      "sha256": "24ce27a01558e080ac6169fd7aa3cb8e17a093be1afa57118310414932e5dd20",
+      "size": 21436
+    },
+    {
+      "path": "thumb.png",
+      "sha256": "566b92b9a64050a72483931cc7d729d1f5daec91961a9f94483362d22f0e6b5f",
+      "size": 622827
+    }
+  ],
+  "look": [
+    1.2000000476837158,
+    3.5,
+    1.2999999523162842
+  ],
+  "meshes": 37,
+  "place": "A comfortable late-Victorian suburban dining room in the narrator's house on Maybury Hill. A table is laid with a white cloth, silver and glassware, and a cold dinner sits untouched. A lamp with a pink shade casts a warm rosy glow over the table. A glass of crimson-purple wine stands by one place, beside a dish of nuts. Beyond the lamplight the room fades into soft shadow, and the summer night is dark outside.",
+  "room": 3,
+  "title": "The dining room at Maybury",
+  "triangles": 23934,
+  "version": 1,
+  "why": "It is a warm, lamplit, domestic interior that the narrator remembers with photographic vividness as his last civilised dinner, unlike the night observatory and the sunlit heath."
+}

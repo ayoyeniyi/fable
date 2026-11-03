@@ -1,0 +1,149 @@
+{
+  "book": "worlds",
+  "bytes": 3903238,
+  "chapter": "worlds:c02",
+  "entrance": [
+    0,
+    0,
+    0.6000000238418579
+  ],
+  "files": [
+    {
+      "path": "room.gltf",
+      "sha256": "bf167f3c287e6b1aa3ef68881f8ce8e203687a9c149941f3ad064a0e29fb447b",
+      "size": 25672
+    },
+    {
+      "path": "room.bin",
+      "sha256": "659a6edc8309d6d96d8192be6a51b6da70575733c5b939d54b8dfa5e87494d65",
+      "size": 2091608
+    },
+    {
+      "path": "textures/T_MESH_ash.jpg",
+      "sha256": "0d208c307e672b5e61bbd812b18785544082482f07077f358d783cc9be4e94f1",
+      "size": 5528
+    },
+    {
+      "path": "textures/T_MESH_bark.jpg",
+      "sha256": "1f83cd7e403bc1efe2bd94696fa374ec4ffbee6f11de0345681ec1769973cc1e",
+      "size": 37199
+    },
+    {
+      "path": "textures/T_MESH_bloom.jpg",
+      "sha256": "44a245ce0d8f62d2591e876bb7bcd851ad4391a31de1145a187b83d43677e0e4",
+      "size": 832
+    },
+    {
+      "path": "textures/T_MESH_char.jpg",
+      "sha256": "dfc7b8d944a650ad95bc91b1e4bcb4fa90093ae91dc24bf650f84422f51bc61b",
+      "size": 6773
+    },
+    {
+      "path": "textures/T_MESH_ember.jpg",
+      "sha256": "2a04217e7a3882e259a1d9cfde84bde6ca6b4ff30f963872beee2f32eb8b2b8a",
+      "size": 1186
+    },
+    {
+      "path": "textures/T_MESH_far_hills.jpg",
+      "sha256": "55b4fbb8259ab9a2246f6ca920d79c111c3b99703b93446ad9e8b7b5ec1d83d4",
+      "size": 117396
+    },
+    {
+      "path": "textures/T_MESH_gravel.jpg",
+      "sha256": "78a4e0b440d0b8b5fccb61297342e833e8e316f572b443797e0f11ba02e32e29",
+      "size": 4089
+    },
+    {
+      "path": "textures/T_MESH_gravel_soil.jpg",
+      "sha256": "6a23d1b4044abd797f073a3a8cdecae2e6801fa35f61dc03f58edff43d237dae",
+      "size": 62874
+    },
+    {
+      "path": "textures/T_MESH_heath_bush_sprays.jpg",
+      "sha256": "5e88eb4b604938a08d390d839cb8c5e3bee5471d046ac095aaf0d8e9b7da4ef1",
+      "size": 830
+    },
+    {
+      "path": "textures/T_MESH_heath_bush.jpg",
+      "sha256": "56945221e1189ab1359e78f7a175f486e0902139e080d2ef261bbd3c20fdab7b",
+      "size": 13608
+    },
+    {
+      "path": "textures/T_MESH_heath_green_sprays.jpg",
+      "sha256": "252069a0e7ab5bea69177d9099d13088debb9043253b34c808f63cf8779aa607",
+      "size": 830
+    },
+    {
+      "path": "textures/T_MESH_heath_green.jpg",
+      "sha256": "95e567198ee0aba6a1b71a8717d8535da38f52d53b5794b23421fa8036f08022",
+      "size": 12866
+    },
+    {
+      "path": "textures/T_MESH_heather.jpg",
+      "sha256": "a45924a432e1a1b95af3c3ce1005c72e1251e397c8cc3df0d65672a702cbbd59",
+      "size": 830
+    },
+    {
+      "path": "textures/T_MESH_needles_sprays.jpg",
+      "sha256": "c83414deaa4411db6aae62c7f7fcf9e24d2331650c0fa3c368464b7d40b7c034",
+      "size": 830
+    },
+    {
+      "path": "textures/T_MESH_needles.jpg",
+      "sha256": "7b17242a7e195f96ffcf370ee40373117df5472ba756578f7ad0942be4a3eea1",
+      "size": 273976
+    },
+    {
+      "path": "textures/T_MESH_sand.jpg",
+      "sha256": "e961fb038fd9e135982bf17c8a5239592ffd3f246cc082374ac86e9ce7b6b827",
+      "size": 56742
+    },
+    {
+      "path": "textures/T_MESH_sand_dark.jpg",
+      "sha256": "851c0b1d42cf4884fc8e622188cc5c64b77f1f7f21db7a4466a04b89b436da73",
+      "size": 165988
+    },
+    {
+      "path": "textures/T_MESH_scale.jpg",
+      "sha256": "02b64199f9d777f528a769fadbcd63f56a08a479b73a0b317090201b4ed31d74",
+      "size": 124146
+    },
+    {
+      "path": "textures/T_MESH_smoke.jpg",
+      "sha256": "91a7ab8f105c5d978a52fba1c59ad55cec2f53d302be30946b0d826e04e0b26b",
+      "size": 14527
+    },
+    {
+      "path": "textures/T_MESH_splinter.jpg",
+      "sha256": "97ffe69bd392173b407381c05e0085e5f094d1f31582fdc06fdcd88adb1cfbc2",
+      "size": 3698
+    },
+    {
+      "path": "textures/T_MESH_turf.jpg",
+      "sha256": "373624e53de0110d48b9c292d3e0dc8ecc1aa99fe9afb94531c83ae0d7d27143",
+      "size": 151595
+    },
+    {
+      "path": "textures/T_SkyDome.jpg",
+      "sha256": "cf5a5e9c9a5e37a365be487e50094ae6e222c72d6d8dff5dde4c4cbdf23a9aa2",
+      "size": 45845
+    },
+    {
+      "path": "thumb.png",
+      "sha256": "f619fe08c1e9fa9d99a34081354e217a79995a07d3ad4192ac2c5980c941c4ce",
+      "size": 683770
+    }
+  ],
+  "look": [
+    2,
+    14,
+    1.399999976158142
+  ],
+  "meshes": 22,
+  "place": "An open heath of heather and sandy turf near the sand pits between Horsell, Ottershaw and Woking. A great fresh crater has been torn into the ground, ringed by heaps of flung sand and gravel. Half-buried in it lies a huge cylinder about thirty yards across, crusted in dun-coloured, ashy scale and surrounded by the splintered remains of a fir tree. Scattered pines stand around, and the low sun is just clearing them towards Weybridge. Far off to the east a strip of heather smoulders, sending up a thin blue thread of smoke. There is no wind and no birdsong.",
+  "room": 2,
+  "title": "The sand pits on Horsell Common at dawn",
+  "triangles": 45444,
+  "version": 1,
+  "why": "The text describes this exterior as wonderfully still and empty, a strange and luminous early-morning contrast to the dark observatory."
+}

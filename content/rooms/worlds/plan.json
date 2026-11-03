@@ -1,0 +1,47 @@
+[
+  {
+    "title": "Ogilvy's observatory at Ottershaw",
+    "place": "A small, dark Victorian observatory on high ground above Ottershaw and Chertsey. A brass telescope driven by ticking clockwork points up through a narrow oblong slit in the domed roof, and a band of stars shows through the gap. A shuttered lantern in one corner throws a faint pool of light on the wooden floor. A little table nearby holds a soda siphon. Everything else is soft blackness, with the warm night air coming in through the slit.",
+    "why": "It is the book's first quiet, intimate space: a dark, ticking room open to the stars, perfect for long, calm reading.",
+    "chapter": "worlds:c01",
+    "kind": "interior",
+    "time": "midnight",
+    "weather": "clear, warm starlit night",
+    "excerpts": [
+      "the black and silent observatory, the shadowed lantern throwing a feeble glow upon the floor in the corner",
+      "the steady ticking of the clockwork of the telescope, the little slit in the roof—an oblong profundity with the stardust streaked across it",
+      "Looking through the telescope, one saw a circle of deep blue and the little round planet swimming in the field.",
+      "to the little table where the siphon stood"
+    ]
+  },
+  {
+    "title": "The sand pits on Horsell Common at dawn",
+    "place": "An open heath of heather and sandy turf near the sand pits between Horsell, Ottershaw and Woking. A great fresh crater has been torn into the ground, ringed by heaps of flung sand and gravel. Half-buried in it lies a huge cylinder about thirty yards across, crusted in dun-coloured, ashy scale and surrounded by the splintered remains of a fir tree. Scattered pines stand around, and the low sun is just clearing them towards Weybridge. Far off to the east a strip of heather smoulders, sending up a thin blue thread of smoke. There is no wind and no birdsong.",
+    "why": "The text describes this exterior as wonderfully still and empty, a strange and luminous early-morning contrast to the dark observatory.",
+    "chapter": "worlds:c02",
+    "kind": "exterior",
+    "time": "dawn",
+    "weather": "clear, windless, already warm",
+    "excerpts": [
+      "The early morning was wonderfully still, and the sun, just clearing the pine trees towards Weybridge, was already warm.",
+      "The Thing itself lay almost entirely buried in sand, amidst the scattered splinters of a fir tree it had shivered to fragments in its descent.",
+      "An enormous hole had been made by the impact of the projectile, and the sand and gravel had been flung violently in every direction over the heath",
+      "The heather was on fire eastward, and a thin blue smoke rose against the dawn."
+    ]
+  },
+  {
+    "title": "The dining room at Maybury",
+    "place": "A comfortable late-Victorian suburban dining room in the narrator's house on Maybury Hill. A table is laid with a white cloth, silver and glassware, and a cold dinner sits untouched. A lamp with a pink shade casts a warm rosy glow over the table. A glass of crimson-purple wine stands by one place, beside a dish of nuts. Beyond the lamplight the room fades into soft shadow, and the summer night is dark outside.",
+    "why": "It is a warm, lamplit, domestic interior that the narrator remembers with photographic vividness as his last civilised dinner, unlike the night observatory and the sunlit heath.",
+    "chapter": "worlds:c07",
+    "kind": "interior",
+    "time": "late evening",
+    "weather": "warm, still summer night",
+    "excerpts": [
+      "peering at me from under the pink lamp shade, the white cloth with its silver and glass table furniture",
+      "for in those days even philosophical writers had many little luxuries—the crimson-purple wine in my glass, are photographically distinct.",
+      "The dinner, which was a cold one, had already been served, and remained neglected on the table",
+      "At the end of it I sat, tempering nuts with a cigarette"
+    ]
+  }
+]

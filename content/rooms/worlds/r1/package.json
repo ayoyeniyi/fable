@@ -1,0 +1,169 @@
+{
+  "book": "worlds",
+  "bytes": 1899264,
+  "chapter": "worlds:c01",
+  "entrance": [
+    1.2999999523162842,
+    -1.600000023841858,
+    0
+  ],
+  "files": [
+    {
+      "path": "room.gltf",
+      "sha256": "76d04e6b06dfd136cc6a1a00a6993f9bb50627d072152c8ad7d54109a852abd5",
+      "size": 29354
+    },
+    {
+      "path": "room.bin",
+      "sha256": "6b32d0450317221e39a1e89e329f51a343a97fc585f61b0c17df0ac0c12ea382",
+      "size": 997292
+    },
+    {
+      "path": "textures/T_MESH_boards.jpg",
+      "sha256": "883911ab0bf1b99d193841434b4cd1d8cef891c85af940e261e9326fe6bb7693",
+      "size": 9254
+    },
+    {
+      "path": "textures/T_MESH_book1.jpg",
+      "sha256": "b73ce673c027dd0237eb9aa433142f1faf7dbf891686786f67400f5652879e18",
+      "size": 6592
+    },
+    {
+      "path": "textures/T_MESH_book2.jpg",
+      "sha256": "7982b39ed955f1b4fa4f8527adab47be3e11b0ce454f62524f2536f1b9b8cb27",
+      "size": 6653
+    },
+    {
+      "path": "textures/T_MESH_book3.jpg",
+      "sha256": "0863bd8534642a34ead2d6c38c77f459e9ea8d04f6b28ece30b304f1a3b81a84",
+      "size": 7203
+    },
+    {
+      "path": "textures/T_MESH_book4.jpg",
+      "sha256": "2950f9406a66b389890cab280633c0e7a7da479485a09d1cf4c561d1cd7fbd1b",
+      "size": 6174
+    },
+    {
+      "path": "textures/T_MESH_brass.jpg",
+      "sha256": "e3b2a2ffe6f925a1149c4702e226cd4e876e71ee64106f0d32210219e928fbc7",
+      "size": 1988
+    },
+    {
+      "path": "textures/T_MESH_candle_flame.jpg",
+      "sha256": "097610de4d8caa34e6c430659e98437a0e1b2201b65f5c1dfbb6c0ed5e68bc19",
+      "size": 1293
+    },
+    {
+      "path": "textures/T_MESH_dome.jpg",
+      "sha256": "ab03c59d1d76181fbfb898fce0bff5f02b3b4534b03e7bd842d447cd3a29e48e",
+      "size": 5361
+    },
+    {
+      "path": "textures/T_MESH_glass.jpg",
+      "sha256": "38210e903c423c03b539eef30ce6d17e3ad235fde7fc6490dec46488e4614d31",
+      "size": 1483
+    },
+    {
+      "path": "textures/T_MESH_iron.jpg",
+      "sha256": "4a07deda5cf1a56ac2301c3b5b892847a374ae474993ea49b36bb9c1484c7e6d",
+      "size": 3583
+    },
+    {
+      "path": "textures/T_MESH_lanternglow.jpg",
+      "sha256": "06178f6d805e9bf1d8a5ac33d1bc2ee40915326771ae9370d7f6d9cd886ff848",
+      "size": 1102
+    },
+    {
+      "path": "textures/T_MESH_leathertop.jpg",
+      "sha256": "9cae99d45e1c1cded34f26a86f030935cf71dbbec287a02776e22d7887e5ba44",
+      "size": 1392
+    },
+    {
+      "path": "textures/T_MESH_oak.jpg",
+      "sha256": "ba8a0e5fa8be2c8c42c415d3510257c7f3a0a73187a895fe61ebd35fef6a34b6",
+      "size": 15862
+    },
+    {
+      "path": "textures/T_MESH_pages.jpg",
+      "sha256": "bfcf49b9daf8b89aecae2c16306ec6643ff6bd607bed2ce05658c7207d0bf90b",
+      "size": 2213
+    },
+    {
+      "path": "textures/T_MESH_paper.jpg",
+      "sha256": "5a8bb1cf8896380e09495f7d7e9486f83ee4900909825367047c50be3dab44a1",
+      "size": 1837
+    },
+    {
+      "path": "textures/T_MESH_print.jpg",
+      "sha256": "b2bbf7906d08f58588c8331ee4f4c76d5c611f53cbb4d9b9cd228ae0cb2e7c42",
+      "size": 1491
+    },
+    {
+      "path": "textures/T_MESH_ribs.jpg",
+      "sha256": "3e1429ca3f1789d0b24c4a2bb68c244e9189ed84ad4414d63dbf3d342c5ea959",
+      "size": 35479
+    },
+    {
+      "path": "textures/T_MESH_rug.jpg",
+      "sha256": "1c9ca1fa48f694b6f51915ae7ef18233974aa4b51c805582d9ca4cd26da753dd",
+      "size": 1254
+    },
+    {
+      "path": "textures/T_MESH_rugborder.jpg",
+      "sha256": "b5c71f6ef572c6f3b604a1e9bcedbf9a90d726bb4748ae9e802323c3ce13f2aa",
+      "size": 1761
+    },
+    {
+      "path": "textures/T_MESH_seat.jpg",
+      "sha256": "cea650876719c29dac3630a822e1a63e4590a983e63aa7bde631ece2b389cfa4",
+      "size": 1417
+    },
+    {
+      "path": "textures/T_MESH_starchart.jpg",
+      "sha256": "99502e09fd8d288fc79478a9ba475de45ea0c70bdef8992414eebc70d812c60b",
+      "size": 1339
+    },
+    {
+      "path": "textures/T_MESH_stardust.jpg",
+      "sha256": "501e0ddb45fee0f70db3eea13309c7ea057c43a83b2141d8c962fd61bc73e909",
+      "size": 14975
+    },
+    {
+      "path": "textures/T_MESH_stars.jpg",
+      "sha256": "db1fcdd1c0118df52610739369c3d7f25f9386b1ce36dff11af940eec29257ff",
+      "size": 1092
+    },
+    {
+      "path": "textures/T_MESH_walls.jpg",
+      "sha256": "f8ccf68d735a681a4d8870a4e6ff50f961f1c40f216ef56f65badffaafe378ff",
+      "size": 26079
+    },
+    {
+      "path": "textures/T_MESH_wax.jpg",
+      "sha256": "2d1ecbb0b351d0eb3929255a3f4a464320c57f80890b0fce2b3bd2de067c2e9d",
+      "size": 1450
+    },
+    {
+      "path": "textures/T_SkyDome.jpg",
+      "sha256": "7ed5dc1384bfada67d4cca4bb08f5d62617424a5fc133ae97a6af4991fb06b23",
+      "size": 19495
+    },
+    {
+      "path": "thumb.png",
+      "sha256": "16507e76ba75146542436ee4fad429e784ebbbd19c40e9bf06c549f360d1d844",
+      "size": 694796
+    }
+  ],
+  "look": [
+    0.8999999761581421,
+    3.5,
+    1.600000023841858
+  ],
+  "meshes": 26,
+  "place": "A small, dark Victorian observatory on high ground above Ottershaw and Chertsey. A brass telescope driven by ticking clockwork points up through a narrow oblong slit in the domed roof, and a band of stars shows through the gap. A shuttered lantern in one corner throws a faint pool of light on the wooden floor. A little table nearby holds a soda siphon. Everything else is soft blackness, with the warm night air coming in through the slit.",
+  "room": 1,
+  "title": "Ogilvy's observatory at Ottershaw",
+  "triangles": 15546,
+  "version": 1,
+  "why": "It is the book's first quiet, intimate space: a dark, ticking room open to the stars, perfect for long, calm reading."
+}
