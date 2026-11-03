@@ -132,6 +132,13 @@ func (s *Service) load() {
 				j.State = Queued // its package is gone: build it again
 			}
 		}
+		// "no place built yet" was a verdict on the rooms that existed then: when rooms have been added since, plan again
+		if j.State == Unavailable {
+			if fi, err := os.Stat(filepath.Join(s.Root, "schema", "environments.json")); err == nil && fi.ModTime().After(j.Queued) {
+				j.State, j.Error = Queued, ""
+				log.Printf("chapters %s: rooms were added since it was found to have none; planning again", j.Chapter)
+			}
+		}
 		if j.Timings == nil {
 			j.Timings = map[string]float64{}
 		}

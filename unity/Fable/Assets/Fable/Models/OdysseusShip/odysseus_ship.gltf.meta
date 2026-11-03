@@ -1,0 +1,223 @@
+fileFormatVersion: 2
+guid: fc8c3e7b589fa48d4a4be8304ef48cb7
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies:
+  - type: 0
+    originalUri: Assets/Fable/Models/OdysseusShip/odysseus_ship.bin
+    assetPath: Assets/Fable/Models/OdysseusShip/odysseus_ship.bin
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_FarCoast_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_FarCoast_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_FarCoast_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_FarCoast_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_FarCoast_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_FarCoast_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_FarSea_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_FarSea_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_FarSea_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_FarSea_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_FarSea_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_FarSea_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Ballast_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Ballast_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Ballast_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Ballast_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Ballast_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Ballast_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Bones_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Bones_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Bones_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Bones_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Bones_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Bones_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Bronze_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Bronze_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Bronze_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Bronze_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Bronze_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Bronze_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_DeckPlanks_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_DeckPlanks_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_DeckPlanks_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_DeckPlanks_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_DeckPlanks_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_DeckPlanks_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Frames_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Frames_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Frames_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Frames_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Frames_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Frames_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_HullBlack_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_HullBlack_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_HullBlack_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_HullBlack_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_HullBlack_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_HullBlack_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_HullInner_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_HullInner_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_HullInner_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_HullInner_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_HullInner_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_HullInner_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_IsleGround_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_IsleGround_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_IsleGround_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_IsleGround_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_IsleGround_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_IsleGround_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_IsleRock_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_IsleRock_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_IsleRock_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_IsleRock_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_IsleRock_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_IsleRock_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Maquis_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Maquis_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Maquis_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Maquis_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Maquis_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Maquis_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_OarWood_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_OarWood_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_OarWood_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_OarWood_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_OarWood_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_OarWood_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Rope_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Rope_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Rope_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Rope_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Rope_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Rope_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Sail_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Sail_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Sail_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Sail_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Sail_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Sail_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Sea_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Sea_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Sea_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Sea_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Sea_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Sea_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Spar_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Spar_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Spar_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Spar_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Spar_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Spar_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Terracotta_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Terracotta_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Terracotta_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Terracotta_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Terracotta_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Terracotta_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Timber_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Timber_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Timber_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Timber_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Timber_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Timber_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Wale_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Wale_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Wale_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Wale_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Wale_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Wale_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Wax_Normal.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Wax_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Wax_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Wax_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_Wax_Roughness.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_Wax_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OdysseusShip/textures/T_SkyDome_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OdysseusShip/textures/T_SkyDome_BaseColor.jpg
+  reportItems: []

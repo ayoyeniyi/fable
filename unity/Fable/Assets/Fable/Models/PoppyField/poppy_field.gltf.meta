@@ -1,0 +1,124 @@
+fileFormatVersion: 2
+guid: 66b1cbadfda1c4beeb23b6204acc49f2
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies:
+  - type: 0
+    originalUri: Assets/Fable/Models/PoppyField/poppy_field.bin
+    assetPath: Assets/Fable/Models/PoppyField/poppy_field.bin
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_DistantMeadow_Normal.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_DistantMeadow_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_DistantMeadow_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_DistantMeadow_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_DistantMeadow_Roughness.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_DistantMeadow_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_DistantTrees_Normal.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_DistantTrees_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_DistantTrees_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_DistantTrees_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_DistantTrees_Roughness.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_DistantTrees_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_BankStone_Normal.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_BankStone_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_BankStone_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_BankStone_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_BankStone_Roughness.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_BankStone_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_Bark_Normal.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_Bark_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_Bark_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_Bark_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_Bark_Roughness.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_Bark_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_Ground_Normal.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_Ground_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_Ground_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_Ground_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_Ground_Roughness.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_Ground_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_Herbage_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_Herbage_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_Herbage_Roughness.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_Herbage_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_LeavesShade_Normal.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_LeavesShade_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_LeavesShade_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_LeavesShade_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_LeavesShade_Roughness.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_LeavesShade_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_MeadowFlowers_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_MeadowFlowers_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_MeadowFlowers_Roughness.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_MeadowFlowers_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_PoppyPetal_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_PoppyPetal_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_PoppyPetal_Roughness.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_PoppyPetal_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_TreeLeaves_Normal.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_TreeLeaves_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_TreeLeaves_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_TreeLeaves_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_TreeLeaves_Roughness.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_TreeLeaves_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_Water_Normal.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_Water_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_Water_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_Water_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_Water_Roughness.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_Water_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PoppyField/textures/T_SkyDome_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PoppyField/textures/T_SkyDome_BaseColor.jpg
+  reportItems: []

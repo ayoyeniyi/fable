@@ -1,0 +1,308 @@
+fileFormatVersion: 2
+guid: bd7ab1304313d4e30b3c4b422fd934ba
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies:
+  - type: 0
+    originalUri: Assets/Fable/Models/IthacaHall/ithaca_hall.bin
+    assetPath: Assets/Fable/Models/IthacaHall/ithaca_hall.bin
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_FarHills_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_FarHills_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_FarHills_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_FarHills_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_FarHills_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_FarHills_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Ash_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Ash_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Ash_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Ash_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Ash_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Ash_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_AshThreshold_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_AshThreshold_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_AshThreshold_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_AshThreshold_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_AshThreshold_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_AshThreshold_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Beams_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Beams_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Beams_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Beams_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Beams_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Beams_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Bronze_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Bronze_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Bronze_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Bronze_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Bronze_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Bronze_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Broom_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Broom_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Broom_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Broom_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Broom_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Broom_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_CeilingReeds_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_CeilingReeds_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_CeilingReeds_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_CeilingReeds_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_CeilingReeds_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_CeilingReeds_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Charwood_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Charwood_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Charwood_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Charwood_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Charwood_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Charwood_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_CourtGround_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_CourtGround_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_CourtGround_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_CourtGround_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_CourtGround_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_CourtGround_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_CourtWall_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_CourtWall_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_CourtWall_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_CourtWall_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_CourtWall_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_CourtWall_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_CypressPost_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_CypressPost_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_CypressPost_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_CypressPost_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_CypressPost_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_CypressPost_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_DoorOak_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_DoorOak_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_DoorOak_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_DoorOak_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_DoorOak_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_DoorOak_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Embers_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Embers_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Embers_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Embers_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Embers_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Embers_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Flame_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Flame_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Flame_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Flame_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Flame_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Flame_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Fleece_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Fleece_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Fleece_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Fleece_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Fleece_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Fleece_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Floor_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Floor_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Floor_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Floor_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Floor_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Floor_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_HearthRim_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_HearthRim_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_HearthRim_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_HearthRim_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_HearthRim_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_HearthRim_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Hide_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Hide_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Hide_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Hide_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Hide_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Hide_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_IvoryInlay_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_IvoryInlay_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_IvoryInlay_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_IvoryInlay_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_IvoryInlay_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_IvoryInlay_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Limestone_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Limestone_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Limestone_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Limestone_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Limestone_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Limestone_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_LyreString_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_LyreString_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_LyreString_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_LyreString_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_LyreString_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_LyreString_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_PorchStone_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_PorchStone_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_PorchStone_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_PorchStone_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_PorchStone_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_PorchStone_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_PurpleCover_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_PurpleCover_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_PurpleCover_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_PurpleCover_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_PurpleCover_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_PurpleCover_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_RoofClay_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_RoofClay_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_RoofClay_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_RoofClay_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_RoofClay_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_RoofClay_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_SeatWood_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_SeatWood_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_SeatWood_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_SeatWood_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_SeatWood_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_SeatWood_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_TableWood_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_TableWood_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_TableWood_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_TableWood_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_TableWood_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_TableWood_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Terracotta_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Terracotta_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Terracotta_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Terracotta_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Terracotta_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Terracotta_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_WallCore_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_WallCore_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_WallCore_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_WallCore_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_WallCore_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_WallCore_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_WallPlaster_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_WallPlaster_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_WallPlaster_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_WallPlaster_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_WallPlaster_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_WallPlaster_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Weeds_Normal.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Weeds_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Weeds_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Weeds_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_Weeds_Roughness.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_Weeds_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/IthacaHall/textures/T_SkyDome_BaseColor.jpg
+    assetPath: Assets/Fable/Models/IthacaHall/textures/T_SkyDome_BaseColor.jpg
+  reportItems:
+  - type: 2
+    code: 20
+    messages:
+    - KHR_materials_emissive_strength

@@ -40,6 +40,13 @@ namespace Fable.Editor
             // the reader's own books are read in the library itself: a neutral room with no staged passages
             new SceneDef { Id = "library-room", Scene = "Assets/Fable/Scenes/LibraryRoom.unity", Glb = "Assets/Fable/Models/Lobby/lobby.gltf", Room = true, LobbyLook = true, Sound = "lobby" },
             new SceneDef { Id = "glumdalclitchs-room", Scene = "Assets/Fable/Scenes/GlumdalclitchsRoom.unity", Glb = "Assets/Fable/Models/GlumdalclitchsRoom/glumdalclitchs_room.gltf", Room = true, Book = "gulliver", LightScale = 12f },
+            // the second and third rooms of Oz, the Odyssey and Gulliver (2026-11-03; blender/build_*.py, one subagent each)
+            new SceneDef { Id = "poppy-field", Scene = "Assets/Fable/Scenes/PoppyField.unity", Glb = "Assets/Fable/Models/PoppyField/poppy_field.gltf", Outdoor = true, Room = true, Book = "oz", Sound = "garden-afternoon" },
+            new SceneDef { Id = "emerald-throne-room", Scene = "Assets/Fable/Scenes/EmeraldThroneRoom.unity", Glb = "Assets/Fable/Models/EmeraldThroneRoom/emerald_throne_room.gltf", Room = true, Book = "oz", Sound = "hall-lamps" },
+            new SceneDef { Id = "odysseus-ship", Scene = "Assets/Fable/Scenes/OdysseusShip.unity", Glb = "Assets/Fable/Models/OdysseusShip/odysseus_ship.gltf", Outdoor = true, Room = true, Book = "odyssey", Sound = "calypsos-cave" },
+            new SceneDef { Id = "ithaca-hall", Scene = "Assets/Fable/Scenes/IthacaHall.unity", Glb = "Assets/Fable/Models/IthacaHall/ithaca_hall.gltf", Outdoor = true, Room = true, Book = "odyssey", Sound = "lobby" },
+            new SceneDef { Id = "lilliput-beach", Scene = "Assets/Fable/Scenes/LilliputBeach.unity", Glb = "Assets/Fable/Models/LilliputBeach/lilliput_beach.gltf", Outdoor = true, Room = true, Book = "gulliver", Sound = "garden-afternoon" },
+            new SceneDef { Id = "laputa", Scene = "Assets/Fable/Scenes/Laputa.unity", Glb = "Assets/Fable/Models/Laputa/laputa.gltf", Outdoor = true, Room = true, Book = "gulliver", Sound = "garden-afternoon" },
         };
         const string ScenePath = "Assets/Fable/Scenes/HallOfDoors.unity";   // the hall: desktop previews
         static SceneDef Def(string id) => Scenes.First(d => d.Id == id);
@@ -205,6 +212,15 @@ namespace Fable.Editor
                     else if (l.name.Contains("Fire") || l.name.Contains("lamp") || l.name.Contains("stove")) { l.lightmapBakeType = LightmapBakeType.Baked; l.intensity = l.name.Contains("Fire") ? 6f : 2.2f; l.range = l.name.Contains("Fire") ? 9f : 5f; l.color = new Color(1f, 0.62f, 0.30f); l.shadows = LightShadows.Soft; }   // hearth, oil lamp, stove: warm, baked
                     else { l.intensity = 0.5f; l.range = 12f; l.color = new Color(1f, 0.95f, 0.86f); l.shadows = LightShadows.None; }
                 }
+                if (sceneId == "ithaca-hall")
+                {
+                    // a hall lit by a low sun through the doors and a newly lit hearth: warm, dim ambient and a light haze,
+                    // not the default bright blue outdoor ambient that would flatten the interior
+                    foreach (var l in env.GetComponentsInChildren<Light>(true))
+                        if (l.name.StartsWith("light.sky")) l.intensity = 0.2f;
+                    RenderSettings.ambientSkyColor = new Color(0.22f, 0.20f, 0.18f); RenderSettings.ambientEquatorColor = new Color(0.20f, 0.16f, 0.12f); RenderSettings.ambientGroundColor = new Color(0.10f, 0.08f, 0.06f);
+                    RenderSettings.fogDensity = 0.012f; RenderSettings.fogColor = new Color(0.36f, 0.30f, 0.24f);
+                }
                 if (sceneId == "kansas-farmhouse")
                 {
                     // the cyclone coming: a low, filtered sun, a gray-green sky and close gray haze
@@ -243,6 +259,13 @@ namespace Fable.Editor
                 if (def.Lobby || def.LobbyLook) { l.range = 6f; l.intensity = l.name.StartsWith("Lamp0") ? 4f : l.name.StartsWith("Lamp5") || l.name.StartsWith("Lamp6") ? 5f : 1.1f; }
             }
             if (def.Lobby || def.LobbyLook) RenderSettings.ambientLight = new Color(0.20f, 0.165f, 0.13f);
+            if (sceneId == "emerald-throne-room")
+            {
+                // one great light in the crown of a 6.6 m dome: it must reach the floor at the wall (about 8.2 m away)
+                foreach (var l in env.GetComponentsInChildren<Light>(true))
+                    if (l.name.StartsWith("Lamp")) { l.range = 18f; l.intensity = 10f; l.color = new Color(1f, 0.92f, 0.8f); }
+                RenderSettings.ambientLight = new Color(0.30f, 0.33f, 0.28f);
+            }
             if (!outdoor && def.LightScale > 1f)
             {
                 // a room at giant scale: the window light travels tens of metres, so it needs far more intensity than a lamp

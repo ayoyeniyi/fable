@@ -4,6 +4,13 @@ Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs
 
 ## What exists and is verified
 
+**2026-11-03: three rooms per book, and three generated rooms per uploaded book.**
+- Six new rooms (Oz: poppy field, Emerald throne room; Odyssey: Odysseus's ship off the Sirens, the hall at Ithaca; Gulliver: Lilliput at giant scale, Laputa), each a `blender/build_*.py` written by its own subagent to `docs/ENVIRONMENT_BRIEF.md`, Unity scenes built and baked (`FableBuild.Scenes`, with lighting overrides for the throne room and Ithaca). Blender renders in `captures/blender/<room>/`, desktop previews in `captures/desktop/desktop-preview_<Scene>_room.png`. Each room's remaining compromises against the brief are listed in its commit message; the common ones: over the 35k target (three rooms), stylised foliage, static water.
+- Found by two subagents: a GPU (Metal) bake under memory pressure returns black without an error, and a metal's diffuse-colour bake is black. Their scripts bake on the CPU and zero Metallic for the colour pass; `build_calypsos_cave.py`'s gold and Glumdalclitch's metal probably need the same fix (the "metal renders black" fault in the brief).
+- Generated rooms: `docs/GENERATED_ROOMS.md`. Verified in the editor against the live service with Pride and Prejudice: planning, three rooms built (4 to 7 minutes each on a busy Mac), fetched with checksums, loaded at runtime (226 ms, 33k triangles), listed in both menus.
+- Chapter experiences: chapters found to have no place are planned again when `schema/environments.json` changes (six new place environments).
+- **Not on the headset:** the APK (519 MB) is built but the headset was disconnected; frame time of the six rooms, runtime glTF loading, texture memory.
+
 - **Seven environments** (the lobby, three Alice rooms and one room each for Oz, the Odyssey and Gulliver), all procedural Blender 5.2 scripts with the same pipeline (geometry, PBR node materials, baked base colour / roughness-metal / normal maps, static meshes merged by material, named anchors and prop groups), exported as `.gltf` + `.bin` + `textures/`:
   - `blender/build_lobby.py`: 10,058 tris, 35 meshes. The room the app opens in (step 6 below).
   - `blender/build_kansas_farmhouse.py`: 30,343 tris, 28 meshes (the grass blades are 16.6k of them). Oz.

@@ -1,0 +1,137 @@
+fileFormatVersion: 2
+guid: 5459eeb1f177249fcab019bbd2aaa91b
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies:
+  - type: 0
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/emerald_throne_room.bin
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/emerald_throne_room.bin
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldDome_Normal.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldDome_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldDome_BaseColor.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldDome_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldDome_Roughness.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldDome_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldFloor_Normal.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldFloor_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldFloor_BaseColor.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldFloor_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldFloor_Roughness.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldFloor_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldWall_Normal.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldWall_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldWall_BaseColor.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldWall_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldWall_Roughness.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldWall_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldWallNear_Normal.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldWallNear_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldWallNear_BaseColor.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldWallNear_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldWallNear_Roughness.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_EmeraldWallNear_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_Gold_Normal.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_Gold_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_Gold_BaseColor.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_Gold_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_Gold_Roughness.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_Gold_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_GreatLight_BaseColor.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_GreatLight_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_GreenLacquer_Normal.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_GreenLacquer_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_GreenLacquer_BaseColor.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_GreenLacquer_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_GreenLacquer_Roughness.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_GreenLacquer_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_GreenMarble_Normal.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_GreenMarble_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_GreenMarble_BaseColor.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_GreenMarble_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_GreenMarble_Roughness.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_GreenMarble_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_ScreenSilk_Normal.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_ScreenSilk_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_ScreenSilk_BaseColor.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_ScreenSilk_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_ScreenSilk_Roughness.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_ScreenSilk_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_ThroneGems_Normal.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_ThroneGems_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_ThroneGems_BaseColor.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_ThroneGems_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_ThroneGems_Roughness.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_ThroneGems_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_ThroneMarble_Normal.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_ThroneMarble_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_ThroneMarble_BaseColor.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_ThroneMarble_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_ThroneMarble_Roughness.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_ThroneMarble_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_Velvet_Normal.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_Velvet_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_Velvet_BaseColor.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_Velvet_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/EmeraldThroneRoom/textures/T_Velvet_Roughness.jpg
+    assetPath: Assets/Fable/Models/EmeraldThroneRoom/textures/T_Velvet_Roughness.jpg
+  reportItems:
+  - type: 2
+    code: 20
+    messages:
+    - KHR_materials_emissive_strength

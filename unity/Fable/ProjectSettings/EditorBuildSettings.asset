@@ -29,6 +29,24 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Fable/Scenes/GlumdalclitchsRoom.unity
     guid: 94c024689654f4bf89d53306845408bb
+  - enabled: 1
+    path: Assets/Fable/Scenes/PoppyField.unity
+    guid: 2f6b878f415324c598f796a5d0bcd19d
+  - enabled: 1
+    path: Assets/Fable/Scenes/EmeraldThroneRoom.unity
+    guid: c88fbc1fc8e8d47d7851435f43e7e97e
+  - enabled: 1
+    path: Assets/Fable/Scenes/OdysseusShip.unity
+    guid: 12760c27040394d19a7ca514de0b3ad6
+  - enabled: 1
+    path: Assets/Fable/Scenes/IthacaHall.unity
+    guid: b87b44bd6963d4ea5a113d9d934f24f4
+  - enabled: 1
+    path: Assets/Fable/Scenes/LilliputBeach.unity
+    guid: 4cca013cdaadb48a0a28a6e9a6a3ed4d
+  - enabled: 1
+    path: Assets/Fable/Scenes/Laputa.unity
+    guid: a5741837b03f9451f9af45a3d3a4b635
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 26154d77f6c974987ae91a02379cdc30, type: 2}

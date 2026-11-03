@@ -1,0 +1,172 @@
+fileFormatVersion: 2
+guid: 2fdaf3901ddaa487e9dec0d340d717fd
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies:
+  - type: 0
+    originalUri: Assets/Fable/Models/LilliputBeach/lilliput_beach.bin
+    assetPath: Assets/Fable/Models/LilliputBeach/lilliput_beach.bin
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_FarLand_Normal.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_FarLand_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_FarLand_BaseColor.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_FarLand_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_FarLand_Roughness.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_FarLand_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_Sea_Normal.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_Sea_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_Sea_BaseColor.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_Sea_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_Sea_Roughness.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_Sea_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_Ships_Normal.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_Ships_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_Ships_BaseColor.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_Ships_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_Ships_Roughness.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_Ships_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_Town_Normal.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_Town_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_Town_BaseColor.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_Town_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_Town_Roughness.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_Town_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_Bark_Normal.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_Bark_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_Bark_BaseColor.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_Bark_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_Bark_Roughness.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_Bark_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_ChainIron_Normal.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_ChainIron_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_ChainIron_BaseColor.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_ChainIron_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_ChainIron_Roughness.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_ChainIron_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_GateOak_Normal.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_GateOak_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_GateOak_BaseColor.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_GateOak_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_GateOak_Roughness.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_GateOak_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_GroundFields_Normal.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_GroundFields_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_GroundFields_BaseColor.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_GroundFields_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_GroundFields_Roughness.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_GroundFields_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_GroundNear_Normal.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_GroundNear_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_GroundNear_BaseColor.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_GroundNear_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_GroundNear_Roughness.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_GroundNear_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_Hedge_Normal.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_Hedge_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_Hedge_BaseColor.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_Hedge_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_Hedge_Roughness.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_Hedge_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_Leaves_Normal.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_Leaves_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_Leaves_BaseColor.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_Leaves_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_Leaves_Roughness.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_Leaves_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_ShoreRock_Normal.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_ShoreRock_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_ShoreRock_BaseColor.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_ShoreRock_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_ShoreRock_Roughness.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_ShoreRock_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_TempleDark_BaseColor.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_TempleDark_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_TempleRoof_Normal.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_TempleRoof_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_TempleRoof_BaseColor.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_TempleRoof_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_TempleRoof_Roughness.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_TempleRoof_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_TempleStone_Normal.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_TempleStone_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_TempleStone_BaseColor.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_TempleStone_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_TempleStone_Roughness.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_TempleStone_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_TentCanvas_Normal.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_TentCanvas_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_TentCanvas_BaseColor.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_TentCanvas_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_TentCanvas_Roughness.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_TentCanvas_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/LilliputBeach/textures/T_SkyDome_BaseColor.jpg
+    assetPath: Assets/Fable/Models/LilliputBeach/textures/T_SkyDome_BaseColor.jpg
+  reportItems: []
