@@ -1,4 +1,24 @@
 {
+  "mobydick": [
+    {
+      "room": 1,
+      "title": "The Spouter-Inn entry and public room",
+      "place": "A gable-ended old wooden inn by the New Bedford docks, mid-nineteenth century, low and leaning. You stand in a wide, low, straggling entry lined with old-fashioned wainscots like the bulwarks of a condemned ship. To one side hangs a huge, smoke-blackened oil painting of a foundering Cape-Horner and a dark leaping whale, half-lit by uneven cross-lights. The opposite wall bristles with South Sea clubs and spears, some set with teeth like ivory saws, mixed with rusty, twisted whaling lances and harpoons. Ahead, a low arch cut through an old central chimney opens into a duskier public room. It has heavy low beams, worn wrinkled planks, a long shelf-like table of cracked glass cases holding dusty curiosities, and a great iron stove in the middle. Far in the corner stands the bar, built into the vast arched jawbone of a whale, with shabby shelves of decanters and flasks. An old carved wooden settle sits by the wall. The room is empty and quiet while the wind howls outside.",
+      "package": "5247fc7b443ab91055ea23d0dde4a7333c41d6de022baecbcde3d89cb92fa7e1"
+    },
+    {
+      "room": 2,
+      "title": "The upstairs room with the prodigious bed",
+      "place": "A small, bare, cold second-floor back room in the old inn. A prodigious bed fills much of the space, big enough for four to sleep abreast, spread with a patchwork counterpane of parti-coloured squares and triangles. A crazy old sea chest serves as washstand and centre table and holds a piece of hard soap. Above the empty, sooty fireplace runs a rude shelf with outlandish bone fish hooks, and a papered fireboard shows a man striking a whale. A tall harpoon leans at the head of the bed, and a lashed-up hammock and a seaman's bag lie in a corner. A bit of mirror glass is stuck against the wall. The window has no curtains, and pale, cold daylight falls in from a very narrow street, where the house opposite stands close.",
+      "package": "8267e09936c5abde10422fe623164de0c807da04ebcbbb01da8dc144a1e2a281"
+    },
+    {
+      "room": 3,
+      "title": "The Battery waterfront, Manhattan",
+      "place": "The southern tip of mid-nineteenth-century Manhattan, where streets run down to the water. You stand on the Battery's broad stone mole as waves wash against it and a sea breeze blows in. Along the shore, timber spiles and pier-heads reach out into the harbour. Tall-masted merchant ships from China lie moored with their rigging against the sky. Behind you, shady warehouses line the waterfront, and the city stretches back in lath and plaster. Before you, the open water runs out toward the unseen sea. The scene is quiet and empty, like a dreamy Sunday afternoon.",
+      "package": "233a5638747d2002029052e825f8b53d9ce7b00c4320933fdfa642212763ada5"
+    }
+  ],
   "pride": [
     {
       "room": 1,
@@ -17,6 +37,46 @@
       "title": "Mr. Bennet's library at Longbourn",
       "place": "A modest gentleman's library in a family house in the village of Longbourn. Shelves of well-used books line the walls, and a writing table near the window holds an open volume and papers. Two chairs sit facing each other, where a short morning call might be received. Through the window, daylight falls on the lane and the neighbourhood beyond. Upstairs, other windows look out over the same approach to the house. It is a room kept for quiet, set apart from the bustle of the rest of the household.",
       "package": "484fc24ada4b4c1c8d58076bf53f6908911629bb274b0cf431edffd798a49c48"
+    }
+  ],
+  "treasure": [
+    {
+      "room": 1,
+      "title": "The cove below the Admiral Benbow",
+      "place": "A small, lonely English cove in the 18th century. The reader stands on a stony beach. Grey hoarfrost lies over the shingle, and a faint ripple laps softly at the stones. High cliffs and a headland rise around the cove, and a big rock stands at the turn of the beach. Behind, up the slope, sits the old inn, the Admiral Benbow, with its painted signboard and the coast road running past. The sun sits low: it touches only the hilltops and shines far out to sea. The water in front is quiet and silvery, with no ship in sight.",
+      "package": "6abd18a3d6f2c0be5a8b996f907e35ac3151109803e4d62193b4258d999f4605"
+    },
+    {
+      "room": 2,
+      "title": "The squire's library at the Hall",
+      "place": "A great library in a Georgian country house. Bookcases line every wall from floor to high ceiling, with marble busts set along their tops. A bright fire burns in the grate, with a chair on either side. A table stands near the hearth, and a small side-table sits nearby. Through the windows lies a long, leafless avenue lit by the moon, and the pale line of the Hall's buildings stretches out over great old gardens. A matted passage leads off to the rest of the house. The room is warm, firelit and hushed.",
+      "package": "d4efed8bdb2d3260766b302c31667bf6b0b0e5e55e1a35b1bd9599fc2502dc2a"
+    },
+    {
+      "room": 3,
+      "title": "The Spy-glass tavern, Bristol",
+      "place": "A tidy little dockside tavern in 18th-century Bristol, seen before the day's customers arrive. The large, low room has a cleanly sanded floor, rough tables and benches, and windows hung with neat red curtains. Doors stand open on two sides onto two streets, letting in daylight and the smell of tar and salt from the quays. Outside hangs the freshly painted sign, a large brass telescope. Beyond the doors lie the docks, a forest of masts and the figureheads of ships from far over the ocean.",
+      "package": "5ec71bc96b6e47490043d640c5e400913f8ec8b52a4e275818e0d6ed24d95a83"
+    }
+  ],
+  "worlds": [
+    {
+      "room": 1,
+      "title": "Ogilvy's observatory at Ottershaw",
+      "place": "A small, dark Victorian observatory on high ground above Ottershaw and Chertsey. A brass telescope driven by ticking clockwork points up through a narrow oblong slit in the domed roof, and a band of stars shows through the gap. A shuttered lantern in one corner throws a faint pool of light on the wooden floor. A little table nearby holds a soda siphon. Everything else is soft blackness, with the warm night air coming in through the slit.",
+      "package": "f38edf4768b360ab168e4609309929d529ee3f78cf5686bb1de7c3e9b3deb531"
+    },
+    {
+      "room": 2,
+      "title": "The sand pits on Horsell Common at dawn",
+      "place": "An open heath of heather and sandy turf near the sand pits between Horsell, Ottershaw and Woking. A great fresh crater has been torn into the ground, ringed by heaps of flung sand and gravel. Half-buried in it lies a huge cylinder about thirty yards across, crusted in dun-coloured, ashy scale and surrounded by the splintered remains of a fir tree. Scattered pines stand around, and the low sun is just clearing them towards Weybridge. Far off to the east a strip of heather smoulders, sending up a thin blue thread of smoke. There is no wind and no birdsong.",
+      "package": "950b1ffe4cd66925f7d226a0d9ee6ed55299dd9430c9cc6c25c134aacde5547d"
+    },
+    {
+      "room": 3,
+      "title": "The dining room at Maybury",
+      "place": "A comfortable late-Victorian suburban dining room in the narrator's house on Maybury Hill. A table is laid with a white cloth, silver and glassware, and a cold dinner sits untouched. A lamp with a pink shade casts a warm rosy glow over the table. A glass of crimson-purple wine stands by one place, beside a dish of nuts. Beyond the lamplight the room fades into soft shadow, and the summer night is dark outside.",
+      "package": "22b7ead9940a39355536f350ec34b60a153e1a5a8d1f71c4131974f1bef7d798"
     }
   ]
 }

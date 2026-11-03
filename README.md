@@ -1,23 +1,24 @@
 # Fable
 
-A reader for whole books on Meta Quest. You stand in a quiet room with a shelf of four public-domain books (Alice, Oz, Homer's Odyssey in Samuel Butler's translation, Gulliver's Travels), open one as a floating page and read it cover to cover. Highlight a passage to look a word up, search the book, Peek at a small annotated model of the thing described, or Step In: the passage is staged as a miniature that grows around you, driven by a validated SceneScript from the interpreter (prebuilt assets only, nothing past where you have read).
+A reader for whole books on Meta Quest. You stand in a quiet room with a shelf of eight public-domain books (Alice, Oz, Homer's Odyssey in Samuel Butler's translation, Gulliver's Travels, Pride and Prejudice, Moby-Dick, The War of the Worlds, Treasure Island), open one as a floating page and read it cover to cover. Highlight a passage to look a word up, search the book, Peek at a small annotated model of the thing described, or Step In: the passage is staged as a miniature that grows around you, driven by a validated SceneScript from the interpreter (prebuilt assets only, nothing past where you have read).
 
-Built so far: the four books ingested and readable page by page with contents, bookmarks and text sizes; the Alice rooms (Hall of Doors, Mad Tea-Party, Queen's Croquet-Ground) with Step In from the page; live interpretation; point-and-pinch input on a Quest 2. See `docs/PLAN.md` for the tiers and `docs/HANDOVER.md` for what is verified where.
+Built so far: the eight books ingested and readable page by page with contents, bookmarks and text sizes; the Alice rooms (Hall of Doors, Mad Tea-Party, Queen's Croquet-Ground) with Step In from the page; live interpretation; point-and-pinch input on a Quest 2. See `docs/PLAN.md` for the tiers and `docs/HANDOVER.md` for what is verified where.
 
 ## Layout
 
 | path | what |
 |---|---|
 | `content/books/<slug>/` | `book.json` (whole book, chapters → paragraphs → sentences with stable ids) and `SOURCE.md` (source URL, SHA-256, edition, licence) |
-| `content/dictionary/` | `webster1913.json`: Webster 1913 (public domain) cut to the words the four books use, for Define; `SOURCE.md` |
-| `content/covers/` | the four shelf covers (1400 x 2100): the three Standard Ebooks covers unchanged and an Odyssey cover composed from Böcklin's *Ulysses and Calypso* (public domain); `SOURCE.md` records every source, licence and hash |
+| `content/dictionary/` | `webster1913.json`: Webster 1913 (public domain) cut to the words the eight books use, for Define; `SOURCE.md` |
+| `content/covers/` | the eight shelf covers (1400 x 2100): the seven Standard Ebooks covers unchanged and an Odyssey cover composed from Böcklin's *Ulysses and Calypso* (public domain); `SOURCE.md` records every source, licence and hash |
+| `content/rooms/` | the three generated reading rooms of each of the four later books (Pride and Prejudice, Moby-Dick, The War of the Worlds, Treasure Island): unlit glTF packages made by the room service and bundled in the app, `plan.json`, the room scripts; `SOURCE.md` |
 | `content/library/` | Peek library: `peek-library.json` (aliases, the sentence before which an entry is never offered, labels) and `clay/*.json` mock models; `SOURCE.md` |
-| `tools/` | `ingest_book.py` (EPUB / Gutenberg text → `book.json`), `books.json` (the four sources), `map_passages.py` (Step In passages → book sentence ids), `ingest_dictionary.py` (Webster 1913 → `content/dictionary`), `make_covers.py` (Blender: the shelf covers → `content/covers`), `fetch_music.py` (the two CC0 recordings, SHA-1 checked) |
+| `tools/` | `ingest_book.py` (EPUB / Gutenberg text → `book.json`), `books.json` (the eight sources), `bundle_rooms.py` (generated rooms from the room service → `content/rooms`), `map_passages.py` (Step In passages → book sentence ids), `ingest_dictionary.py` (Webster 1913 → `content/dictionary`), `make_covers.py` (Blender: the shelf covers → `content/covers`), `fetch_music.py` (the two CC0 recordings, SHA-1 checked) |
 | `book/` | `passages.json`: the Step In passages split into sentence ids, each linked to its book sentence; Gutenberg #11 text kept for reference |
 | `schema/` | `scene-script.schema.json` (the contract), `manifest.<scene>.json` (what each scene can do), `mock-model.schema.json` (Peek's clay models: primitives, 2-5 labels, 15k triangles) |
 | `interpreter/` | Go: `fable-interpreter generate|validate|serve|mock`. Asks Claude for a SceneScript (or a Peek clay model), validates, repairs once, never emits an invalid one. Claude only ever sees the book up to the reader's highlight |
 | `scripts/` | hand-authored, validated baseline scripts bundled in the app for offline use |
-| `blender/` | `build_lobby.py` (the room the app opens in: the bookcase with the four books face out), `build_kansas_farmhouse.py`, `build_calypsos_cave.py`, `build_glumdalclitchs_room.py`, `build_poppy_field.py`, `build_emerald_throne_room.py`, `build_odysseus_ship.py`, `build_ithaca_hall.py`, `build_lilliput_beach.py`, `build_laputa.py` (the Oz, Odyssey and Gulliver rooms), `roomkit.py` + `roomgen.py` (generated rooms for uploaded books), `build_hall_of_doors.py`, `build_mad_tea_party.py`, `build_queens_croquet_ground.py`: each environment as code; renders, bakes, exports `.gltf` + textures; `check_glb_ids.py` checks manifest coverage |
+| `blender/` | `build_lobby.py` (the room the app opens in: the bookcase with the eight books face out), `build_kansas_farmhouse.py`, `build_calypsos_cave.py`, `build_glumdalclitchs_room.py`, `build_poppy_field.py`, `build_emerald_throne_room.py`, `build_odysseus_ship.py`, `build_ithaca_hall.py`, `build_lilliput_beach.py`, `build_laputa.py` (the Oz, Odyssey and Gulliver rooms), `roomkit.py` + `roomgen.py` (generated rooms for uploaded books), `build_hall_of_doors.py`, `build_mad_tea_party.py`, `build_queens_croquet_ground.py`: each environment as code; renders, bakes, exports `.gltf` + textures; `check_glb_ids.py` checks manifest coverage |
 | `audio/` | `synth_sfx.py` (the Alice rooms) and `synth_rooms.py` (lobby and the step 7 rooms, plus Calypso's lyre): every ambience and foley clip, synthesised |
 | `unity/Fable` | Unity 6000.3 URP project; runtime in `Assets/Fable/Scripts`, batch pipeline in `Assets/Fable/Editor` |
 | `captures/` | `blender/` (Cycles renders), `desktop/` (Unity editor camera), `headset/` (adb screencap from the Quest). Never mixed |
@@ -28,7 +29,7 @@ Built so far: the four books ingested and readable page by page with contents, b
 
 ```bash
 # 1. environments (Blender 5.2, 1-2 min each; add --render for Cycles stills)
-blender -b -P tools/make_covers.py                     # the four covers (content/covers), before the lobby
+blender -b -P tools/make_covers.py                     # the eight covers (content/covers), before the lobby
 for sc in lobby:lobby:Lobby kansas_farmhouse:kansas-farmhouse:KansasFarmhouse calypsos_cave:calypsos-cave:CalypsosCave glumdalclitchs_room:glumdalclitchs-room:GlumdalclitchsRoom hall_of_doors:hall:HallOfDoors mad_tea_party:mad-tea-party:MadTeaParty queens_croquet_ground:queens-croquet-ground:QueensCroquetGround; do
   IFS=: read py out unity <<< "$sc"
   blender -b -P blender/build_$py.py -- --out out/$out --bake --export --tex 2048
@@ -61,7 +62,7 @@ adb shell screencap -p /sdcard/fable.png && adb pull /sdcard/fable.png captures/
 
 ## Interaction
 
-In the lobby (where the app opens): point at a book on the shelf and it slides forward; pinch to open it. A card on the shelf edge under each book says how far you have read. On the page, **‹ shelf** goes back to the lobby. Every book has three reading rooms and the library. Alice: the Hall of Doors, the Mad Tea-Party, the Queen's croquet ground. Oz: the Kansas farmhouse with the storm coming, the poppy field by the river, the Throne Room of the Emerald City. The Odyssey: Calypso's cave, the deck of Odysseus's ship off the Sirens' island, the hall at Ithaca. Gulliver: Glumdalclitch's room at doll scale, the shore of Lilliput at giant scale, a gallery on the rim of Laputa. A book opens in its first room; the others are under **reading rooms**. A book you upload gets three rooms of its own, made from places in its opening chapters (`docs/GENERATED_ROOMS.md`). Credits for every text, image, font and piece of music: `CREDITS.md`.
+In the lobby (where the app opens): point at a book on the shelf and it slides forward; pinch to open it. A card on the shelf edge under each book says how far you have read. On the page, **‹ shelf** goes back to the lobby. Every book has three reading rooms and the library. Alice: the Hall of Doors, the Mad Tea-Party, the Queen's croquet ground. Oz: the Kansas farmhouse with the storm coming, the poppy field by the river, the Throne Room of the Emerald City. The Odyssey: Calypso's cave, the deck of Odysseus's ship off the Sirens' island, the hall at Ithaca. Gulliver: Glumdalclitch's room at doll scale, the shore of Lilliput at giant scale, a gallery on the rim of Laputa. The four later books have generated rooms, made by the room service from each book's opening and bundled in the app (`content/rooms`): Pride and Prejudice: the fields to Netherfield after rain, the Netherfield drawing-room, Mr. Bennet's library. Moby-Dick: the Spouter-Inn, the upstairs room with the prodigious bed, the Battery. The War of the Worlds: Ogilvy's observatory, the sand pits on Horsell Common at dawn, the dining room at Maybury. Treasure Island: the cove below the Admiral Benbow, the squire's library, the Spy-glass tavern. Their chapters have no experiences yet (no place is built for them). A book opens in its first room; the others are under **reading rooms**. A book you upload gets three rooms of its own, made from places in its opening chapters (`docs/GENERATED_ROOMS.md`). Credits for every text, image, font and piece of music: `CREDITS.md`.
 
 Fable is designed to be used from one place, seated or standing. A bar of buttons under the page (or low in front of you, once you have turned away from the page) holds:
 - **‹ turn** and **turn ›**: 30° about your head, one turn per pinch.
@@ -74,7 +75,7 @@ On the page: point with a hand (or controller) and pinch. A pinch on **contents*
 
 Choosing a book in the lobby opens its menu first: **resume reading**, **reading rooms** (its own room or the library), **chapter experiences**. Beside the page, the bar's **chapters / rooms / sound** open the same choices, plus music and room-sound settings. In the editor: the mouse is the right hand's ray; Space / Backspace / Escape.
 
-**Your own books.** The lobby is your library: a board in front of you lists the four Fable editions and every book you add.
+**Your own books.** The lobby is your library: a board in front of you lists the eight Fable editions and every book you add.
 1. Pinch **+ add a book**. The headset shows an address and a code.
 2. On a phone or computer on the same Wi-Fi, open the address, type the code and send an EPUB (DRM-free) or a PDF, up to 150 MB.
 3. Keep reading while it imports.
@@ -93,5 +94,7 @@ Translate sends the interpreter (`POST /translate`) only the highlighted words a
 python3 tools/ingest_book.py all        # downloads into out/sources/, writes content/books/<slug>/{book.json,SOURCE.md}
 python3 tools/map_passages.py           # links Step In passages to book sentences
 python3 tools/ingest_dictionary.py      # Webster 1913 -> content/dictionary (Define)
-unity command eval 'Fable.Editor.FableBuild.SyncData(); return "ok";'   # copies books, dictionary and Peek library into StreamingAssets
+# the later books' rooms: run the room service privately, POST each book to /rooms/prepare (docs/GENERATED_ROOMS.md), then
+python3 tools/bundle_rooms.py --service-dir <root>/out/rooms/worlds --slug worlds   # -> content/rooms/worlds
+unity command eval 'Fable.Editor.FableBuild.SyncData(); return "ok";'   # copies books, dictionary, Peek library and bundled rooms into StreamingAssets
 ```

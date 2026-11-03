@@ -2,7 +2,9 @@
 
 Every book has three reading rooms (plus the library).
 
-- Fable's four books have hand-built rooms: Blender scripts, baked in Unity.
+- Fable's first four books (Alice, Oz, the Odyssey, Gulliver) have hand-built rooms: Blender scripts, baked in Unity.
+- Fable's later four (Pride and Prejudice, Moby-Dick, The War of the Worlds, Treasure Island) have generated rooms made
+  by the same service ahead of time and **bundled in the app** (below, "Bundled rooms").
 - A book the reader uploads gets three generated rooms: places chosen from that book and built automatically on
   the preparation service.
 
@@ -59,6 +61,61 @@ This document covers the generated ones.
      always in the build). It is placed so the room's reader anchor is under the reader, facing its look point.
    - Nothing is lit at runtime.
    - The reading position comes along.
+
+## Bundled rooms (Fable's later books)
+
+The four later books have no hand-built rooms. Their rooms were made with the service exactly as an upload's are
+(their text posted to `/rooms/prepare` on a private instance, planned from the opening, scripted, built, reviewed
+twice) and ship in the APK, so they work offline with no service.
+
+- **Source:** `content/rooms/<slug>/r<N>/` (package files, plus `source/` with the room script and review notes, not
+  shipped) and `plan.json`, written by `tools/bundle_rooms.py` from the service's `out/rooms/<book>/`. It makes file
+  names plain ASCII (the glTF's image URIs follow) and rewrites `package.json` with the book's slug and SHA-256s.
+  Provenance and licence: `content/rooms/SOURCE.md`.
+- **Build:** `FableBuild.SyncData` copies each package's files to `StreamingAssets/rooms/<slug>/r<N>/` (not in git)
+  and writes `Assets/Fable/Resources/BundledRooms.json` (title, place and the SHA-256 of each `package.json`), which
+  the app reads synchronously.
+- **Runtime:** `GeneratedRooms.IsBundled(slug)` makes the book's three rooms always ready in both menus. Opening one
+  runs `GeneratedRooms.Unpack` first: StreamingAssets are inside the APK on Android, and glTFast needs files, so the
+  room is copied once with `UnityWebRequest` into `persistentDataPath/bundled-rooms/<slug>/r<N>/`, every file checked,
+  swapped in whole. A copy whose `package.json` hash differs from the app's (an older build) is replaced. Then
+  `GeneratedRoomView` loads it like an upload's room. Such a book opens in its first room from the lobby.
+- **Uploaded books are unchanged.**
+- **Far plane:** the kit's sky dome is 160 to 180 m across; `GeneratedRoomView` now raises every camera's far plane
+  past the room's farthest point. With the old 150 m it cut a black hole in the sky (seen in the editor with Pride and
+  Prejudice's fields). This affected uploaded books' rooms too.
+
+### The twelve bundled rooms (2026-11-03)
+
+Built on the owner's Mac (Blender 5.2.3, Metal, claude-opus-5-5) by a private service instance on port 8790, one room
+at a time, while other Blender jobs ran. Triangles are roomgen's count (Unity's count adds the sky dome, about 1k).
+"Load" is the editor's play-mode time on first open, including copying the room out of StreamingAssets.
+
+| Book | Room | Triangles / meshes | Package | Build | Load (editor) |
+|---|---|---|---|---|---|
+| Pride and Prejudice | The fields to Netherfield after rain (ch. 7) | 56,850 / 23 | 5.4 MB | 464 s | 261 ms |
+| | The Netherfield drawing-room (ch. 8) | 28,862 / 36 | 2.6 MB | 370 s | 111 ms |
+| | Mr. Bennet's library at Longbourn (ch. 3) | 56,186 / 42 | 5.3 MB | 512 s | 193 ms |
+| Moby-Dick | The Spouter-Inn entry and public room (ch. 3) | 16,570 / 31 | 1.9 MB | 635 s | 166 ms |
+| | The upstairs room with the prodigious bed (ch. 4) | 13,785 / 38 | 2.1 MB | 597 s | 118 ms |
+| | The Battery waterfront, Manhattan (ch. 1) | 60,092 / 30 | 6.3 MB | 770 s | 301 ms |
+| The War of the Worlds | Ogilvy's observatory at Ottershaw (ch. 1) | 15,546 / 26 | 1.9 MB | 455 s | 105 ms |
+| | The sand pits on Horsell Common at dawn (ch. 2) | 45,444 / 22 | 3.9 MB | 493 s | 184 ms |
+| | The dining room at Maybury (ch. 7) | 23,934 / 37 | 2.2 MB | 352 s | 108 ms |
+| Treasure Island | The cove below the Admiral Benbow (ch. 2) | 57,948 / 23 | 4.1 MB | 603 s | 222 ms |
+| | The squire's library at the Hall (ch. 6) | 49,366 / 38 | 4.7 MB | 739 s | 212 ms |
+| | The Spy-glass tavern, Bristol (ch. 8) | 44,033 / 41 | 4.7 MB | 677 s | 211 ms |
+
+- Pride and Prejudice's rooms are run B of the trial below, reused (`content/rooms/SOURCE.md`).
+- Moby-Dick's opening (the 90,000-character cap reaches chapter 4 or so) gives two rooms of the same inn.
+- Copying a room out of the app took 78 to 123 ms in the editor; the Quest will be slower.
+- **Rebuilt:** the Treasure Island cove once, because its reading view is half filled by a smooth rock. The rebuild
+  opened the view but baked its right-hand cliff pure black: a review revision wound the faces inward, and the bake
+  saw their backs. The first build ships. roomgen's checks look at brightness from five views, not at one material
+  baking black; a check for a mostly black baked texture would have caught it.
+- **Weak spots seen in the renders:** orange candlelight in the drawing-room and the squire's library, faceted
+  pines on Horsell Common, blobby rock faces at the cove, seven rooms over the 35k target.
+- Desktop previews from the editor: `captures/desktop/desktop-preview_LibraryRoom_<book>-r<N>*.png`.
 
 ## Why scripts, and why they are safe to run
 

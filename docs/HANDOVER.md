@@ -2,6 +2,28 @@
 
 Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs/TOOLING.md`. Everything below was true at the commit that last touched this file. "Verified" always says where: **editor** (Unity play mode on a Mac, desktop camera, no HMD) or **headset**. Nothing has been verified on a headset yet.
 
+## Eight books: four later books with bundled generated rooms (2026-11-03)
+
+- **Books:** Pride and Prejudice, Moby-Dick, The War of the Worlds and Treasure Island, the Standard Ebooks editions
+  (CC0), ingested by `tools/ingest_book.py` like the first four (sources, hashes and colophons in each `SOURCE.md`;
+  covers in `content/covers/SOURCE.md`; `CREDITS.md`). Moby-Dick keeps Melville's Etymology and Extracts. Counts:
+  pride 61 ch / 5,801 sentences / 121k words; mobydick 135 ch + epilogue / 8,611 / 209k; worlds 27 / 3,209 / 60k;
+  treasure 34 / 3,556 / 68k. Slugs are in `books.Slugs`, the Peek clay schema and Define's dictionary (now 15k
+  headwords).
+- **Lobby:** eight books face out on a 3.9 m bookcase (`blender/build_lobby.py`), scenes rebuilt and baked. Verified in
+  the editor: eight books found, pointing hits each, progress cards fit. Desktop previews:
+  `captures/desktop/desktop-preview_Lobby_lobby-shelf-eight*.png`; Blender renders `captures/blender/lobby/lobby8_*`.
+- **Rooms:** three generated rooms per book, made by the room service and bundled (`content/rooms`, details and the
+  table in `docs/GENERATED_ROOMS.md`). Verified in the editor: all twelve open from the lobby and the rooms menu,
+  copied out of StreamingAssets and loaded in 105 to 301 ms, 0 console errors. Found on the way: the kit's sky dome
+  was cut by the 150 m far plane (a black hole in the sky; uploads too), fixed in `GeneratedRoomView`.
+- **Chapter experiences:** none for these books (no place in `schema/environments.json`). The headset asks nothing
+  and says so; the service answers a request at once as unavailable without calling Claude.
+- **APK:** 575.8 MB (was 518.9 MB). Builds in the editor with `FableBuild.BuildApk`.
+- **Not verified:** anything on the headset (disconnected): copying rooms out of the APK on Android (`jar:` URLs
+  through UnityWebRequest), load time and frame time of these rooms on the Quest 2, texture memory, the shelf's
+  legibility at eight books.
+
 ## Hosted backend for the competition (2026-11-03, not yet deployed)
 
 Judges' headsets cannot reach the owner's Mac, so the preparation service gets one cloud VM (CPU only, the owner's
