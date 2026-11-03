@@ -421,6 +421,11 @@ func (s *Service) pipeline(ctx context.Context, j *Job, timed func(string, func(
 	if err != nil {
 		return err
 	}
+	// a book with no built place at all (Fable's later books, whose reading rooms are generated): nothing to plan
+	// with, so the chapter is unavailable at once, without asking Claude; a new environment for the book re-plans it
+	if len(s.Catalog.ForBook(j.Book)) == 0 && s.passageFor(j.Chapter) == nil {
+		return &unavailableErr{why: "no place has been built for this book's chapters yet"}
+	}
 	dir := s.pkgDir(j.Chapter)
 	work := dir + ".work"
 	os.RemoveAll(work)

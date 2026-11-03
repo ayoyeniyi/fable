@@ -199,6 +199,26 @@ func TestNoFittingPlaceIsUnavailableNotSubstituted(t *testing.T) {
 	}
 }
 
+func TestBookWithNoPlacesIsUnavailableWithoutAsking(t *testing.T) {
+	fp := &fakePlanner{env: "kansas-farmhouse"}
+	s, _ := newTestService(t, fp)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go s.Run(ctx)
+	if _, err := s.Prepare("worlds", "worlds:c01", true); err != nil {
+		t.Fatal(err)
+	}
+	j := waitFor(t, s, "worlds:c01", Unavailable, Done, Failed)
+	if j.State != Unavailable || !strings.Contains(j.Error, "no place") {
+		t.Fatalf("state %s (%s), want unavailable: no place", j.State, j.Error)
+	}
+	fp.mu.Lock()
+	defer fp.mu.Unlock()
+	if len(fp.prompts) != 0 {
+		t.Fatalf("asked Claude %d times for a book with no places", len(fp.prompts))
+	}
+}
+
 func TestFailureIsRetriedOnRequestAndQueueIsBounded(t *testing.T) {
 	fp := &fakePlanner{env: "kansas-farmhouse", fail: true}
 	s, _ := newTestService(t, fp)

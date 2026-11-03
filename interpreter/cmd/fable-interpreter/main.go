@@ -221,7 +221,7 @@ func main() {
 
 func runMock(root string, args []string) {
 	fs := flag.NewFlagSet("mock", flag.ExitOnError)
-	slug := fs.String("book", "", "alice | oz | odyssey | gulliver")
+	slug := fs.String("book", "", "alice | oz | odyssey | gulliver | pride | mobydick | worlds | treasure")
 	passage := fs.String("passage", "", "sentence id the highlight ends on (or a phrase that sentence contains)")
 	phrase := fs.String("phrase", "", "the highlighted text")
 	out := fs.String("out", "", "output path (default stdout)")

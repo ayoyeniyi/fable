@@ -10,7 +10,7 @@
     "version": { "const": 1 },
     "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9.\\-]*$" },
     "title": { "type": "string", "minLength": 1, "maxLength": 60, "description": "what the model shows: 'the golden key'" },
-    "book": { "enum": ["alice", "oz", "odyssey", "gulliver"] },
+    "book": { "enum": ["alice", "oz", "odyssey", "gulliver", "pride", "mobydick", "worlds", "treasure"] },
     "phrase": { "type": "string", "minLength": 1, "maxLength": 120, "description": "the highlighted text it answers" },
     "sentenceId": { "type": "string", "pattern": "^[a-z]+:c[0-9]{2}\\.p[0-9]{3}\\.s[0-9]{2}$", "description": "the last sentence the generator was shown; the model may not show anything the book reveals after it" },
     "heightMetres": { "type": "number", "minimum": 0.03, "maximum": 0.6, "description": "displayed size of the tallest extent, beside the page" },

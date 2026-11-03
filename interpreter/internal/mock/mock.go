@@ -72,7 +72,7 @@ var (
 	colorRe    = regexp.MustCompile(`^#[0-9a-fA-F]{6}$`)
 	sentenceRe = regexp.MustCompile(`^[a-z]+:[cf][0-9]{2}\.p[0-9]{3}\.s[0-9]{2}$`)
 	materials  = map[string]bool{"": true, "matte": true, "gloss": true, "metal": true, "glass": true, "emissive": true}
-	bookSlugs  = map[string]bool{"alice": true, "oz": true, "odyssey": true, "gulliver": true}
+	bookSlugs  = map[string]bool{"alice": true, "oz": true, "odyssey": true, "gulliver": true, "pride": true, "mobydick": true, "worlds": true, "treasure": true}
 )
 
 // Validate returns every problem found. readText, when not nil, is everything the reader has read up to and
@@ -87,7 +87,7 @@ func Validate(m *Model, readText string) []string {
 		add("title must be 1-60 characters")
 	}
 	if !bookSlugs[m.Book] {
-		add("book %q is not one of alice, oz, odyssey, gulliver", m.Book)
+		add("book %q is not one of Fable's books (%s)", m.Book, "alice, oz, odyssey, gulliver, pride, mobydick, worlds, treasure")
 	}
 	if strings.TrimSpace(m.Phrase) == "" {
 		add("phrase is empty")

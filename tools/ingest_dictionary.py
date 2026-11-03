@@ -3,7 +3,7 @@
 
     python3 tools/ingest_dictionary.py            # writes content/dictionary/webster1913.json and SOURCE.md
 
-Only headwords that the four books use are kept (the full dictionary is 29 MB). Each entry keeps the part of speech
+Only headwords that Fable’s eight books use are kept (the full dictionary is 29 MB). Each entry keeps the part of speech
 and the first three senses, trimmed, without etymologies or quotations. The reader looks a highlighted word up
 directly, then by stripping inflections (curtsied -> curtsy, keys -> key), which is why the forms the books use are
 indexed with the headword they reduce to.
@@ -23,7 +23,7 @@ URL = "https://www.gutenberg.org/cache/epub/29765/pg29765.txt"
 PAGE = "https://www.gutenberg.org/ebooks/29765"
 CACHE = os.path.join(ROOT, "out", "sources", "webster", "pg29765.txt")
 DEST = os.path.join(ROOT, "content", "dictionary")
-BOOKS = ["alice", "oz", "odyssey", "gulliver"]
+BOOKS = ["alice", "oz", "odyssey", "gulliver", "pride", "mobydick", "worlds", "treasure"]
 SENSES, SENSE_CHARS = 3, 240
 
 HEAD = re.compile(r"^[A-Z][A-Z' \-;]*[A-Z]$|^[A-Z]$")
@@ -191,9 +191,9 @@ def main():
 
 ## What `webster1913.json` keeps
 
-Only headwords the four books use: {len(keep)} headwords, plus {len(forms)} inflected forms pointing at them. For each, the part of speech and the first {SENSES} senses, each cut to about {SENSE_CHARS} characters. Etymologies, pronunciations, quotations and compound phrases are dropped.
+Only headwords Fable’s eight books use: {len(keep)} headwords, plus {len(forms)} inflected forms pointing at them. For each, the part of speech and the first {SENSES} senses, each cut to about {SENSE_CHARS} characters. Etymologies, pronunciations, quotations and compound phrases are dropped.
 
-Coverage: {covered} of the {distinct} distinct words in the four books ({100 * covered / distinct:.0f}%). The rest are mostly names (Dorothy, Telemachus, Lilliput) and coinages; Define says so instead of guessing.
+Coverage: {covered} of the {distinct} distinct words in Fable’s eight books ({100 * covered / distinct:.0f}%). The rest are mostly names (Dorothy, Telemachus, Lilliput) and coinages; Define says so instead of guessing.
 
 The 1913 definitions are a century old. That suits these books, but some senses read oddly to a modern reader, and a few entries carry the prejudices of their time.
 """)

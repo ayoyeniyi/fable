@@ -44,8 +44,8 @@ type Book struct {
 
 type loc struct{ c, p, s int }
 
-// Slugs are the four books Fable ships.
-var Slugs = []string{"alice", "oz", "odyssey", "gulliver"}
+// Slugs are the books Fable ships: the first four have hand-built rooms, the last four bundled generated rooms.
+var Slugs = []string{"alice", "oz", "odyssey", "gulliver", "pride", "mobydick", "worlds", "treasure"}
 
 func Load(root, slug string) (*Book, error) {
 	data, err := os.ReadFile(filepath.Join(root, "content", "books", slug, "book.json"))
