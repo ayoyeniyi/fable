@@ -1,4 +1,4 @@
-// The lobby: a panelled reading room where Fable opens, with the four books standing face out on a bookcase
+// The lobby: a panelled reading room where Fable opens, with Fable's eight books standing face out on a bookcase
 // (blender/build_lobby.py). Point at a book with either hand (or the mouse in the editor) and it slides forward;
 // pinch to open it. A small card in front of each book says how far the reader has got. The page's "shelf" control
 // comes back here.
@@ -22,7 +22,7 @@ namespace Fable
         public float SlideMetres = 0.06f, MaxRay = 6f;
 
         /// Where each book is read: its own P0 room. A room missing from the build falls back to the Hall of Doors scene's
-        /// quiet reading space.
+        /// quiet reading space. Books with bundled generated rooms (GeneratedRooms.IsBundled) open in their first one.
         public static readonly Dictionary<string, string> ReadingScene = new()
         {
             ["alice"] = "HallOfDoors", ["oz"] = "KansasFarmhouse", ["odyssey"] = "CalypsosCave", ["gulliver"] = "GlumdalclitchsRoom",
@@ -251,6 +251,11 @@ namespace Fable
             if (opening) return;
             if (Library.IsImported(slug)) { StartCoroutine(OpenImported(slug)); return; }
             var b = books.Find(x => x.Slug == slug);
+            if (b != null && scene == null && !ReadingScene.ContainsKey(slug) && GeneratedRooms.IsBundled(slug))
+            {
+                // a Fable book whose rooms are generated and bundled: it opens in its first one, in the library room scene
+                GeneratedRoomView.PendingBook = slug; GeneratedRoomView.PendingRoom = 1; scene = ImportedScene;
+            }
             if (b == null || (scene == null && !ReadingScene.TryGetValue(slug, out scene))) { Debug.LogWarning($"[Fable] lobby: no book {slug}"); return; }
             StartCoroutine(OpenRoutine(b, scene));
         }

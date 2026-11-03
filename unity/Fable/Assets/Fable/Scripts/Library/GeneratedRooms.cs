@@ -4,6 +4,12 @@
 // one in Blender. This side sends the book's text once, follows the three jobs, and fetches each finished room into
 // persistentDataPath/library/<book>/rooms/r<N>/: every file is checked against the package's SHA-256 in a staging
 // folder and swapped in whole, so a room on the headset is always complete. GeneratedRoomView loads one at runtime.
+//
+// Some of Fable's own books (Pride and Prejudice, Moby-Dick, The War of the Worlds, Treasure Island) have no
+// hand-built rooms: their three rooms are packages made by the same service and bundled in the app
+// (content/rooms -> StreamingAssets/rooms, indexed in Resources/BundledRooms.json by FableBuild.SyncData). They are
+// always ready; the first time one is opened it is copied out of the APK into persistentDataPath/bundled-rooms with
+// the same checks (Unpack), because StreamingAssets on Android are inside the APK and glTFast needs files.
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -49,6 +55,7 @@ namespace Fable
         string ServiceUrl => ChapterExperiences.Instance.ServiceUrl;
         public static string Dir(string slug, int n)
         {
+            if (IsBundled(slug)) return Path.Combine(Application.persistentDataPath, "bundled-rooms", slug, "r" + n);
             if (!Library.Exists) { var _ = Library.Instance; }   // sets Library.Root (opened straight into a room, not via the lobby)
             return Path.Combine(Library.BookDir(slug), "rooms", "r" + n);
         }
@@ -63,6 +70,14 @@ namespace Fable
         Tracked Track(string slug)
         {
             var t = new Tracked { Slug = slug, Rooms = new Room[PerBook] };
+            if (IsBundled(slug))
+            {
+                // bundled in the app: ready from the start (copied out of the APK when first opened)
+                var list = BundledIndex[slug].Where(r => r.N >= 1 && r.N <= PerBook).OrderBy(r => r.N).ToArray();
+                t.Rooms = list.Select(r => new Room { N = r.N, State = "done", Ready = true, Title = r.Title, Place = r.Place }).ToArray();
+                books[slug] = t;
+                return t;
+            }
             for (int n = 1; n <= PerBook; n++)
             {
                 var r = t.Rooms[n - 1] = new Room { N = n };
@@ -203,6 +218,76 @@ namespace Fable
         {
             using var s = File.OpenRead(path); using var h = SHA256.Create();
             return BitConverter.ToString(h.ComputeHash(s)).Replace("-", "").ToLowerInvariant();
+        }
+
+        // ---------------------------------------------------------------- rooms bundled in the app
+
+        class BundledRoom
+        {
+            [JsonProperty("room")] public int N; [JsonProperty("title")] public string Title; [JsonProperty("place")] public string Place;
+            /// SHA-256 of the room's package.json: an extracted copy with another one is from an older build and is replaced.
+            [JsonProperty("package")] public string PackageSha;
+        }
+        static Dictionary<string, BundledRoom[]> bundled;
+        static Dictionary<string, BundledRoom[]> BundledIndex
+        {
+            get
+            {
+                if (bundled != null) return bundled;
+                bundled = new Dictionary<string, BundledRoom[]>();
+                var ta = Resources.Load<TextAsset>("BundledRooms");
+                if (ta)
+                    try { bundled = JsonConvert.DeserializeObject<Dictionary<string, BundledRoom[]>>(ta.text) ?? bundled; }
+                    catch (Exception e) { Debug.LogWarning($"[Fable] rooms: bundled index unreadable ({e.Message})"); }
+                return bundled;
+            }
+        }
+
+        /// A Fable book whose reading rooms are generated packages shipped in the app.
+        public static bool IsBundled(string slug) => slug != null && BundledIndex.ContainsKey(slug);
+
+        /// Make sure a bundled room is on the device as plain files (copied once from StreamingAssets, every file checked
+        /// against its SHA-256, swapped in whole). done(null) when it is there, or done(why).
+        public static IEnumerator Unpack(string slug, int n, Action<string> done)
+        {
+            var room = IsBundled(slug) ? BundledIndex[slug].FirstOrDefault(r => r.N == n) : null;
+            if (room == null) { done("there is no such room in the app"); yield break; }
+            var dir = Dir(slug, n); var pj = Path.Combine(dir, "package.json");
+            if (File.Exists(pj) && Sha256(pj) == room.PackageSha) { done(null); yield break; }
+            var t0 = Time.realtimeSinceStartup; var part = dir + ".part"; var rel = $"rooms/{slug}/r{n}/";
+            try { if (Directory.Exists(part)) Directory.Delete(part, true); Directory.CreateDirectory(part); }
+            catch (Exception e) { done("no room on the device to unpack it: " + e.Message); yield break; }
+            string err = null;
+            yield return CopyOut(rel + "package.json", Path.Combine(part, "package.json"), room.PackageSha, e => err = e);
+            if (err != null) { done(err); yield break; }
+            JObject m; try { m = JObject.Parse(File.ReadAllText(Path.Combine(part, "package.json"))); } catch (Exception e) { done("its package is unreadable: " + e.Message); yield break; }
+            long bytes = 0;
+            foreach (var f in (JArray)m["files"])
+            {
+                var p = (string)f["path"];
+                if (string.IsNullOrEmpty(p) || p.Contains("..") || Path.IsPathRooted(p)) { done($"refused path {p}"); yield break; }
+                var dst = Path.Combine(part, p); Directory.CreateDirectory(Path.GetDirectoryName(dst));
+                yield return CopyOut(rel + p, dst, (string)f["sha256"], e => err = e);
+                if (err != null) { done(err); yield break; }
+                bytes += (long?)f["size"] ?? 0;
+            }
+            try { if (Directory.Exists(dir)) Directory.Delete(dir, true); Directory.Move(part, dir); }
+            catch (Exception e) { done("could not be put in place: " + e.Message); yield break; }
+            Debug.Log($"[Fable] rooms: {slug} r{n} unpacked from the app ({bytes / 1024} kB in {(Time.realtimeSinceStartup - t0) * 1000:F0} ms)");
+            done(null);
+        }
+
+        /// One StreamingAssets file to a plain file, checked. Read with UnityWebRequest: a jar: URL inside the APK on
+        /// Android, a file: URL elsewhere. Bundled file names are plain ASCII (tools/bundle_rooms.py), so nothing is escaped.
+        static IEnumerator CopyOut(string relative, string dst, string sha, Action<string> fail)
+        {
+            var root = Application.streamingAssetsPath;
+            var url = root.Contains("://") ? root + "/" + relative : new Uri(Path.Combine(root, relative)).AbsoluteUri;
+            using var req = UnityWebRequest.Get(url);
+            req.downloadHandler = new DownloadHandlerFile(dst) { removeFileOnAbort = true };
+            yield return req.SendWebRequest();
+            if (req.result != UnityWebRequest.Result.Success) { fail($"{relative} is missing from the app ({req.error})"); yield break; }
+            if (Sha256(dst) != sha) fail($"{relative} failed its checksum");
         }
 
         /// The room's preview picture (the check render from the reader's eyes), or null.

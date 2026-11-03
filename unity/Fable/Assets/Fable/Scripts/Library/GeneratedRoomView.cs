@@ -19,14 +19,22 @@ namespace Fable
 {
     public static class GeneratedRoomView
     {
-        /// Set before loading the library room scene: the uploaded book's room to show there instead of the library.
+        /// Set before loading the library room scene: the generated room (an uploaded book's, or a bundled one) to show
+        /// there instead of the library.
         public static string PendingBook; public static int PendingRoom;
         public static string LastLoad { get; private set; }
 
         /// Load the room into a new root, place it about the rig, and report how it went (null on success).
         public static IEnumerator Load(string slug, int n, Transform rig, Action<GameObject, string> done)
         {
-            var t0 = Time.realtimeSinceStartup;
+            var t0 = Time.realtimeSinceStartup; float unpackMs = 0;
+            if (GeneratedRooms.IsBundled(slug))
+            {
+                // one of Fable's own books: the room ships in the app and is copied out of it the first time
+                string why = null; yield return GeneratedRooms.Unpack(slug, n, w => why = w);
+                if (why != null) { done(null, "the room could not be unpacked: " + why); yield break; }
+                unpackMs = (Time.realtimeSinceStartup - t0) * 1000;
+            }
             var path = Path.Combine(GeneratedRooms.Dir(slug, n), "room.gltf");
             if (!File.Exists(path)) { done(null, "the room is not on the headset"); yield break; }
             var root = new GameObject($"GeneratedRoom {slug} r{n}");
@@ -48,8 +56,12 @@ namespace Fable
             }
             foreach (var r in root.GetComponentsInChildren<Renderer>(true)) { r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; r.receiveShadows = false; }
             RenderSettings.fog = false;
+            // the kit's sky dome can be 160-180 m across: a far plane short of it cut a black hole in the sky (seen in
+            // the editor with Pride and Prejudice's fields), so every camera reaches past the room's farthest point
+            float reach = 0; foreach (var r in root.GetComponentsInChildren<Renderer>(true)) { var b = r.bounds; var c = rig ? rig.position : Vector3.zero; reach = Mathf.Max(reach, (b.center - c).magnitude + Mathf.Max(b.extents.x, Mathf.Max(b.extents.y, b.extents.z))); }
+            foreach (var cam in UnityEngine.Object.FindObjectsByType<UnityEngine.Camera>(FindObjectsSortMode.None)) if (cam.farClipPlane < reach * 1.05f) cam.farClipPlane = reach * 1.05f;
             int tris = 0; foreach (var mf in root.GetComponentsInChildren<MeshFilter>(true)) if (mf.sharedMesh) tris += mf.sharedMesh.triangles.Length / 3;
-            LastLoad = $"{slug} r{n}: {tris} triangles, loaded in {(Time.realtimeSinceStartup - t0) * 1000:F0} ms";
+            LastLoad = $"{slug} r{n}: {tris} triangles, loaded in {(Time.realtimeSinceStartup - t0) * 1000:F0} ms" + (unpackMs > 1 ? $" ({unpackMs:F0} ms of it unpacking from the app or checking the copy)" : "");
             Debug.Log("[Fable] rooms: " + LastLoad);
             done(root, null);
         }

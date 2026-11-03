@@ -90,7 +90,9 @@ namespace Fable
             var book = Flow.Reader.Book; var ce = ChapterExperiences.Instance;
             if (!ChapterExperiences.Supported.Contains(book.Slug))
             {
-                Text(body, "Chapter experiences are prepared for Fable’s own four books. They are not available yet for books you add.\n\nYour progress through the chapters is still kept.", 19, FontStyles.Normal, Ink, TextAlignmentOptions.TopLeft, new Vector2(0, 120), new Vector2(520, 200));
+                Text(body, Library.IsImported(book.Slug)
+                    ? "Chapter experiences are prepared for Fable’s own first four books. They are not available yet for books you add.\n\nYour progress through the chapters is still kept."
+                    : "There is no place built for this book’s chapters yet, so they have no experiences. Its three reading rooms are under \u201crooms\u201d.\n\nYour progress through the chapters is still kept.", 19, FontStyles.Normal, Ink, TextAlignmentOptions.TopLeft, new Vector2(0, 120), new Vector2(520, 200));
                 return;
             }
             var all = ChapterNumbers(); int pages = Mathf.Max(1, Mathf.CeilToInt(all.Count / (float)Per));
@@ -190,7 +192,7 @@ namespace Fable
                 });
                 y -= 62;
             }
-            if (Library.IsImported(slug)) Text(body, "Your book\u2019s three rooms are made from places in its opening chapters.", 14, FontStyles.Italic, Soft, TextAlignmentOptions.Center, new Vector2(0, y - 4), new Vector2(520, 40));
+            if (Library.IsImported(slug) || GeneratedRooms.IsBundled(slug)) Text(body, (Library.IsImported(slug) ? "Your book\u2019s" : "This book\u2019s") + " three rooms are made from places in its opening chapters.", 14, FontStyles.Italic, Soft, TextAlignmentOptions.Center, new Vector2(0, y - 4), new Vector2(520, 40));
             Text(body, "Your place in the book comes with you.", 15, FontStyles.Italic, Soft, TextAlignmentOptions.Center, new Vector2(0, y - 40), new Vector2(500, 30));
         }
 

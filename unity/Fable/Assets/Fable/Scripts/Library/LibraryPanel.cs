@@ -196,7 +196,7 @@ namespace Fable
             ShowRooms();
             bool supported = ChapterExperiences.Supported.Contains(slug);
             chaptersBtn.gameObject.SetActive(supported);
-            menuChapters.text = supported ? ChapterSummary(slug) : "Prepared for Fable\u2019s own four books; not yet for books you add.";
+            menuChapters.text = supported ? ChapterSummary(slug) : Library.IsImported(slug) ? "Prepared for Fable\u2019s own first four books; not yet for books you add." : "No place is built for this book\u2019s chapters yet.";
             bookMenu.gameObject.SetActive(true); grid.gameObject.SetActive(false);
             Debug.Log($"[Fable] library board: menu for {slug}");
             Refresh();

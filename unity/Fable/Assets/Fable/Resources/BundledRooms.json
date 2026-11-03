@@ -1,0 +1,22 @@
+{
+  "pride": [
+    {
+      "room": 1,
+      "title": "The fields to Netherfield after rain",
+      "place": "Open Hertfordshire farmland in the late eighteenth century: a footpath crosses one hedged field after another, with a weathered wooden stile set into the hedgerow ahead. The ground is soft and muddy, and broad puddles in the cart ruts and furrows reflect the sky. Wet grass bends along the path. Farther off, across the last field, the large country house of Netherfield stands within view. Behind the reader the path leads back towards the small market town of Meryton, a mile or two away. Rooks sit in the bare hedgerow trees, and the air is washed clean after a night of steady rain.",
+      "package": "aa1aca1b4d9bcc8778cf3b6c6d27e8d045dea5eafc07e97ed7d324b52a4d5dbf"
+    },
+    {
+      "room": 2,
+      "title": "The Netherfield drawing-room",
+      "place": "A spacious, elegantly furnished drawing-room in a rented country house of the period. Tall windows are curtained against the night, and candlelight falls on polished wood and pale painted walls. In the centre stands a card table set for loo, with cards and counters left mid-game and chairs pushed back. To one side is a smaller table where a few books lie in a loose stack: the modest collection of a household that reads little. Upholstered sofas and chairs are arranged for company. Through a door, a passage leads towards the dining-parlour and the stairs to the bedrooms above. The house is hushed, as if everyone has just stepped out.",
+      "package": "c2dad10a3583d1d62137aabe19c7277127b2af377857925f1083bafb24a44a55"
+    },
+    {
+      "room": 3,
+      "title": "Mr. Bennet's library at Longbourn",
+      "place": "A modest gentleman's library in a family house in the village of Longbourn. Shelves of well-used books line the walls, and a writing table near the window holds an open volume and papers. Two chairs sit facing each other, where a short morning call might be received. Through the window, daylight falls on the lane and the neighbourhood beyond. Upstairs, other windows look out over the same approach to the house. It is a room kept for quiet, set apart from the bustle of the rest of the household.",
+      "package": "484fc24ada4b4c1c8d58076bf53f6908911629bb274b0cf431edffd798a49c48"
+    }
+  ]
+}

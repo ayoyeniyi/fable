@@ -515,8 +515,42 @@ namespace Fable.Editor
                     var rel = Path.GetRelativePath(lib, f); var to = Path.Combine(dst, "library", rel);
                     Directory.CreateDirectory(Path.GetDirectoryName(to)); File.Copy(f, to, true); n++;
                 }
+            n += SyncBundledRooms(repo, dst);
             AssetDatabase.Refresh();
             Debug.Log($"[FableBuild] synced {n} data files into StreamingAssets");
+        }
+
+        /// Generated reading rooms bundled for Fable's own books that have no hand-built rooms: content/rooms/<slug>/r<N>
+        /// (tools/bundle_rooms.py) -> StreamingAssets/rooms/<slug>/r<N>, only the files each package.json lists, plus an
+        /// index the app reads synchronously (Resources/BundledRooms.json: titles and each package.json's SHA-256).
+        static int SyncBundledRooms(string repo, string dst)
+        {
+            var src = Path.Combine(repo, "content", "rooms"); var to = Path.Combine(dst, "rooms"); int n = 0;
+            if (Directory.Exists(to)) Directory.Delete(to, true);
+            var index = new Newtonsoft.Json.Linq.JObject();
+            if (Directory.Exists(src))
+                foreach (var bookDir in Directory.GetDirectories(src).OrderBy(d => d))
+                {
+                    var rooms = new Newtonsoft.Json.Linq.JArray();
+                    foreach (var roomDir in Directory.GetDirectories(bookDir, "r*").OrderBy(d => d))
+                    {
+                        var pj = Path.Combine(roomDir, "package.json"); if (!File.Exists(pj)) continue;
+                        var m = Newtonsoft.Json.Linq.JObject.Parse(File.ReadAllText(pj));
+                        var outDir = Path.Combine(to, Path.GetFileName(bookDir), Path.GetFileName(roomDir));
+                        foreach (var f in (Newtonsoft.Json.Linq.JArray)m["files"])
+                        {
+                            var rel = (string)f["path"]; var target = Path.Combine(outDir, rel);
+                            Directory.CreateDirectory(Path.GetDirectoryName(target)); File.Copy(Path.Combine(roomDir, rel), target, true); n++;
+                        }
+                        File.Copy(pj, Path.Combine(outDir, "package.json"), true); n++;
+                        string sha; using (var h = System.Security.Cryptography.SHA256.Create()) sha = BitConverter.ToString(h.ComputeHash(File.ReadAllBytes(pj))).Replace("-", "").ToLowerInvariant();
+                        rooms.Add(new Newtonsoft.Json.Linq.JObject { ["room"] = (int)m["room"], ["title"] = (string)m["title"], ["place"] = (string)m["place"], ["package"] = sha });
+                    }
+                    if (rooms.Count > 0) index[Path.GetFileName(bookDir)] = rooms;
+                }
+            Directory.CreateDirectory("Assets/Fable/Resources");
+            File.WriteAllText("Assets/Fable/Resources/BundledRooms.json", index.ToString(Newtonsoft.Json.Formatting.Indented) + "\n"); n++;
+            return n;
         }
 
         static bool FlowControllerBackdrop(string n) => FlowController.IsBackdrop(n);

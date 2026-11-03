@@ -1,5 +1,6 @@
-// Every book's reading rooms, for the lobby's book menu and the menu beside the page: three per book (Fable's own
-// books: built scenes; the reader's books: the three generated rooms, docs/GENERATED_ROOMS.md), then the library.
+// Every book's reading rooms, for the lobby's book menu and the menu beside the page: three per book, then the library.
+// Fable's first four books: built scenes (Bundled below). Fable's other books: three generated rooms bundled in the
+// app (GeneratedRooms.IsBundled). The reader's books: three generated rooms made for them (docs/GENERATED_ROOMS.md).
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ namespace Fable
 {
     public static class ReadingRooms
     {
-        /// Each bundled book's three rooms, its first room first (where it opens by default).
+        /// Each book's three hand-built rooms, its first room first (where it opens by default).
         public static readonly Dictionary<string, string[]> Bundled = new()
         {
             ["alice"] = new[] { "HallOfDoors", "MadTeaParty", "QueensCroquetGround" },
@@ -41,8 +42,9 @@ namespace Fable
                 foreach (var sc in scenes)
                     if (Application.CanStreamedLevelBeLoaded(sc)) list.Add(new Entry { Label = Name(sc), Scene = sc, Ready = true });
             }
-            else if (Library.IsImported(slug))
+            else if (GeneratedRooms.IsBundled(slug) || Library.IsImported(slug))
             {
+                // generated rooms: bundled in the app for some of Fable's own books, fetched from the service for uploads
                 foreach (var r in GeneratedRooms.Instance.Rooms(slug))
                     list.Add(new Entry { Label = r.Title ?? $"Room {r.N}", Generated = r.N, Ready = r.Ready, Note = r.Ready ? null : Describe(r) });
             }

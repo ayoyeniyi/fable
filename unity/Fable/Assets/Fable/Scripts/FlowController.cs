@@ -355,7 +355,8 @@ namespace Fable
         (string, bool, bool) ExperienceLine(string chapter)
         {
             var ce = ChapterExperiences.Instance; var r = ce.Record(chapter);
-            if (!ChapterExperiences.Supported.Contains(Slug)) return ("", false, false);
+            if (!ChapterExperiences.Supported.Contains(Slug))
+                return (Reader && !Reader.Imported ? "There is no place built for this book’s chapters yet, so they have no experiences." : "", false, false);   // Fable's later books: nothing is asked of the service
             if (r == null || r.Job == "none") return ("This chapter’s experience has not been prepared.", false, false);
             return r.Job switch
             {
