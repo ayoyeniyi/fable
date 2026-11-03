@@ -1,0 +1,24 @@
+{
+  "name": "fable-demo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Remotion project for the Fable competition demo film (stills cut).",
+  "scripts": {
+    "stills": "node scripts/prepare-stills.mjs",
+    "studio": "npm run stills && remotion studio src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "render": "npm run stills && remotion render src/index.ts FableDemo ../out/demo/fable-demo-stills-cut.mp4 --codec=h264 --crf=18 --overwrite"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.540",
+    "@remotion/google-fonts": "4.0.540",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "remotion": "4.0.540"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "typescript": "7.0.2"
+  }
+}

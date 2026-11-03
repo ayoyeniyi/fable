@@ -23,3 +23,7 @@ audio/out/
 unity/Fable/.vscode/
 unity/Fable/.utmp/RelWithDebInfo/
 unity/Fable/out/
+
+# demo film (Remotion)
+demo/node_modules/
+demo/public/stills/
