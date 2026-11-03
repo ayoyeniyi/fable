@@ -36,5 +36,41 @@
     "page": "https://standardebooks.org/ebooks/jonathan-swift/gullivers-travels",
     "url": "https://standardebooks.org/ebooks/jonathan-swift/gullivers-travels/downloads/jonathan-swift_gullivers-travels.epub?source=download",
     "gutenberg": 829
+  },
+  "pride": {
+    "title": "Pride and Prejudice",
+    "author": "Jane Austen",
+    "year": 1813,
+    "format": "se-epub",
+    "page": "https://standardebooks.org/ebooks/jane-austen/pride-and-prejudice",
+    "url": "https://standardebooks.org/ebooks/jane-austen/pride-and-prejudice/downloads/jane-austen_pride-and-prejudice.epub?source=download",
+    "gutenberg": 1342
+  },
+  "mobydick": {
+    "title": "Moby-Dick",
+    "author": "Herman Melville",
+    "year": 1851,
+    "format": "se-epub",
+    "page": "https://standardebooks.org/ebooks/herman-melville/moby-dick",
+    "url": "https://standardebooks.org/ebooks/herman-melville/moby-dick/downloads/herman-melville_moby-dick.epub?source=download",
+    "gutenberg": 2701
+  },
+  "worlds": {
+    "title": "The War of the Worlds",
+    "author": "H. G. Wells",
+    "year": 1898,
+    "format": "se-epub",
+    "page": "https://standardebooks.org/ebooks/h-g-wells/the-war-of-the-worlds",
+    "url": "https://standardebooks.org/ebooks/h-g-wells/the-war-of-the-worlds/downloads/h-g-wells_the-war-of-the-worlds.epub?source=download",
+    "gutenberg": 36
+  },
+  "treasure": {
+    "title": "Treasure Island",
+    "author": "Robert Louis Stevenson",
+    "year": 1883,
+    "format": "se-epub",
+    "page": "https://standardebooks.org/ebooks/robert-louis-stevenson/treasure-island",
+    "url": "https://standardebooks.org/ebooks/robert-louis-stevenson/treasure-island/downloads/robert-louis-stevenson_treasure-island.epub?source=download",
+    "gutenberg": 120
   }
 }

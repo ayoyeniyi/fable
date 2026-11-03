@@ -97,7 +97,7 @@ def sentences_with_breaks(text):
 # --------------------------------------------------------------------------- Standard Ebooks EPUB
 
 SKIP_FILES = {"titlepage", "imprint", "halftitlepage", "frontispiece", "loi", "colophon", "uncopyright", "endnotes", "toc"}
-KEEP_FRONT = {"epigraph", "introduction", "preface", "foreword", "dedication", "prologue"}
+KEEP_FRONT = {"epigraph", "introduction", "preface", "foreword", "dedication", "prologue", "preamble"}  # preamble: Moby-Dick's Etymology and Extracts
 
 def etype(el):
     return (el.get(EPUB_TYPE) or "").split()
@@ -151,6 +151,11 @@ def header_info(section):
             title = clean(inline_text(h)).replace(DOT, ".")
         elif t == "p" and ("subtitle" in types or h.get("role") == "doc-subtitle" or "se:bridgehead" in types):
             subtitle = clean(inline_text(h)).replace(DOT, ".")
+    if title is None:   # a plain <header><p>Extracts</p></header> (Moby-Dick's list of extracts)
+        hdr = next((c for c in section if tag(c) == "header"), None)
+        p = next((c for c in hdr if tag(c) == "p" and not etype(c) and not c.get("role")), None) if hdr is not None else None
+        if p is not None:
+            title = clean(inline_text(p)).replace(DOT, ".") or None
     return label, title, subtitle
 
 def blocks(el, out, in_poem=False):
@@ -220,6 +225,13 @@ def read_epub(path):
             continue
         body = doc.find(XHTML + "body")
         btypes = etype(body)
+        parent = {c: p for p in body.iter() for c in p}
+        def kept_front(sec):   # a front-matter section kept for itself or inside one that is (Extracts' list)
+            while sec is not None and tag(sec) == "section":
+                if KEEP_FRONT & set(etype(sec)) or sec.get("id") in KEEP_FRONT:
+                    return True
+                sec = parent.get(sec)
+            return False
         for section in body.iter(XHTML + "section"):
             stypes = etype(section)
             if "part" in stypes or section.get("role") == "doc-part":
@@ -228,7 +240,7 @@ def read_epub(path):
                 if not any(tag(c) not in ("hgroup", "header") for c in section):
                     continue
             front = "frontmatter" in btypes
-            if front and not (KEEP_FRONT & set(stypes) or section.get("id") in KEEP_FRONT):
+            if front and not kept_front(section):
                 continue
             if "backmatter" in btypes:
                 continue
