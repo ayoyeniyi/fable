@@ -29,6 +29,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Thabhelo/fable/interpreter/internal/guard"
 	"github.com/Thabhelo/fable/interpreter/internal/llm"
 )
 
@@ -84,6 +85,7 @@ type Job struct {
 	Error     string             `json:"error,omitempty"`
 	Title     string             `json:"title,omitempty"`
 	Attempts  int                `json:"attempts"`
+	Client    string             `json:"client,omitempty"` // who asked (a hash of their address), for PerClient
 	Queued    time.Time          `json:"queued"`
 	NotBefore time.Time          `json:"notBefore,omitempty"` // after a passing network failure: try again then
 	Timings   map[string]float64 `json:"timings"`
@@ -130,6 +132,7 @@ type Service struct {
 	MaxBooks   int
 	Attempts   int
 	OpeningMax int  // characters of the opening shown to the planner
+	PerClient  int  // books one client may have in progress (0: no limit)
 	Review     int  // rounds of looking at the built room and improving it (0: none)
 	KeepWork   bool // keep every attempt's build (for comparing rounds)
 
@@ -195,7 +198,14 @@ func (s *Service) saveLocked() {
 var ErrFull = errors.New("too many books waiting for rooms")
 
 // Prepare stores the book's text (once) and queues its three rooms; failed rooms are queued again.
-func (s *Service) Prepare(b *Book) ([]*Job, error) {
+func (s *Service) Prepare(b *Book) ([]*Job, error) { return s.PrepareFor(b, "") }
+
+// ErrClientBusy: this headset already has PerClient books being built.
+var ErrClientBusy = errors.New("this headset already has books whose rooms are being built; try again when they are done")
+
+// PrepareFor is Prepare for a client (a hash of its address; "" for none): with PerClient set, one client can have
+// only that many books in progress, so one headset cannot fill the queue.
+func (s *Service) PrepareFor(b *Book, client string) ([]*Job, error) {
 	if !slugRe.MatchString(b.Slug) {
 		return nil, fmt.Errorf("bad book id %q", b.Slug)
 	}
@@ -210,8 +220,20 @@ func (s *Service) Prepare(b *Book) ([]*Job, error) {
 			books[j.Book] = true
 		}
 	}
-	if _, ok := s.jobs[b.Slug+":r1"]; !ok && len(books) >= s.MaxBooks {
+	_, known := s.jobs[b.Slug+":r1"]
+	if !known && len(books) >= s.MaxBooks {
 		return nil, ErrFull
+	}
+	if !known && client != "" && s.PerClient > 0 {
+		mine := map[string]bool{}
+		for _, j := range s.jobs {
+			if j.Client == client && books[j.Book] {
+				mine[j.Book] = true
+			}
+		}
+		if len(mine) >= s.PerClient {
+			return nil, ErrClientBusy
+		}
 	}
 	os.MkdirAll(s.bookDir(b.Slug), 0o755)
 	bp := filepath.Join(s.bookDir(b.Slug), "book.json")
@@ -226,7 +248,7 @@ func (s *Service) Prepare(b *Book) ([]*Job, error) {
 		k := fmt.Sprintf("%s:r%d", b.Slug, n)
 		j := s.jobs[k]
 		if j == nil {
-			j = &Job{Book: b.Slug, Room: n, State: Queued, Queued: time.Now(), Timings: map[string]float64{}}
+			j = &Job{Book: b.Slug, Room: n, State: Queued, Queued: time.Now(), Timings: map[string]float64{}, Client: client}
 			s.jobs[k] = j
 			log.Printf("rooms %s: queued", k)
 		} else if j.State == Failed {
@@ -280,6 +302,9 @@ func (s *Service) set(j *Job, state string) {
 
 // transient: the network or the API, not the room. The job waits a minute and runs again.
 func transient(err error) bool {
+	if errors.Is(err, llm.ErrDailyLimit) {
+		return true
+	}
 	m := strings.ToLower(err.Error())
 	for _, k := range []string{"dial tcp", "no route to host", "connection reset", "timeout", "eof", "529", "overloaded", "503", "502", "500 internal", "rate limit", "429"} {
 		if strings.Contains(m, k) {
@@ -291,11 +316,15 @@ func transient(err error) bool {
 
 func (s *Service) fail(j *Job, state string, err error) {
 	if state == Failed && transient(err) {
+		wait := time.Minute
+		if errors.Is(err, llm.ErrDailyLimit) {
+			wait = 30 * time.Minute
+		}
 		s.mu.Lock()
-		j.State, j.Error, j.NotBefore = Queued, "waiting to retry: "+err.Error(), time.Now().Add(time.Minute)
+		j.State, j.Error, j.NotBefore = Queued, "waiting to retry: "+err.Error(), time.Now().Add(wait)
 		s.saveLocked()
 		s.mu.Unlock()
-		log.Printf("rooms %s: will retry in a minute: %v", j.Key(), err)
+		log.Printf("rooms %s: will retry in %s: %v", j.Key(), wait, err)
 		return
 	}
 	s.mu.Lock()
@@ -636,6 +665,14 @@ func (s *Service) pack(j *Job, st Setting, build string, res BuildResult) error 
 	return os.Rename(stage, dst)
 }
 
+// SandboxArgs are bubblewrap's arguments for running blender with only work writable.
+func SandboxArgs(work, blender string) []string {
+	return []string{"--die-with-parent", "--new-session", "--unshare-all", // no network, own pid/ipc/uts namespaces
+		"--ro-bind", "/", "/", "--dev", "/dev", "--proc", "/proc", "--tmpfs", "/tmp",
+		"--tmpfs", "/home", "--tmpfs", "/root", "--tmpfs", "/etc/fable", "--tmpfs", "/var/lib/fable",
+		"--bind", work, work, "--setenv", "HOME", "/tmp", "--chdir", work, "--", blender}
+}
+
 func tail(s string, n int) string {
 	if len(s) > n {
 		return s[len(s)-n:]
@@ -644,12 +681,21 @@ func tail(s string, n int) string {
 }
 
 // RoomgenBuilder runs blender/roomgen.py in a fresh Blender with no user settings or add-ons.
-func RoomgenBuilder(blender string) Builder {
+// With sandbox set (a public server, Linux), Blender runs inside bubblewrap: no network, its own process tree (so
+// it cannot read the service's environment through /proc), the whole system read-only, and only the room's work
+// folder writable. The script check in roomgen.py is a filter, not a boundary; this is the boundary.
+func RoomgenBuilder(blender string, sandbox bool) Builder {
 	return func(ctx context.Context, root, script, out string) (BuildResult, error) {
 		root, _ = filepath.Abs(root)
 		script, _ = filepath.Abs(script)
 		out, _ = filepath.Abs(out)
-		cmd := exec.CommandContext(ctx, blender, "-b", "--factory-startup", "-noaudio", "-P", filepath.Join(root, "blender", "roomgen.py"), "--",
+		run := func(args ...string) *exec.Cmd {
+			if !sandbox {
+				return exec.CommandContext(ctx, blender, args...)
+			}
+			return exec.CommandContext(ctx, "bwrap", append(SandboxArgs(filepath.Dir(script), blender), args...)...)
+		}
+		cmd := run("-b", "--factory-startup", "-noaudio", "-P", filepath.Join(root, "blender", "roomgen.py"), "--",
 			"--script", script, "--out", out, "--tex", "1024", "--samples", "40")
 		cmd.Dir = filepath.Dir(script)
 		// the normal environment (Cycles keeps its GPU kernel cache under HOME; a fresh HOME crashed Metal), minus
@@ -669,7 +715,7 @@ func RoomgenBuilder(blender string) Builder {
 						// review looks at; a failure here only means no review
 						pv := filepath.Join(out, "preview")
 						os.MkdirAll(pv, 0o755)
-						p := exec.CommandContext(ctx, blender, "-b", "--factory-startup", "-noaudio", "-P", filepath.Join(root, "blender", "preview_room.py"), "--",
+						p := run("-b", "--factory-startup", "-noaudio", "-P", filepath.Join(root, "blender", "preview_room.py"), "--",
 							filepath.Join(out, "room.gltf"), pv+string(filepath.Separator), "--res", "1000")
 						p.Env = cmd.Env
 						if data, err := p.CombinedOutput(); err != nil {
@@ -718,9 +764,10 @@ func (s *Service) Register(mux *http.ServeMux) {
 			http.Error(w, "bad book: "+err.Error(), http.StatusBadRequest)
 			return
 		}
-		if _, err := s.Prepare(&b); err != nil {
+		sum := sha256.Sum256([]byte("fable-client:" + guard.ClientIP(r)))
+		if _, err := s.PrepareFor(&b, hex.EncodeToString(sum[:6])); err != nil {
 			code := http.StatusBadRequest
-			if errors.Is(err, ErrFull) {
+			if errors.Is(err, ErrFull) || errors.Is(err, ErrClientBusy) {
 				code = http.StatusTooManyRequests
 			}
 			http.Error(w, err.Error(), code)
@@ -730,7 +777,7 @@ func (s *Service) Register(mux *http.ServeMux) {
 	})
 	mux.HandleFunc("POST /rooms/rebuild", func(w http.ResponseWriter, r *http.Request) {
 		// the owner's tool: build one room again from the same plan (only from this machine)
-		if !strings.HasPrefix(r.RemoteAddr, "127.0.0.1:") && !strings.HasPrefix(r.RemoteAddr, "[::1]:") {
+		if !guard.IsLocal(r) { // behind the proxy every request comes from 127.0.0.1: guard looks at X-Forwarded-For
 			http.Error(w, "local only", http.StatusForbidden)
 			return
 		}

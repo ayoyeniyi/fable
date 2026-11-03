@@ -206,3 +206,23 @@ func TestExtractCodeCopesWithUnclosedFences(t *testing.T) {
 		t.Fatalf("no fence: %q", got)
 	}
 }
+
+func TestOneClientCannotFillTheQueue(t *testing.T) {
+	b, _ := fakeBuild(0)
+	s := newSvc(t, &fakeClaude{places: 3}, b) // not running: jobs stay queued
+	s.PerClient = 1
+	if _, err := s.PrepareFor(testBook(), "aa"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.PrepareFor(testBook(), "aa"); err != nil {
+		t.Fatalf("asking again for the same book is fine: %v", err)
+	}
+	other := testBook()
+	other.Slug = "u-other"
+	if _, err := s.PrepareFor(other, "aa"); !errors.Is(err, ErrClientBusy) {
+		t.Fatalf("a second book from the same client: %v, want ErrClientBusy", err)
+	}
+	if _, err := s.PrepareFor(other, "bb"); err != nil {
+		t.Fatalf("another client: %v", err)
+	}
+}

@@ -1,0 +1,28 @@
+# HTTPS in front of the service (docs/BACKEND.md). FABLE_HOST and FABLE_ACCESS_KEY come from /etc/fable/caddy.env.
+# Only requests under /k/<access key>/ reach the service (the key is built into the app); everything else is 404.
+{$FABLE_HOST} {
+	encode gzip
+	handle_path /k/{$FABLE_ACCESS_KEY}/* {
+		request_body {
+			max_size 13MB
+		}
+		reverse_proxy 127.0.0.1:8787 {
+			header_up -Forwarded
+		}
+	}
+	handle {
+		respond 404
+	}
+	log {
+		output file /var/log/caddy/fable.log {
+			roll_size 20MiB
+			roll_keep 5
+		}
+		format filter {
+			wrap json
+			fields {
+				request>uri replace "(unlogged)"
+			}
+		}
+	}
+}

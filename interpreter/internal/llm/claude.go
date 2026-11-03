@@ -6,8 +6,11 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
+	"sync"
+	"time"
 
 	"github.com/anthropics/anthropic-sdk-go/v2"
 
@@ -51,6 +54,44 @@ Beats cite sentence ids in reading order, each at most once, at most 8 actions p
 type Director struct {
 	client anthropic.Client
 	model  string
+
+	// MaxCallsPerDay caps Claude calls per UTC day (0: no cap). On a public server it bounds what one day can cost
+	// whatever the clients do; past it, calls fail with ErrDailyLimit until midnight UTC.
+	MaxCallsPerDay int
+	mu             sync.Mutex
+	day            string
+	calls          int
+}
+
+// ErrDailyLimit: the day's Claude calls are used up. The queues treat it as a reason to wait, not a failure.
+var ErrDailyLimit = errors.New("the service has used its Claude calls for today (daily limit); try again after midnight UTC")
+
+// spend counts one call against the day's cap.
+func (d *Director) spend() error {
+	if d.MaxCallsPerDay <= 0 {
+		return nil
+	}
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	today := time.Now().UTC().Format("2006-01-02")
+	if today != d.day {
+		d.day, d.calls = today, 0
+	}
+	if d.calls >= d.MaxCallsPerDay {
+		return ErrDailyLimit
+	}
+	d.calls++
+	return nil
+}
+
+// CallsToday reports the day's count (for /health).
+func (d *Director) CallsToday() int {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	if d.day != time.Now().UTC().Format("2006-01-02") {
+		return 0
+	}
+	return d.calls
 }
 
 func New(model string) *Director {
@@ -91,6 +132,9 @@ func (d *Director) AskImagesRaw(ctx context.Context, system, user string, images
 }
 
 func (d *Director) stream(ctx context.Context, system string, content []anthropic.ContentBlockParamUnion, maxTokens int64) (string, string, error) {
+	if err := d.spend(); err != nil {
+		return "", "", err
+	}
 	stream := d.client.Messages.NewStreaming(ctx, anthropic.MessageNewParams{
 		Model:     anthropic.Model(d.model),
 		MaxTokens: maxTokens,
@@ -120,6 +164,9 @@ func (d *Director) ask(ctx context.Context, msgs []anthropic.MessageParam) (stri
 }
 
 func (d *Director) askWith(ctx context.Context, system string, msgs []anthropic.MessageParam, maxTokens int64) (string, error) {
+	if err := d.spend(); err != nil {
+		return "", err
+	}
 	resp, err := d.client.Messages.New(ctx, anthropic.MessageNewParams{
 		Model:     anthropic.Model(d.model),
 		MaxTokens: maxTokens,

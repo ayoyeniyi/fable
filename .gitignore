@@ -27,3 +27,7 @@ unity/Fable/out/
 # demo film (Remotion)
 demo/node_modules/
 demo/public/stills/
+
+# the hosted service address (carries the access key): written only during a build
+unity/Fable/Assets/Resources/fable-service.txt
+unity/Fable/Assets/Resources/fable-service.txt.meta

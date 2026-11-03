@@ -2,6 +2,25 @@
 
 Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs/TOOLING.md`. Everything below was true at the commit that last touched this file. "Verified" always says where: **editor** (Unity play mode on a Mac, desktop camera, no HMD) or **headset**. Nothing has been verified on a headset yet.
 
+## Hosted backend for the competition (2026-11-03, not yet deployed)
+
+Judges' headsets cannot reach the owner's Mac, so the preparation service gets one cloud VM (CPU only, the owner's
+choice). Everything is in `docs/BACKEND.md`.
+
+- **Code:**
+  - `deploy/` (provision, systemd unit, Caddyfile, `deploy.sh <ip>`)
+  - `internal/guard`: per-client rate limits; `/rooms/rebuild` stays local-only behind the proxy
+  - a daily cap on Claude calls (`llm.Director.MaxCallsPerDay`)
+  - a per-client cap on uploaded books in progress
+  - bubblewrap around Blender room builds
+  - Cycles-on-CPU fallbacks for thumbnails and roomgen
+  - `FableService.cs` and `Editor/ServiceConfig.cs`, so release builds use the hosted address and logs never show
+    the access key
+- **Tested locally:** rate limits (429 after the burst, per client), local-only rebuild refused through the proxy
+  headers, the CPU thumbnail (9 s) and a CPU room build (150 s on the Mac).
+- **Not tested:** anything on a VM (provisioning, bubblewrap, Caddy and the certificate, CPU build times there), and
+  a build with the hosted address on the headset.
+
 ## What exists and is verified
 
 **2026-11-03: three rooms per book, and three generated rooms per uploaded book.**

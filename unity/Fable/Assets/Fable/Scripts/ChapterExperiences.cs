@@ -114,16 +114,11 @@ namespace Fable
             foreach (var r in state.Chapters) if (r.Job == "ready" && !File.Exists(PackagePath(r))) { r.Job = "requested"; r.Stage = null; }
             ServiceUrl = FindServiceUrl();
             int open = state.Chapters.Count(r => r.Job is "queued" or "requested" or "waiting" or "building");
-            Debug.Log($"[Fable] experiences: {state.Chapters.Count(r => r.Completed)} chapters completed, {state.Chapters.Count(r => r.Job == "ready")} prepared, {open} jobs to resume; service {ServiceUrl ?? "none"}");
+            Debug.Log($"[Fable] experiences: {state.Chapters.Count(r => r.Completed)} chapters completed, {state.Chapters.Count(r => r.Job == "ready")} prepared, {open} jobs to resume; service {FableService.Describe(ServiceUrl)}");
             StartCoroutine(Loop());
         }
 
-        static string FindServiceUrl()
-        {
-            var f = Path.Combine(Application.persistentDataPath, "interpreter.txt");
-            if (File.Exists(f)) return File.ReadAllText(f).Trim().TrimEnd('/');
-            return "http://127.0.0.1:8787";   // the Mac over `adb reverse` on the headset; the local service in the editor
-        }
+        static string FindServiceUrl() => FableService.Url;   // the hosted server, a developer override, or the Mac
 
         void Save()
         {

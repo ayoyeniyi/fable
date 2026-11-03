@@ -80,7 +80,11 @@ if fog > 0.01:
     world.node_tree.links.new(vol.outputs[0], world.node_tree.nodes["World Output"].inputs["Volume"])
 
 w, h = (int(x) for x in opts["--size"].split("x"))
-scene.render.engine = "BLENDER_EEVEE_NEXT" if "BLENDER_EEVEE_NEXT" in [e.identifier for e in bpy.types.RenderSettings.bl_rna.properties["engine"].enum_items] else "BLENDER_EEVEE"
+if os.environ.get("FABLE_THUMB_ENGINE", "").upper() == "CYCLES":
+    # a server with no GPU has no OpenGL for EEVEE: Cycles on the CPU, few samples, denoised (docs/BACKEND.md)
+    scene.render.engine = "CYCLES"; scene.cycles.device = "CPU"; scene.cycles.samples = 24; scene.cycles.use_denoising = True
+else:
+    scene.render.engine = "BLENDER_EEVEE_NEXT" if "BLENDER_EEVEE_NEXT" in [e.identifier for e in bpy.types.RenderSettings.bl_rna.properties["engine"].enum_items] else "BLENDER_EEVEE"
 scene.render.resolution_x, scene.render.resolution_y, scene.render.resolution_percentage = w, h, 100
 scene.render.image_settings.file_format = "PNG"
 scene.view_settings.view_transform = "AgX" if "AgX" in [v.identifier for v in bpy.types.ColorManagedViewSettings.bl_rna.properties["view_transform"].enum_items] else "Filmic"

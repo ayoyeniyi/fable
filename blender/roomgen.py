@@ -144,6 +144,8 @@ if problems:
 # ---------------------------------------------------------------- 3. check views
 
 def use_gpu():
+    if os.environ.get("FABLE_CYCLES_DEVICE", "").upper() == "CPU":   # measure or run as a GPU-less server would
+        return "CPU"
     try:
         prefs = bpy.context.preferences.addons["cycles"].preferences
         for dt in ("METAL", "OPTIX", "CUDA", "HIP"):

@@ -60,8 +60,9 @@ func TestReviewRevisesThenApprovesAndPackagesTheRevision(t *testing.T) {
 	os.Symlink(filepath.Join(repoRoot(), "blender"), filepath.Join(tmp, "blender"))
 	s := NewService(tmp, rc, b)
 	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	go s.Run(ctx)
+	stopped := make(chan struct{})
+	go func() { s.Run(ctx); close(stopped) }()
+	defer func() { cancel(); <-stopped }() // the job tidies its work folder after Done: let it finish before cleanup
 	s.Prepare(testBook())
 	wait(t, s, "u-test", 1, Done)
 	if rc.reviews != 2 || rc.images != 2*len(reviewViews) {
@@ -83,8 +84,9 @@ func TestFailedRevisionGetsOneRepairAndNeverReplacesAPassingRoomWithAFailure(t *
 	os.Symlink(filepath.Join(repoRoot(), "blender"), filepath.Join(tmp, "blender"))
 	s := NewService(tmp, rc, b)
 	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	go s.Run(ctx)
+	stopped := make(chan struct{})
+	go func() { s.Run(ctx); close(stopped) }()
+	defer func() { cancel(); <-stopped }() // the job tidies its work folder after Done: let it finish before cleanup
 	s.Prepare(testBook())
 	wait(t, s, "u-test", 1, Done)
 	gl, _ := os.ReadFile(filepath.Join(s.pkgDir("u-test", 1), "room.gltf"))

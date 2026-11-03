@@ -33,6 +33,7 @@ import (
 	"github.com/Thabhelo/fable/interpreter/internal/book"
 	"github.com/Thabhelo/fable/interpreter/internal/books"
 	"github.com/Thabhelo/fable/interpreter/internal/chapters"
+	"github.com/Thabhelo/fable/interpreter/internal/guard"
 	"github.com/Thabhelo/fable/interpreter/internal/llm"
 	"github.com/Thabhelo/fable/interpreter/internal/mock"
 	"github.com/Thabhelo/fable/interpreter/internal/rooms"
@@ -143,12 +144,17 @@ func main() {
 		blender := fs.String("blender", "/Applications/Blender.app/Contents/MacOS/Blender", "Blender binary for chapter-experience renders")
 		roomReview := fs.Int("room-review", 2, "rounds of looking at each generated room and improving it (0: none)")
 		roomKeep := fs.Bool("room-keep-work", false, "keep every attempt and review round of each generated room (for comparing)")
+		public := fs.Bool("public", false, "running on a public server behind the proxy: limit each client's request rate (docs/BACKEND.md)")
+		dailyCalls := fs.Int("daily-claude-calls", 0, "cap Claude calls per UTC day (0: no cap)")
+		sandbox := fs.Bool("sandbox", false, "run room builds inside bubblewrap (Linux servers; docs/BACKEND.md)")
+		booksPerClient := fs.Int("rooms-books-per-client", 0, "uploaded books one client may have in progress (0: no limit)")
 		fs.Parse(os.Args[2:])
 		bk, err := book.Load(filepath.Join(root, "book", "passages.json"))
 		if err != nil {
 			log.Fatal(err)
 		}
 		dir := llm.New(*model)
+		dir.MaxCallsPerDay = *dailyCalls
 		srv := server.New(root, bk, dir)
 		srv.DefaultWait = *wait
 		srv.Model = dir.Model()
@@ -180,12 +186,17 @@ func main() {
 			if os.Getenv("ANTHROPIC_API_KEY") != "" {
 				planner = dir
 			}
-			rs := rooms.NewService(root, planner, rooms.RoomgenBuilder(*blender))
-			rs.Review, rs.KeepWork = *roomReview, *roomKeep
+			rs := rooms.NewService(root, planner, rooms.RoomgenBuilder(*blender, *sandbox))
+			rs.Review, rs.KeepWork, rs.PerClient = *roomReview, *roomKeep, *booksPerClient
 			srv.Rooms = rs
 			go rs.Run(context.Background())
 		}
-		hs := &http.Server{Addr: *addr, Handler: srv.Handler(), ReadHeaderTimeout: 10 * time.Second, ReadTimeout: 30 * time.Second, WriteTimeout: 3 * time.Minute, IdleTimeout: 2 * time.Minute}
+		handler := srv.Handler()
+		if *public {
+			handler = guard.NewLimiter(guard.Defaults).Middleware(handler)
+			log.Printf("public mode: per-client rate limits on; Claude calls capped at %d a day", *dailyCalls)
+		}
+		hs := &http.Server{Addr: *addr, Handler: handler, ReadHeaderTimeout: 10 * time.Second, ReadTimeout: 30 * time.Second, WriteTimeout: 3 * time.Minute, IdleTimeout: 2 * time.Minute}
 		go func() {
 			sig := make(chan os.Signal, 1)
 			signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
