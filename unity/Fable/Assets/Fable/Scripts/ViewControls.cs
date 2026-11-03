@@ -45,7 +45,7 @@ namespace Fable
         public string HoveredLabel => hovered >= 0 && hovered < buttons.Count ? buttons[hovered].Label : null;
         public bool Docked { get; private set; }
 
-        class Button { public string Label; public Action Act; public RectTransform Rt; public Image Bg; public TMP_Text Text; public float Flash; }
+        class Button { public string Label; public Action Act; public RectTransform Rt; public Image Bg; public TMP_Text Text; public float Flash, Width; }
         readonly List<Button> buttons = new();
         RectTransform bar, tipRt; TMP_Text tip; float tipUntil; Canvas canvas;
         LineRenderer line; Image cursor; Material lineMat;
@@ -54,7 +54,15 @@ namespace Fable
         string extrasKey = "";
         Vector3 floatPos; Quaternion floatRot; bool floatInit;
         float netTurn;   // degrees turned since the last recentre: the bar floats with the reader until they face the page again
-        const float Px = 0.001f, ButtonH = 66f, Pad = 10f;
+        const float Px = 0.001f, ButtonH = 48f, Pad = 6f;
+        /// Laid out as a column beside the page (when the table leaves no room under it) rather than a row under it.
+        bool column;
+        /// The bar's size on the page: never wider than the page (row) or taller than half of it (column).
+        float scale = Px;
+
+        /// True while something the reader is looking at sits where the bar would be (a Peek card and model, the
+        /// highlight menu): the bar hides until it is closed.
+        public Func<bool> Quiet;
 
         void Awake() { Instance = this; }
         void OnDestroy() { if (Instance == this) Instance = null; if (Input) Input.Claimers.Remove(Claim); }
@@ -105,7 +113,7 @@ namespace Fable
             return Describe();
         }
 
-        public string Describe() => $"view bar [{string.Join(" | ", buttons.ConvertAll(b => b.Label))}] docked={Docked} hovered={HoveredLabel ?? "-"} turn={TurnDegrees:F0}";
+        public string Describe() => $"view bar [{string.Join(" | ", buttons.ConvertAll(b => b.Label))}] docked={Docked} {(column ? "column" : "row")} width={bar.sizeDelta.x * scale:F2}m shown={bar.gameObject.activeSelf} hovered={HoveredLabel ?? "-"} turn={TurnDegrees:F0}";
 
         /// A short contextual hint above the bar, shown once per install for each key (and for `seconds`).
         public void Tip(string key, string text, float seconds = 8f)
@@ -177,7 +185,7 @@ namespace Fable
             go.transform.SetParent(transform, false);
             canvas = go.AddComponent<Canvas>(); canvas.renderMode = RenderMode.WorldSpace; canvas.sortingOrder = 5;
             bar = (RectTransform)go.transform; bar.localScale = Vector3.one * Px; bar.sizeDelta = new Vector2(400, ButtonH + 2 * Pad);
-            var bg = go.AddComponent<Image>(); bg.color = new Color(0.16f, 0.12f, 0.09f, 0.55f); bg.raycastTarget = false;
+            var bg = go.AddComponent<Image>(); bg.color = new Color(0.16f, 0.12f, 0.09f, 0.35f); bg.raycastTarget = false;
 
             // the hint hangs under the bar on a paper card (above it would cover the page's foot)
             var tipBg = new GameObject("Tip", typeof(RectTransform), typeof(Image)); tipRt = (RectTransform)tipBg.transform; tipRt.SetParent(bar, false);
@@ -204,14 +212,30 @@ namespace Fable
             foreach (var b in buttons) if (b.Rt) Destroy(b.Rt.gameObject);
             buttons.Clear();
             foreach (var (label, act) in extras) Add(label, act, 0);
-            Add("‹ turn", () => Turn(-1), 136);
-            Add("recentre", Recentre, 150);
-            Add("turn ›", () => Turn(+1), 136);
-            // lay out left to right
-            float x = Pad;
-            foreach (var b in buttons) { b.Rt.anchoredPosition = new Vector2(x, 0); x += b.Rt.sizeDelta.x + Pad; }
-            bar.sizeDelta = new Vector2(x, ButtonH + 2 * Pad);
-            foreach (var b in buttons) b.Rt.anchoredPosition -= new Vector2(x / 2, 0);
+            Add("‹ turn", () => Turn(-1), 92);
+            Add("recentre", Recentre, 112);
+            Add("turn ›", () => Turn(+1), 92);
+            Layout();
+        }
+
+        /// A row (left to right, under the page) or a column (top to bottom, beside it).
+        void Layout()
+        {
+            if (!column)
+            {
+                float x = Pad;
+                foreach (var b in buttons) { b.Rt.pivot = new Vector2(0, 0.5f); b.Rt.sizeDelta = new Vector2(b.Width, ButtonH); b.Rt.anchoredPosition = new Vector2(x, 0); x += b.Width + Pad; }
+                bar.sizeDelta = new Vector2(x, ButtonH + 2 * Pad);
+                foreach (var b in buttons) b.Rt.anchoredPosition -= new Vector2(x / 2, 0);
+            }
+            else
+            {
+                float w = 0; foreach (var b in buttons) w = Mathf.Max(w, b.Width);
+                float y = -Pad;
+                foreach (var b in buttons) { b.Rt.pivot = new Vector2(0.5f, 1); b.Rt.sizeDelta = new Vector2(w, ButtonH); b.Rt.anchoredPosition = new Vector2(0, y); y -= ButtonH + Pad; }
+                bar.sizeDelta = new Vector2(w + 2 * Pad, -y);
+                foreach (var b in buttons) b.Rt.anchoredPosition += new Vector2(0, -y / 2);
+            }
         }
 
         void Add(string label, Action act, float width)
@@ -223,11 +247,11 @@ namespace Fable
             var edge = go.AddComponent<Outline>(); edge.effectColor = Edge; edge.effectDistance = new Vector2(2, -2);
             var t = new GameObject("Label", typeof(RectTransform)).AddComponent<TextMeshProUGUI>(); t.transform.SetParent(rt, false);
             t.rectTransform.anchorMin = Vector2.zero; t.rectTransform.anchorMax = Vector2.one; t.rectTransform.offsetMin = new Vector2(6, 0); t.rectTransform.offsetMax = new Vector2(-6, 0);
-            if (Font) t.font = Font; t.fontSize = 24; t.fontStyle = FontStyles.SmallCaps; t.color = Ink; t.alignment = TextAlignmentOptions.Center; t.textWrappingMode = TextWrappingModes.NoWrap; t.raycastTarget = false;
+            if (Font) t.font = Font; t.fontSize = 19; t.fontStyle = FontStyles.SmallCaps; t.color = Ink; t.alignment = TextAlignmentOptions.Center; t.textWrappingMode = TextWrappingModes.NoWrap; t.raycastTarget = false;
             t.text = label;
-            if (width <= 0) { t.ForceMeshUpdate(); width = Mathf.Max(140, t.preferredWidth + 34); }
+            if (width <= 0) { t.ForceMeshUpdate(); width = Mathf.Max(92, t.preferredWidth + 24); }
             rt.sizeDelta = new Vector2(width, ButtonH);
-            buttons.Add(new Button { Label = label, Act = act, Rt = rt, Bg = img, Text = t });
+            buttons.Add(new Button { Label = label, Act = act, Rt = rt, Bg = img, Text = t, Width = width });
         }
 
         static Sprite Dot()
@@ -255,6 +279,9 @@ namespace Fable
         void LateUpdate()
         {
             if (!bar || !Head) return;
+            bool quiet = Quiet != null && Quiet();
+            if (bar.gameObject.activeSelf == quiet) bar.gameObject.SetActive(!quiet);
+            if (quiet) { hovered = -1; line.enabled = false; return; }
             Place();
             // hover: which button the ray rests on (right hand first)
             hovered = -1; Vector2 at = default; bool on = false;
@@ -290,15 +317,26 @@ namespace Fable
             Vector3 pos; Quaternion rot;
             if (dockOk)
             {
-                var r = Dock.rect;
-                float half = bar.sizeDelta.y * Px * 0.5f;
-                pos = Dock.TransformPoint(new Vector3(r.center.x, r.yMin, 0)) - Dock.up * (DockGapMetres + half) - Dock.forward * 0.005f;
+                var r = Dock.rect; var ps = Dock.lossyScale;
                 rot = Dock.rotation;
-                // over the diorama table the bar would sink into it: it rises to the table top and comes forward, in front of the page's foot
-                if (pos.y - half < MinY) { pos.y = MinY + half + 0.01f; pos -= Dock.forward * 0.2f; }
+                // a row under the page, no wider than it; where the table leaves no room under the page, a column
+                // beside its lower left corner. Never in front of the page: it must not cover the text or a Peek model.
+                SetColumn(false);
+                scale = Mathf.Min(Px, r.width * ps.x / bar.sizeDelta.x);
+                float half = bar.sizeDelta.y * scale * 0.5f;
+                pos = Dock.TransformPoint(new Vector3(r.center.x, r.yMin, 0)) - Dock.up * (DockGapMetres + half) - Dock.forward * 0.005f;
+                if (pos.y - half < MinY)
+                {
+                    SetColumn(true);
+                    scale = Mathf.Min(Px, r.height * ps.y * 0.55f / bar.sizeDelta.y);
+                    float hw = bar.sizeDelta.x * scale * 0.5f; half = bar.sizeDelta.y * scale * 0.5f;
+                    pos = Dock.TransformPoint(new Vector3(r.xMin, r.yMin, 0)) - Dock.right * (DockGapMetres + hw) + Dock.up * half - Dock.forward * 0.005f;
+                    if (pos.y - half < MinY) pos.y = MinY + half + 0.01f;
+                }
             }
             else
             {
+                SetColumn(false); scale = Px;
                 if (!floatInit || Vector3.Angle(fwd, Vector3.ProjectOnPlane(floatPos - Head.position, Vector3.up)) > FollowDeadZone)
                 {
                     floatPos = Head.position + fwd * FloatForward + Vector3.down * FloatDrop;
@@ -313,6 +351,9 @@ namespace Fable
             float k = 1f - Mathf.Exp(-Time.deltaTime * 7f);
             bar.position = Vector3.Lerp(bar.position, pos, k);
             bar.rotation = Quaternion.Slerp(bar.rotation, rot, k);
+            if (!Mathf.Approximately(bar.localScale.x, scale)) bar.localScale = Vector3.one * scale;
         }
+
+        void SetColumn(bool on) { if (column == on) return; column = on; Layout(); }
     }
 }

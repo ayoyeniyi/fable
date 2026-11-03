@@ -278,6 +278,7 @@ namespace Fable
             Handles.Init(Panel, Pointer, Input, Head); Pointer.Handles = Handles;
             View = GetComponent<ViewControls>() ? GetComponent<ViewControls>() : gameObject.AddComponent<ViewControls>();
             View.Init(Input, Head, RigRoot(), (RectTransform)Panel.transform, Panel.Body ? Panel.Body.font : null);
+            View.Quiet = () => Highlight && Highlight.Current is Highlighter.Mode.Card or Highlighter.Mode.Menu;   // Peek and the highlight menu sit where the bar would be
             View.Recentred += () => Panel.Recentre();
             View.Turned += _ => Panel.HoldStill();
             // a book sent from the phone finishing while the reader is in another one: say so on the bar
