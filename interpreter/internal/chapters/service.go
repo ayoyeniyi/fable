@@ -108,9 +108,11 @@ func NewService(root string, cat *Catalog, passages *book.Book, planner Asker, s
 	return s
 }
 
-func (s *Service) dir() string                 { return filepath.Join(s.Root, "out", "chapters") }
-func (s *Service) jobsPath() string            { return filepath.Join(s.dir(), "jobs.json") }
-func (s *Service) pkgDir(chapter string) string { return filepath.Join(s.dir(), strings.ReplaceAll(chapter, ":", "_")) }
+func (s *Service) dir() string      { return filepath.Join(s.Root, "out", "chapters") }
+func (s *Service) jobsPath() string { return filepath.Join(s.dir(), "jobs.json") }
+func (s *Service) pkgDir(chapter string) string {
+	return filepath.Join(s.dir(), strings.ReplaceAll(chapter, ":", "_"))
+}
 
 // load restores the queue: a job that was mid-pipeline when the server stopped goes back to the queue.
 func (s *Service) load() {

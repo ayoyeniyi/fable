@@ -138,6 +138,8 @@ func main() {
 		wait := fs.Duration("wait", 3*time.Second, "how long a request waits for a fresh script before answering 202 (the client may ask for more with waitSeconds)")
 		warm := fs.Bool("warm", false, "generate every scene without a valid cache at startup (needs ANTHROPIC_API_KEY)")
 		blender := fs.String("blender", "/Applications/Blender.app/Contents/MacOS/Blender", "Blender binary for chapter-experience renders")
+		roomReview := fs.Int("room-review", 2, "rounds of looking at each generated room and improving it (0: none)")
+		roomKeep := fs.Bool("room-keep-work", false, "keep every attempt and review round of each generated room (for comparing)")
 		fs.Parse(os.Args[2:])
 		bk, err := book.Load(filepath.Join(root, "book", "passages.json"))
 		if err != nil {
@@ -175,6 +177,7 @@ func main() {
 				planner = dir
 			}
 			rs := rooms.NewService(root, planner, rooms.RoomgenBuilder(*blender))
+			rs.Review, rs.KeepWork = *roomReview, *roomKeep
 			srv.Rooms = rs
 			go rs.Run(context.Background())
 		}

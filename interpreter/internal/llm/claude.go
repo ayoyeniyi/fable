@@ -4,6 +4,7 @@ package llm
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -66,11 +67,35 @@ func (d *Director) Ask(ctx context.Context, system, user string, maxTokens int64
 
 // AskRaw is Ask without fence stripping, reporting why the answer stopped ("end_turn", "max_tokens", ...).
 func (d *Director) AskRaw(ctx context.Context, system, user string, maxTokens int64) (string, string, error) {
+	return d.stream(ctx, system, []anthropic.ContentBlockParamUnion{anthropic.NewTextBlock(user)}, maxTokens)
+}
+
+// Image is a picture shown to Claude with a question (PNG or JPEG bytes).
+type Image struct {
+	Label     string // said just before the picture
+	MediaType string // "image/png" or "image/jpeg"
+	Data      []byte
+}
+
+// AskImagesRaw is AskRaw with pictures: each image follows its label, then the question.
+func (d *Director) AskImagesRaw(ctx context.Context, system, user string, images []Image, maxTokens int64) (string, string, error) {
+	var blocks []anthropic.ContentBlockParamUnion
+	for _, im := range images {
+		if im.Label != "" {
+			blocks = append(blocks, anthropic.NewTextBlock(im.Label))
+		}
+		blocks = append(blocks, anthropic.NewImageBlockBase64(im.MediaType, base64.StdEncoding.EncodeToString(im.Data)))
+	}
+	blocks = append(blocks, anthropic.NewTextBlock(user))
+	return d.stream(ctx, system, blocks, maxTokens)
+}
+
+func (d *Director) stream(ctx context.Context, system string, content []anthropic.ContentBlockParamUnion, maxTokens int64) (string, string, error) {
 	stream := d.client.Messages.NewStreaming(ctx, anthropic.MessageNewParams{
 		Model:     anthropic.Model(d.model),
 		MaxTokens: maxTokens,
 		System:    []anthropic.TextBlockParam{{Text: system}},
-		Messages:  []anthropic.MessageParam{anthropic.NewUserMessage(anthropic.NewTextBlock(user))},
+		Messages:  []anthropic.MessageParam{anthropic.NewUserMessage(content...)},
 	})
 	msg := anthropic.Message{}
 	for stream.Next() {

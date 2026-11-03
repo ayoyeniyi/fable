@@ -28,6 +28,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/Thabhelo/fable/interpreter/internal/llm"
 )
 
 const (
@@ -38,6 +40,7 @@ const (
 	Packaging = "packaging"
 	Done      = "done"
 	Failed    = "failed"
+	Reviewing = "reviewing"
 	Unavail   = "unavailable" // the book's opening offers fewer than three distinct places
 
 	RoomsPerBook = 3
@@ -45,7 +48,7 @@ const (
 
 var StageText = map[string]string{
 	Queued: "waiting its turn", Planning: "choosing the book's places", Scripting: "designing the room",
-	Building: "building and lighting the room", Packaging: "packaging", Done: "built", Failed: "could not be built",
+	Building: "building and lighting the room", Reviewing: "looking the room over and improving it", Packaging: "packaging", Done: "built", Failed: "could not be built",
 	Unavail: "the book's opening has no third place",
 }
 
@@ -112,6 +115,11 @@ type BuildResult struct {
 	Seconds   map[string]float64 `json:"seconds"`
 }
 
+// ImageAsker answers a question about pictures (llm.Director has it): the review looks at the built room.
+type ImageAsker interface {
+	AskImagesRaw(ctx context.Context, system, user string, images []llm.Image, maxTokens int64) (string, string, error)
+}
+
 // Builder runs roomgen on a script into out (a fake in tests).
 type Builder func(ctx context.Context, root, script, out string) (BuildResult, error)
 
@@ -121,7 +129,9 @@ type Service struct {
 	Build      Builder
 	MaxBooks   int
 	Attempts   int
-	OpeningMax int // characters of the opening shown to the planner
+	OpeningMax int  // characters of the opening shown to the planner
+	Review     int  // rounds of looking at the built room and improving it (0: none)
+	KeepWork   bool // keep every attempt's build (for comparing rounds)
 
 	mu   sync.Mutex
 	jobs map[string]*Job
@@ -129,7 +139,7 @@ type Service struct {
 }
 
 func NewService(root string, planner Asker, build Builder) *Service {
-	s := &Service{Root: root, Planner: planner, Build: build, MaxBooks: 20, Attempts: 3, OpeningMax: 90000,
+	s := &Service{Root: root, Planner: planner, Build: build, MaxBooks: 20, Attempts: 3, OpeningMax: 90000, Review: 2,
 		jobs: map[string]*Job{}, wake: make(chan struct{}, 1)}
 	s.load()
 	return s
@@ -296,7 +306,7 @@ func (s *Service) fail(j *Job, state string, err error) {
 }
 
 func (s *Service) runJob(parent context.Context, j *Job) {
-	ctx, cancel := context.WithTimeout(parent, 30*time.Minute)
+	ctx, cancel := context.WithTimeout(parent, 75*time.Minute) // up to three attempts and two review rounds
 	defer cancel()
 	start := time.Now()
 	s.mu.Lock()
@@ -357,6 +367,7 @@ func (s *Service) runJob(parent context.Context, j *Job) {
 		j.Timings[Building] += time.Since(t).Seconds()
 		if err == nil && res.OK {
 			os.WriteFile(filepath.Join(out, "script.py"), []byte(script), 0o644)
+			script, out, res = s.improve(ctx, j, b, st, work, script, out, res)
 			if err := s.pack(j, st, out, res); err != nil {
 				s.fail(j, Failed, fmt.Errorf("packaging: %w", err))
 				return
@@ -364,7 +375,9 @@ func (s *Service) runJob(parent context.Context, j *Job) {
 			j.Timings["total"] = time.Since(start).Seconds()
 			s.set(j, Done)
 			log.Printf("rooms %s: %q built in %.0f s (attempt %d, %d triangles)", j.Key(), st.Title, j.Timings["total"], attempt, res.Triangles)
-			os.RemoveAll(work)
+			if !s.KeepWork {
+				os.RemoveAll(work)
+			}
 			return
 		}
 		if err != nil {
@@ -604,8 +617,10 @@ func (s *Service) pack(j *Job, st Setting, build string, res BuildResult) error 
 		return err
 	}
 	// the script that made the room, kept beside the package for tracing problems (not sent to the headset)
-	if data, err := os.ReadFile(filepath.Join(build, "script.py")); err == nil {
-		os.WriteFile(filepath.Join(stage, "script.py"), data, 0o644)
+	for _, f := range []string{"script.py", "review.txt"} {
+		if data, err := os.ReadFile(filepath.Join(build, f)); err == nil {
+			os.WriteFile(filepath.Join(stage, f), data, 0o644)
+		}
 	}
 	if total > 40<<20 {
 		return fmt.Errorf("package is %d MB, over 40 MB", total>>20)
@@ -619,6 +634,13 @@ func (s *Service) pack(j *Job, st Setting, build string, res BuildResult) error 
 	}
 	os.RemoveAll(dst)
 	return os.Rename(stage, dst)
+}
+
+func tail(s string, n int) string {
+	if len(s) > n {
+		return s[len(s)-n:]
+	}
+	return s
 }
 
 // RoomgenBuilder runs blender/roomgen.py in a fresh Blender with no user settings or add-ons.
@@ -642,18 +664,26 @@ func RoomgenBuilder(blender string) Builder {
 			if strings.HasPrefix(line, "FABLE_ROOM ") {
 				var r BuildResult
 				if json.Unmarshal([]byte(strings.TrimPrefix(line, "FABLE_ROOM ")), &r) == nil {
+					if r.OK {
+						// the room as the headset draws it (unlit, baked textures), from the reader's eyes: what the
+						// review looks at; a failure here only means no review
+						pv := filepath.Join(out, "preview")
+						os.MkdirAll(pv, 0o755)
+						p := exec.CommandContext(ctx, blender, "-b", "--factory-startup", "-noaudio", "-P", filepath.Join(root, "blender", "preview_room.py"), "--",
+							filepath.Join(out, "room.gltf"), pv+string(filepath.Separator), "--res", "1000")
+						p.Env = cmd.Env
+						if data, err := p.CombinedOutput(); err != nil {
+							log.Printf("rooms: preview of %s failed: %v %s", out, err, tail(string(data), 300))
+						}
+					}
 					return r, nil
 				}
 			}
 		}
-		tail := string(data)
-		if len(tail) > 600 {
-			tail = tail[len(tail)-600:]
-		}
 		if err == nil {
 			err = errors.New("no result line")
 		}
-		return BuildResult{}, fmt.Errorf("Blender failed: %v: %s", err, tail)
+		return BuildResult{}, fmt.Errorf("Blender failed: %v: %s", err, tail(string(data), 600))
 	}
 }
 
