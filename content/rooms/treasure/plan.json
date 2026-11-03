@@ -1,0 +1,45 @@
+[
+  {
+    "title": "The cove below the Admiral Benbow",
+    "place": "A small, lonely English cove in the 18th century. The reader stands on a stony beach. Grey hoarfrost lies over the shingle, and a faint ripple laps softly at the stones. High cliffs and a headland rise around the cove, and a big rock stands at the turn of the beach. Behind, up the slope, sits the old inn, the Admiral Benbow, with its painted signboard and the coast road running past. The sun sits low: it touches only the hilltops and shines far out to sea. The water in front is quiet and silvery, with no ship in sight.",
+    "why": "The captain's daily haunt, a cold, still shore at the very start of the story, where the opening is spent watching the sea.",
+    "chapter": "treasure:c02",
+    "kind": "exterior",
+    "time": "early morning, just after sunrise",
+    "weather": "frosty, clear and still",
+    "excerpts": [
+      "the cove all gray with hoarfrost, the ripple lapping softly on the stones, the sun still low, and only touching the hilltops and shining far to seaward.",
+      "All day he hung round the cove, or upon the cliffs, with a brass telescope",
+      "still looking about him at the cliffs and up at our signboard.",
+      "as he turned the big rock"
+    ]
+  },
+  {
+    "title": "The squire's library at the Hall",
+    "place": "A great library in a Georgian country house. Bookcases line every wall from floor to high ceiling, with marble busts set along their tops. A bright fire burns in the grate, with a chair on either side. A table stands near the hearth, and a small side-table sits nearby. Through the windows lies a long, leafless avenue lit by the moon, and the pale line of the Hall's buildings stretches out over great old gardens. A matted passage leads off to the rest of the house. The room is warm, firelit and hushed.",
+    "why": "The room where the map is first unfolded, a calm, book-filled refuge after the terror at the inn.",
+    "chapter": "treasure:c06",
+    "kind": "interior",
+    "time": "night",
+    "weather": "cold, clear winter night with moonlight",
+    "excerpts": [
+      "a great library, all lined with bookcases and busts upon top of them, where the squire and Doctor Livesey sat, pipe in hand, on either side of a bright fire.",
+      "up the long, leafless, moonlit avenue to where the white line of the Hall buildings looked on either hand on great old gardens.",
+      "The servant led us down a matted passage"
+    ]
+  },
+  {
+    "title": "The Spy-glass tavern, Bristol",
+    "place": "A tidy little dockside tavern in 18th-century Bristol, seen before the day's customers arrive. The large, low room has a cleanly sanded floor, rough tables and benches, and windows hung with neat red curtains. Doors stand open on two sides onto two streets, letting in daylight and the smell of tar and salt from the quays. Outside hangs the freshly painted sign, a large brass telescope. Beyond the doors lie the docks, a forest of masts and the figureheads of ships from far over the ocean.",
+    "why": "A bright, cheerful port-side room that offers a daylight contrast to the frost and firelight of the earlier chapters.",
+    "chapter": "treasure:c08",
+    "kind": "interior",
+    "time": "morning",
+    "weather": "bright, fair",
+    "excerpts": [
+      "It was a bright enough little place of entertainment. The sign was newly painted; the windows had neat red curtains; the floor was cleanly sanded.",
+      "There was a street on each side, and an open door on both, which made the large, low room pretty clear to see in, in spite of clouds of tobacco smoke.",
+      "a little tavern with a large brass telescope for a sign."
+    ]
+  }
+]

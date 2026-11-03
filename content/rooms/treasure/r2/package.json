@@ -1,0 +1,229 @@
+{
+  "book": "treasure",
+  "bytes": 4720148,
+  "chapter": "treasure:c06",
+  "entrance": [
+    0,
+    -1.7999999523162842,
+    0
+  ],
+  "files": [
+    {
+      "path": "room.gltf",
+      "sha256": "b9244c2571e542413d1d43629e73fc8ae116d0d337c34531d887c0809ab87965",
+      "size": 42862
+    },
+    {
+      "path": "room.bin",
+      "sha256": "b262c3a8448dc29044fe5231548836b35367ed5556baa7f6f6839b80cb90fbbe",
+      "size": 3102556
+    },
+    {
+      "path": "textures/T_MESH_bark.jpg",
+      "sha256": "688f7693e34a6774333405c3ff5c3a8c831c2b23feb47496c092c73ddd833c7d",
+      "size": 12923
+    },
+    {
+      "path": "textures/T_MESH_bk_brown.jpg",
+      "sha256": "7b5d091e33520c6233b5a405d8adf815f596f65cbb8f0fae83e31d4ea281dd61",
+      "size": 17653
+    },
+    {
+      "path": "textures/T_MESH_bk_calf.jpg",
+      "sha256": "11461f7d198c24a3bb1accc9a693616e1dcfc07f017bed996ac81141087a563b",
+      "size": 20320
+    },
+    {
+      "path": "textures/T_MESH_bk_green.jpg",
+      "sha256": "6a2df06eb8b320c132a3469cb91ca48f6e2a7e1c3b73823d2aed7816fdfabe50",
+      "size": 18468
+    },
+    {
+      "path": "textures/T_MESH_bk_navy.jpg",
+      "sha256": "26496219003c64a4dbcb3bd9d0d6ffde63997b1e59b830bcd1fc3c7210df2f25",
+      "size": 11982
+    },
+    {
+      "path": "textures/T_MESH_bk_oxblood.jpg",
+      "sha256": "1981919c128b56027347729190457c137d84258b702f91782b242680b320d256",
+      "size": 15154
+    },
+    {
+      "path": "textures/T_MESH_brass.jpg",
+      "sha256": "d87e53f42c3f92107148853297537be6f7e8f4bfb3c331a5d59fd94f8be0862b",
+      "size": 2500
+    },
+    {
+      "path": "textures/T_MESH_candle_flame.jpg",
+      "sha256": "8189b4478a85e7ab90e20d0630fa9408f4d824c40d6bfc55951f23bc18489ba8",
+      "size": 1135
+    },
+    {
+      "path": "textures/T_MESH_canvas.jpg",
+      "sha256": "9b8a1e3184012b395455cd36c636d2900344cea531ba04c5ef0c5438e508c437",
+      "size": 1413
+    },
+    {
+      "path": "textures/T_MESH_canvas_sea.jpg",
+      "sha256": "1f63a9c77b1e4b7ef6c2cee5589c8b83104b39bf5bffbc6154e27dab6426e86c",
+      "size": 1614
+    },
+    {
+      "path": "textures/T_MESH_cast_iron.jpg",
+      "sha256": "74d6cca1ece4fed7399621676af2e95ec44f50949ef9aba656d6ea87dc8cb2f1",
+      "size": 2077
+    },
+    {
+      "path": "textures/T_MESH_ceiling.jpg",
+      "sha256": "74404dbae5fc18213a4c587df3908f504ffe3518d273dc137b9626565bd52784",
+      "size": 11692
+    },
+    {
+      "path": "textures/T_MESH_china.jpg",
+      "sha256": "af4397d3c83671b9ad0a4f3205b9e241f7831f703a55593f02f51863ce1d5d6d",
+      "size": 2609
+    },
+    {
+      "path": "textures/T_MESH_curtain.jpg",
+      "sha256": "36c18a00f3b8cd1e5aedeaa979ce512effb0b07091423e61a449331daddeb657",
+      "size": 3952
+    },
+    {
+      "path": "textures/T_MESH_far_hills.jpg",
+      "sha256": "d0eb81c95903fe7211296d89198cd9515adb0cb1808aa2f32fbb849f37484c06",
+      "size": 78477
+    },
+    {
+      "path": "textures/T_MESH_fire.jpg",
+      "sha256": "490be880d96f23e110167aef141a5869516266662b6ed928788f119e2dab22c9",
+      "size": 1149
+    },
+    {
+      "path": "textures/T_MESH_floor.jpg",
+      "sha256": "ea241517e65519d8eeb4a73c5af4e6fcb4256992fe544972f2aec8f91a686ae3",
+      "size": 11718
+    },
+    {
+      "path": "textures/T_MESH_gilt.jpg",
+      "sha256": "2b0118a26ebb7a0331b13c41a959f7b1e1c790f195ada38eaa600aec9e06b4dc",
+      "size": 5732
+    },
+    {
+      "path": "textures/T_MESH_glass.jpg",
+      "sha256": "0b9772fdc284392bad9abd562e4a3f26fa643696a9484f40b0cde7427f8ec696",
+      "size": 9111
+    },
+    {
+      "path": "textures/T_MESH_globe.jpg",
+      "sha256": "695d1e0072d3ea518e268a81f0ac2c230476224760f499687f6e3248190c33d6",
+      "size": 1707
+    },
+    {
+      "path": "textures/T_MESH_hall_walls.jpg",
+      "sha256": "fb3508cdd48e732b709de4864be0e4bdd688a669cc07ffbfe1a889d3b1e9afed",
+      "size": 144303
+    },
+    {
+      "path": "textures/T_MESH_hearthstone.jpg",
+      "sha256": "3c3ba7fc0147a7331f4efef5afdaf0d7cfb42ce62e09fa0709d9157eb83366ab",
+      "size": 1251
+    },
+    {
+      "path": "textures/T_MESH_house_interior.jpg",
+      "sha256": "70c240307e799edd4cefb3499c9e1e938c7cb34f53d8bdfae01f4a51d33e8904",
+      "size": 66380
+    },
+    {
+      "path": "textures/T_MESH_lawn.jpg",
+      "sha256": "f17d77d201a980ba97b51fde08ba2d8184f036831e576d810675bab7f7de7cf0",
+      "size": 92612
+    },
+    {
+      "path": "textures/T_MESH_leather.jpg",
+      "sha256": "c0605747532ee089f7d1aedf4cbdb23a352445d275e6fccc78fa30631f2ba20f",
+      "size": 1324
+    },
+    {
+      "path": "textures/T_MESH_mahogany.jpg",
+      "sha256": "8794902b69416317821e3af5aae18a2cb9a763e0463b7a8ff6fbbcb1e79d19c1",
+      "size": 43723
+    },
+    {
+      "path": "textures/T_MESH_marble.jpg",
+      "sha256": "46b196703522fc26386e5a5230573dcfd49ba99f778168c5bcf8391c95cfff62",
+      "size": 7554
+    },
+    {
+      "path": "textures/T_MESH_oak.jpg",
+      "sha256": "8faa0f1f676b7d64a5c666b48c205e0c6d007f7e9c139c9ad2f7c422edb92a7b",
+      "size": 53841
+    },
+    {
+      "path": "textures/T_MESH_pages.jpg",
+      "sha256": "e57f14971b5d6b88e34acb808d572483d119e7fd4e2eab8b2ec25d49032b7c83",
+      "size": 2353
+    },
+    {
+      "path": "textures/T_MESH_paint.jpg",
+      "sha256": "d47a60b05f7499beacfa18efb5471b38d96108d67290fc7e66e63a4cbd50f385",
+      "size": 172634
+    },
+    {
+      "path": "textures/T_MESH_paper.jpg",
+      "sha256": "48ac25434e9189dc2914bc113aa68a1b35a7f010d815c3cf1be393f44945d6dd",
+      "size": 1852
+    },
+    {
+      "path": "textures/T_MESH_plaster.jpg",
+      "sha256": "b1b32308bcf0a122a1aa6b57d2b727a8b67b5f61e0262e2cd25107b388733b2f",
+      "size": 76317
+    },
+    {
+      "path": "textures/T_MESH_rug.jpg",
+      "sha256": "979830f8b116867881a0042deb83011bebe3cc3b1b6ecbb44d4c96c7b8ae92c1",
+      "size": 4547
+    },
+    {
+      "path": "textures/T_MESH_rug_border.jpg",
+      "sha256": "e117ac3b82d4f2ca4b750caff409cc0fabcfe65b474bf096bbf3771b905dbb33",
+      "size": 4317
+    },
+    {
+      "path": "textures/T_MESH_slate.jpg",
+      "sha256": "3d1b3208953370c53bab4c45b10f70eccc4cd4d14260d869d353a056fd144e62",
+      "size": 33734
+    },
+    {
+      "path": "textures/T_MESH_velvet.jpg",
+      "sha256": "d854a879a0da612db56c5a149b8cb37ff55da5d34ca9889199059e701a19412d",
+      "size": 5810
+    },
+    {
+      "path": "textures/T_MESH_wax.jpg",
+      "sha256": "79ba6b7fea4e06248394576de24d9bda8f119ae8752778fa473e9135c6d8651a",
+      "size": 2215
+    },
+    {
+      "path": "textures/T_SkyDome.jpg",
+      "sha256": "a0f4b4a5297875c1b0134ae18c7a82ebe2c99de9253a8327b5a05dce8d9ec610",
+      "size": 19575
+    },
+    {
+      "path": "thumb.png",
+      "sha256": "8f3a581b5183aba5a75717cc8c154d9dec2d7a81b09f8a99a789be9a4fe68df7",
+      "size": 609002
+    }
+  ],
+  "look": [
+    0,
+    4,
+    1.5
+  ],
+  "meshes": 38,
+  "place": "A great library in a Georgian country house. Bookcases line every wall from floor to high ceiling, with marble busts set along their tops. A bright fire burns in the grate, with a chair on either side. A table stands near the hearth, and a small side-table sits nearby. Through the windows lies a long, leafless avenue lit by the moon, and the pale line of the Hall's buildings stretches out over great old gardens. A matted passage leads off to the rest of the house. The room is warm, firelit and hushed.",
+  "room": 2,
+  "title": "The squire's library at the Hall",
+  "triangles": 49366,
+  "version": 1,
+  "why": "The room where the map is first unfolded, a calm, book-filled refuge after the terror at the inn."
+}

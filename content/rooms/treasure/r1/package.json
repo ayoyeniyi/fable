@@ -1,0 +1,154 @@
+{
+  "book": "treasure",
+  "bytes": 4126265,
+  "chapter": "treasure:c02",
+  "entrance": [
+    0,
+    0,
+    0.44999998807907104
+  ],
+  "files": [
+    {
+      "path": "room.gltf",
+      "sha256": "393fc0aedad1d0b89fba3e71c0afefb3305ee578741fb124679d1de0f4919fbb",
+      "size": 25999
+    },
+    {
+      "path": "room.bin",
+      "sha256": "553bbc5ba881639c14b8f769eb4237f9b264ce04c4c54f795ebdf8ed3de4220b",
+      "size": 2297480
+    },
+    {
+      "path": "textures/T_MESH_bark.jpg",
+      "sha256": "dcf96ce8d74c5c5b5faebab268b5d7c3adc27daed732626acefa095de39033fd",
+      "size": 3561
+    },
+    {
+      "path": "textures/T_MESH_cliff.jpg",
+      "sha256": "9d9d92ef75aeb70c813e6809ad244d2f2f8ac61cd543aefbfade811382a5279d",
+      "size": 201919
+    },
+    {
+      "path": "textures/T_MESH_cliff2.jpg",
+      "sha256": "970d21da3ffeb1c3e6ec5164d93f4dc227403413fec503467f308791af7cdd6c",
+      "size": 195807
+    },
+    {
+      "path": "textures/T_MESH_far_hills.jpg",
+      "sha256": "b1853171fd0dac3557be079f6333927ca01b17cc3b8dea045e2cc0aed1e2da30",
+      "size": 107730
+    },
+    {
+      "path": "textures/T_MESH_frostgrass.jpg",
+      "sha256": "e861c31860beeeae5ecb8f572674906425c737320124c5ab7338069c08d08f80",
+      "size": 832
+    },
+    {
+      "path": "textures/T_MESH_glass.jpg",
+      "sha256": "80570083f013f620599e1f4fa6ad719c04e943b9f46e79ca0a6ad5971a4206fe",
+      "size": 10204
+    },
+    {
+      "path": "textures/T_MESH_gorse_sprays.jpg",
+      "sha256": "649c386600720fce013eea265e7a5360f47dbf615c1893f6468ae86627da47c1",
+      "size": 831
+    },
+    {
+      "path": "textures/T_MESH_gorse.jpg",
+      "sha256": "492b7c1161e50bb15d615d59b9c868c247b9438e657e18b3bfdcf8755b9bb4ff",
+      "size": 37976
+    },
+    {
+      "path": "textures/T_MESH_house_interior.jpg",
+      "sha256": "0840f419d8b45c59f38eafbf916c0f62b707d9a5afe008ea3b485151e8272a14",
+      "size": 4907
+    },
+    {
+      "path": "textures/T_MESH_hull.jpg",
+      "sha256": "a97d80db9ef950fdde314dca6dc4849ef11f591a707b1c47a4780ff5d80d7adb",
+      "size": 1408
+    },
+    {
+      "path": "textures/T_MESH_innwalls.jpg",
+      "sha256": "905f5723eb2428b93cddf758dec7cb54bc11452520b5b10c414eb44c84dc4c2b",
+      "size": 68081
+    },
+    {
+      "path": "textures/T_MESH_oar.jpg",
+      "sha256": "4be3c668357e054780203841d0499d3758e1ceaa5ecc3b6d822e893a01934113",
+      "size": 2201
+    },
+    {
+      "path": "textures/T_MESH_pebble.jpg",
+      "sha256": "7a5f26e5407f384f2f9146f26c6461eaeb12bd2656a03486ee3e53db71112bb3",
+      "size": 11294
+    },
+    {
+      "path": "textures/T_MESH_pebble2.jpg",
+      "sha256": "76ea2c97b848a93c6b8eef6a780a72045a0622426771f0c30e0e5c7ca653b284",
+      "size": 17671
+    },
+    {
+      "path": "textures/T_MESH_road.jpg",
+      "sha256": "496417494bbc3e3b4d3771f01b4a087cd2d81bcf160f39b12f3f8be43a0dd0f6",
+      "size": 8341
+    },
+    {
+      "path": "textures/T_MESH_sea.jpg",
+      "sha256": "3aa77b234772d5c49e7017bc5072265f98c8d523d3f37fc7825654a68b9e698e",
+      "size": 85924
+    },
+    {
+      "path": "textures/T_MESH_shingle.jpg",
+      "sha256": "2c49a89ea814610f2a4d1d71dd9b5ca42746674ea336d7d6adcba40849e7e378",
+      "size": 115553
+    },
+    {
+      "path": "textures/T_MESH_signpaint.jpg",
+      "sha256": "1736b402888423ff5475dbc5d7fb7df99aca6c64484bd041c1098275f3417e91",
+      "size": 1149
+    },
+    {
+      "path": "textures/T_MESH_slate.jpg",
+      "sha256": "e0a8e704995d4acd72fb6b921f77a5aafeab80b68cc92068d0161a0e7d54b785",
+      "size": 12143
+    },
+    {
+      "path": "textures/T_MESH_trim.jpg",
+      "sha256": "1d0a0ddd4065c505e70bc21f6c0f5414029f19454192afffbbd1c3a52d242617",
+      "size": 144019
+    },
+    {
+      "path": "textures/T_MESH_turf.jpg",
+      "sha256": "37a87a0c4f628d817cbbd342d451be0c6e94af8c2027a18b72bbc6059c5d3ddb",
+      "size": 113966
+    },
+    {
+      "path": "textures/T_MESH_weed.jpg",
+      "sha256": "efa6d65071a40cfc150d45aecac30f76490c14760f381855830a507ebbaffa7f",
+      "size": 829
+    },
+    {
+      "path": "textures/T_SkyDome.jpg",
+      "sha256": "d1fd50cccd4f52fef875e81fadd230444ca89a7ed2c635502c70b8db9014b414",
+      "size": 46005
+    },
+    {
+      "path": "thumb.png",
+      "sha256": "4ea50838d520a1ff8020375e6ec4dfed48f1385271a7121889908f835fd6c86d",
+      "size": 610435
+    }
+  ],
+  "look": [
+    0,
+    20,
+    1.2999999523162842
+  ],
+  "meshes": 23,
+  "place": "A small, lonely English cove in the 18th century. The reader stands on a stony beach. Grey hoarfrost lies over the shingle, and a faint ripple laps softly at the stones. High cliffs and a headland rise around the cove, and a big rock stands at the turn of the beach. Behind, up the slope, sits the old inn, the Admiral Benbow, with its painted signboard and the coast road running past. The sun sits low: it touches only the hilltops and shines far out to sea. The water in front is quiet and silvery, with no ship in sight.",
+  "room": 1,
+  "title": "The cove below the Admiral Benbow",
+  "triangles": 57948,
+  "version": 1,
+  "why": "The captain's daily haunt, a cold, still shore at the very start of the story, where the opening is spent watching the sea."
+}

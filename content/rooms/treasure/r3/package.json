@@ -1,0 +1,244 @@
+{
+  "book": "treasure",
+  "bytes": 4678543,
+  "chapter": "treasure:c08",
+  "entrance": [
+    0,
+    -2,
+    0
+  ],
+  "files": [
+    {
+      "path": "room.gltf",
+      "sha256": "851d01fc29eb7f74b6b05dd7106494e9e5ec313c42d128cdac8331cf1db454b3",
+      "size": 46732
+    },
+    {
+      "path": "room.bin",
+      "sha256": "050aab7fc9145bf8b155c0cc393de51514a4e31b02a46105a1de435dcbfd5b5d",
+      "size": 2478720
+    },
+    {
+      "path": "textures/T_MESH_beam.jpg",
+      "sha256": "b655339edc1bc4544c0aaa820489a540f873d7b239d97c3f62f4ee3092adc602",
+      "size": 10296
+    },
+    {
+      "path": "textures/T_MESH_bottle.jpg",
+      "sha256": "1a1d79e75e29ec50664f515930da7d70b43d7c351d55cea79b043921332bf8ae",
+      "size": 1906
+    },
+    {
+      "path": "textures/T_MESH_brass.jpg",
+      "sha256": "062e32b4e97f002f07fcc2f6c11cbd44d6c5945f6a2069267238f9ba23093c5a",
+      "size": 2131
+    },
+    {
+      "path": "textures/T_MESH_canvas.jpg",
+      "sha256": "8dc611ac6829eea01b5ee6cdfdc1b63ad9d29e5fb6b63bbdf0cbf23ecf348dd5",
+      "size": 1371
+    },
+    {
+      "path": "textures/T_MESH_cask.jpg",
+      "sha256": "70b1709224b85d21e8385d2614130ade392af178cd331709c752320f59724ee6",
+      "size": 13598
+    },
+    {
+      "path": "textures/T_MESH_cast_iron.jpg",
+      "sha256": "3a9c24d92a866760203cf790c6c0b28c32d4234b17aa01fc9637346006220d3a",
+      "size": 945
+    },
+    {
+      "path": "textures/T_MESH_ceiling.jpg",
+      "sha256": "6f025e2661df4547476922089ccace207c7a306502974107911cd1cdd5601103",
+      "size": 17351
+    },
+    {
+      "path": "textures/T_MESH_china.jpg",
+      "sha256": "bc1e3d4af912db2d070126499e6aa9cdc9b8a58aaca192fe9d16f756583425e9",
+      "size": 2334
+    },
+    {
+      "path": "textures/T_MESH_coat.jpg",
+      "sha256": "9bf1426234fabd82ba336d27566e7912f691d53cffcda4033932422b5e308276",
+      "size": 1443
+    },
+    {
+      "path": "textures/T_MESH_cobbles.jpg",
+      "sha256": "dbd60d3ea1e39fed4e9a02b48efcd8d07e8745d6fca90ca9b2a2105746c7dbb1",
+      "size": 119713
+    },
+    {
+      "path": "textures/T_MESH_curtain.jpg",
+      "sha256": "b102b1e11a1102c2e399f11a73f7e9b405379b2b79861ebfeb338bb218c6a026",
+      "size": 3434
+    },
+    {
+      "path": "textures/T_MESH_doorleaf.jpg",
+      "sha256": "bc772a4d60d6098b5305b01b59625b396160585d189e78a0da63d6f06e8bbc94",
+      "size": 5527
+    },
+    {
+      "path": "textures/T_MESH_floor.jpg",
+      "sha256": "7c7b990a95742e4fce11cd2b04f9e2c1be3b5c366dd9567e97ba0ddfb56c82a4",
+      "size": 16399
+    },
+    {
+      "path": "textures/T_MESH_framepaint.jpg",
+      "sha256": "f50d307d99798ad045085c6d1abc02819f6ffdfccc165fa1b0ecba0acf9dda4e",
+      "size": 408210
+    },
+    {
+      "path": "textures/T_MESH_gilt.jpg",
+      "sha256": "306a24f90bf5a651d651e193c0c8dffeb10eb4a0edf9ebc742cdee7279c2f58d",
+      "size": 2208
+    },
+    {
+      "path": "textures/T_MESH_glass.jpg",
+      "sha256": "8189086c5a0f057d7a87adcee8cfba9f4b5cc0f51d205a67b0fbc5c7c2aae73b",
+      "size": 73217
+    },
+    {
+      "path": "textures/T_MESH_harbour.jpg",
+      "sha256": "b4c947a90f3bf85c8be6ccc35c2947f221a4b1eaee358d20ea4f9ede31b07945",
+      "size": 80924
+    },
+    {
+      "path": "textures/T_MESH_house_interior.jpg",
+      "sha256": "091b8f723f3b75a470f29d99bc1a59c0559eb73841dfdb6be01316bfe0796bde",
+      "size": 28224
+    },
+    {
+      "path": "textures/T_MESH_housewall.jpg",
+      "sha256": "e32837e266b99b36a8c8d5d364d8c89c04b6d3251a3bdd83cd8cdf8c4159c968",
+      "size": 263058
+    },
+    {
+      "path": "textures/T_MESH_hull.jpg",
+      "sha256": "03b8920af842c29fb531c5aea904aa86e8bb2cd59af5900b9c6e3370a16ac5c5",
+      "size": 55132
+    },
+    {
+      "path": "textures/T_MESH_hullband.jpg",
+      "sha256": "bb4d348cb0d9f329d0d59aaf15676a76cd744df3f957baf655b893c57e0c9ef2",
+      "size": 43871
+    },
+    {
+      "path": "textures/T_MESH_iron.jpg",
+      "sha256": "f39ef2f5c695080a115166453afe546bfbf59240985a1275fa3c717c806f8371",
+      "size": 2593
+    },
+    {
+      "path": "textures/T_MESH_lanternglow.jpg",
+      "sha256": "3b75311a4e73c166041d790f9502da744ae2a719141e67fcbf992355c98db005",
+      "size": 940
+    },
+    {
+      "path": "textures/T_MESH_leather.jpg",
+      "sha256": "821575a2d6457a27d6dcd0baf39512fc0399440a5efc880f0bc08245423e0114",
+      "size": 3361
+    },
+    {
+      "path": "textures/T_MESH_mast.jpg",
+      "sha256": "8b8b52b9f8b084fbb53ce09d0473434e1ae515d65f9a2939367ddc081ab3ce66",
+      "size": 48148
+    },
+    {
+      "path": "textures/T_MESH_pages.jpg",
+      "sha256": "93156709463abfd31b84c9c618f4ca94a8019b151bda40f90bd103b9c7af48af",
+      "size": 2133
+    },
+    {
+      "path": "textures/T_MESH_panel.jpg",
+      "sha256": "383d6ea71a82b1722b8214bf62ffa1ed74ba8f0308527d31fa2b14969a13b178",
+      "size": 24974
+    },
+    {
+      "path": "textures/T_MESH_paper.jpg",
+      "sha256": "56319ddf1e09592ce1e4bf41f91656115f9a195ea11664deede32c76639983a7",
+      "size": 1941
+    },
+    {
+      "path": "textures/T_MESH_pewter.jpg",
+      "sha256": "68558950116e3b83a28a947d68ab49a10634a5debeb456e4c8df61e285c73adc",
+      "size": 2417
+    },
+    {
+      "path": "textures/T_MESH_pewterdark.jpg",
+      "sha256": "df63b4eaf9892f60b930afc3f09f2c0e759da9770905b22bfd5cc897c228c1d5",
+      "size": 1050
+    },
+    {
+      "path": "textures/T_MESH_plaster.jpg",
+      "sha256": "903124a77a28ccfbee6f650498b34a222788a0929e8b71797703ac27e69f5d27",
+      "size": 55375
+    },
+    {
+      "path": "textures/T_MESH_rope.jpg",
+      "sha256": "0acb314aa767f297a68134317f3fce5005d77e55c095719ba1b24425a525eed6",
+      "size": 1619
+    },
+    {
+      "path": "textures/T_MESH_rug.jpg",
+      "sha256": "a3874d1efc04e24652682a383f92741a00a9d6b5ae968da95df56271e728a8d0",
+      "size": 1147
+    },
+    {
+      "path": "textures/T_MESH_rugborder.jpg",
+      "sha256": "1dbab6d5d50b62b77a1beaca7c0a5c74233d1cac7233dfd05cfe609412ddf357",
+      "size": 1178
+    },
+    {
+      "path": "textures/T_MESH_seam.jpg",
+      "sha256": "6007aacbd2608341a5bd2c5e04921b77510dbe1cd4b170a7baad38b489d96c81",
+      "size": 1732
+    },
+    {
+      "path": "textures/T_MESH_seascape.jpg",
+      "sha256": "e8391d441c02647a84b5df5574e2988c84a7798a45a4b62796f5bbaaa8fc699d",
+      "size": 1268
+    },
+    {
+      "path": "textures/T_MESH_slate.jpg",
+      "sha256": "03451ad48c219e99b060bae57005ed8ad99cfffb718fc724cd97aa7a65b2037d",
+      "size": 68285
+    },
+    {
+      "path": "textures/T_MESH_stone.jpg",
+      "sha256": "77ed454c573a5184518c121311b6c10c95994c860568560096323495e2d5fa59",
+      "size": 8435
+    },
+    {
+      "path": "textures/T_MESH_tablewood.jpg",
+      "sha256": "44ee29971eaac82fc6caad1dabb014d26b34313d93adeb4a4a2901586b5f27f4",
+      "size": 12793
+    },
+    {
+      "path": "textures/T_MESH_wax.jpg",
+      "sha256": "5fe0d006766a0bec159128585c2ae83f89d2415bb6b99ce9c1845cc2b1830ebc",
+      "size": 1902
+    },
+    {
+      "path": "textures/T_SkyDome.jpg",
+      "sha256": "05f95c3b3ef07af1d1c338bbfb44e5c723ad640a69ba7817fe459eeafb0621cb",
+      "size": 47008
+    },
+    {
+      "path": "thumb.png",
+      "sha256": "723fda46fc387fbfc826f384ceb649add3484660ba1c61699c021cca891304b2",
+      "size": 713500
+    }
+  ],
+  "look": [
+    0,
+    4,
+    1.4500000476837158
+  ],
+  "meshes": 41,
+  "place": "A tidy little dockside tavern in 18th-century Bristol, seen before the day's customers arrive. The large, low room has a cleanly sanded floor, rough tables and benches, and windows hung with neat red curtains. Doors stand open on two sides onto two streets, letting in daylight and the smell of tar and salt from the quays. Outside hangs the freshly painted sign, a large brass telescope. Beyond the doors lie the docks, a forest of masts and the figureheads of ships from far over the ocean.",
+  "room": 3,
+  "title": "The Spy-glass tavern, Bristol",
+  "triangles": 44033,
+  "version": 1,
+  "why": "A bright, cheerful port-side room that offers a daylight contrast to the frost and firelight of the earlier chapters."
+}
