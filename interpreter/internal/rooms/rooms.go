@@ -75,14 +75,15 @@ type Setting struct {
 }
 
 type Job struct {
-	Book     string             `json:"book"`
-	Room     int                `json:"room"`
-	State    string             `json:"state"`
-	Error    string             `json:"error,omitempty"`
-	Title    string             `json:"title,omitempty"`
-	Attempts int                `json:"attempts"`
-	Queued   time.Time          `json:"queued"`
-	Timings  map[string]float64 `json:"timings"`
+	Book      string             `json:"book"`
+	Room      int                `json:"room"`
+	State     string             `json:"state"`
+	Error     string             `json:"error,omitempty"`
+	Title     string             `json:"title,omitempty"`
+	Attempts  int                `json:"attempts"`
+	Queued    time.Time          `json:"queued"`
+	NotBefore time.Time          `json:"notBefore,omitempty"` // after a passing network failure: try again then
+	Timings   map[string]float64 `json:"timings"`
 }
 
 func (j *Job) Key() string { return fmt.Sprintf("%s:r%d", j.Book, j.Room) }
@@ -92,6 +93,11 @@ func (j *Job) Active() bool {
 
 type Asker interface {
 	Ask(ctx context.Context, system, user string, maxTokens int64) (string, error)
+}
+
+// RawAsker streams a long answer without touching it and says why it stopped (llm.Director has it).
+type RawAsker interface {
+	AskRaw(ctx context.Context, system, user string, maxTokens int64) (string, string, error)
 }
 
 // BuildResult is roomgen's FABLE_ROOM line.
@@ -232,7 +238,7 @@ func (s *Service) next() *Job {
 	defer s.mu.Unlock()
 	var best *Job
 	for _, j := range s.jobs {
-		if j.State == Queued && (best == nil || j.Queued.Before(best.Queued) || (j.Queued.Equal(best.Queued) && j.Room < best.Room)) {
+		if j.State == Queued && time.Now().After(j.NotBefore) && (best == nil || j.Queued.Before(best.Queued) || (j.Queued.Equal(best.Queued) && j.Room < best.Room)) {
 			best = j
 		}
 	}
@@ -262,7 +268,26 @@ func (s *Service) set(j *Job, state string) {
 	s.mu.Unlock()
 }
 
+// transient: the network or the API, not the room. The job waits a minute and runs again.
+func transient(err error) bool {
+	m := strings.ToLower(err.Error())
+	for _, k := range []string{"dial tcp", "no route to host", "connection reset", "timeout", "eof", "529", "overloaded", "503", "502", "500 internal", "rate limit", "429"} {
+		if strings.Contains(m, k) {
+			return true
+		}
+	}
+	return false
+}
+
 func (s *Service) fail(j *Job, state string, err error) {
+	if state == Failed && transient(err) {
+		s.mu.Lock()
+		j.State, j.Error, j.NotBefore = Queued, "waiting to retry: "+err.Error(), time.Now().Add(time.Minute)
+		s.saveLocked()
+		s.mu.Unlock()
+		log.Printf("rooms %s: will retry in a minute: %v", j.Key(), err)
+		return
+	}
 	s.mu.Lock()
 	j.State, j.Error = state, err.Error()
 	s.saveLocked()
@@ -311,8 +336,14 @@ func (s *Service) runJob(parent context.Context, j *Job) {
 	for attempt := 1; attempt <= s.Attempts; attempt++ {
 		t = time.Now()
 		s.set(j, Scripting)
-		script, err = s.writeScript(ctx, b, st, script, problems)
+		script, err = s.writeScript(ctx, b, st, script, problems, filepath.Join(work, fmt.Sprintf("answer-%d.txt", attempt)))
 		j.Timings[Scripting] += time.Since(t).Seconds()
+		if errors.Is(err, errCutOff) {
+			problems = "your previous answer was cut off at the length limit before the script ended: write a shorter script (well under 400 lines; use loops and the kit's helpers rather than listing every object)"
+			log.Printf("rooms %s: attempt %d cut off at the length limit", j.Key(), attempt)
+			script = ""
+			continue
+		}
 		if err != nil {
 			s.fail(j, Failed, fmt.Errorf("scripting: %w", err))
 			return
@@ -325,6 +356,7 @@ func (s *Service) runJob(parent context.Context, j *Job) {
 		res, err = s.Build(ctx, s.Root, sp, out)
 		j.Timings[Building] += time.Since(t).Seconds()
 		if err == nil && res.OK {
+			os.WriteFile(filepath.Join(out, "script.py"), []byte(script), 0o644)
 			if err := s.pack(j, st, out, res); err != nil {
 				s.fail(j, Failed, fmt.Errorf("packaging: %w", err))
 				return
@@ -439,7 +471,7 @@ func jsonPart(s string) string {
 
 var codeRe = regexp.MustCompile("(?s)```(?:python)?\\s*\\n(.*?)```")
 
-func (s *Service) writeScript(ctx context.Context, b *Book, st Setting, previous, problems string) (string, error) {
+func (s *Service) writeScript(ctx context.Context, b *Book, st Setting, previous, problems, keep string) (string, error) {
 	sys, err := s.scriptSystem()
 	if err != nil {
 		return "", err
@@ -449,14 +481,37 @@ func (s *Service) writeScript(ctx context.Context, b *Book, st Setting, previous
 	if previous != "" {
 		user += "\n\nYour previous script was rejected by the checks:\n" + problems + "\n\nPREVIOUS SCRIPT:\n```python\n" + previous + "\n```\nWrite the corrected complete script."
 	}
-	ans, err := s.Planner.Ask(ctx, sys, user, 16000)
+	var ans, stop string
+	if ra, ok := s.Planner.(RawAsker); ok {
+		ans, stop, err = ra.AskRaw(ctx, sys, user, 32000)
+	} else {
+		ans, err = s.Planner.Ask(ctx, sys, user, 16000)
+	}
 	if err != nil {
 		return "", err
 	}
-	if m := codeRe.FindStringSubmatch(ans); m != nil {
-		return m[1], nil
+	os.WriteFile(keep, []byte(fmt.Sprintf("stop_reason: %s\n\n%s", stop, ans)), 0o644)
+	if stop == "max_tokens" {
+		return "", errCutOff
 	}
-	return ans, nil
+	return ExtractCode(ans), nil
+}
+
+var errCutOff = errors.New("the answer was cut off at the length limit")
+
+// ExtractCode takes the python block from an answer: the first fenced block, or everything after an opening fence
+// that was never closed, or the whole answer when it has no fence.
+func ExtractCode(ans string) string {
+	if m := codeRe.FindStringSubmatch(ans); m != nil {
+		return m[1]
+	}
+	if i := strings.Index(ans, "```"); i >= 0 {
+		rest := ans[i+3:]
+		if nl := strings.Index(rest, "\n"); nl >= 0 {
+			return rest[nl+1:]
+		}
+	}
+	return ans
 }
 
 // scriptSystem: the builder's instructions with the kit's API, read from roomkit.py so it never drifts.
@@ -484,6 +539,8 @@ func KitAPI(src string) string {
 }
 
 const scriptSystem = `You build one reading room for Fable, a VR book reader, as a short Python script for Blender. The reader stands in the room and reads a floating page for twenty minutes, so the place must feel like a quietly observed real location: physically plausible scale (metres), one coherent time of day and light direction, structure in the land (a rise, a bank, a shore) rather than even noise, objects grounded and varied rather than evenly scattered, plants varying in size and lean, materials with believable colours (sRGB 0-1, not oversaturated), and calm, low-contrast surroundings in the direction the reader faces, where the page floats about 0.6 m in front of their eyes. Detail goes near the reader; distance can be simple. No people or animals.
+
+Composition: what makes this place itself (a library's full bookcases, a drawing-room's furniture and pictures, a shore's rocks and boats) must be in view, in the middle distance (2 to 6 m) and to the left and right of the page, not hidden behind the reader and not a single object straight behind the page. Rooms should feel lived in: varied furniture, objects on surfaces, pictures, curtains, a rug, things slightly out of line. Large plain areas (bare walls, empty floors) read as unfinished; break them with structure (panelling, skirting, beams, windows, doors) and objects.
 
 Your script runs with these names already in scope (no imports allowed, none needed): kit (below), bpy, bmesh, math, random, Vector, Euler, Matrix, noise. Not allowed: import, names or attributes starting with "_", open/exec/eval/getattr and similar, try/with/class/global, and bpy.ops/bpy.data areas that touch files. Prefer the kit; use bpy/bmesh directly only for shapes the kit lacks.
 
@@ -545,6 +602,10 @@ func (s *Service) pack(j *Job, st Setting, build string, res BuildResult) error 
 	}
 	if err := copyFile("thumb.png", filepath.Join(build, "views", "thumb.png")); err != nil {
 		return err
+	}
+	// the script that made the room, kept beside the package for tracing problems (not sent to the headset)
+	if data, err := os.ReadFile(filepath.Join(build, "script.py")); err == nil {
+		os.WriteFile(filepath.Join(stage, "script.py"), data, 0o644)
 	}
 	if total > 40<<20 {
 		return fmt.Errorf("package is %d MB, over 40 MB", total>>20)
@@ -636,6 +697,27 @@ func (s *Service) Register(mux *http.ServeMux) {
 			return
 		}
 		writeJSON(w, s.Status(b.Slug))
+	})
+	mux.HandleFunc("POST /rooms/rebuild", func(w http.ResponseWriter, r *http.Request) {
+		// the owner's tool: build one room again from the same plan (only from this machine)
+		if !strings.HasPrefix(r.RemoteAddr, "127.0.0.1:") && !strings.HasPrefix(r.RemoteAddr, "[::1]:") {
+			http.Error(w, "local only", http.StatusForbidden)
+			return
+		}
+		book := r.URL.Query().Get("book")
+		n, _ := strconv.Atoi(r.URL.Query().Get("room"))
+		s.mu.Lock()
+		j := s.jobs[fmt.Sprintf("%s:r%d", book, n)]
+		if j != nil && !j.Active() {
+			j.State, j.Error, j.Queued = Queued, "", time.Now()
+			s.saveLocked()
+		}
+		s.mu.Unlock()
+		if j == nil {
+			http.Error(w, "no such room", http.StatusNotFound)
+			return
+		}
+		writeJSON(w, s.Status(book))
 	})
 	mux.HandleFunc("GET /rooms/status", func(w http.ResponseWriter, r *http.Request) {
 		st := s.Status(r.URL.Query().Get("book"))

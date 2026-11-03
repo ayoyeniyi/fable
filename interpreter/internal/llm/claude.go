@@ -64,6 +64,32 @@ func (d *Director) Ask(ctx context.Context, system, user string, maxTokens int64
 	return d.askWith(ctx, system, []anthropic.MessageParam{anthropic.NewUserMessage(anthropic.NewTextBlock(user))}, maxTokens)
 }
 
+// AskRaw is Ask without fence stripping, reporting why the answer stopped ("end_turn", "max_tokens", ...).
+func (d *Director) AskRaw(ctx context.Context, system, user string, maxTokens int64) (string, string, error) {
+	stream := d.client.Messages.NewStreaming(ctx, anthropic.MessageNewParams{
+		Model:     anthropic.Model(d.model),
+		MaxTokens: maxTokens,
+		System:    []anthropic.TextBlockParam{{Text: system}},
+		Messages:  []anthropic.MessageParam{anthropic.NewUserMessage(anthropic.NewTextBlock(user))},
+	})
+	msg := anthropic.Message{}
+	for stream.Next() {
+		if err := msg.Accumulate(stream.Current()); err != nil {
+			return "", "", err
+		}
+	}
+	if err := stream.Err(); err != nil {
+		return "", "", err
+	}
+	var sb strings.Builder
+	for _, block := range msg.Content {
+		if t, ok := block.AsAny().(anthropic.TextBlock); ok {
+			sb.WriteString(t.Text)
+		}
+	}
+	return sb.String(), string(msg.StopReason), nil
+}
+
 func (d *Director) ask(ctx context.Context, msgs []anthropic.MessageParam) (string, error) {
 	return d.askWith(ctx, systemPrompt, msgs, 16000)
 }

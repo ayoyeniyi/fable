@@ -186,6 +186,19 @@ for vname, (dyaw, p) in views.items():
     img = bpy.data.images.load(path); px = img.pixels[:]; n = len(px) // 4
     luma[vname] = round(sum(0.2126 * px[i] + 0.7152 * px[i + 1] + 0.0722 * px[i + 2] for i in range(0, len(px), 4 * 7)) / max(1, n // 7), 3)
     bpy.data.images.remove(img)
+# the exposure the baked room is shown at: from the linear radiance the reader's eyes receive (not from texture
+# averages, which a dark underside or an unlit floor can skew)
+y = yaw; d = Vector((math.cos(y) * math.cos(pitch), math.sin(y) * math.cos(pitch), math.sin(pitch)))
+cam.rotation_quaternion = d.to_track_quat('-Z', 'Y')
+scene.view_settings.view_transform = 'Standard'; scene.render.resolution_x, scene.render.resolution_y = 240, 150; scene.cycles.samples = 16
+lin_path = os.path.join(out, "views", "exposure.exr")
+scene.render.image_settings.file_format = 'OPEN_EXR'; scene.render.filepath = lin_path
+bpy.ops.render.render(write_still=True)
+im = bpy.data.images.load(lin_path); import numpy as np
+va = np.empty(len(im.pixels), np.float32); im.pixels.foreach_get(va); va = va.reshape(-1, 4)
+vl = 0.2126 * va[:, 0] + 0.7152 * va[:, 1] + 0.0722 * va[:, 2]; vl = vl[vl > 1e-5]
+view_logavg = float(np.exp(np.mean(np.log(vl)))) if vl.size else 0.18
+bpy.data.images.remove(im); scene.view_settings.view_transform = 'AgX'; scene.render.image_settings.file_format = 'PNG'
 timings["views"] = round(time.time() - t, 2)
 if luma["thumb"] < 0.03: problems.append(f"the reading view is almost black (mean brightness {luma['thumb']}): light the room")
 if luma["thumb"] > 0.88: problems.append(f"the reading view is washed out (mean brightness {luma['thumb']}): less light")
@@ -217,14 +230,14 @@ for o in merged:
     size = min(size, args.tex * (2 if area > 400 else 1))
     bpy.ops.object.select_all(action='DESELECT'); o.select_set(True); bpy.context.view_layer.objects.active = o
     bpy.ops.object.mode_set(mode='EDIT'); bpy.ops.mesh.select_all(action='SELECT')
-    bpy.ops.uv.smart_project(angle_limit=math.radians(66), island_margin=0.004)
+    bpy.ops.uv.smart_project(angle_limit=math.radians(66), island_margin=0.008)
     bpy.ops.object.mode_set(mode='OBJECT')
     img = bpy.data.images.new("H_" + o.name, size, size, alpha=False, float_buffer=True)   # linear HDR radiance
     tex = nt.nodes.new("ShaderNodeTexImage"); tex.image = img
     for n in nt.nodes: n.select = False
     tex.select = True; nt.nodes.active = tex
-    if o.name == "SkyDome": bpy.ops.object.bake(type='EMIT', margin=4, use_clear=True)
-    else: bpy.ops.object.bake(type='COMBINED', margin=4, use_clear=True,
+    if o.name == "SkyDome": bpy.ops.object.bake(type='EMIT', margin=8, use_clear=True)
+    else: bpy.ops.object.bake(type='COMBINED', margin=8, use_clear=True,
                               pass_filter={'EMIT', 'DIRECT', 'INDIRECT', 'COLOR', 'DIFFUSE', 'GLOSSY', 'TRANSMISSION'})
     texels += size * size; baked.append((o, tex, img))
 timings["bake"] = round(time.time() - t, 2)
@@ -241,7 +254,7 @@ lums = np.concatenate([0.2126 * a[::5, 0] + 0.7152 * a[::5, 1] + 0.0722 * a[::5,
 lums = lums[lums > 1e-5]   # texels outside every UV island are empty, not dark
 if lums.size == 0: lums = np.array([0.18])
 logavg = float(np.exp(np.mean(np.log(np.maximum(lums, 1e-4)))))
-exposure = 0.20 / max(logavg, 1e-4); white = 3.0
+exposure = 0.22 / max(view_logavg, 1e-4); white = 3.0   # (logavg of all texels kept for the report only)
 for o, tex, img in baked:
     # the sky's emission is already a display colour (kit.sky); everything else is radiance to expose
     a = arrs[o.name][:, :3] * (exposure if o.name != "SkyDome" else 0.9)
@@ -294,5 +307,5 @@ if not os.environ.get("ROOMGEN_KEEP_PNG"):
         if f.endswith(".png"): os.remove(os.path.join(tex_dir, f))
 timings["total"] = round(time.time() - T0, 2)
 e = kit.READER["entrance"]; l = kit.READER["look"]
-done(True, [], triangles=tris, meshes=len(merged), textures=len(merged), texels=texels, luma=luma, device=device, exposure=round(exposure, 3),
+done(True, [], triangles=tris, meshes=len(merged), textures=len(merged), texels=texels, luma=luma, device=device, exposure=round(exposure, 3), texel_logavg=round(logavg, 4), view_logavg=round(view_logavg, 4),
      entrance=[e.x, e.y, e.z], look=[l.x, l.y, l.z], over_target=tris > TARGET_TRIS)

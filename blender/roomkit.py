@@ -307,8 +307,14 @@ def _limb(name, p0, p1, r0, r1, material, sides=7):
 def shrub(name, loc, size, leaves, seed=0):
     """A low shrub: two or three overlapping irregular masses, sitting on the ground."""
     r = random.Random(seed); x, y = loc[0], loc[1]; z = ground(x, y)
-    return [blob(f"{name}.{i}", size * r.uniform(0.5, 0.8), (x + r.uniform(-size, size) * 0.5, y + r.uniform(-size, size) * 0.5, z + size * 0.25),
-                 leaves, squash=(1.2, 1.1, 0.7), roughness=0.5, detail=1, seed=seed * 5 + i) for i in range(r.randint(2, 3))]
+    parts = [blob(f"{name}.{i}", size * r.uniform(0.5, 0.8), (x + r.uniform(-size, size) * 0.5, y + r.uniform(-size, size) * 0.5, z + size * 0.25),
+                  leaves, squash=(1.2, 1.1, 0.7), roughness=0.55, detail=2, seed=seed * 5 + i) for i in range(r.randint(2, 3))]
+    # a scatter of smaller tufts over the mass breaks its outline, so it reads as leaves rather than a boulder
+    for k in range(r.randint(4, 7)):
+        a = r.uniform(0, 6.283); e = r.uniform(0.1, 0.9)
+        p = (x + math.cos(a) * size * 0.7 * math.cos(e), y + math.sin(a) * size * 0.7 * math.cos(e), z + size * (0.2 + 0.5 * math.sin(e)))
+        parts.append(blob(f"{name}.t{k}", size * r.uniform(0.18, 0.3), p, leaves, squash=(1, 1, 0.8), roughness=0.6, detail=1, seed=seed * 11 + k))
+    return parts
 
 
 def tufts(name, centre, radius, count, height, material, seed=0, flowers=None, flower_share=0.0):

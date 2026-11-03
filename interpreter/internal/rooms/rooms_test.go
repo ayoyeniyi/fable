@@ -194,3 +194,15 @@ func TestKitAPIListsTheKit(t *testing.T) {
 		}
 	}
 }
+
+func TestExtractCodeCopesWithUnclosedFences(t *testing.T) {
+	if got := ExtractCode("Notes.\n```python\nkit.sky(1)\n```\nmore"); got != "kit.sky(1)\n" {
+		t.Fatalf("closed fence: %q", got)
+	}
+	if got := ExtractCode("Notes.\n```python\nkit.sky(1)\nkit.sun("); got != "kit.sky(1)\nkit.sun(" {
+		t.Fatalf("unclosed fence: %q", got)
+	}
+	if got := ExtractCode("kit.sky(1)"); got != "kit.sky(1)" {
+		t.Fatalf("no fence: %q", got)
+	}
+}
