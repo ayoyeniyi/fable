@@ -45,9 +45,10 @@ namespace Fable
             card.gameObject.SetActive(false);
             if (flow.Input && !flow.Input.Claimers.Contains(Claim)) flow.Input.Claimers.Insert(0, Claim);
             ChapterExperiences.Instance.Changed += OnChanged;
+            GeneratedRooms.Instance.Changed += OnChanged;
         }
 
-        void OnDestroy() { if (Flow && Flow.Input) Flow.Input.Claimers.Remove(Claim); if (ChapterExperiences.Instance) ChapterExperiences.Instance.Changed -= OnChanged; }
+        void OnDestroy() { if (Flow && Flow.Input) Flow.Input.Claimers.Remove(Claim); if (ChapterExperiences.Instance) ChapterExperiences.Instance.Changed -= OnChanged; GeneratedRooms.Instance.Changed -= OnChanged; }
         void OnChanged() { if (IsOpen) Rebuild(); }
 
         public void Open(string tab)
@@ -169,25 +170,28 @@ namespace Fable
         void Rooms()
         {
             var slug = Flow.Reader.Book.Slug; var here = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-            var rooms = new List<(string scene, string label)>();
-            if (LobbyController.ReadingScene.TryGetValue(slug, out var own)) rooms.Add((own, OwnRoomName(own) + " (this book’s room)"));
-            rooms.Add((LobbyController.ImportedScene, "The library"));
-            float y = 190;
-            foreach (var (scene, label) in rooms)
+            float y = 200;
+            foreach (var e in ReadingRooms.For(slug))
             {
-                if (!Application.CanStreamedLevelBeLoaded(scene)) continue;
-                var s = scene;
-                var b = Button(body, label + (scene == here ? "  ·  you are here" : ""), new Vector2(0, y), new Vector2(500, 52), 19, "room:" + scene, () => { if (s != here) { Close(); Flow.GoToRoom(s); } });
-                y -= 66;
+                bool isHere = e.Generated > 0 ? Flow.GeneratedRoom == e.Generated : e.Scene == here && Flow.GeneratedRoom == 0;
+                if (!e.Ready)
+                {
+                    Text(body, e.Label, 18, FontStyles.Normal, Soft, TextAlignmentOptions.Left, new Vector2(0, y + 8), new Vector2(500, 26));
+                    Text(body, e.Note ?? "", 14, FontStyles.Italic, Soft, TextAlignmentOptions.Left, new Vector2(0, y - 14), new Vector2(500, 22));
+                    y -= 62; continue;
+                }
+                var en = e;
+                Button(body, e.Label + (isHere ? "  \u00b7  you are here" : ""), new Vector2(0, y), new Vector2(500, 50), 18, "room:" + (e.Generated > 0 ? "g" + e.Generated : e.Scene), () =>
+                {
+                    if (isHere) return;
+                    Close();
+                    if (en.Generated > 0) Flow.GoToGeneratedRoom(en.Generated); else Flow.GoToRoom(en.Scene);
+                });
+                y -= 62;
             }
-            Text(body, "Your place in the book comes with you.", 15, FontStyles.Italic, Soft, TextAlignmentOptions.Center, new Vector2(0, y - 10), new Vector2(500, 30));
+            if (Library.IsImported(slug)) Text(body, "Your book\u2019s three rooms are made from places in its opening chapters.", 14, FontStyles.Italic, Soft, TextAlignmentOptions.Center, new Vector2(0, y - 4), new Vector2(520, 40));
+            Text(body, "Your place in the book comes with you.", 15, FontStyles.Italic, Soft, TextAlignmentOptions.Center, new Vector2(0, y - 40), new Vector2(500, 30));
         }
-
-        static string OwnRoomName(string scene) => scene switch
-        {
-            "HallOfDoors" => "The Hall of Doors", "KansasFarmhouse" => "The Kansas farmhouse", "CalypsosCave" => "Calypso’s cave",
-            "GlumdalclitchsRoom" => "Glumdalclitch’s room", _ => scene,
-        };
 
         void Sound()
         {

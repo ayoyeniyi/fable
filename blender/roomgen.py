@@ -218,6 +218,7 @@ for mname, os_ in groups.items():
     o = bpy.context.view_layer.objects.active
     o.name = "SkyDome" if mname == "M_SkyDome" else ("MESH_" + mname[2:])
     merged.append(o); bpy.ops.object.select_all(action='DESELECT')
+import numpy as np
 scene.cycles.samples = args.samples
 tex_dir = os.path.join(out, "textures"); os.makedirs(tex_dir, exist_ok=True)
 texels = 0; baked = []
@@ -239,6 +240,15 @@ for o in merged:
     if o.name == "SkyDome": bpy.ops.object.bake(type='EMIT', margin=8, use_clear=True)
     else: bpy.ops.object.bake(type='COMBINED', margin=8, use_clear=True,
                               pass_filter={'EMIT', 'DIRECT', 'INDIRECT', 'COLOR', 'DIFFUSE', 'GLOSSY', 'TRANSMISSION'})
+    # Metal can return a black bake without any error when GPU memory runs short (seen with other Blender jobs
+    # running): an all-dark result is baked again on the CPU
+    if o.name != "SkyDome":
+        chk = np.empty(size * size * 4, np.float32); img.pixels.foreach_get(chk)
+        if float(chk.reshape(-1, 4)[:, :3].max()) < 1e-4 and scene.cycles.device == 'GPU':
+            print("black bake on the GPU for", o.name, "- baking again on the CPU"); scene.cycles.device = 'CPU'
+            bpy.ops.object.bake(type='COMBINED', margin=8, use_clear=True,
+                                pass_filter={'EMIT', 'DIRECT', 'INDIRECT', 'COLOR', 'DIFFUSE', 'GLOSSY', 'TRANSMISSION'})
+            scene.cycles.device = 'GPU' if device != "CPU" else 'CPU'
     texels += size * size; baked.append((o, tex, img))
 timings["bake"] = round(time.time() - t, 2)
 

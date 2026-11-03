@@ -348,6 +348,7 @@ namespace Fable
                 job.Status = "ready"; job.Stage = "ready"; job.Progress = 1; job.Ended = DateTime.UtcNow;
                 Debug.Log($"[Fable] library: {entry.Slug} “{entry.Title}” ready: {entry.Format}, {entry.Chapters} chapters, {entry.Sentences} sentences{(entry.Format == "pdf" ? $", {entry.PdfPages} pages ({entry.TextPages} with text)" : "")}, {entry.Bytes / 1048576f:F1} MB, {(DateTime.UtcNow - job.Started).TotalSeconds:F1} s from the first byte");
                 Changed?.Invoke(); BookReady?.Invoke(entry);
+                GeneratedRooms.Instance.Request(entry.Slug);   // its three reading rooms start now, in the background
             }
             catch (ImportException e) { Cleanup(staging, null); Fail(job, e.Message, e.Recovery); }
             catch (Exception e) { Cleanup(staging, null); Debug.LogException(e); Fail(job, $"Fable could not finish importing {job.FileName} ({e.Message}).", "Try sending it again."); }

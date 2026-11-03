@@ -51,7 +51,9 @@ namespace Fable
         Image statusBar, statusBarBack;
         readonly Dictionary<string, Texture2D> covers = new();
         int page; bool adding; string menuSlug; string hoveredKey;
-        RectTransform bookMenu, resumeBtn, ownRoomBtn, libraryRoomBtn, chaptersBtn, menuBackBtn; TMP_Text menuTitle, menuAuthor, menuChapters, ownRoomLbl; RectTransform hoveredRt; LibraryJob watching;
+        RectTransform bookMenu, resumeBtn, chaptersBtn, menuBackBtn; TMP_Text menuTitle, menuAuthor, menuChapters; RectTransform hoveredRt; LibraryJob watching;
+        readonly RectTransform[] roomBtns = new RectTransform[4]; readonly TMP_Text[] roomLbls = new TMP_Text[4];
+        List<ReadingRooms.Entry> menuRooms = new();
         Library lib;
 
         int Pages => Mathf.Max(1, Mathf.CeilToInt(Entries().Count / (float)PerPage));
@@ -62,6 +64,7 @@ namespace Fable
             lib = Library.Instance;
             Build();
             lib.Changed += Refresh;
+            GeneratedRooms.Instance.Changed += ShowRooms;
             if (Input && !Input.Claimers.Contains(Claim)) Input.Claimers.Insert(0, Claim);
             Recentre(true);
             Refresh();
@@ -71,6 +74,7 @@ namespace Fable
         void OnDestroy()
         {
             if (lib) { lib.Changed -= Refresh; lib.Accepting = false; }
+            GeneratedRooms.Instance.Changed -= ShowRooms;
             if (Input) Input.Claimers.Remove(Claim);
             foreach (var t in covers.Values) if (t) Destroy(t);
         }
@@ -171,8 +175,12 @@ namespace Fable
             (menuBackBtn, _) = Button(bookMenu, "\u2039 shelf", new Vector2(bookMenu.sizeDelta.x / 2 - 80, mt - 30), new Vector2(130, 40), 17, CloseMenu);
             (resumeBtn, _) = Button(bookMenu, "resume reading \u203a", new Vector2(0, mt - 120), new Vector2(420, 58), 22, () => Open(menuSlug));
             var roomsLbl = Text(bookMenu, "Reading rooms", 16, FontStyles.SmallCaps, Accent, TextAlignmentOptions.Left); Place(roomsLbl.rectTransform, new Vector2(0, mt - 172), new Vector2(660, 24));
-            (ownRoomBtn, ownRoomLbl) = Button(bookMenu, "", new Vector2(-165, mt - 210), new Vector2(320, 46), 17, () => { if (Lobby) Lobby.Open(menuSlug, LobbyController.ReadingScene[menuSlug]); });
-            (libraryRoomBtn, _) = Button(bookMenu, "the library", new Vector2(165, mt - 210), new Vector2(320, 46), 17, () => { if (Lobby) Lobby.Open(menuSlug, LobbyController.ImportedScene); });
+            for (int i = 0; i < 4; i++)
+            {
+                int k = i;
+                (roomBtns[i], roomLbls[i]) = Button(bookMenu, "", new Vector2(-252 + i * 168, mt - 212), new Vector2(158, 56), 14, () => EnterRoom(k));
+                roomLbls[i].textWrappingMode = TextWrappingModes.Normal; roomLbls[i].lineSpacing = -14;
+            }
             var expLbl = Text(bookMenu, "Chapter experiences", 16, FontStyles.SmallCaps, Accent, TextAlignmentOptions.Left); Place(expLbl.rectTransform, new Vector2(0, mt - 262), new Vector2(660, 24));
             menuChapters = Text(bookMenu, "", 15, FontStyles.Normal, Ink, TextAlignmentOptions.TopLeft); Place(menuChapters.rectTransform, new Vector2(-110, mt - 300), new Vector2(440, 50));
             (chaptersBtn, _) = Button(bookMenu, "chapter experiences \u203a", new Vector2(220, mt - 296), new Vector2(240, 46), 17, () => { FlowController.PendingMenu = "chapters"; Open(menuSlug); });
@@ -185,15 +193,34 @@ namespace Fable
             menuSlug = slug; adding = false; addCard.gameObject.SetActive(false);
             var e = Entries().FirstOrDefault(x => x.Slug == slug);
             menuTitle.text = e?.Title ?? slug; menuAuthor.text = (e?.Author ?? "") + (e != null && e.Bundled ? "  \u00b7  Fable edition" : "  \u00b7  your book");
-            bool own = LobbyController.ReadingScene.TryGetValue(slug, out var ownScene) && Application.CanStreamedLevelBeLoaded(ownScene);
-            ownRoomBtn.gameObject.SetActive(own);
-            if (own) ownRoomLbl.text = ownScene switch { "HallOfDoors" => "the Hall of Doors", "KansasFarmhouse" => "the Kansas farmhouse", "CalypsosCave" => "Calypso\u2019s cave", "GlumdalclitchsRoom" => "Glumdalclitch\u2019s room", _ => ownScene };
+            ShowRooms();
             bool supported = ChapterExperiences.Supported.Contains(slug);
             chaptersBtn.gameObject.SetActive(supported);
             menuChapters.text = supported ? ChapterSummary(slug) : "Prepared for Fable\u2019s own four books; not yet for books you add.";
             bookMenu.gameObject.SetActive(true); grid.gameObject.SetActive(false);
             Debug.Log($"[Fable] library board: menu for {slug}");
             Refresh();
+        }
+
+        /// The book's rooms on the menu: ready ones open it there; ones still being made say how far they have got.
+        void ShowRooms()
+        {
+            if (menuSlug == null) return;
+            menuRooms = ReadingRooms.For(menuSlug);
+            for (int i = 0; i < 4; i++)
+            {
+                bool on = i < menuRooms.Count; roomBtns[i].gameObject.SetActive(on); if (!on) continue;
+                var e = menuRooms[i];
+                roomLbls[i].text = e.Ready ? e.Label : $"<color=#8a7a62>{e.Label}\n<size=78%><i>{e.Note}</i></size></color>";
+            }
+        }
+
+        void EnterRoom(int i)
+        {
+            if (!Lobby || menuSlug == null || i >= menuRooms.Count || !menuRooms[i].Ready) return;
+            var e = menuRooms[i];
+            if (e.Generated > 0) { GeneratedRoomView.PendingBook = menuSlug; GeneratedRoomView.PendingRoom = e.Generated; Lobby.Open(menuSlug, LobbyController.ImportedScene); }
+            else Lobby.Open(menuSlug, e.Scene);
         }
 
         void CloseMenu() { menuSlug = null; bookMenu.gameObject.SetActive(false); Refresh(); }
@@ -463,8 +490,7 @@ namespace Fable
             if (menuSlug != null)
             {
                 yield return (menuBackBtn, "menu:back", CloseMenu); yield return (resumeBtn, "menu:resume", () => Open(menuSlug));
-                yield return (ownRoomBtn, "menu:own-room", () => { if (Lobby) Lobby.Open(menuSlug, LobbyController.ReadingScene[menuSlug]); });
-                yield return (libraryRoomBtn, "menu:library-room", () => { if (Lobby) Lobby.Open(menuSlug, LobbyController.ImportedScene); });
+                for (int i = 0; i < 4; i++) { int k = i; if (roomBtns[i].gameObject.activeSelf) yield return (roomBtns[i], "menu:room" + (i + 1), () => EnterRoom(k)); }
                 yield return (chaptersBtn, "menu:chapters", () => { FlowController.PendingMenu = "chapters"; Open(menuSlug); });
                 yield break;
             }
@@ -498,7 +524,7 @@ namespace Fable
                 if (OnBoard(right, out var w)) { foreach (var (rt, k2, _) in Targets()) if (Over(rt, w)) { key = k2; rtOver = rt; break; } break; }
             if (key != hoveredKey) { var before = hoveredKey; hoveredKey = key; hoveredRt = rtOver; if ((before ?? "").StartsWith("u-") || (key ?? "").StartsWith("u-") || (before ?? "").StartsWith("remove:") || (key ?? "").StartsWith("remove:")) Refresh(); }
             foreach (var t in shown) { var lit = hoveredKey == t.Key; var c = lit ? Lit : TileBg; if (t.Bg.color != c) t.Bg.color = c; t.Rt.localScale = Vector3.one * (lit ? 1.035f : 1f); }
-            foreach (var b in new[] { addBtn, continueBtn, prevBtn, nextBtn, backBtn, resumeBtn, ownRoomBtn, libraryRoomBtn, chaptersBtn, menuBackBtn }) Light(b, hoveredRt == b);
+            foreach (var b in new[] { addBtn, continueBtn, prevBtn, nextBtn, backBtn, resumeBtn, chaptersBtn, menuBackBtn, roomBtns[0], roomBtns[1], roomBtns[2], roomBtns[3] }) Light(b, hoveredRt == b);
             foreach (var t in shown) Light(t.Remove, hoveredRt == t.Remove);
             // live jobs: progress a few times a second
             if (Time.time > nextRefresh && (adding || lib.ActiveJobs().Any(j => !j.Done))) { nextRefresh = Time.time + 0.25f; Refresh(); }

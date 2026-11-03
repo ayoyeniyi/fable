@@ -330,6 +330,7 @@ namespace Fable
 
         void WireExperiences()
         {
+            if (Reader.Imported) GeneratedRooms.Instance.Request(Slug);   // (again) after a restart or an earlier failure
             var ce = ChapterExperiences.Instance;
             Reader.ChapterEntered += ch => ce.Enter(Slug, ch);
             Reader.ChapterFinished += ch => ce.Complete(Slug, ch, "finished");
@@ -449,7 +450,19 @@ namespace Fable
         }
 
         /// Read on in another room: the place in the book is saved with every page, so it comes along.
-        public void GoToRoom(string scene)
+        /// The generated room shown here (1-3), or 0.
+        public int GeneratedRoom { get; private set; }
+
+        /// Read on in one of an uploaded book's generated rooms (it loads in the library room scene).
+        public void GoToGeneratedRoom(int n)
+        {
+            if (busy || Current != State.Reading || Reader == null || Reader.Book == null) return;
+            GeneratedRoomView.PendingBook = Reader.Book.Slug; GeneratedRoomView.PendingRoom = n;
+            GoToRoom(LobbyController.ImportedScene, force: true);
+        }
+
+        public void GoToRoom(string scene) => GoToRoom(scene, false);
+        void GoToRoom(string scene, bool force)
         {
             if (busy || Current != State.Reading || !Application.CanStreamedLevelBeLoaded(scene)) return;
             busy = true; if (Highlight) Highlight.Clear(); Reader.Deactivate();
@@ -470,6 +483,15 @@ namespace Fable
             Director.Flow = this; Director.Panel = Panel; Director.Reader = Input; Director.LoadInterpreterUrl();
             if (ReadingRoom) ReadingRoom.SetActive(false);
             env.gameObject.SetActive(true);
+            // an uploaded book's generated room, shown in place of the library around the reader
+            if (GeneratedRoomView.PendingBook != null)
+            {
+                var gb = GeneratedRoomView.PendingBook; int gn = GeneratedRoomView.PendingRoom; GeneratedRoomView.PendingBook = null;
+                GameObject made = null; string why = null;
+                yield return GeneratedRoomView.Load(gb, gn, RigRoot(), (g, w) => { made = g; why = w; });
+                if (made) { env.gameObject.SetActive(false); GeneratedRoom = gn; }
+                else Debug.LogWarning($"[Fable] rooms: {gb} r{gn} not shown: {why}; reading in the library");
+            }
             foreach (var cam in FindObjectsByType<Camera>(FindObjectsSortMode.None)) if (cam.farClipPlane < 150f) cam.farClipPlane = 150f;
             if (Panel && !Panel.GetComponent<GestureCues>()) Panel.gameObject.AddComponent<GestureCues>();
             Pointer = Panel.GetComponent<PagePointer>() ? Panel.GetComponent<PagePointer>() : Panel.gameObject.AddComponent<PagePointer>();
