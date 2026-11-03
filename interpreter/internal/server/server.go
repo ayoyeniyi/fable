@@ -46,8 +46,9 @@ type Server struct {
 	DefaultWait time.Duration // how long a request waits for a fresh script before 202; default 3 s
 	MaxWait     time.Duration // cap on the client's waitSeconds; default 120 s
 	Model       string
-	Peeker      Peeker // Peek clay models; nil answers 503 unless the cache has one
+	Peeker      Peeker                                // Peek clay models; nil answers 503 unless the cache has one
 	Chapters    interface{ Register(*http.ServeMux) } // chapter experiences (internal/chapters); nil = off
+	Rooms       interface{ Register(*http.ServeMux) } // generated reading rooms for uploaded books (internal/rooms); nil = off
 
 	peek peeks
 	mu   sync.Mutex
@@ -294,6 +295,9 @@ func (s *Server) Handler() http.Handler {
 	})
 	mux.HandleFunc("POST /interpret", s.handleInterpret)
 	mux.HandleFunc("POST /peek", s.handlePeek)
+	if s.Rooms != nil {
+		s.Rooms.Register(mux)
+	}
 	if s.Chapters != nil {
 		s.Chapters.Register(mux)
 	}

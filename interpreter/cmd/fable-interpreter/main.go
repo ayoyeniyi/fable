@@ -32,6 +32,7 @@ import (
 	"github.com/Thabhelo/fable/interpreter/internal/chapters"
 	"github.com/Thabhelo/fable/interpreter/internal/llm"
 	"github.com/Thabhelo/fable/interpreter/internal/mock"
+	"github.com/Thabhelo/fable/interpreter/internal/rooms"
 	"github.com/Thabhelo/fable/interpreter/internal/script"
 	"github.com/Thabhelo/fable/interpreter/internal/server"
 )
@@ -166,6 +167,16 @@ func main() {
 			cs.Model = dir.Model()
 			srv.Chapters = cs
 			go cs.Run(context.Background())
+		}
+		// three generated reading rooms for each book the reader uploads (internal/rooms)
+		{
+			var planner rooms.Asker
+			if os.Getenv("ANTHROPIC_API_KEY") != "" {
+				planner = dir
+			}
+			rs := rooms.NewService(root, planner, rooms.RoomgenBuilder(*blender))
+			srv.Rooms = rs
+			go rs.Run(context.Background())
 		}
 		hs := &http.Server{Addr: *addr, Handler: srv.Handler(), ReadHeaderTimeout: 10 * time.Second, ReadTimeout: 30 * time.Second, WriteTimeout: 3 * time.Minute, IdleTimeout: 2 * time.Minute}
 		go func() {
