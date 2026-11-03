@@ -313,6 +313,22 @@ def lamp_glass(name="M_LampGlass"):
     m.blend_method = 'BLEND'
     return m
 
+def dust_mote(name="M_DustMote"):
+    """Warm, faint, see-through specks for fx.dust. Flat Principled values only (never baked, see NO_BAKE):
+    the glTF exporter writes them as baseColorFactor + alpha (BLEND) + emissive, which glTFast turns into an
+    alpha-blended URP Lit material whose emission keeps the motes visible under the hall's baked light."""
+    m, nt, b = new_mat(name)
+    b.inputs["Base Color"].default_value = (1.0, 0.86, 0.62, 1)
+    b.inputs["Roughness"].default_value = 1.0
+    b.inputs["Specular IOR Level"].default_value = 0.0
+    b.inputs["Emission Color"].default_value = (1.0, 0.80, 0.52, 1)
+    b.inputs["Emission Strength"].default_value = 1.6
+    b.inputs["Alpha"].default_value = 0.42
+    m.blend_method = 'BLEND'
+    if hasattr(m, "surface_render_method"): m.surface_render_method = 'BLENDED'
+    m.use_backface_culling = False
+    return m
+
 def liquid(name="M_Liquid"):
     m, nt, b = new_mat(name)
     b.inputs["Base Color"].default_value = (0.75, 0.25, 0.15, 1)
@@ -341,6 +357,8 @@ M_INK = ink()
 M_FLAME = flame()
 M_LAMPGLASS = lamp_glass()
 M_LIQUID = liquid()
+M_DUST = dust_mote()
+NO_BAKE = {"M_DustMote"}   # flat materials exported as factors, not textures
 
 DOOR_MATS = [M_DOOR_OAK, M_DOOR_MAHOG, M_DOOR_GREEN, M_DOOR_BLACK, M_DOOR_BLUE, M_DOOR_OAK, M_DOOR_MAHOG]
 
@@ -655,6 +673,31 @@ for i, x in enumerate(LAMP_XS):
     ld.shadow_soft_size = 0.06
     lo = bpy.data.objects.new(f"Lamp{i}_Light", ld); lo.location = (x, 0, LAMP_Z + 0.2); link(lo)
     lamp_lights.append(lo)
+# dust: "fx.dust", drifting motes in the lamp light (manifest asset). One mesh of tiny crossed quads under each lamp,
+# parented to an empty named by the manifest id so SceneRegistry finds it and ClipPlayer/SceneDirector treat it like
+# the other fx.* groups (hidden on reset, placed by the script, renderers in children). Two quads per mote so some face
+# is always turned towards the reader; 7 x 24 motes x 4 triangles = 672 triangles.
+def make_dust(name, lamp_xs, per_lamp=24):
+    me = bpy.data.meshes.new(name); bm = bmesh.new()
+    top = LAMP_Z + 0.25                                  # just under the shade's rim
+    for x in lamp_xs:
+        for _ in range(per_lamp):
+            z = random.uniform(LAMP_Z - 0.85, top)
+            cone_r = 0.06 + (top - z) * 0.55             # the light cone widens below the shade
+            r = cone_r * math.sqrt(random.random()); a = random.uniform(0, 2 * math.pi)
+            c = Vector((x + r * math.cos(a), r * math.sin(a), z))
+            size = random.uniform(0.004, 0.0085) * (1.6 if random.random() < 0.15 else 1.0)
+            yaw = random.uniform(0, math.pi); tilt = random.uniform(-0.35, 0.35)
+            for k in range(2):                           # two quads crossed at right angles
+                ang = yaw + k * math.pi / 2
+                u = Vector((math.cos(ang), math.sin(ang), 0)) * size
+                v = Vector((-math.sin(ang) * math.sin(tilt), math.cos(ang) * math.sin(tilt), math.cos(tilt))) * size
+                bm.faces.new((bm.verts.new(c - u - v), bm.verts.new(c + u - v), bm.verts.new(c + u + v), bm.verts.new(c - u + v)))
+    bm.normal_update(); bm.to_mesh(me); bm.free()
+    o = bpy.data.objects.new(name, me); me.materials.append(M_DUST)
+    return link(o)
+# pivot within a metre of both anchor.hall.ceiling and anchor.hall.centre, so a `place` at either keeps the cloud where it was authored
+DYNAMIC.append(group("fx.dust", [make_dust("DustMotes", LAMP_XS)], (0.0, 0.0, 0.98)))
 # cool fill from the little door's garden
 gl = bpy.data.lights.new("GardenLight", 'SPOT'); gl.energy = 160; gl.color = (0.7, 0.9, 1.0); gl.spot_size = math.radians(70); gl.shadow_soft_size = 0.1
 glo = bpy.data.objects.new("GardenLight", gl); glo.location = (CURTAIN_X, -hy - 0.55, 0.25); glo.rotation_euler = (math.radians(-85), 0, 0); link(glo)
@@ -740,6 +783,8 @@ def bake_and_export():
         m = o.data.materials[0]; nt = m.node_tree
         bsdf = next(n for n in nt.nodes if n.type == 'BSDF_PRINCIPLED')
         base = m.name.split("__")[0]
+        if base in NO_BAKE:
+            print("flat (not baked)", m.name, o.name); continue
         size = size_for.get(base, args.tex // 4 if base in small else args.tex // 2)
         if o.parent is not None: size = args.tex // 2 if o.name in ("Curtain", "LittleDoor_Leaf", "TableTop") else args.tex // 8
         size = max(size, 64)

@@ -70,6 +70,12 @@
           "loop": true
         },
         {
+          "type": "place",
+          "asset": "fx.dust",
+          "anchor": "hall.ceiling",
+          "appear": "fade"
+        },
+        {
           "type": "sound",
           "sound": "sfx.footsteps-stone",
           "anchor": "reader.entrance",
