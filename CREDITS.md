@@ -11,22 +11,31 @@ recorded licence; the per-folder `SOURCE.md` files hold the hashes and download 
 | *Alice's Adventures in Wonderland*, Lewis Carroll (1865) | Standard Ebooks, https://standardebooks.org/ebooks/lewis-carroll/alices-adventures-in-wonderland/john-tenniel | text public domain (US); SE's edits and markup CC0 1.0 |
 | *The Wonderful Wizard of Oz*, L. Frank Baum (1900) | Standard Ebooks, https://standardebooks.org/ebooks/l-frank-baum/the-wonderful-wizard-of-oz | text public domain (US); SE CC0 1.0 |
 | *Gulliver's Travels*, Jonathan Swift (1726) | Standard Ebooks, https://standardebooks.org/ebooks/jonathan-swift/gullivers-travels | text public domain (US); SE CC0 1.0 |
+| *Pride and Prejudice*, Jane Austen (1813) | Standard Ebooks, https://standardebooks.org/ebooks/jane-austen/pride-and-prejudice | text public domain (US); SE CC0 1.0 |
+| *Moby-Dick*, Herman Melville (1851) | Standard Ebooks, https://standardebooks.org/ebooks/herman-melville/moby-dick | text public domain (US); SE CC0 1.0 |
+| *The War of the Worlds*, H. G. Wells (1898) | Standard Ebooks, https://standardebooks.org/ebooks/h-g-wells/the-war-of-the-worlds | text public domain (US); SE CC0 1.0 |
+| *Treasure Island*, Robert Louis Stevenson (1883) | Standard Ebooks, https://standardebooks.org/ebooks/robert-louis-stevenson/treasure-island | text public domain (US); SE CC0 1.0 |
 | *The Odyssey*, Homer, translated by Samuel Butler (1900) | Project Gutenberg #1727, https://www.gutenberg.org/ebooks/1727 | text public domain (US); Gutenberg header and licence removed as its licence allows |
 
 Details and file hashes: `content/books/<slug>/SOURCE.md`. Standard Ebooks is a volunteer project; the editions were
-produced by Alex Cabal (Alice) and Michael Atkinson (Oz, Gulliver). The Odyssey's Gutenberg text credits Jim Tinsley
+produced by Alex Cabal (Alice, Treasure Island), Michael Atkinson (Oz, Gulliver), Alex Cabal and Alina Pyzowski
+(Pride and Prejudice, The War of the Worlds) and Robin Whittleton (Moby-Dick). The Odyssey's Gutenberg text credits Jim Tinsley
 and David Widger.
 
 ## Dictionary (Define)
 
 *Webster's Revised Unabridged Dictionary* (G. & C. Merriam, 1913), the Project Gutenberg transcription #29765,
-public domain (US), cut to the words the four books use. `content/dictionary/SOURCE.md`.
+public domain (US), cut to the words Fable's eight books use. `content/dictionary/SOURCE.md`.
 
 ## Book covers (the lobby shelf)
 
 - **Alice:** Standard Ebooks cover (CC0 1.0), after *Amanita*, Ivan Shishkin, 1879 (public domain).
 - **Oz:** Standard Ebooks cover (CC0 1.0), after *Heroic Landscape with Rainbow*, Joseph Anton Koch, 1824 (public domain).
 - **Gulliver:** Standard Ebooks cover (CC0 1.0), after *Gulliver and the Lilliputians*, Jehan-Georges Vibert, 1870 (public domain).
+- **Pride and Prejudice:** Standard Ebooks cover (CC0 1.0), after *A Wet Sunday Morning*, Edmund Blair Leighton, 1896 (public domain).
+- **Moby-Dick:** Standard Ebooks cover (CC0 1.0), after *The Flying Dutchman*, Albert Pinkham Ryder, 1887 (public domain).
+- **The War of the Worlds:** Standard Ebooks cover (CC0 1.0), after *The Great Fire of London*, unknown artist, 17th century (public domain).
+- **Treasure Island:** Standard Ebooks cover (CC0 1.0), after *One More Step, Mr. Hands*, N. C. Wyeth, 1911 (public domain).
 - **The Odyssey:** composed for Fable from *Ulysses and Calypso*, Arnold Böcklin, 1882, Kunstmuseum Basel (public
   domain; reproduction via Wikimedia Commons, https://commons.wikimedia.org/wiki/File:Arnold_B%C3%B6cklin_008.jpg).
 

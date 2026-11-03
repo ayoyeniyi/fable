@@ -1,7 +1,7 @@
 """
-Fable: the four book covers for the lobby shelf (content/covers/<slug>.jpg, 1400x2100).
+Fable: the eight book covers for the lobby shelf (content/covers/<slug>.jpg, 1400x2100).
 
-Alice, Oz and Gulliver: the Standard Ebooks cover, taken unchanged from the edition's EPUB (out/sources/<slug>.epub,
+Alice, Oz, Gulliver, Pride and Prejudice, Moby-Dick, The War of the Worlds and Treasure Island: the Standard Ebooks cover, taken unchanged from the edition's EPUB (out/sources/<slug>.epub,
 written by tools/ingest_book.py). SE releases its cover designs under CC0; the paintings are public domain.
 
 The Odyssey (Butler's translation, Gutenberg #1727) has no SE edition, so its cover is composed here in the same
@@ -19,7 +19,7 @@ OUT = os.path.join(ROOT, "content", "covers")
 SRC = os.path.join(ROOT, "out", "sources")
 os.makedirs(OUT, exist_ok=True)
 
-for slug in ("alice", "oz", "gulliver"):
+for slug in ("alice", "oz", "gulliver", "pride", "mobydick", "worlds", "treasure"):
     epub = os.path.join(SRC, slug + ".epub")
     with zipfile.ZipFile(epub) as z:
         data = z.read("epub/images/cover.jpg")
