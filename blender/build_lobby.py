@@ -1,6 +1,7 @@
 """
 Fable: the lobby. A small panelled reading room where the app opens: a tall bookcase on the far wall with the four
-books standing face out on a display shelf at chest height (Odyssey, Gulliver, Alice, Oz, oldest first), their
+books standing face out on a display shelf at chest height (eight, oldest first: Odyssey, Gulliver, Pride and
+Prejudice, Moby-Dick, Alice, Treasure Island, The War of the Worlds, Oz), their
 covers from content/covers (sources in content/covers/SOURCE.md). The reader points at a book and pinches to open it.
 
 Builds the room procedurally with PBR materials and lamp light, then (by flag) renders Cycles stills, bakes materials
@@ -34,13 +35,15 @@ random.seed(2026)
 SHELF_T = 0.03
 ROOM_W, ROOM_D, ROOM_H = 5.6, 5.0, 3.0          # x across, y deep (shelf wall at +y), z up
 WAINSCOT_H = 1.0
-CASE_W, CASE_D, CASE_H = 3.3, 0.40, 2.62        # the bookcase on the north wall
+CASE_W, CASE_D, CASE_H = 3.9, 0.40, 2.62        # the bookcase on the north wall (3.3 m held four books; 3.9 m holds eight)
 DISPLAY_Z = 1.02                                # the display ledge the four books stand on
-BOOK_W, BOOK_H, BOOK_T = 0.35, 0.525, 0.065       # the four books: large folios, easy to point at from 2 m
+BOOK_W, BOOK_H, BOOK_T = 0.30, 0.45, 0.06        # the eight books: large folios, easy to point at from 2 m (0.35 x 0.525 when there were four)
 BOOK_LEAN = math.radians(13)
-SHELF_ORDER = ["odyssey", "gulliver", "alice", "oz"]   # oldest first, left to right
-BOOK_XS = [-1.14, -0.38, 0.38, 1.14]
-CLOTH = {"odyssey": (0.10, 0.12, 0.20), "gulliver": (0.26, 0.07, 0.05), "alice": (0.08, 0.18, 0.11), "oz": (0.30, 0.22, 0.06)}
+SHELF_ORDER = ["odyssey", "gulliver", "pride", "mobydick", "alice", "treasure", "worlds", "oz"]   # oldest first, left to right
+BOOK_PITCH = 0.44                                 # centre to centre: room for each book's progress card (0.33 m) on the ledge
+BOOK_XS = [(i - (len(SHELF_ORDER) - 1) / 2) * BOOK_PITCH for i in range(len(SHELF_ORDER))]
+CLOTH = {"odyssey": (0.10, 0.12, 0.20), "gulliver": (0.26, 0.07, 0.05), "alice": (0.08, 0.18, 0.11), "oz": (0.30, 0.22, 0.06),
+         "pride": (0.28, 0.20, 0.16), "mobydick": (0.05, 0.10, 0.13), "worlds": (0.13, 0.11, 0.09), "treasure": (0.22, 0.13, 0.05)}
 
 # ----------------------------------------------------------------------------- scene reset
 bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -467,12 +470,12 @@ for i in range(3):
     o = box(f"FloorStack{i}", (0.28 - i * 0.03, 0.2 - i * 0.02, 0.05), (2.3, -0.4, 0.025 + i * 0.05), M_SPINES, rot=(0, 0, math.radians(random.uniform(-12, 12))))
     tone(o, LEATHERS[i * 3])
 
-# a brass picture lamp over each book: they light the four covers
+# a brass picture lamp over each book: they light the covers (LampP<n>: Lamp5 and Lamp6 are the sconces)
 for i, x in enumerate(BOOK_XS):
-    cyl(f"Lamp{i + 1}_Arm", 0.008, 0.2, (x, front + 0.06, FILLER_SHELVES[2] - SHELF_T - 0.02), M_BRASS, verts=8, rot=(math.radians(90), 0, 0))
-    cyl(f"Lamp{i + 1}_Hood", 0.04, 0.34, (x, front - 0.04, FILLER_SHELVES[2] - SHELF_T - 0.03), M_BRASS, verts=16, rot=(0, math.radians(90), 0))
+    cyl(f"LampP{i + 1}_Arm", 0.008, 0.2, (x, front + 0.06, FILLER_SHELVES[2] - SHELF_T - 0.02), M_BRASS, verts=8, rot=(math.radians(90), 0, 0))
+    cyl(f"LampP{i + 1}_Hood", 0.04, 0.30, (x, front - 0.04, FILLER_SHELVES[2] - SHELF_T - 0.03), M_BRASS, verts=16, rot=(0, math.radians(90), 0))
 # wall sconces either side of the bookcase
-for i, x in enumerate([-(CASE_W / 2 + 0.55), CASE_W / 2 + 0.55]):
+for i, x in enumerate([-(CASE_W / 2 + 0.4), CASE_W / 2 + 0.4]):
     box(f"Lamp{i + 5}_Plate", (0.1, 0.02, 0.18), (x, hy - 0.01, 1.85), M_BRASS)
     lathe(f"Lamp{i + 5}_Shade", [(0.09, 1.9), (0.085, 1.91), (0.045, 2.04), (0.0, 2.045)], (x, hy - 0.14, 0), M_SHADE)
     cyl(f"Lamp{i + 5}_Arm", 0.008, 0.12, (x, hy - 0.07, 1.86), M_BRASS, verts=8, rot=(math.radians(90), 0, 0))
@@ -487,8 +490,8 @@ def spot(name, loc, aim, watts, angle=60, color=(1.0, 0.80, 0.55)):
     lo.rotation_euler = (Vector(aim) - Vector(loc)).to_track_quat('-Z', 'Y').to_euler(); return lo
 point("Lamp0_Light", (TX, TY, LZ + 0.22), 70)
 for i, x in enumerate(BOOK_XS):
-    spot(f"Lamp{i + 1}_Light", (x, front - 0.07, FILLER_SHELVES[2] - SHELF_T - 0.06), (x, hy - 0.15, DISPLAY_Z + 0.22), 30, angle=80)
-for i, x in enumerate([-(CASE_W / 2 + 0.55), CASE_W / 2 + 0.55]):
+    spot(f"LampP{i + 1}_Light", (x, front - 0.07, FILLER_SHELVES[2] - SHELF_T - 0.06), (x, hy - 0.15, DISPLAY_Z + 0.19), 24, angle=70)
+for i, x in enumerate([-(CASE_W / 2 + 0.4), CASE_W / 2 + 0.4]):
     point(f"Lamp{i + 5}_Light", (x, hy - 0.16, 1.96), 22)
 moon = bpy.data.lights.new("WindowLight", 'AREA'); moon.energy = 40; moon.color = (0.55, 0.68, 1.0); moon.size = 1.2
 mo = bpy.data.objects.new("WindowLight", moon); mo.location = (hx + 0.3, WIN_Y, 1.7); mo.rotation_euler = (0, math.radians(-90), 0); link(mo)
