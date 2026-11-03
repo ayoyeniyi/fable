@@ -1,0 +1,6 @@
+<!-- Keep Fable's own code whole under High managed stripping. Newtonsoft builds Fable's data classes (service
+     replies, packages, saved state, Peek models) by reflection, so the stripper cannot see they are used and would
+     remove their constructors and properties: replies then read as empty and requests go out as "{}". -->
+<linker>
+  <assembly fullname="Assembly-CSharp" preserve="all"/>
+</linker>

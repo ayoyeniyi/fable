@@ -334,5 +334,6 @@ Poll `Describe()` until it reaches the state you expect; don't rely on fixed sle
   - `PerformanceTestRun*`;
   - `.utmp/`;
   - `runInBackground` in `ProjectSettings.asset`.
+- **Android builds use High managed stripping.** Newtonsoft builds Fable's data classes by reflection, so the stripper removed their constructors and the getters of anonymous types. On the headset (never in the editor) request bodies went out as `{}` and replies could not be read: Peek failed with `book "" is not one of …`, and chapter preparation either failed with `unknown book ""` or re-sent the same request forever. Fixed on 2026-11-03 by `Assets/link.xml`, which keeps `Assembly-CSharp` whole, and by building request bodies with `JObject`. Verified on the headset: chapter preparation now requests, polls and settles. Any new JSON type in Fable's own code is covered by `link.xml`, but a type in a new assembly (asmdef) needs adding to it.
 - GitHub rejects files over 100 MB and git-lfs is not installed; keep textures as separate files.
 - Never write to a folder named `build/` in this owner's environment.

@@ -260,7 +260,7 @@ namespace Fable
 
         IEnumerator Request(ChapterRecord r)
         {
-            var body = JsonConvert.SerializeObject(new { book = r.Book, chapter = r.Chapter, completed = r.Completed });
+            var body = new Newtonsoft.Json.Linq.JObject { ["book"] = r.Book, ["chapter"] = r.Chapter, ["completed"] = r.Completed }.ToString(Formatting.None);
             using var req = new UnityWebRequest(ServiceUrl + "/chapters/prepare", "POST");
             req.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(body)); req.downloadHandler = new DownloadHandlerBuffer();
             req.SetRequestHeader("Content-Type", "application/json"); req.timeout = 6;
@@ -289,7 +289,7 @@ namespace Fable
         /// Take a status answer. Returns true when the package is built and should be fetched.
         bool Apply(ChapterRecord r, string json)
         {
-            Status s; try { s = JsonConvert.DeserializeObject<Status>(json); } catch { return false; }
+            Status s; try { s = JsonConvert.DeserializeObject<Status>(json); } catch (Exception e) { Debug.LogWarning($"[Fable] experiences: {r.Chapter}: unreadable reply from the service ({e.Message})"); return false; }
             var before = r.Job + r.ServerState + r.Stage;
             r.ServerState = s.state; r.Stage = s.stage; r.Attempts = s.attempts;
             switch (s.state)
@@ -335,7 +335,7 @@ namespace Fable
             Debug.Log($"[Fable] experiences: {r.Chapter} ready on the headset {r.HeadsetSeconds:F0} s after it was first asked for (chapter {(r.Completed ? "completed" : "still locked")})");
             Save();
             if (r.Completed) BecameAvailable?.Invoke(r);
-            var body = JsonConvert.SerializeObject(new { chapter = r.Chapter, headsetSeconds = r.HeadsetSeconds });
+            var body = new Newtonsoft.Json.Linq.JObject { ["chapter"] = r.Chapter, ["headsetSeconds"] = r.HeadsetSeconds }.ToString(Formatting.None);
             using var d = new UnityWebRequest(ServiceUrl + "/chapters/delivered", "POST") { uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(body)), downloadHandler = new DownloadHandlerBuffer() };
             d.SetRequestHeader("Content-Type", "application/json"); d.timeout = 5; yield return d.SendWebRequest();
         }

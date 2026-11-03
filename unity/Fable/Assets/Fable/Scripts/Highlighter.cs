@@ -378,7 +378,7 @@ namespace Fable
             generatingText = $"Making a clay model of “{Phrase.Trim()}”…\n<size=80%><i>Claude is shown the book up to the end of your highlight, and nothing after it.</i></size>";
             ShowCard("Peek", generatingText);
             PeekStatus = "generating"; peekStarted = t0; nextTick = Time.time + 1f;
-            var body = JsonConvert.SerializeObject(new { book = Reader.Book.Slug, sentenceId = LastSentence, phrase = Phrase.Trim(), waitSeconds = 8 });
+            var body = new Newtonsoft.Json.Linq.JObject { ["book"] = Reader.Book.Slug, ["sentenceId"] = LastSentence, ["phrase"] = Phrase.Trim(), ["waitSeconds"] = 8 }.ToString(Formatting.None);
             while (Time.realtimeSinceStartup - t0 < PeekWaitSeconds)
             {
                 using var req = new UnityWebRequest(url.TrimEnd('/') + "/peek", "POST");
