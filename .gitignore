@@ -31,3 +31,7 @@ demo/public/stills/
 # the hosted service address (carries the access key): written only during a build
 unity/Fable/Assets/Resources/fable-service.txt
 unity/Fable/Assets/Resources/fable-service.txt.meta
+
+# generated rooms bundled for Fable's later books: copied from content/rooms by FableBuild.SyncData
+unity/Fable/Assets/StreamingAssets/rooms/
+unity/Fable/Assets/StreamingAssets/rooms.meta

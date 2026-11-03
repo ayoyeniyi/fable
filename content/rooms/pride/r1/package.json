@@ -1,0 +1,154 @@
+{
+  "book": "pride",
+  "bytes": 5435459,
+  "chapter": "pride:c07",
+  "entrance": [
+    -1.2999999523162842,
+    0,
+    0.5
+  ],
+  "files": [
+    {
+      "path": "room.gltf",
+      "sha256": "bc5d50b46b78acaa112e4aa8826fd7dd45fd30082f3663ca692911f9fcc4aaf2",
+      "size": 26280
+    },
+    {
+      "path": "room.bin",
+      "sha256": "e0d1204cf174de0aed6a5ac1443760cc2853b5a18f497e39819dea448f0e7af7",
+      "size": 3203692
+    },
+    {
+      "path": "textures/T_MESH_bark.jpg",
+      "sha256": "7b5803297bbddeea63dd7ab4e235d88f5c2c438b5986e06d26750ad288ae92c1",
+      "size": 119948
+    },
+    {
+      "path": "textures/T_MESH_dryblades.jpg",
+      "sha256": "6c2154c87ea61b983416c4937b01d6a18bddde894418af3a2698e408096cfd50",
+      "size": 834
+    },
+    {
+      "path": "textures/T_MESH_far_hills.jpg",
+      "sha256": "b8c2be307a033fcd35371a177c33d1d5a127f333437a115c813f42672a053195",
+      "size": 121174
+    },
+    {
+      "path": "textures/T_MESH_farleaf_sprays.jpg",
+      "sha256": "e788e6037c556383bce7ea5c57663965d6c9267a13e8a3b41c0d49896f56fef4",
+      "size": 831
+    },
+    {
+      "path": "textures/T_MESH_farleaf.jpg",
+      "sha256": "506f7b82daf8cfef9c2ed7a74e956aa0fdc2d704e91979873b8c42bdc699b0d8",
+      "size": 271972
+    },
+    {
+      "path": "textures/T_MESH_glass.jpg",
+      "sha256": "5727d49a761e45d16f855af2f3b21699e578bbf5548105e16a30074148671b18",
+      "size": 26198
+    },
+    {
+      "path": "textures/T_MESH_hedgeleaf_sprays.jpg",
+      "sha256": "701eca35c723f690bcb94ae5dc36291bd1a255509062044564f8325cd7d0bc8b",
+      "size": 831
+    },
+    {
+      "path": "textures/T_MESH_hedgeleaf.jpg",
+      "sha256": "7e00469a79b36fdd69a9b14c13db31b8b8b8391e0ab66d47af62d47c1deabb20",
+      "size": 58810
+    },
+    {
+      "path": "textures/T_MESH_hedgeleaf2_sprays.jpg",
+      "sha256": "443745b859d636e377b157a2a8e50a6ea5a53d0fc8d39bc0a7065ee40d340d50",
+      "size": 831
+    },
+    {
+      "path": "textures/T_MESH_hedgeleaf2.jpg",
+      "sha256": "7776b2a20b284bf9ac7a86676667e200a32bd3c17a50a4a077700da5933936c3",
+      "size": 65048
+    },
+    {
+      "path": "textures/T_MESH_house_interior.jpg",
+      "sha256": "4bbf093666141aa9b330666a9dfe39b2e7bf43f2b9f033c24bcbffa810de2642",
+      "size": 66881
+    },
+    {
+      "path": "textures/T_MESH_houseroof.jpg",
+      "sha256": "a1af6dff90bd5a06d2775b5f394d04d9ab7bc0ac6c1893aa29f11cd0cc276ffe",
+      "size": 41212
+    },
+    {
+      "path": "textures/T_MESH_housewall.jpg",
+      "sha256": "7da30bddeb17c9d9a4080cea0125d674954e7cb02228d8a403e6ba6b4937f61d",
+      "size": 188426
+    },
+    {
+      "path": "textures/T_MESH_iron.jpg",
+      "sha256": "b590efc573d97e63197242f2dcb2b7018adb69be0405c1f92b27e6d4ec504318",
+      "size": 1220
+    },
+    {
+      "path": "textures/T_MESH_meadow.jpg",
+      "sha256": "9a036e7506e42c730e5bdca94029a5403a526da4b7a4c0027dbd4d2184b1b22d",
+      "size": 149365
+    },
+    {
+      "path": "textures/T_MESH_mud.jpg",
+      "sha256": "68d764527a38c429d79ed24b0a56a5f4cb023b4b9a116ddac9cb72c8f4f84be7",
+      "size": 25114
+    },
+    {
+      "path": "textures/T_MESH_oldwood.jpg",
+      "sha256": "524b0b547b127c87c1b49c0babbb4372a2a83d4be95dc89eaa47826e1716478e",
+      "size": 13593
+    },
+    {
+      "path": "textures/T_MESH_puddle.jpg",
+      "sha256": "41f11d0d619482a2404b77c6f7f439855ec3dab01c3f8f6c0e6e691f214cad90",
+      "size": 4120
+    },
+    {
+      "path": "textures/T_MESH_seedheads.jpg",
+      "sha256": "0db1a28034a3299f3eac3ec1958669e6fd90df7e607450cc0b8c1521d4ecd3a6",
+      "size": 834
+    },
+    {
+      "path": "textures/T_MESH_stone.jpg",
+      "sha256": "3621ac3e995a9120791ad74b5c11e05f65d93d9797a4ed76c7ff3dc8d16b7f2b",
+      "size": 1675
+    },
+    {
+      "path": "textures/T_MESH_trim.jpg",
+      "sha256": "df20db26461319ac6c361957bd53ec605c18f8eba3f99dbed80d5a49324e70b5",
+      "size": 216444
+    },
+    {
+      "path": "textures/T_MESH_wetgrass.jpg",
+      "sha256": "e3684395e7e2a9ee9510cfff364e43072399265dd4b0a2ddf2a49b17cd5bc480",
+      "size": 833
+    },
+    {
+      "path": "textures/T_SkyDome.jpg",
+      "sha256": "1fb5e0132962746952a3b0649db29649f69b39a167db98d4c0caac5dc20cfc5d",
+      "size": 43831
+    },
+    {
+      "path": "thumb.png",
+      "sha256": "8b4ab685cada5b03423faf9d563a20fa2d01f269f14ec73ca370b5c8d2853f11",
+      "size": 785462
+    }
+  ],
+  "look": [
+    0.5,
+    14,
+    1.399999976158142
+  ],
+  "meshes": 23,
+  "place": "Open Hertfordshire farmland in the late eighteenth century: a footpath crosses one hedged field after another, with a weathered wooden stile set into the hedgerow ahead. The ground is soft and muddy, and broad puddles in the cart ruts and furrows reflect the sky. Wet grass bends along the path. Farther off, across the last field, the large country house of Netherfield stands within view. Behind the reader the path leads back towards the small market town of Meryton, a mile or two away. Rooks sit in the bare hedgerow trees, and the air is washed clean after a night of steady rain.",
+  "room": 1,
+  "title": "The fields to Netherfield after rain",
+  "triangles": 56850,
+  "version": 1,
+  "why": "The three-mile walk across rain-soaked fields is the most vivid outdoor landscape in the opening, quiet and open once the walker has passed."
+}

@@ -1,0 +1,219 @@
+{
+  "book": "pride",
+  "bytes": 2568482,
+  "chapter": "pride:c08",
+  "entrance": [
+    0,
+    -2.200000047683716,
+    0
+  ],
+  "files": [
+    {
+      "path": "room.gltf",
+      "sha256": "a6ebc576908143e26a462f5ee953696ad2f86011dc6acf6723898fd66b47bbe8",
+      "size": 40554
+    },
+    {
+      "path": "room.bin",
+      "sha256": "ad95bf3444853967fae431836830e9ead215fccdc5d72343b59cb3cbde304c24",
+      "size": 1632260
+    },
+    {
+      "path": "textures/T_MESH_baize.jpg",
+      "sha256": "fd5d32f6d36484e0ec79008f79fb9b272629f1705f4b1ccf2aa64271f0a71767",
+      "size": 1251
+    },
+    {
+      "path": "textures/T_MESH_book_green.jpg",
+      "sha256": "a349e8c466ae65c5e143c47e8b47a879d9b6686a67551ef9f24a4123f0196f22",
+      "size": 4168
+    },
+    {
+      "path": "textures/T_MESH_book_red.jpg",
+      "sha256": "b4272e930b0ab4118e935e1ec318b9453b30e786eb3506d4f4715950ed009a14",
+      "size": 4737
+    },
+    {
+      "path": "textures/T_MESH_book_tan.jpg",
+      "sha256": "74b494df5a109a53e103336fcc5604ec11ea3bbe9c4bfd5a1bda43f8c6ad575b",
+      "size": 5621
+    },
+    {
+      "path": "textures/T_MESH_brass.jpg",
+      "sha256": "212b456e67eb63694a1e110730afc623ff29c2e74a59f8201e899ea3f9144765",
+      "size": 1980
+    },
+    {
+      "path": "textures/T_MESH_candle_flame.jpg",
+      "sha256": "eeec240735c81161f08ef26d812c4b43dd0f8c9a616b9742bdfc2e7faaa4c28a",
+      "size": 869
+    },
+    {
+      "path": "textures/T_MESH_canvas_landscape.jpg",
+      "sha256": "e8924c6fa2cf122925b27a86103b187e07faf10225353ab07f4e70902efb8c5a",
+      "size": 1375
+    },
+    {
+      "path": "textures/T_MESH_canvas_portrait.jpg",
+      "sha256": "46ad231048bc8696f9e1482d1132c0837a5fba469a49362f4b095c1cb8cd19bb",
+      "size": 1346
+    },
+    {
+      "path": "textures/T_MESH_canvas_sky.jpg",
+      "sha256": "bd26ccffd0455494b87ccc30ebd4d060e3d6362c349cbf2307e8a89a11c7b339",
+      "size": 1473
+    },
+    {
+      "path": "textures/T_MESH_cards.jpg",
+      "sha256": "956d03668f7f0a5b97bbea9ec853fcb98374a83dfa927b1dadddc9aa898ae96e",
+      "size": 2452
+    },
+    {
+      "path": "textures/T_MESH_cast_iron.jpg",
+      "sha256": "e213410855b6d62eac16a3a7ab80f75a56eb84dc279a72c8d8278f4030ba5ade",
+      "size": 1691
+    },
+    {
+      "path": "textures/T_MESH_ceiling.jpg",
+      "sha256": "88813b227e8c2bbe811836a67fa4d6fcb7c35247994ec8fe0f722a708e19431c",
+      "size": 9731
+    },
+    {
+      "path": "textures/T_MESH_chair_fabric.jpg",
+      "sha256": "e68eb7d88acf91c99eb047b911b2c43deedbcc748518b1b02fc5583534b8c6df",
+      "size": 4094
+    },
+    {
+      "path": "textures/T_MESH_china.jpg",
+      "sha256": "7b210475766395986939f4cf766dedab8629be9a46d414c5b559e0d12097bc3d",
+      "size": 2400
+    },
+    {
+      "path": "textures/T_MESH_counters.jpg",
+      "sha256": "84a2ec1ac93427136f0b922be5f6d5988a05a6a18020f8c1637bf8072aa0886c",
+      "size": 2584
+    },
+    {
+      "path": "textures/T_MESH_curtain.jpg",
+      "sha256": "42be60ce80a42b43fb2a95d12e5dad24189796ee2b8badc0d72197e9cae8f7ca",
+      "size": 3270
+    },
+    {
+      "path": "textures/T_MESH_cushion.jpg",
+      "sha256": "2bd92a08794b7353892c18598df18f737661999c4d9cec0404f1a68bbcc5ed4b",
+      "size": 1876
+    },
+    {
+      "path": "textures/T_MESH_fire.jpg",
+      "sha256": "34dfe07d93ea4c30fa9b8b4242389bb9752c8e25d918fbdd3f501f11b1d454c5",
+      "size": 1304
+    },
+    {
+      "path": "textures/T_MESH_floor.jpg",
+      "sha256": "0fc89435ccc849052cf9dee896f77a144d715d1db01ff4d7b6d04937a00ee5f5",
+      "size": 9875
+    },
+    {
+      "path": "textures/T_MESH_gilt.jpg",
+      "sha256": "aa89a3d25e6be670c80189d3d86d8bf155164c88121481e39e24db06da39f617",
+      "size": 5491
+    },
+    {
+      "path": "textures/T_MESH_glass.jpg",
+      "sha256": "cb3b8bc4f719a83d3df7fa808ae61050a2f0b8b1827e8c7f2924b88df2db3ea0",
+      "size": 2041
+    },
+    {
+      "path": "textures/T_MESH_hearthstone.jpg",
+      "sha256": "dcca43187d5760291fa54117ccc451f544efb6f4f7e5939eb69651437f93a86a",
+      "size": 1394
+    },
+    {
+      "path": "textures/T_MESH_joinery.jpg",
+      "sha256": "ee6e0adbdb5888a1424b91ea25874b66cff08a93ee03401c579958b2ec865bdd",
+      "size": 42717
+    },
+    {
+      "path": "textures/T_MESH_mahogany.jpg",
+      "sha256": "ea995542f038244f2587666830696fdca9bbc3c1573e54df2a31a0c627409b79",
+      "size": 13005
+    },
+    {
+      "path": "textures/T_MESH_marble.jpg",
+      "sha256": "0da40da31a773e3c600eb0aac6d41e0f9dab2b9fe8f0ebe7b899ac1af697722c",
+      "size": 6288
+    },
+    {
+      "path": "textures/T_MESH_mirror.jpg",
+      "sha256": "6658c957fd3fc3849c4581045da7b0783564c59988aa529f8e08bf2a70bde08c",
+      "size": 1506
+    },
+    {
+      "path": "textures/T_MESH_pages.jpg",
+      "sha256": "47de2834ffc8ca7915628d1c104ca782edeeacb7b565da4ee81f44bdd6b652f1",
+      "size": 2390
+    },
+    {
+      "path": "textures/T_MESH_paper.jpg",
+      "sha256": "e67f721075ad1eba6f5194601369c60ed56fc2f95cbb076d85f0fa16a1e3f286",
+      "size": 1602
+    },
+    {
+      "path": "textures/T_MESH_passage.jpg",
+      "sha256": "a3ee538474a9e7cfd74f8a5eee79ac22c567b66f55c7dd3a73851cbc29bd9b74",
+      "size": 3784
+    },
+    {
+      "path": "textures/T_MESH_rug.jpg",
+      "sha256": "9875f000c2d05ccb4605e33c13d7da3882b5f6e8aac7f6fc720d3dad1ce69695",
+      "size": 3588
+    },
+    {
+      "path": "textures/T_MESH_rug_border.jpg",
+      "sha256": "0997d5b7ef19f218672e2663e2c1b055e8ddc8e8c720355a023567f0be313bf2",
+      "size": 3763
+    },
+    {
+      "path": "textures/T_MESH_rug_field.jpg",
+      "sha256": "add04ba107fd466117d6565f2ebcebcd197dcbdf7390af78032ab7f3f70ecb6a",
+      "size": 1531
+    },
+    {
+      "path": "textures/T_MESH_sofa_silk.jpg",
+      "sha256": "45c711100ad6859a0918266ddcb101438c238316bf22addfcb35caa762274402",
+      "size": 5631
+    },
+    {
+      "path": "textures/T_MESH_walls.jpg",
+      "sha256": "cd3b4a76b9e37232a42c8292a98feedb6cb95ef9aaad78babc2437e4533b79c6",
+      "size": 30607
+    },
+    {
+      "path": "textures/T_MESH_wax.jpg",
+      "sha256": "d66bcb2677cf56d94e18f8c26bb81ef323b163043f97293e43c0cc2a3ab39e4c",
+      "size": 2407
+    },
+    {
+      "path": "textures/T_SkyDome.jpg",
+      "sha256": "366a93af48214a3c994807be0922adc98d7ae9d2909469cd6daf62d6f543d7e4",
+      "size": 20023
+    },
+    {
+      "path": "thumb.png",
+      "sha256": "98a1e53d724e9248512ddd5f3a3a1cad36fe8ed2662d2975203b7b6c65713f8b",
+      "size": 685803
+    }
+  ],
+  "look": [
+    0,
+    3.5,
+    1.4500000476837158
+  ],
+  "meshes": 36,
+  "place": "A spacious, elegantly furnished drawing-room in a rented country house of the period. Tall windows are curtained against the night, and candlelight falls on polished wood and pale painted walls. In the centre stands a card table set for loo, with cards and counters left mid-game and chairs pushed back. To one side is a smaller table where a few books lie in a loose stack: the modest collection of a household that reads little. Upholstered sofas and chairs are arranged for company. Through a door, a passage leads towards the dining-parlour and the stairs to the bedrooms above. The house is hushed, as if everyone has just stepped out.",
+  "room": 2,
+  "title": "The Netherfield drawing-room",
+  "triangles": 28862,
+  "version": 1,
+  "why": "This room hosts the evening of cards and books where the opening's sharpest conversation takes place, and it suits a reader settling down with a page."
+}

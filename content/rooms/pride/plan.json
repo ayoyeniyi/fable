@@ -1,0 +1,44 @@
+[
+  {
+    "title": "The fields to Netherfield after rain",
+    "place": "Open Hertfordshire farmland in the late eighteenth century: a footpath crosses one hedged field after another, with a weathered wooden stile set into the hedgerow ahead. The ground is soft and muddy, and broad puddles in the cart ruts and furrows reflect the sky. Wet grass bends along the path. Farther off, across the last field, the large country house of Netherfield stands within view. Behind the reader the path leads back towards the small market town of Meryton, a mile or two away. Rooks sit in the bare hedgerow trees, and the air is washed clean after a night of steady rain.",
+    "why": "The three-mile walk across rain-soaked fields is the most vivid outdoor landscape in the opening, quiet and open once the walker has passed.",
+    "chapter": "pride:c07",
+    "kind": "exterior",
+    "time": "early morning",
+    "weather": "overcast, damp after heavy rain",
+    "excerpts": [
+      "Jane had not been gone long before it rained hard.",
+      "The rain continued the whole evening without intermission",
+      "crossing field after field at a quick pace, jumping over stiles and springing over puddles, with impatient activity, and finding herself at last within view of the house"
+    ]
+  },
+  {
+    "title": "The Netherfield drawing-room",
+    "place": "A spacious, elegantly furnished drawing-room in a rented country house of the period. Tall windows are curtained against the night, and candlelight falls on polished wood and pale painted walls. In the centre stands a card table set for loo, with cards and counters left mid-game and chairs pushed back. To one side is a smaller table where a few books lie in a loose stack: the modest collection of a household that reads little. Upholstered sofas and chairs are arranged for company. Through a door, a passage leads towards the dining-parlour and the stairs to the bedrooms above. The house is hushed, as if everyone has just stepped out.",
+    "why": "This room hosts the evening of cards and books where the opening's sharpest conversation takes place, and it suits a reader settling down with a page.",
+    "chapter": "pride:c08",
+    "kind": "interior",
+    "time": "late evening",
+    "weather": "still night",
+    "excerpts": [
+      "On entering the drawing-room, she found the whole party at loo, and was immediately invited to join them",
+      "walked towards a table where a few books were lying.",
+      "she could suit herself perfectly with those in the room."
+    ]
+  },
+  {
+    "title": "Mr. Bennet's library at Longbourn",
+    "place": "A modest gentleman's library in a family house in the village of Longbourn. Shelves of well-used books line the walls, and a writing table near the window holds an open volume and papers. Two chairs sit facing each other, where a short morning call might be received. Through the window, daylight falls on the lane and the neighbourhood beyond. Upstairs, other windows look out over the same approach to the house. It is a room kept for quiet, set apart from the bustle of the rest of the household.",
+    "why": "The father's book-lined retreat, where callers are received and where he loses track of time over a book, is a natural refuge for a reader.",
+    "chapter": "pride:c03",
+    "kind": "interior",
+    "time": "mid-afternoon",
+    "weather": "soft grey daylight",
+    "excerpts": [
+      "Mr. Bingley returned Mr. Bennet's visit, and sat about ten minutes with him in his library.",
+      "they had the advantage of ascertaining, from an upper window, that he wore a blue coat and rode a black horse.",
+      "With a book, he was regardless of time"
+    ]
+  }
+]

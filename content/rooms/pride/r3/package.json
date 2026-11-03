@@ -1,0 +1,249 @@
+{
+  "book": "pride",
+  "bytes": 5282189,
+  "chapter": "pride:c03",
+  "entrance": [
+    0,
+    -1.600000023841858,
+    0
+  ],
+  "files": [
+    {
+      "path": "room.gltf",
+      "sha256": "ebefc3c7c4eff589f8088743f63a832c2147505478a6d77bae5c075f3c5e1536",
+      "size": 47402
+    },
+    {
+      "path": "room.bin",
+      "sha256": "1438a281d3d6ff14fdfc85f1f0b5777b6c171070efeb15315c7c7b17b44f1499",
+      "size": 3268492
+    },
+    {
+      "path": "textures/T_MESH_bark.jpg",
+      "sha256": "69a33b8066e5faa94dfa847472c011764230d01f15cf99fc14c343b8c00d647b",
+      "size": 48592
+    },
+    {
+      "path": "textures/T_MESH_blades.jpg",
+      "sha256": "77449ecd9433f8d8d837822b2fee3d20655c07e2f56ab63a3342239011de5168",
+      "size": 837
+    },
+    {
+      "path": "textures/T_MESH_boards.jpg",
+      "sha256": "1399e3e2e94af45826984d002c98820727a5a6d5b1105617f234d65ed681a901",
+      "size": 12975
+    },
+    {
+      "path": "textures/T_MESH_book_blue.jpg",
+      "sha256": "ad9287efa1c02585f3337b48020ca65959d179adfd0e6e6bae46259bf7779ce7",
+      "size": 12984
+    },
+    {
+      "path": "textures/T_MESH_book_brown.jpg",
+      "sha256": "9fdfe2013094b291495f1955ce73e969fa7f31005f4550089a3560265389dd76",
+      "size": 5221
+    },
+    {
+      "path": "textures/T_MESH_book_calf.jpg",
+      "sha256": "528efc97e05db7637e6a8ef50210dcee505a8d5c6237e745969166c1c3fb36ce",
+      "size": 19730
+    },
+    {
+      "path": "textures/T_MESH_book_green.jpg",
+      "sha256": "e8347e2e5a2b1a67cd94d8f1ad01336c76141ec52f5eeb742b2405fc08101f9f",
+      "size": 16609
+    },
+    {
+      "path": "textures/T_MESH_book_red.jpg",
+      "sha256": "2a323b7b25607d0a8b138f985da4f044ba5681f2c4ad58331e6524bf855e730f",
+      "size": 19415
+    },
+    {
+      "path": "textures/T_MESH_book_tan.jpg",
+      "sha256": "5e10b1a4c94cd91431a58ed9d66fa14f907d7e4fe33684d94aeba7dee2d1fdd4",
+      "size": 22833
+    },
+    {
+      "path": "textures/T_MESH_brass.jpg",
+      "sha256": "df626375fd64ce11870009bcaf1614a26b08d2573c49b3a232954cc77e991b52",
+      "size": 2346
+    },
+    {
+      "path": "textures/T_MESH_candle_flame.jpg",
+      "sha256": "eeec240735c81161f08ef26d812c4b43dd0f8c9a616b9742bdfc2e7faaa4c28a",
+      "size": 869
+    },
+    {
+      "path": "textures/T_MESH_cast_iron.jpg",
+      "sha256": "574fddb77709b0e38d1cf1df3b54e240c2e3c0940dbe65e42ecccb598592451e",
+      "size": 1829
+    },
+    {
+      "path": "textures/T_MESH_ceiling.jpg",
+      "sha256": "a0d61f765b16f6140b5752988d4509e9e5232cf5c969096ea4b00df78a51f0fc",
+      "size": 12255
+    },
+    {
+      "path": "textures/T_MESH_china.jpg",
+      "sha256": "3fa0bd3307ce5ee08c594d280300f530b6b8c01a1dad9139166fc7f44e4d9442",
+      "size": 2589
+    },
+    {
+      "path": "textures/T_MESH_cottage_wall.jpg",
+      "sha256": "b5e9b659080cda4684c86cc6d5ebe0365742a3c8ee0ab05dda5ab9647f711671",
+      "size": 79717
+    },
+    {
+      "path": "textures/T_MESH_curtain.jpg",
+      "sha256": "f1f63b778470958cf36ef12a8edc42425a73565ca9ac2aab0df9a8d263d8967a",
+      "size": 4181
+    },
+    {
+      "path": "textures/T_MESH_desk_leather.jpg",
+      "sha256": "0b041188f010d04f4aafe45f86edc941c129982bc09c6b04a70d647d68f533b8",
+      "size": 1382
+    },
+    {
+      "path": "textures/T_MESH_far_hills.jpg",
+      "sha256": "d969926a84cc81e280594f880b9a9ee8b0cfc086640f349b9bafaad1ff4f00a1",
+      "size": 130718
+    },
+    {
+      "path": "textures/T_MESH_fire.jpg",
+      "sha256": "4c4c8ef9f6c2c0edcc79cdeb2facfbacfc067146401f0cd765ad8ad2beaf86fe",
+      "size": 1115
+    },
+    {
+      "path": "textures/T_MESH_gilt.jpg",
+      "sha256": "532c658976809b69b6b4119c7b7400abf7767a4415501f5cedf2a30ac9a043a2",
+      "size": 5513
+    },
+    {
+      "path": "textures/T_MESH_glass.jpg",
+      "sha256": "f7d431ce01e70dd412c97db0a9c7811432513dec915a74000787ad81ce12b535",
+      "size": 15043
+    },
+    {
+      "path": "textures/T_MESH_grass.jpg",
+      "sha256": "f191b1103ed8c86b465853b7c3b55fd05e27444a26117f55335002694f842ddb",
+      "size": 151977
+    },
+    {
+      "path": "textures/T_MESH_hearth_stone.jpg",
+      "sha256": "967b60e92f0dab7a16ce527e220499cd7f67a1414418918a5cb8ea33e95a13df",
+      "size": 1399
+    },
+    {
+      "path": "textures/T_MESH_house_interior.jpg",
+      "sha256": "92df813cee574f86d3dcd4c752f55799b16a17d7294ab5993a189f0bfbdd3815",
+      "size": 6954
+    },
+    {
+      "path": "textures/T_MESH_lane.jpg",
+      "sha256": "de2a5df9108f5ab6cc565d8d107190f8aa172ed750fd5265534208dc8e64fdd0",
+      "size": 9778
+    },
+    {
+      "path": "textures/T_MESH_leaves_sprays.jpg",
+      "sha256": "30329f428c9a5c8c52a7664d1e5f1a52766352d76024d151e164fe0b51fbf8b4",
+      "size": 836
+    },
+    {
+      "path": "textures/T_MESH_leaves.jpg",
+      "sha256": "0cadb5d1786468e7d2b212d1bccefeb8024ac5cd967e9369ff12f35e6595715d",
+      "size": 297011
+    },
+    {
+      "path": "textures/T_MESH_mahogany.jpg",
+      "sha256": "f31c69975dbe80366d52048f064f3a64514c489eb5294dfb2276ad6001f39270",
+      "size": 39765
+    },
+    {
+      "path": "textures/T_MESH_marble.jpg",
+      "sha256": "c74bffefbe9652db8d65ade5a3824b4d0077bffc1f1ec7c1b93a6dfaaf42440d",
+      "size": 6333
+    },
+    {
+      "path": "textures/T_MESH_oak.jpg",
+      "sha256": "7a5743c7b9a420968391664f93d83a1ede414f3879bf1cc08c3fa7ec1065bd42",
+      "size": 13037
+    },
+    {
+      "path": "textures/T_MESH_pages.jpg",
+      "sha256": "89d914e9aa0e907aebdf93a09aeca430ae7bde302af6a8282dc199d67f313ccf",
+      "size": 2674
+    },
+    {
+      "path": "textures/T_MESH_paint_sky.jpg",
+      "sha256": "a0b3e59a98d804ac5f715f1773b22b1aeae358c35cc5c63e979282aa41bdb89a",
+      "size": 1592
+    },
+    {
+      "path": "textures/T_MESH_panel_paint.jpg",
+      "sha256": "fcea6b5a5e660dfb494548a9b6b866cdf8d79a7a9a0db0a0f28918458b4967af",
+      "size": 47531
+    },
+    {
+      "path": "textures/T_MESH_paper.jpg",
+      "sha256": "1f125feb09b5e1b1e25128eb8ed004b0f09a7e2e4adbabe842820b8c2dcbceff",
+      "size": 1698
+    },
+    {
+      "path": "textures/T_MESH_plaster.jpg",
+      "sha256": "bb342b3d259b9260b632ba3c1d3c5c8a9c85fbb155bcac7d3154d6c762ff8b86",
+      "size": 36249
+    },
+    {
+      "path": "textures/T_MESH_portrait.jpg",
+      "sha256": "5bc1a0bd7a7c001c44f033d90da19bb7b3aef013ad46cfc06c1d0cfe358ec017",
+      "size": 1444
+    },
+    {
+      "path": "textures/T_MESH_roof_tile.jpg",
+      "sha256": "a545776b414bc4749aeb6b4c9d54106216db1b118f02e31547ee29cc8992681b",
+      "size": 18586
+    },
+    {
+      "path": "textures/T_MESH_rug.jpg",
+      "sha256": "c57ed8a4cff8b876ec818a89696ab7ca6ca1c7b140f14df02bd20d522ef44331",
+      "size": 4731
+    },
+    {
+      "path": "textures/T_MESH_rug_border.jpg",
+      "sha256": "a9ebc12f2e5231ca9726cb2aabb17962a20e30040775d1854cb2cd9942c6ca78",
+      "size": 5106
+    },
+    {
+      "path": "textures/T_MESH_sash_paint.jpg",
+      "sha256": "0c1b7328a8ac9032f6d4a3311136411c3f1f99d93e2c9f344a4b47044ee34522",
+      "size": 144775
+    },
+    {
+      "path": "textures/T_MESH_upholstery.jpg",
+      "sha256": "c77cab433e04b1764146f0e6bf38e60648060a464200d719fb64013502434e45",
+      "size": 5177
+    },
+    {
+      "path": "textures/T_SkyDome.jpg",
+      "sha256": "e61a6163e7e4cfd2bd36e15674c8cb1dd1c0e4517920ac110eea50624e7daa60",
+      "size": 42158
+    },
+    {
+      "path": "thumb.png",
+      "sha256": "856780e1876b4db5cbffdfad7aa9ff56a6951ff77f4088e0848b79d5e7106f5a",
+      "size": 710731
+    }
+  ],
+  "look": [
+    0,
+    3.4000000953674316,
+    1.4500000476837158
+  ],
+  "meshes": 42,
+  "place": "A modest gentleman's library in a family house in the village of Longbourn. Shelves of well-used books line the walls, and a writing table near the window holds an open volume and papers. Two chairs sit facing each other, where a short morning call might be received. Through the window, daylight falls on the lane and the neighbourhood beyond. Upstairs, other windows look out over the same approach to the house. It is a room kept for quiet, set apart from the bustle of the rest of the household.",
+  "room": 3,
+  "title": "Mr. Bennet's library at Longbourn",
+  "triangles": 56186,
+  "version": 1,
+  "why": "The father's book-lined retreat, where callers are received and where he loses track of time over a book, is a natural refuge for a reader."
+}
