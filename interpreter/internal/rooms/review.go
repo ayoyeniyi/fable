@@ -76,16 +76,31 @@ func (s *Service) improve(ctx context.Context, j *Job, b *Book, st Setting, work
 		nout := filepath.Join(work, fmt.Sprintf("build-review-%d", round))
 		nres, err := s.Build(ctx, s.Root, sp, nout)
 		j.Timings[Building] += time.Since(t).Seconds()
-		if err != nil || !nres.OK {
-			why := ""
-			if err != nil {
-				why = err.Error()
+		if why := buildProblem(nres, err); why != "" {
+			// one repair, as for a first build: the revision is usually close (over budget, an object in the way)
+			log.Printf("rooms %s: review %d's revision failed its checks (%s); repairing it", j.Key(), round, why)
+			t = time.Now()
+			s.set(j, Scripting)
+			fixed, ferr := s.writeScript(ctx, b, st, revised, why, filepath.Join(work, fmt.Sprintf("answer-review-%d-repair.txt", round)))
+			j.Timings[Scripting] += time.Since(t).Seconds()
+			if ferr == nil {
+				sp = filepath.Join(work, fmt.Sprintf("room-review-%d-repair.py", round))
+				os.WriteFile(sp, []byte(fixed), 0o644)
+				t = time.Now()
+				s.set(j, Building)
+				nout = filepath.Join(work, fmt.Sprintf("build-review-%d-repair", round))
+				nres, err = s.Build(ctx, s.Root, sp, nout)
+				j.Timings[Building] += time.Since(t).Seconds()
+				why = buildProblem(nres, err)
+				revised = fixed
 			} else {
-				why = strings.Join(nres.Problems, "; ")
+				why = ferr.Error()
 			}
-			log.Printf("rooms %s: review %d's revision failed its checks (%s); keeping the previous room", j.Key(), round, why)
-			notes = append(notes, "  (this revision failed its checks and was not used: "+why+")")
-			break
+			if why != "" {
+				log.Printf("rooms %s: review %d's repaired revision failed too (%s); keeping the previous room", j.Key(), round, why)
+				notes = append(notes, "  (this revision failed its checks and was not used: "+why+")")
+				break
+			}
 		}
 		os.WriteFile(filepath.Join(nout, "script.py"), []byte(revised), 0o644)
 		log.Printf("rooms %s: review %d: revised (%d -> %d triangles)", j.Key(), round, res.Triangles, nres.Triangles)
@@ -135,4 +150,14 @@ func (s *Service) review(ctx context.Context, ia ImageAsker, b *Book, st Setting
 		return critique, "", fmt.Errorf("the review asked for a revision but gave no script")
 	}
 	return critique, revised, nil
+}
+
+func buildProblem(res BuildResult, err error) string {
+	if err != nil {
+		return err.Error()
+	}
+	if !res.OK {
+		return strings.Join(res.Problems, "; ")
+	}
+	return ""
 }

@@ -40,7 +40,13 @@ This document covers the generated ones.
       - Export an **unlit** glTF.
    3. **Repair.** Any problem (a script error with its line, a failed check) goes back to Claude with the script, and
       Claude writes a corrected one. Up to three attempts.
-   4. **Packaging.** `out/rooms/<book>/r<N>/` holds `room.gltf`, `room.bin`, `textures/*.jpg`, `thumb.png` (the check
+   4. **Review (Claude, up to two rounds; `internal/rooms/review.go`).** Claude is shown the passing room's five views
+      from the reader's eyes, rendered as the headset draws it (`preview_room.py`: unlit, baked textures). It lists
+      what most breaks the place's believability and either approves it or writes a revised script.
+      - A revision replaces the room only if it builds and passes the same checks. A failing revision gets one repair;
+        if that fails too, the previous room is kept. A review never makes a room fail.
+      - `--room-review N` sets the rounds (default 2); `--room-keep-work` keeps every round for comparison.
+   5. **Packaging.** `out/rooms/<book>/r<N>/` holds `room.gltf`, `room.bin`, `textures/*.jpg`, `thumb.png` (the check
       render from the reader's eyes) and `package.json`, which has the SHA-256 of every file. It is staged and
       swapped in whole.
 4. **Delivery.** The headset polls `GET /rooms/status`, fetches each finished room into
@@ -105,6 +111,32 @@ Two earlier attempts failed on the service's own bugs, both since fixed:
 
 The test room (`roomkit_example.py`, a river meadow) builds in about 65 s on an idle machine (bake 55 s):
 - 34k triangles, 9 meshes
+
+## Review and kit trial (2026-11-03)
+
+The same three *Pride and Prejudice* places, from the same plan, built with the old kit plus review (A) and with the
+new kit plus review (B). Blender renders of the exported rooms are compared side by side in a private artifact (the
+owner's); the renders are kept in `out/compare/`.
+
+| Room | A: old kit + 2 reviews | B: new kit + 2 reviews |
+|---|---|---|
+| Fields to Netherfield | 507 s, 45,290 tris | 464 s, 56,850 tris |
+| Netherfield drawing-room | 543 s, 7,152 tris | 370 s, 28,862 tris (2 attempts) |
+| Mr Bennet's library | 652 s, 45,230 tris | 512 s, 56,186 tris |
+
+- **Review** fixes mistakes and composition the checks cannot see. It found a footpath rendering black (faces
+  pointing down), a library door opening onto a meadow, the reader 2 m from a fireplace, blank pictures, and
+  oversaturated light.
+- **The kit** (hedges, walls, fences, stiles, gates, footpaths, Georgian houses, panelling, sash windows and
+  curtains, doors, fireplaces, Regency furniture, chandeliers) fixes how things are made. Review alone cannot get
+  past old parts.
+- **Still weak:**
+  - faceted tree crowns
+  - an orange cast in candlelit rooms
+  - a black bake patch on one floor
+  - dark edge lines on thin mouldings
+  - rooms over the 35k triangle target, though under the 65k limit
+- **Not yet run on the headset.**
 
 ## Limitations
 

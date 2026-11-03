@@ -76,9 +76,9 @@ func TestReviewRevisesThenApprovesAndPackagesTheRevision(t *testing.T) {
 	}
 }
 
-func TestFailedRevisionKeepsTheRoomThatPassed(t *testing.T) {
+func TestFailedRevisionGetsOneRepairAndNeverReplacesAPassingRoomWithAFailure(t *testing.T) {
 	rc := &reviewer{fakeClaude: fakeClaude{places: 1}}
-	b, _ := previewBuild("# revised")
+	b, scripts := previewBuild("# revised")
 	tmp := t.TempDir()
 	os.Symlink(filepath.Join(repoRoot(), "blender"), filepath.Join(tmp, "blender"))
 	s := NewService(tmp, rc, b)
@@ -90,5 +90,8 @@ func TestFailedRevisionKeepsTheRoomThatPassed(t *testing.T) {
 	gl, _ := os.ReadFile(filepath.Join(s.pkgDir("u-test", 1), "room.gltf"))
 	if strings.Contains(string(gl), "# revised") || len(gl) == 0 {
 		t.Fatal("a revision that failed its checks replaced the room")
+	}
+	if len(*scripts) != 3 {
+		t.Fatalf("built %d times, want the first room, the revision and one repair", len(*scripts))
 	}
 }
