@@ -5,12 +5,15 @@
 //	fable-interpreter serve     --addr :8787 [--wait 3s] [--warm]
 //	    POST /interpret {"sceneId","readingPosition","noCache","waitSeconds"} -> 200 script (X-Fable-Cache hit|miss) or 202 generating
 //	    POST /peek {"book","sentenceId","phrase","noCache","waitSeconds"} -> 200 mock model (X-Fable-Cache hit|miss) or 202
+//	    POST /translate {"text","language","bookId"?,"bookTitle"?,"sentenceId"?} -> 200 {"translation","language","model"} (X-Fable-Cache hit|miss) or 202
 //	    GET /health, GET /jobs, GET /passages
 //	    POST /chapters/prepare {"book","chapter","completed"}; GET /chapters/status|package|thumb?chapter=; GET /chapters/jobs
 //	    (chapter experiences, prepared in a persistent background queue: internal/chapters)
 //	fable-interpreter mock      --book alice --passage alice:c01.p013.s01 --phrase "golden key" [--out f.json] [--model id]
 //	    --passage may be a phrase in quotes instead of an id: the first sentence containing it
 //	fable-interpreter mock      --check content/library/clay/*.json     validate mock models against the schema rules
+//	fable-interpreter translate --text "..." --lang es [--book alice] [--model id]
+//	    only the highlighted text (and the book's title) is sent to Claude; --lang takes a code or a name
 package main
 
 import (
@@ -51,7 +54,7 @@ func loadManifest(root, sceneID string) (*script.Manifest, error) {
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, "usage: fable-interpreter validate|generate|serve|mock [flags]")
+		fmt.Fprintln(os.Stderr, "usage: fable-interpreter validate|generate|serve|mock|translate [flags]")
 		os.Exit(2)
 	}
 	root := os.Getenv("FABLE_ROOT")
@@ -150,6 +153,7 @@ func main() {
 		srv.DefaultWait = *wait
 		srv.Model = dir.Model()
 		srv.Peeker = dir
+		srv.Translator = dir
 		if *warm {
 			if os.Getenv("ANTHROPIC_API_KEY") == "" {
 				log.Printf("--warm ignored: ANTHROPIC_API_KEY is not set")
@@ -197,6 +201,8 @@ func main() {
 		}
 	case "mock":
 		runMock(root, os.Args[2:])
+	case "translate":
+		runTranslate(root, os.Args[2:])
 	default:
 		log.Fatalf("unknown command %q", os.Args[1])
 	}
@@ -280,4 +286,43 @@ func runMock(root string, args []string) {
 	} else if err := os.WriteFile(*out, js, 0o644); err != nil {
 		log.Fatal(err)
 	}
+}
+
+// runTranslate is the Translate petal from the shell: the highlight and the target language in, the translation out.
+func runTranslate(root string, args []string) {
+	fs := flag.NewFlagSet("translate", flag.ExitOnError)
+	text := fs.String("text", "", "the highlighted text")
+	lang := fs.String("lang", "es", "target language: a code (es, fr, pt, de, it, sn, nd, sw, zh, hi, ar) or its name")
+	slug := fs.String("book", "", "alice | oz | odyssey | gulliver (its title is sent for register; optional)")
+	model := fs.String("model", os.Getenv("FABLE_MODEL"), "Claude model id")
+	fs.Parse(args)
+	if strings.TrimSpace(*text) == "" {
+		log.Fatal("translate needs --text")
+	}
+	name := server.LanguageName(*lang)
+	if name == "" {
+		log.Fatalf("--lang %q is not one Translate knows", *lang)
+	}
+	title := ""
+	if *slug != "" {
+		b, err := books.Load(root, *slug)
+		if err != nil {
+			log.Fatal(err)
+		}
+		title = b.Title
+	}
+	if os.Getenv("ANTHROPIC_API_KEY") == "" {
+		log.Fatal("translate needs ANTHROPIC_API_KEY (see docs/HANDOVER.md: the key lives in ~/.config/fable/env, never in the repo)")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
+	defer cancel()
+	d := llm.New(*model)
+	t0 := time.Now()
+	out, err := d.Translate(ctx, server.NormaliseText(*text), name, title)
+	took := time.Since(t0)
+	if err != nil {
+		log.Fatalf("%v (after %s)", err, took.Round(time.Millisecond))
+	}
+	fmt.Fprintf(os.Stderr, "%s -> %s: %d chars in %s (model %s)\n", strings.TrimSpace(*text), name, len(out), took.Round(time.Millisecond), d.Model())
+	fmt.Println(out)
 }

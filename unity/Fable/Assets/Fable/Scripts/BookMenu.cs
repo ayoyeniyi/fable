@@ -6,7 +6,8 @@
 //              built for this chapter yet" if none fits. A locked chapter before the one being read can be marked
 //              as already read (it asks first), for a reader resuming a book read elsewhere.
 //   rooms      where this book can be read: its own room, the library
-//   sound      music on or off, room sound off / quiet / normal (saved in the reader's preferences)
+//   sound      music on or off, room sound off / quiet / normal, and the language Translate uses (saved in the
+//              reader's preferences)
 // Titles and pictures come only through ChapterExperiences.Title / Thumbnail, which refuse them for unfinished chapters.
 using System;
 using System.Collections.Generic;
@@ -68,7 +69,7 @@ namespace Fable
         void Rebuild()
         {
             Clear();
-            Text(body, Tab == "chapters" ? "Chapter experiences" : Tab == "rooms" ? "Reading rooms" : "Sound", 26, FontStyles.SmallCaps, Accent, TextAlignmentOptions.Left, new Vector2(-60, 316), new Vector2(430, 40));
+            Text(body, Tab == "chapters" ? "Chapter experiences" : Tab == "rooms" ? "Reading rooms" : "Sound and translation", 26, FontStyles.SmallCaps, Accent, TextAlignmentOptions.Left, new Vector2(-60, 316), new Vector2(430, 40));
             Button(body, "close ×", new Vector2(230, 316), new Vector2(100, 40), 17, "close", Close);
             float x = -190;
             foreach (var t in new[] { "chapters", "rooms", "sound" })
@@ -205,7 +206,11 @@ namespace Fable
                 int lv = i; var b = Button(body, names[i], new Vector2(20 + i * 110, 120), new Vector2(100, 46), 17, "amb:" + i, () => { var q = ProgressStore.LoadPrefs(); q.AmbienceLevel = lv; ProgressStore.SavePrefs(q); RoomSound.NotifySettings(); Rebuild(); });
                 if (p.AmbienceLevel == i) b.GetComponent<Image>().color = Lit;
             }
-            Text(body, "Saved for every room and every book.", 15, FontStyles.Italic, Soft, TextAlignmentOptions.Center, new Vector2(0, 50), new Vector2(500, 30));
+            // Translate's language: one row that cycles through TranslateLanguages.Names on each pinch
+            Text(body, "Translate to", 19, FontStyles.SmallCaps, Ink, TextAlignmentOptions.Left, new Vector2(-150, 50), new Vector2(200, 40));
+            Button(body, TranslateLanguages.Current() + "  ›", new Vector2(120, 50), new Vector2(240, 46), 19, "translate", () => { var q = ProgressStore.LoadPrefs(); q.TranslateTo = TranslateLanguages.Next(TranslateLanguages.Current()); ProgressStore.SavePrefs(q); Rebuild(); });
+            Text(body, "Pinch to change. The highlight ring’s Translate petal uses it (with the interpreter).", 14, FontStyles.Italic, Soft, TextAlignmentOptions.Center, new Vector2(0, 8), new Vector2(520, 24));
+            Text(body, "Saved for every room and every book.", 15, FontStyles.Italic, Soft, TextAlignmentOptions.Center, new Vector2(0, -24), new Vector2(500, 30));
         }
 
         // ---------------------------------------------------------------- pointing
@@ -223,7 +228,7 @@ namespace Fable
 
         bool Over(bool right, RectTransform rt) => Flow.Pointer.Over(right, rt);
 
-        /// Test hook: press a control by its key ("close", "tab:rooms", "ch:alice:c02", "music", "amb:1", "room:LibraryRoom", "next").
+        /// Test hook: press a control by its key ("close", "tab:rooms", "ch:alice:c02", "music", "amb:1", "translate", "room:LibraryRoom", "next").
         public string Press(string key)
         {
             var t = targets.Find(x => x.key == key); if (t.rt == null) return "no control " + key + "; have: " + string.Join(", ", targets.Select(x => x.key));

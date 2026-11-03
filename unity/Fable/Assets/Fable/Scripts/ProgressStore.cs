@@ -46,6 +46,8 @@ namespace Fable
         /// Room sound: music on or off, and the ambience level (0 off, 1 quiet, 2 normal).
         public bool MusicOn = true;
         public int AmbienceLevel = 2;
+        /// Translate's target language, a name from TranslateLanguages.Names; empty = the headset's language, else Spanish.
+        public string TranslateTo = "";
         /// Contextual hints already shown once.
         public List<string> HintsShown = new();
     }

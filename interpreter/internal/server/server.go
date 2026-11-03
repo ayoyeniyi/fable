@@ -47,12 +47,14 @@ type Server struct {
 	MaxWait     time.Duration // cap on the client's waitSeconds; default 120 s
 	Model       string
 	Peeker      Peeker                                // Peek clay models; nil answers 503 unless the cache has one
+	Translator  Translator                            // Translate; nil answers 503 unless the cache has one
 	Chapters    interface{ Register(*http.ServeMux) } // chapter experiences (internal/chapters); nil = off
 	Rooms       interface{ Register(*http.ServeMux) } // generated reading rooms for uploaded books (internal/rooms); nil = off
 
-	peek peeks
-	mu   sync.Mutex
-	jobs map[string]*job
+	peek      peeks
+	translate translates
+	mu        sync.Mutex
+	jobs      map[string]*job
 }
 
 func New(root string, bk *book.Book, in Interpreter) *Server {
@@ -298,6 +300,7 @@ func (s *Server) Handler() http.Handler {
 	if s.Rooms != nil {
 		s.Rooms.Register(mux)
 	}
+	mux.HandleFunc("POST /translate", s.handleTranslate)
 	if s.Chapters != nil {
 		s.Chapters.Register(mux)
 	}

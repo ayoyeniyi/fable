@@ -5,11 +5,13 @@
 //   release                                             the menu opens around the end of the highlight
 //   point at a petal and pinch                          do it; pinch anywhere else to close
 //
-// Define looks the word up in Webster 1913 (offline). Search lists the sentences already read that contain the
-// highlight. Peek shows a low-fi model beside the page: a library model first (a prop of the loaded room or a shipped
-// clay model), else a clay model from the interpreter when it is reachable. Step In stages the passage from the
-// highlight's sentence. Spoiler rule: only text up to the end of the highlight leaves the device, library entries
-// are offered only once the reader has reached them, and Search never looks past the furthest page read.
+// Define looks the word up in Webster 1913 (offline). Translate asks the interpreter (POST /translate) for the highlight
+// in the language chosen on the bar's sound tab (TranslateLanguages); only the highlighted words and the book's title
+// are sent, so it works for imported books too. Search lists the sentences already read that contain the highlight.
+// Peek shows a low-fi model beside the page: a library model first (a prop of the loaded room or a shipped clay model),
+// else a clay model from the interpreter when it is reachable. Step In stages the passage from the highlight's
+// sentence. Spoiler rule: only text up to the end of the highlight leaves the device, library entries are offered only
+// once the reader has reached them, and Search never looks past the furthest page read.
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -30,7 +32,7 @@ namespace Fable
         public SceneDirector Director;
 
         public float HoldToSelect = 0.5f, DragClaimSeconds = 0.18f;
-        public float PeekWaitSeconds = 30f;
+        public float PeekWaitSeconds = 30f, TranslateWaitSeconds = 30f;
 
         public enum Mode { Idle, Pending, Selecting, Menu, Card }
         public Mode Current { get; private set; } = Mode.Idle;
@@ -39,6 +41,8 @@ namespace Fable
         public string LastSentence { get; private set; }
         public string CardText => cardBody ? cardBody.text : "";
         public string PeekStatus { get; private set; } = "";
+        /// "" | generating | live | cache | offline | failed | timeout
+        public string TranslateStatus { get; private set; } = "";
         public int PeekTriangles { get; private set; }
         public string LastTimings { get; private set; } = "";
 
@@ -52,7 +56,7 @@ namespace Fable
         RectTransform card; TMP_Text cardTitle, cardBody; RectTransform cardClose;
         readonly List<(RectTransform rt, string sentence)> resultRows = new();
         Transform peekRoot; readonly Dictionary<string, Transform> peekParts = new(); readonly List<(TextMeshPro text, LineRenderer line, Transform target)> peekLabels = new();
-        Material lineMat; Coroutine peekJob;
+        Material lineMat; Coroutine peekJob, translateJob;
 
         public static readonly string[] Actions = { "define", "translate", "search", "peek", "chapters" };
         static readonly string[] ActionNames = { "Define", "Translate", "Search", "Peek", "Chapters" };
@@ -112,7 +116,7 @@ namespace Fable
             }
             if (Current == Mode.Menu || Current == Mode.Card) Hover();
             if (peekRoot) TurnPeek();
-            if (PeekStatus == "generating" && cardBody && Time.time >= nextTick) { nextTick = Time.time + 1f; cardBody.text = generatingText + $"\n<size=80%>{Mathf.FloorToInt(Time.realtimeSinceStartup - peekStarted)} s so far</size>"; }
+            if ((PeekStatus == "generating" || TranslateStatus == "generating") && cardBody && Time.time >= nextTick) { nextTick = Time.time + 1f; cardBody.text = generatingText + $"\n<size=80%>{Mathf.FloorToInt(Time.realtimeSinceStartup - peekStarted)} s so far</size>"; }
         }
         float nextTick, peekStarted; string generatingText = "";
 
@@ -231,17 +235,17 @@ namespace Fable
 
         bool Enabled(string action) => action switch
         {
-            "translate" => false,                                    // P1
+            "translate" => Phrase.Trim().Length > 0,                 // needs only the highlight: your own books too
             "chapters" => true,   // the book's chapter experiences (finished chapters only); Step In is per chapter now
             // an imported book has no prepared models or rooms, and the interpreter only knows the bundled books' text
             "peek" => !Reader.Imported && Phrase.Trim().Length > 0,
             _ => Phrase.Trim().Length > 0,
         };
 
-        /// Why a petal is greyed, in two or three words under its name.
+        /// Why a petal is greyed, or what it will do, in two or three words under its name.
         string Note(string action) => action switch
         {
-            "translate" => "\n<size=60%>coming later</size>",
+            "translate" => $"\n<size=55%>to {TranslateLanguages.Current()}</size>",
             "peek" when Reader.Imported => "\n<size=55%>not for your books yet</size>",
             "chapters" => "\n<size=55%>step into a finished chapter</size>",
             _ => "",
@@ -278,6 +282,7 @@ namespace Fable
             {
                 case "define": ShowCard("Define", Define(Phrase)); LastTimings = $"define {(Time.realtimeSinceStartup - t0) * 1000:F1} ms"; break;
                 case "search": SearchCard(); LastTimings = $"search {(Time.realtimeSinceStartup - t0) * 1000:F1} ms"; break;
+                case "translate": translateJob = StartCoroutine(Translate()); break;
                 case "peek": Peek(); break;
                 case "chapters": { Clear(); if (Flow.Menu) Flow.Menu.Open("chapters"); break; }
             }
@@ -381,9 +386,7 @@ namespace Fable
             var body = new Newtonsoft.Json.Linq.JObject { ["book"] = Reader.Book.Slug, ["sentenceId"] = LastSentence, ["phrase"] = Phrase.Trim(), ["waitSeconds"] = 8 }.ToString(Formatting.None);
             while (Time.realtimeSinceStartup - t0 < PeekWaitSeconds)
             {
-                using var req = new UnityWebRequest(url.TrimEnd('/') + "/peek", "POST");
-                req.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(body)); req.downloadHandler = new DownloadHandlerBuffer();
-                req.SetRequestHeader("Content-Type", "application/json"); req.timeout = 12;
+                using var req = Post(url, "/peek", body);
                 yield return req.SendWebRequest();
                 if (Current != Mode.Card) yield break;   // closed meanwhile
                 if (req.result == UnityWebRequest.Result.Success && req.responseCode == 200)
@@ -403,6 +406,61 @@ namespace Fable
             }
             ShowCard("Peek", $"The model of “{Phrase.Trim()}” is taking too long ({PeekWaitSeconds:F0} s), so Peek has given up for now. Try again in a minute: it may be ready.");
             PeekStatus = "timeout";
+        }
+
+        /// A JSON POST to the interpreter. The server answers within the body's waitSeconds (8) or says 202, so a
+        /// 12 s client timeout only ever fires on a server that is hung or not there.
+        /// The body is JSON text built with JObject, not an anonymous type: under Android stripping those serialised as "{}".
+        static UnityWebRequest Post(string url, string path, string json)
+        {
+            var req = new UnityWebRequest(url.TrimEnd('/') + path, "POST");
+            req.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json)); req.downloadHandler = new DownloadHandlerBuffer();
+            req.SetRequestHeader("Content-Type", "application/json"); req.timeout = 12;
+            return req;
+        }
+
+        // ---------------------------------------------------------------- Translate
+
+        class Translation { [JsonProperty("translation")] public string Text; [JsonProperty("language")] public string Language; [JsonProperty("model")] public string Model; }
+        const string TranslateOffline = "Translate needs the interpreter; Define and Search work offline.";
+
+        IEnumerator Translate()
+        {
+            var t0 = Time.realtimeSinceStartup; var lang = TranslateLanguages.Current(); var text = Phrase.Trim();
+            var url = Director ? Director.InterpreterUrl : "";
+            if (string.IsNullOrEmpty(url)) { ShowCard("Translate", TranslateOffline); TranslateStatus = "offline"; yield break; }
+            generatingText = $"Translating “{Shorten(text, 60)}” into {lang}…\n<size=80%><i>Only the highlighted words and the book's title leave the headset.</i></size>";
+            ShowCard("Translate", generatingText);
+            TranslateStatus = "generating"; peekStarted = t0; nextTick = Time.time + 1f;
+            // bookId names a bundled book (the server knows its title); bookTitle covers imported ones
+            var body = new Newtonsoft.Json.Linq.JObject { ["text"] = text, ["language"] = lang, ["bookId"] = Reader.Book.Slug, ["bookTitle"] = Reader.Book.Title, ["sentenceId"] = LastSentence, ["waitSeconds"] = 8 }.ToString(Formatting.None);
+            while (Time.realtimeSinceStartup - t0 < TranslateWaitSeconds)
+            {
+                using var req = Post(url, "/translate", body);
+                yield return req.SendWebRequest();
+                if (Current != Mode.Card) yield break;   // closed meanwhile
+                if (req.result == UnityWebRequest.Result.Success && req.responseCode == 200)
+                {
+                    var r = JsonConvert.DeserializeObject<Translation>(req.downloadHandler.text);
+                    var cache = req.GetResponseHeader("X-Fable-Cache");
+                    ShowCard("Translate", $"{r.Text}\n\n<size=80%><i>{r.Language}  ·  translated by the interpreter{(cache == "hit" ? ", from its cache" : "")}</i></size>");
+                    TranslateStatus = cache == "hit" ? "cache" : "live";
+                    LastTimings = $"translate {(Time.realtimeSinceStartup - t0) * 1000:F0} ms ({cache})";
+                    yield break;
+                }
+                if (req.result == UnityWebRequest.Result.Success && req.responseCode == 202) continue;   // still translating
+                if (req.result == UnityWebRequest.Result.ConnectionError || req.responseCode == 0)
+                {
+                    Debug.LogWarning($"[Fable] translate \"{text}\": interpreter unreachable at {url}: {req.error}");
+                    ShowCard("Translate", TranslateOffline); TranslateStatus = "offline"; yield break;
+                }
+                var why = (req.downloadHandler.text ?? req.error ?? "").Trim().Split('\n')[0]; if (why.Length > 160) why = why.Substring(0, 159) + "…";
+                Debug.LogWarning($"[Fable] translate \"{text}\": {req.responseCode} {req.error} {req.downloadHandler.text}");
+                ShowCard("Translate", $"Could not translate “{Shorten(text, 60)}” right now.\n<size=80%><i>The interpreter said: {why}</i></size>");
+                TranslateStatus = "failed"; yield break;
+            }
+            ShowCard("Translate", $"The translation is taking too long ({TranslateWaitSeconds:F0} s), so Translate has given up for now. Try again in a moment: it may be ready.");
+            TranslateStatus = "timeout";
         }
 
         /// Shown no taller than this, so the model sits under the card's caption (the card is 42 cm tall).
@@ -563,6 +621,8 @@ namespace Fable
             if (menu) menu.gameObject.SetActive(false);
             if (card) card.gameObject.SetActive(false);
             ClosePeek(); PeekStatus = "";
+            if (translateJob != null) { StopCoroutine(translateJob); translateJob = null; }
+            TranslateStatus = "";
         }
 
         void Hover()
@@ -631,6 +691,28 @@ namespace Fable
             card.gameObject.SetActive(false);
         }
 
-        public string Describe() => $"highlight={Current} phrase=\"{Phrase.Trim()}\" from={FirstSentence ?? "-"} to={LastSentence ?? "-"} peek={PeekStatus} tris={PeekTriangles} timings=[{LastTimings}] dict={(dict != null)} library={(library != null)}";
+        public string Describe() => $"highlight={Current} phrase=\"{Phrase.Trim()}\" from={FirstSentence ?? "-"} to={LastSentence ?? "-"} peek={PeekStatus} tris={PeekTriangles} translate={TranslateStatus} timings=[{LastTimings}] dict={(dict != null)} library={(library != null)}";
+    }
+
+    /// The languages Translate offers, in one place. The interpreter accepts these names (server.Languages is the same
+    /// list); the reader picks one on the bar's sound tab and it is kept in Prefs.TranslateTo.
+    public static class TranslateLanguages
+    {
+        public static readonly string[] Names = { "Spanish", "French", "Portuguese", "German", "Italian", "Shona", "isiNdebele", "Swahili", "Chinese (Simplified)", "Hindi", "Arabic" };
+
+        /// The headset's language when it is on the list and not English; otherwise Spanish.
+        public static string Default() => Application.systemLanguage switch
+        {
+            SystemLanguage.Spanish => "Spanish", SystemLanguage.French => "French", SystemLanguage.Portuguese => "Portuguese",
+            SystemLanguage.German => "German", SystemLanguage.Italian => "Italian", SystemLanguage.Hindi => "Hindi", SystemLanguage.Arabic => "Arabic",
+            SystemLanguage.Chinese or SystemLanguage.ChineseSimplified or SystemLanguage.ChineseTraditional => "Chinese (Simplified)",
+            _ => "Spanish",
+        };
+
+        /// The reader's choice, or Default() while they have not made one.
+        public static string Current() { var p = ProgressStore.LoadPrefs(); return System.Array.IndexOf(Names, p.TranslateTo) >= 0 ? p.TranslateTo : Default(); }
+
+        /// The language after this one, round the list (the settings row cycles).
+        public static string Next(string from) { int i = System.Array.IndexOf(Names, from); return Names[(i + 1) % Names.Length]; }
     }
 }
