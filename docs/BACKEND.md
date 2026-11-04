@@ -71,9 +71,24 @@ The editor ignores the built-in address and uses the local service.
   about 20–35 minutes, inside the 15–30 minutes per chapter the owner set, at the high end.
 - **Not yet measured on a VM.**
 
+## Deployed (2026-11-04)
+
+- **The server:** a DigitalOcean Basic droplet in London: 4 shared vCPU, 8 GB, 154 GB disk, Ubuntu 24.04. The
+  CPU-Optimized plans weren't available in US regions, and the owner chose the smaller size for cost. It is at
+  `https://178-62-123-9.sslip.io`; the app's full address, with its key, is only in `~/.config/fable/service-url`.
+- **Settings:** one review round per room (`ROOM_REVIEW=1` in `fable.service`), not two, for build time.
+- **Sandbox:** Ubuntu 24.04 blocks unprivileged user namespaces through AppArmor, so at first bubblewrap failed
+  ("loopback: Failed RTM_NEWADDR"). `provision.sh` now installs an AppArmor profile that allows them for
+  `/usr/bin/bwrap` alone, and the service runs with `--sandbox`.
+- **Measured on the droplet:**
+  - one sandboxed roomgen build of a 29k-triangle room: 333 s (check views 179 s, bake 151 s)
+  - so a reviewed room (two builds plus Claude) takes about 15 minutes, and a book's three rooms about 45–50
+  - a Peek through HTTPS from the Mac: 18 s, including the Claude call
+  - requests without the access key get 404
+
 ## Not done yet
 
-- Not deployed. It needs the owner's VM.
+- A headset build that uses the hosted address, run on the Quest.
 - `--user` other than root.
 - Storage clean-up for old uploaded books. About 10 MB a book, so an 80 GB disk lasts well past judging.
 - A status page or alerting. `journalctl -u fable` on the VM, and `/health` behind the key.

@@ -48,6 +48,7 @@ eval $R out/deploy/fable-interpreter "$SSH_USER@$VM:/opt/fable/bin/"
 eval $R --include='*.py' --exclude='*' blender/ "$SSH_USER@$VM:/opt/fable/blender/"
 for d in content schema book; do eval $R "$d/" "$SSH_USER@$VM:/opt/fable/$d/"; done
 # the built places' models, for chapter thumbnails (glTF, buffers and textures only)
+$SSH "mkdir -p /opt/fable/unity/Fable/Assets/Fable/Models"
 eval $R --include='*/' --include='*.gltf' --include='*.bin' --include='*.png' --include='*.jpg' --exclude='*' --prune-empty-dirs \
   unity/Fable/Assets/Fable/Models/ "$SSH_USER@$VM:/opt/fable/unity/Fable/Assets/Fable/Models/"
 # chapter experiences already prepared on the Mac, so judges get them at once (first deploy only; the VM's own work

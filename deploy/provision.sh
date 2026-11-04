@@ -34,7 +34,22 @@ mkdir -p /opt/fable/bin /opt/fable/out /etc/fable /var/lib/fable
 chown -R fable:fable /opt/fable/out /var/lib/fable
 chmod 700 /etc/fable
 
-echo "== sandbox check"
+echo "== sandbox"
+# Ubuntu 24.04 lets a program create user namespaces (which bubblewrap needs) only if an AppArmor profile allows it.
+# This profile allows it for bwrap alone; everything else stays restricted.
+if [ ! -f /etc/apparmor.d/bwrap ]; then
+  cat > /etc/apparmor.d/bwrap <<'PROFILE'
+abi <abi/4.0>,
+include <tunables/global>
+
+profile bwrap /usr/bin/bwrap flags=(unconfined) {
+  userns,
+  include if exists <local/bwrap>
+}
+PROFILE
+  apparmor_parser -r /etc/apparmor.d/bwrap
+fi
+
 # room builds run Claude-written scripts inside bubblewrap; make sure it works here (Ubuntu's AppArmor profile for
 # bwrap allows the user namespaces it needs)
 if su -s /bin/bash fable -c "bwrap --die-with-parent --unshare-all --ro-bind / / --dev /dev --proc /proc --tmpfs /tmp --tmpfs /etc/fable -- /opt/blender/blender -b --factory-startup -noaudio --python-expr \"print('SANDBOX_OK')\"" 2>/dev/null | grep -q SANDBOX_OK; then

@@ -17,8 +17,10 @@ Environment=FABLE_THUMB_ENGINE=CYCLES
 Environment=FABLE_CYCLES_DEVICE=CPU
 Environment=DAILY_CLAUDE_CALLS=1500
 Environment=BOOKS_PER_CLIENT=2
+# review rounds per generated room: 1 on a small CPU server (each round is another full Blender build)
+Environment=ROOM_REVIEW=1
 ExecStart=/opt/fable/bin/fable-interpreter serve --addr 127.0.0.1:8787 --wait 20s --public $FABLE_SANDBOX \
-  --daily-claude-calls ${DAILY_CLAUDE_CALLS} --rooms-books-per-client ${BOOKS_PER_CLIENT} --blender /opt/blender/blender
+  --daily-claude-calls ${DAILY_CLAUDE_CALLS} --rooms-books-per-client ${BOOKS_PER_CLIENT} --room-review ${ROOM_REVIEW} --blender /opt/blender/blender
 Restart=always
 RestartSec=5
 # hardening: read-only system, writes only to the service's own data
