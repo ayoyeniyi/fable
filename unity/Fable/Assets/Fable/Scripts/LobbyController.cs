@@ -40,6 +40,7 @@ namespace Fable
         LineRenderer ray; Transform dot; Material rayMat;
         Shelved hovered; bool opening;
         BooksIndex index;
+        RectTransform cueCard;
 
         /// Editor tests: a right-hand ray to use instead of the hand or mouse (null = live input).
         public Ray? TestRay;
@@ -92,6 +93,7 @@ namespace Fable
             View.Recentred += () => Board.Recentre();
             View.SetActions(("face the shelf", FaceShelf));
             View.Tip("library", "Your books are on the board below the shelf. \u201c+ add a book\u201d sends one from your phone or computer.");
+            MakeCueCard();
             string json = null; yield return Streaming.Text("books/index.json", s => json = s);
             if (json != null) yield return Streaming.Parse<BooksIndex>(json, i => index = i);
             RefreshLabels();
@@ -110,6 +112,31 @@ namespace Fable
 
         public ViewControls View { get; private set; }
         public LibraryPanel Board { get; private set; }
+
+        /// What to do here, drawn for a first-time reader: the same animated hands as under the page (GestureCues) on a
+        /// paper card beside the library board, so it follows the board when the view is recentred. Hidden once a book opens.
+        void MakeCueCard()
+        {
+            if (!Board || !Board.Root) return;
+            var go = new GameObject("LobbyCues", typeof(RectTransform)); go.SetActive(false);   // inactive so the cue component's Awake sees Top
+            cueCard = (RectTransform)go.transform; cueCard.SetParent(Board.Root, false);
+            cueCard.anchorMin = cueCard.anchorMax = new Vector2(0, 0.5f); cueCard.pivot = new Vector2(1, 0.5f);
+            cueCard.anchoredPosition = new Vector2(-26, 0); cueCard.sizeDelta = new Vector2(430, 196);
+            var paper = new GameObject("Paper", typeof(RectTransform)).AddComponent<UnityEngine.UI.Image>(); paper.transform.SetParent(cueCard, false);
+            var prt = paper.rectTransform; prt.anchorMin = Vector2.zero; prt.anchorMax = Vector2.one; prt.offsetMin = prt.offsetMax = Vector2.zero;
+            paper.color = new Color(0.97f, 0.94f, 0.87f, 0.96f); paper.raycastTarget = false;
+            var cues = go.AddComponent<GestureCues>(); cues.Top = 14f; cues.FontAsset = Font;
+            cues.FixedPlan = mode =>
+            {
+                string g = mode == "controllers" ? "trigger" : "pinch";
+                return new List<GestureCues.Cue>
+                {
+                    new(GestureCues.Kind.Point, false, $"point at a book, {g}\nopen it"),
+                    new(GestureCues.Kind.Point, true, $"point at the bar below, {g}\nturn to look around"),
+                };
+            };
+            go.SetActive(true);
+        }
 
         Transform RigRoot()
         {
@@ -262,7 +289,7 @@ namespace Fable
 
         IEnumerator OpenRoutine(Shelved b, string scene)
         {
-            opening = true; ray.enabled = false; dot.gameObject.SetActive(false);
+            opening = true; ray.enabled = false; dot.gameObject.SetActive(false); if (cueCard) cueCard.gameObject.SetActive(false);
             Debug.Log($"[Fable] lobby: opening {b.Slug} in {scene}"); OpenedAt = Time.realtimeSinceStartup;
             FlowController.PendingBook = b.Slug;
             if (!Application.CanStreamedLevelBeLoaded(scene)) { Debug.LogWarning($"[Fable] lobby: {scene} is not in the build; reading {b.Slug} in {FallbackScene}"); scene = FallbackScene; }
@@ -290,7 +317,7 @@ namespace Fable
         /// One of the reader's own books: no shelf to fly from, so the board gives way and the library room loads with it on the page.
         IEnumerator OpenImported(string slug)
         {
-            opening = true; ray.enabled = false; dot.gameObject.SetActive(false);
+            opening = true; ray.enabled = false; dot.gameObject.SetActive(false); if (cueCard) cueCard.gameObject.SetActive(false);
             var scene = Application.CanStreamedLevelBeLoaded(ImportedScene) ? ImportedScene : FallbackScene;
             Debug.Log($"[Fable] lobby: opening {slug} (imported) in {scene}"); OpenedAt = Time.realtimeSinceStartup;
             FlowController.PendingBook = slug;

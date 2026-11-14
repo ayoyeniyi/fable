@@ -17,6 +17,9 @@ namespace Fable
         public struct Cue { public Kind Kind; public bool Left; public string Label; public Cue(Kind k, bool left, string label) { Kind = k; Left = left; Label = label; } }
 
         public float Top = 786f, RowHeight = 158f, Period = 2.6f;
+        /// A room without a FlowController (the lobby) gives its own plan, by input mode ("hands" / "controllers" / ...),
+        /// and the font to use since there is no reading panel to borrow it from.
+        public System.Func<string, List<Cue>> FixedPlan; public TMP_FontAsset FontAsset;
         public Color Ink = new(0.13f, 0.11f, 0.09f), Faint = new(0.13f, 0.11f, 0.09f, 0.18f), Accent = new(0.62f, 0.42f, 0.10f);
 
         FlowController flow; ReaderController input; ReadingPanel panel;
@@ -58,6 +61,7 @@ namespace Fable
         {
             flow = FindFirstObjectByType<FlowController>(); input = FindFirstObjectByType<ReaderController>();
             if (panel && panel.Hint) font = panel.Hint.font;
+            if (!font && FontAsset) font = FontAsset;
         }
 
         static Sprite MakeDot(bool ring)
@@ -77,6 +81,15 @@ namespace Fable
 
         void Update()
         {
+            if (FixedPlan != null)
+            {
+                if (!input) input = FindFirstObjectByType<ReaderController>();
+                if (!input) return;
+                string m = input.InputMode;
+                if (m != key) { key = m; Rebuild(FixedPlan(m), m == "controllers"); }
+                Animate();
+                return;
+            }
             if (!flow || !input) return;
             string mode = input.InputMode;
             var verb = flow.Tasks ? flow.Tasks.ActiveVerb : null;
