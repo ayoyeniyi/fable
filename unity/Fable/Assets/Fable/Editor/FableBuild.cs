@@ -39,7 +39,11 @@ namespace Fable.Editor
         ///          Name + "."): intensity, range and colour, e.g. a cool moon or starlight, or one room's lamp balance.
         ///   Ambient: the ambient colour (flat indoors, the sky colour outdoors) when the default does not suit.
         ///   Fog: haze density when the default (0.008 outdoors, 0.035 indoors) hides what the scene is for (a far shore).
-        public class SceneDef { public string Id, Scene, Glb, Book, Sound, Music; public bool Outdoor, Lobby, Room, LobbyLook; public float LightScale = 1f, Wind = -1f, WindToward = 60f; public WaterLook WaterOverride; public LightLook[] Lights; public Color? Ambient; public float Fog = -1f; }
+        ///   FlipNormals: meshes whose exported normals face away from the room (a painting turned to the wall): drawn
+        ///          double-sided they look right, but the lightmap holds one side and bakes them black. Flipped copies.
+        ///   ClearPanes: a room's WindowGlass is clear glass (a dusk window onto its backdrop, a deck skylight seen from
+        ///          above) instead of the bright unlit daylight pane rooms get by default.
+        public class SceneDef { public string Id, Scene, Glb, Book, Sound, Music; public bool Outdoor, Lobby, Room, LobbyLook, ClearPanes; public float LightScale = 1f, Wind = -1f, WindToward = 60f; public WaterLook WaterOverride; public LightLook[] Lights; public string[] FlipNormals; public Color? Ambient; public float Fog = -1f; }
         public class LightLook { public string Name; public float Intensity = -1f, Range = -1f; public Color? Color; }
         static LightLook L(string name, float intensity, float range = -1f, Color? color = null) => new LightLook { Name = name, Intensity = intensity, Range = range, Color = color };
         static readonly Color Cool = new(0.62f, 0.70f, 1f), FireGlow = new(1f, 0.62f, 0.30f), CandleGlow = new(1f, 0.78f, 0.52f), Dawn = new(1f, 0.78f, 0.56f);
@@ -90,6 +94,22 @@ namespace Fable.Editor
                 Lights = new[] { L("light.sun", 0.45f), L("light.sky", 0.45f) } },
             new SceneDef { Id = "netherfield-drawing-room", Scene = "Assets/Fable/Scenes/NetherfieldDrawingRoom.unity", Glb = "Assets/Fable/Models/NetherfieldDrawingRoom/netherfield_drawing_room.gltf", Room = true, Book = "pride", Sound = "room-tone:0.8",
                 Lights = new[] { L("Lamp.fire", 1.5f, 8f, FireGlow), L("Lamp.candles.table", 0.6f, 5f, CandleGlow), L("Lamp.candles.mantel", 0.55f, 5f, CandleGlow), L("Lamp.candle.books", 0.35f, 4f, CandleGlow) } },
+            // the three rooms each of Around the World in Eighty Days and Frankenstein (2026-11-15; blender/build_*.py).
+            // WindToward is Unity's compass (0 = +Z, 90 = +X): a Blender compass bearing (0 = +Y) plus 180, since the
+            // glTF import turns Blender's +Y into Unity's -Z and mirrors X.
+            new SceneDef { Id = "reform-club", Scene = "Assets/Fable/Scenes/ReformClub.unity", Glb = "Assets/Fable/Models/ReformClub/reform_club.gltf", Room = true, ClearPanes = true, Book = "eighty", Sound = "room-tone:0.7+tavern:0.06", Wind = 0f,
+                Lights = new[] { L("Lamp.gasolier", 2.4f, 9f), L("Lamp.bracketN", 0.7f, 5f), L("Lamp.bracketS", 0.7f, 5f), L("Lamp.fire", 0.9f, 6f, FireGlow), L("Lamp.dusk", 0.8f, 6f, new Color(0.55f, 0.65f, 1f)) },
+                Ambient = new Color(0.16f, 0.13f, 0.11f), Fog = 0.008f, FlipNormals = new[] { "MESH_MarinePainting" } },
+            new SceneDef { Id = "mongolia-deck", Scene = "Assets/Fable/Scenes/MongoliaDeck.unity", Glb = "Assets/Fable/Models/MongoliaDeck/mongolia_deck.gltf", Outdoor = true, Room = true, ClearPanes = true, Book = "eighty", Sound = "sea-open:0.7+wind-high:0.25", Wind = 0.6f, WindToward = 0f, Fog = 0.003f,
+                Lights = new[] { L("light.sun", 1.7f, -1f, new Color(1f, 0.94f, 0.84f)), L("light.sky", 0.45f, -1f, new Color(0.65f, 0.76f, 1f)) }, WaterOverride = new WaterLook { SwellHeight = 0.55f, SwellLength = 40f } },
+            new SceneDef { Id = "pillaji-forest", Scene = "Assets/Fable/Scenes/PillajiForest.unity", Glb = "Assets/Fable/Models/PillajiForest/pillaji_forest.gltf", Outdoor = true, Room = true, Book = "eighty", Sound = "night:0.5+birds:0.2+wind-pines:0.12", Wind = 0.15f, Fog = 0.002f,
+                Lights = new[] { L("light.sun", 1.1f, -1f, new Color(1f, 0.62f, 0.32f)), L("light.sky", 0.4f, -1f, new Color(0.55f, 0.64f, 0.95f)) } },
+            new SceneDef { Id = "ingolstadt-garret", Scene = "Assets/Fable/Scenes/IngolstadtGarret.unity", Glb = "Assets/Fable/Models/IngolstadtGarret/ingolstadt_garret.gltf", Room = true, Book = "frankenstein", Sound = "rain:0.55+room-tone:0.45", Wind = 0f,
+                Lights = new[] { L("Lamp.candle", 0.45f, 4f, CandleGlow), L("Lamp.fire", 0.9f, 6f, new Color(1f, 0.45f, 0.18f)), L("Lamp.window", 0.3f, 6f, new Color(0.55f, 0.65f, 1f)) } },
+            new SceneDef { Id = "mer-de-glace", Scene = "Assets/Fable/Scenes/MerDeGlace.unity", Glb = "Assets/Fable/Models/MerDeGlace/mer_de_glace.gltf", Outdoor = true, Room = true, Book = "frankenstein", Sound = "wind-high:0.55+wind-pines:0.35+river:0.12", Wind = 0.45f, WindToward = 20f, Fog = 0.0006f,
+                Lights = new[] { L("light.sun", 1.5f, -1f, new Color(1f, 0.97f, 0.92f)) } },
+            new SceneDef { Id = "arctic-ice", Scene = "Assets/Fable/Scenes/ArcticIce.unity", Glb = "Assets/Fable/Models/ArcticIce/arctic_ice.gltf", Outdoor = true, Room = true, Book = "frankenstein", Sound = "wind-high:0.75+rigging:0.35", Wind = 0.75f, WindToward = 40f, Fog = 0.0006f,
+                Lights = new[] { L("light.sun", 1.6f, -1f, new Color(1f, 0.76f, 0.52f)), L("light.sky", 0.55f, -1f, new Color(0.62f, 0.72f, 1f)) }, WaterOverride = new WaterLook { SwellHeight = 0f, FlowSpeed = 0f } },
         };
         const string ScenePath = "Assets/Fable/Scenes/HallOfDoors.unity";   // the hall: desktop previews
         static SceneDef Def(string id) => Scenes.First(d => d.Id == id);
@@ -238,6 +258,15 @@ namespace Fable.Editor
                 // at runtime (diorama, expand, the 4x size change) and static-batched meshes are frozen in world space at load.
                 GameObjectUtility.SetStaticEditorFlags(t.gameObject, dynamic ? 0 : StaticEditorFlags.ContributeGI | StaticEditorFlags.ReflectionProbeStatic);
             }
+            if (def.FlipNormals != null)
+                foreach (var mf in env.GetComponentsInChildren<MeshFilter>(true).Where(f => def.FlipNormals.Contains(f.name) && f.sharedMesh))
+                {
+                    var m = UnityEngine.Object.Instantiate(mf.sharedMesh); m.name = mf.sharedMesh.name + "_flipped";
+                    m.normals = m.normals.Select(n => -n).ToArray();
+                    for (int sm = 0; sm < m.subMeshCount; sm++) { var t = m.GetTriangles(sm); for (int i = 0; i < t.Length; i += 3) (t[i + 1], t[i + 2]) = (t[i + 2], t[i + 1]); m.SetTriangles(t, sm); }
+                    var meshPath = $"Assets/Fable/Materials/{sceneId}_{mf.name}_flipped.asset"; Directory.CreateDirectory("Assets/Fable/Materials");
+                    AssetDatabase.DeleteAsset(meshPath); AssetDatabase.CreateAsset(m, meshPath); mf.sharedMesh = m;
+                }
             // the flame sits inside the glass chimney: glass and flame must not occlude the lightmapper or cast shadows
             foreach (var r in env.GetComponentsInChildren<Renderer>(true))
                 if (r.name.Contains("LampGlass") || r.name.Contains("Flame") || r.name.Contains("GardenCard") || r.name.Contains("WindowGlass"))
@@ -284,7 +313,9 @@ namespace Fable.Editor
                         GameObjectUtility.SetStaticEditorFlags(r.gameObject, 0);
                         if (r.name.Contains("Sky") && r.sharedMaterial && unlit)
                         {
-                            var path = $"Assets/Fable/Materials/{sceneId}_Sky.mat"; Directory.CreateDirectory("Assets/Fable/Materials");
+                            // one material per dome part: a dome split in halves (SkyDome.front / SkyDome.back) has a texture each
+                            var part = r.name.StartsWith("SkyDome.") ? "_" + r.name.Substring("SkyDome.".Length) : "";
+                            var path = $"Assets/Fable/Materials/{sceneId}_Sky{part}.mat"; Directory.CreateDirectory("Assets/Fable/Materials");
                             var src = r.sharedMaterial; var tex = src.HasProperty("baseColorTexture") ? src.GetTexture("baseColorTexture") : src.mainTexture;
                             var m = AssetDatabase.LoadAssetAtPath<Material>(path); if (!m) { m = new Material(unlit); AssetDatabase.CreateAsset(m, path); }
                             m.SetTexture("_BaseMap", tex); m.SetColor("_BaseColor", tex ? Color.white : new Color(0.62f, 0.75f, 0.9f));
@@ -295,6 +326,23 @@ namespace Fable.Editor
                     }
             }
             if (outdoor && !env.GetComponentsInChildren<Renderer>(true).Any(r => r.name.Contains("Sky"))) AddSkyDome(env.transform, sceneId);
+            if (!outdoor && def.Room)
+            {
+                // an interior's painted view through its windows (far.*, glTF emissive): drawn unlit from its picture,
+                // since the emission does not come through the import and the baked room light would leave it black
+                var unlitFar = Shader.Find("Universal Render Pipeline/Unlit");
+                foreach (var r in env.GetComponentsInChildren<Renderer>(true).Where(r => r.name.StartsWith("far.") && r.sharedMaterial))
+                {
+                    var src = r.sharedMaterial; Texture tex = null;
+                    foreach (var prop in new[] { "emissiveTexture", "baseColorTexture" }) if (!tex && src.HasProperty(prop)) tex = src.GetTexture(prop);
+                    if (!tex) continue;
+                    var path = $"Assets/Fable/Materials/{sceneId}_{r.name}.mat"; Directory.CreateDirectory("Assets/Fable/Materials");
+                    var m = AssetDatabase.LoadAssetAtPath<Material>(path); if (!m) { m = new Material(unlitFar); AssetDatabase.CreateAsset(m, path); }
+                    m.SetTexture("_BaseMap", tex); m.SetColor("_BaseColor", Color.white); m.SetFloat("_Cull", (float)CullMode.Off); EditorUtility.SetDirty(m);
+                    r.sharedMaterial = m; r.shadowCastingMode = ShadowCastingMode.Off; r.receiveShadows = false;
+                    GameObjectUtility.SetStaticEditorFlags(r.gameObject, 0);
+                }
+            }
             if (!outdoor) foreach (var l in env.GetComponentsInChildren<Light>(true))
             {
                 // Fully baked: seven realtime point lights cost ~25 ms a frame on Quest 2 and blew the hall out to yellow at 2.2.
@@ -344,7 +392,7 @@ namespace Fable.Editor
             var lampGlassMat = Glassy("M_LampGlass_URP", new Color(1f, 0.95f, 0.85f, 0.25f), 0.8f);
             foreach (var r in env.GetComponentsInChildren<Renderer>(true))
             {
-                if (def.Room && r.name.Contains("WindowGlass")) continue;   // rooms draw daylit panes unlit (below)
+                if (def.Room && !def.ClearPanes && r.name.Contains("WindowGlass")) continue;   // rooms draw daylit panes unlit (below)
                 var mats = r.sharedMaterials; bool changed = false;
                 for (int i = 0; i < mats.Length; i++)
                 {
@@ -355,7 +403,7 @@ namespace Fable.Editor
                 }
                 if (changed) r.sharedMaterials = mats;
             }
-            if (def.Room)
+            if (def.Room && !def.ClearPanes)
             {
                 // daylit window panes: glTF's emissive strength does not come through, so the glass is drawn unlit and bright
                 var unlitGlass = Shader.Find("Universal Render Pipeline/Unlit");
