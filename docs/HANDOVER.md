@@ -2,6 +2,39 @@
 
 Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs/TOOLING.md`. Everything below was true at the commit that last touched this file. "Verified" always says where: **editor** (Unity play mode on a Mac, desktop camera, no HMD) or **headset**. Nothing has been verified on a headset yet.
 
+## Translate into 54 languages, and wait estimates (2026-11-14)
+
+- **Languages:** 54 (`TranslateLanguages.cs` = `interpreter/internal/server/languages.go`, checked by
+  `TestLanguagesMatchHeadset`); list in README. Requests send a code. None left out for rendering: Latin, Cyrillic and
+  Greek (EB Garamond covers them, Vietnamese, Hausa and Igbo included) are TextMeshPro text; Arabic, Persian, Urdu
+  (Nastaliq), Hebrew, Hindi, Marathi, Nepali, Bengali, Punjabi, Gujarati, Tamil, Telugu, Kannada, Malayalam, Thai,
+  Amharic, Chinese (both), Japanese, Korean and Yoruba are drawn by the service (`internal/textimg`, go-text shaping +
+  bidi, Noto fonts in `content/fonts`, `tools/fetch_fonts.py`, 36.5 MB on the server, none in the APK) and shown as a
+  picture. A text answer with a glyph EB Garamond lacks is asked for again as a picture. Thai breaks long lines between
+  syllables when it must (no dictionary line breaking). Not offered: Burmese, Khmer, Sinhala (fewer speakers, and
+  Burmese/Khmer line breaking needs a dictionary).
+- **Picker:** `LanguagePicker.cs`, a card over the page: 3 x 6 tiles (176 x 76 units) a page, three pages, ‹ earlier /
+  later ›, current marked, headset language and the last four choices first. Opened from **to Spanish ▼** on the
+  translation card (translates again) and **Translate into** on the bar's **settings** tab (renamed from "sound"; the
+  tab key is still `sound`). Pinch off the card or **close ×** keeps the language. App cost: `LanguageNames.png` (56 kB,
+  1024 x 512, uncompressed in the build).
+- **Estimates:** `WaitEstimate.cs`; service `etaSeconds` in chapter and room status (`internal/eta`). See
+  `docs/LATENCY.md` "Estimates shown while waiting". Step In from a page no longer waits on `/interpret` (experiences
+  are per chapter, prepared in the background), so the chapter tiles and end card are where the "scene building" wait
+  is shown.
+- **Verified in the editor** (play mode in OdysseusShip, desktop camera, against a fresh `fable-interpreter serve` on
+  127.0.0.1:8789 with its own out/; the owner's 8787 server was left running the old build): live translations into
+  Hindi, French, Arabic, Japanese, Russian, Urdu (pictures for the drawn ones); the picker opened from the card button
+  through `HandleTap` with a test ray and from the settings tab; a language chosen through the pinch claim path; Peek
+  "shipwreck" with its estimate and bar (18.6 s); a chapter experience (odyssey:c05) prepared end to end with the
+  service's estimate on its tile, then the editor's experience state restored. Desktop previews:
+  `captures/desktop/desktop-preview_OdysseusShip_{translate-hindi,translate-french,translate-ar,translate-ja,translate-ru,translate-ur,picker-page1,picker-page3,settings-translate-into,peek-estimate,peek-estimate-bar,chapters-preparing-estimate}.png`.
+  Taken before two small layout changes (native names tinted and smaller; the estimate moved onto the tile's picture;
+  the wait bar moved under the words), which compile but were not re-captured: the editor stopped responding to the CLI.
+- **Not verified:** anything on a headset (legibility of drawn text and tiles, the Quest's locale lookup), the room
+  estimate on a live uploaded book, the end-of-chapter card's live refresh, `FableBuild.BuildApk()` after these
+  changes, and the hosted service (needs a redeploy with `content/fonts`).
+
 ## Eight books: four later books with bundled generated rooms (2026-11-03)
 
 - **Books:** Pride and Prejudice, Moby-Dick, The War of the Worlds and Treasure Island, the Standard Ebooks editions
@@ -161,7 +194,7 @@ The reader found two-hand gestures unintuitive and reached the garden by acciden
 - **Step in** from the ring stages the passage from the highlight's first sentence (`FlowController.StepInAt`).
 - **Measured in the editor** (M-series Mac, play mode; the Quest 2 will be several times slower): dictionary parse 289 ms and library parse, both off the main thread; ring opens 0.1-3.7 ms after release; Define 2.5-3.8 ms; Search over the whole Odyssey ~1 ms (60-96 ms before the off-thread index); matcher 0.1-0.7 ms; prop copy 1-10 ms; clay build 0.2-0.9 ms per model (3.9 ms for the first, which makes the shared meshes), 16 ms with file load; interpreter cache hit over localhost 38 ms. Clay fixtures are 144-5,376 triangles. APK 182 MB (+3 MB, the dictionary).
 - **Verified in the editor**: hold, drag, release and petal pinch through the real path (`PagePointer.TestRay` plus `Highlighter.TestPinch`); a quick pinch does not highlight; Define, Search (and jumping to a result), Peek from a hall prop, from a clay fixture, from the interpreter's cache, and the interpreter's failure message; Step In from a highlight opens the miniature at that sentence's beat (6/13 for "curtain") and returns to the page; the spoiler rule on a library entry ("mushroom" at its first mention is not offered the mushroom-and-Caterpillar model) and on the server cache (a request from an earlier sentence is not served the later model); 0 console errors; the APK builds. Desktop previews: `captures/desktop/desktop-preview_HallOfDoors_{highlight-menu,highlight-drag-menu,define-curtain,search-key,peek-golden-key,peek-white-rabbit}.png`.
-- **Not verified**: whether pinch-drag selection is accurate with real hand rays (word height is about 2 cm at the page's distance; the hand ray jitters), the thresholds (0.18 s / 0.5 s) on real pinches, label legibility and the Peek light's cost on the Quest, live clay generation and its latency (needs `ANTHROPIC_API_KEY`: run `fable-interpreter mock --book alice --passage "little golden key" --phrase "golden key"` and time it), and the matcher on phrases nobody has tried. Translate was built on 2026-11-03 (see "Not done") and has not been tried in the editor or on a headset. Test hooks: `FlowController.Highlight.Select(phrase)`, `.Choose("define"|"translate"|"search"|"peek"|"chapters")`, `.Describe()` (includes `translate=` status), `.CardText`, `.WordWorld(phrase)`; `FlowController.Menu.Open("sound")` then `.Press("translate")` cycles the language.
+- **Not verified**: whether pinch-drag selection is accurate with real hand rays (word height is about 2 cm at the page's distance; the hand ray jitters), the thresholds (0.18 s / 0.5 s) on real pinches, label legibility and the Peek light's cost on the Quest, live clay generation and its latency (needs `ANTHROPIC_API_KEY`: run `fable-interpreter mock --book alice --passage "little golden key" --phrase "golden key"` and time it), and the matcher on phrases nobody has tried. Translate was built on 2026-11-03 (see "Not done") and has not been tried in the editor or on a headset. Test hooks: `FlowController.Highlight.Select(phrase)`, `.Choose("define"|"translate"|"search"|"peek"|"chapters")`, `.Describe()` (includes `translate=` status), `.CardText`, `.WordWorld(phrase)`; `FlowController.Menu.Open("sound")` then `.Press("translate")` opens the language picker (`LanguagePicker.Press("lang:fr")`, `"next"`).
 
 **Step 6, the lobby: built, editor-verified; not tried on the headset.**
 - **The room** (`blender/build_lobby.py`, same pipeline as the other environments): a panelled reading room, 5.6 x 5 m, with an oak bookcase on the far wall. The four books stand face out on a velvet-backed display shelf at chest height (oldest first: Odyssey, Gulliver, Alice, Oz), each under its own brass picture lamp; filler shelves of plain spines above and below; armchair, side table with an oil lamp, two sconces, a night window, a rug where the reader stands. 10,058 triangles, 35 meshes (budget 35k / 50). The books are separate nodes `book.<slug>`; their cover planes use the cover JPEG directly (not baked). Baked lights: `Lamp0` table lamp, `Lamp1-4` picture lamps, `Lamp5-6` sconces. Blender renders: `captures/blender/lobby/`.

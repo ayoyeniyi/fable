@@ -36,6 +36,24 @@ Validity over all 30 live calls: 27 valid on the first attempt, 2 valid after th
 
 Streaming the script beat by beat and the 20 s rule in the client (give up on live and announce the fallback after 20 s) are still not built; today the client's 8 s request timeout plus the server's background generation and cache stand in for both. Nothing here was measured on a Quest; the Wi-Fi hop from the headset to the Mac is in addition to these numbers.
 
+## Estimates shown while waiting (2026-11-14)
+
+The headset now says how long a wait usually takes (`WaitEstimate.cs`), never promising short: rounded up, "about",
+and "taking a little longer than usual" once past it. Seeds, before a headset has measured anything: Peek 20 s (18 s
+measured through HTTPS to the droplet, docs/BACKEND.md), Translate 4 s, a chapter's experience 120 s, a room 1000 s.
+After each live wait the headset's average moves 30% towards it (`Prefs.WaitSeconds`); outliers are clipped to a tenth
+and six times the seed. Chapter and room status answers carry the service's own `etaSeconds` (median of its last 15
+runs plus its queue, `interpreter/internal/eta`), which the headset prefers.
+
+Measured in the editor on 2026-11-14 (M3 Mac, a local `fable-interpreter serve`, Opus):
+
+| wait | live | notes |
+|---|---|---|
+| Translate, "the famous town of Troy" | 2.2 to 4.4 s | Hindi (drawn), French, Arabic, Japanese, Russian, Urdu; the drawn picture adds a few ms on the server |
+| Translate from the shell, Hindi with a picture | 3.4 s | `curl` round trip |
+| Peek "shipwreck" (Odyssey) | 18.6 s | the card said "usually about 20 seconds", then "7 s so far · about 15 seconds left" |
+| chapter experience odyssey:c05, on the service | 21.2 s | plan 6.3 s, render 14.8 s; the first status said 90 s (the seed: no history), later ones 71 to 84 s |
+
 ## Repeating it
 
 ```bash
