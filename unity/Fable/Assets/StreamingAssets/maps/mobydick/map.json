@@ -1,0 +1,613 @@
+{
+  "version": 1,
+  "book": "mobydick",
+  "views": [
+    {
+      "id": "world",
+      "kind": "globe",
+      "title": "The Whaling World of Moby-Dick",
+      "texture": "maps/_globe/earth.jpg",
+      "focus": {
+        "lat": 10.0,
+        "lon": -150.0
+      }
+    }
+  ],
+  "places": [
+    {
+      "id": "manhattoes",
+      "name": "Manhattoes",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 40.7028,
+      "lon": -74.0158,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c01.p002.s01",
+      "note": "The island city of Manhattan, New York, ringed by wharves; the Battery at its tip looks out to sea."
+    },
+    {
+      "id": "new-bedford",
+      "name": "New Bedford",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 41.6362,
+      "lon": -70.9342,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c02.p001.s02",
+      "note": "The great whaling port on the Massachusetts coast, across the water from Nantucket."
+    },
+    {
+      "id": "spouter-inn",
+      "name": "Spouter-Inn",
+      "aliases": [
+        "Spouter Inn"
+      ],
+      "kind": "building",
+      "view": "world",
+      "lat": 41.6345,
+      "lon": -70.9225,
+      "located": "approximate",
+      "firstSentence": "mobydick:c02.p007.s01",
+      "note": "Peter Coffin's crooked inn by the New Bedford docks. Invented; placed near the waterfront."
+    },
+    {
+      "id": "whalemans-chapel",
+      "name": "Whaleman's Chapel",
+      "aliases": [
+        "whalemen's chapel"
+      ],
+      "kind": "building",
+      "view": "world",
+      "lat": 41.635,
+      "lon": -70.9238,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c07.p001.s01",
+      "note": "The Seamen's Bethel on Johnny Cake Hill, New Bedford, its walls lined with memorials to men lost at sea."
+    },
+    {
+      "id": "nantucket",
+      "name": "Nantucket",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 41.2844,
+      "lon": -70.0984,
+      "located": "geocoded",
+      "firstSentence": "mobydick:f04.p078.s01",
+      "note": "A small sandy island off Cape Cod, the old home of American whaling."
+    },
+    {
+      "id": "try-pots",
+      "name": "Try Pots",
+      "aliases": [],
+      "kind": "building",
+      "view": "world",
+      "lat": 41.285,
+      "lon": -70.0975,
+      "located": "approximate",
+      "firstSentence": "mobydick:c15.p001.s02",
+      "note": "Hosea Hussey's chowder house in Nantucket town. Invented; placed in the town."
+    },
+    {
+      "id": "sag-harbor",
+      "name": "Sag Harbor",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 40.9979,
+      "lon": -72.2922,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c12.p003.s01",
+      "note": "A whaling port at the east end of Long Island, New York."
+    },
+    {
+      "id": "marthas-vineyard",
+      "name": "Martha's Vineyard",
+      "aliases": [
+        "the Vineyard"
+      ],
+      "kind": "island",
+      "view": "world",
+      "lat": 41.392,
+      "lon": -70.6208,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c16.p016.s02",
+      "note": "The island west of Nantucket, another nursery of whalemen."
+    },
+    {
+      "id": "gay-head",
+      "name": "Gay Head",
+      "aliases": [
+        "Gay-Head"
+      ],
+      "kind": "coast",
+      "view": "world",
+      "lat": 41.3431,
+      "lon": -70.8137,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c27.p008.s01",
+      "note": "The western cliffs of Martha's Vineyard (today Aquinnah), home of the Wampanoag."
+    },
+    {
+      "id": "cape-cod",
+      "name": "Cape Cod",
+      "aliases": [],
+      "kind": "coast",
+      "view": "world",
+      "lat": 41.7988,
+      "lon": -69.9961,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c16.p016.s02",
+      "note": "The hooked sandy cape of Massachusetts."
+    },
+    {
+      "id": "buffalo",
+      "name": "Buffalo",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 42.8864,
+      "lon": -78.8781,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c54.p006.s02",
+      "note": "The lake port at the end of the Erie Canal, New York."
+    },
+    {
+      "id": "lake-erie",
+      "name": "Lake Erie",
+      "aliases": [
+        "Erie Canal"
+      ],
+      "kind": "lake",
+      "view": "world",
+      "lat": 42.1348,
+      "lon": -81.2535,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c54.p008.s01",
+      "note": "One of the Great Lakes; the Erie Canal joins it to the Hudson and the sea."
+    },
+    {
+      "id": "atlantic",
+      "name": "Atlantic",
+      "aliases": [
+        "Atlantic Ocean"
+      ],
+      "kind": "sea",
+      "view": "world",
+      "lat": 30.0,
+      "lon": -40.0,
+      "located": "approximate",
+      "firstSentence": "mobydick:f04.p053.s04",
+      "note": "The ocean between the Americas and the Old World."
+    },
+    {
+      "id": "azores",
+      "name": "Azores",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 37.8086,
+      "lon": -25.4731,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c27.p009.s10",
+      "note": "Portuguese islands in mid-Atlantic, where outward-bound whalers often touch for men."
+    },
+    {
+      "id": "cape-de-verdes",
+      "name": "Cape de Verdes",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 16.0001,
+      "lon": -24.0084,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c51.p001.s01",
+      "note": "The Cape Verde islands off West Africa, and a whaling ground around them."
+    },
+    {
+      "id": "rio-de-la-plata",
+      "name": "Rio de la Plata",
+      "aliases": [],
+      "kind": "sea",
+      "view": "world",
+      "lat": -35.1335,
+      "lon": -56.2744,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c51.p001.s01",
+      "note": "The wide estuary between Uruguay and Argentina; the whaling ground off its mouth was called the Plate."
+    },
+    {
+      "id": "brazil-banks",
+      "name": "Brazil Banks",
+      "aliases": [],
+      "kind": "sea",
+      "view": "world",
+      "lat": -30.0,
+      "lon": -40.0,
+      "located": "approximate",
+      "firstSentence": "mobydick:c32.p021.s07",
+      "note": "A South Atlantic whaling ground off the coast of Brazil."
+    },
+    {
+      "id": "carrol-ground",
+      "name": "Carrol Ground",
+      "aliases": [],
+      "kind": "sea",
+      "view": "world",
+      "lat": -22.0,
+      "lon": -5.0,
+      "located": "approximate",
+      "firstSentence": "mobydick:c51.p001.s01",
+      "note": "An unmarked whaling ground in the South Atlantic, south of St. Helena (placed roughly)."
+    },
+    {
+      "id": "st-helena",
+      "name": "St. Helena",
+      "aliases": [
+        "St Helena"
+      ],
+      "kind": "island",
+      "view": "world",
+      "lat": -15.9655,
+      "lon": -5.7026,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c51.p001.s01",
+      "note": "A lonely island in the South Atlantic."
+    },
+    {
+      "id": "cape-horn",
+      "name": "Cape Horn",
+      "aliases": [],
+      "kind": "coast",
+      "view": "world",
+      "lat": -55.979,
+      "lon": -67.289,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c02.p001.s01",
+      "note": "The stormy southern tip of South America, the whalers' road into the Pacific."
+    },
+    {
+      "id": "cape-of-good-hope",
+      "name": "Cape of Good Hope",
+      "aliases": [],
+      "kind": "coast",
+      "view": "world",
+      "lat": -34.3572,
+      "lon": 18.474,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c51.p009.s01",
+      "note": "The cape at the south-west tip of Africa, the gate to the Indian Ocean."
+    },
+    {
+      "id": "crozetts",
+      "name": "Crozetts",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": -46.4121,
+      "lon": 51.9841,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c52.p001.s01",
+      "note": "The Crozet Islands, far south in the Indian Ocean: a cruising ground for right whalemen."
+    },
+    {
+      "id": "indian-ocean",
+      "name": "Indian Ocean",
+      "aliases": [],
+      "kind": "sea",
+      "view": "world",
+      "lat": -20.0,
+      "lon": 75.0,
+      "located": "approximate",
+      "firstSentence": "mobydick:c07.p001.s01",
+      "note": "The ocean between Africa, Asia and Australia."
+    },
+    {
+      "id": "seychelle-ground",
+      "name": "Seychelle ground",
+      "aliases": [],
+      "kind": "sea",
+      "view": "world",
+      "lat": -4.6575,
+      "lon": 55.454,
+      "located": "approximate",
+      "firstSentence": "mobydick:c44.p008.s05",
+      "note": "A sperm-whale ground around the Seychelles in the Indian Ocean."
+    },
+    {
+      "id": "ceylon",
+      "name": "Ceylon",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 7.5555,
+      "lon": 80.7138,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c100.p036.s06",
+      "note": "The island off the south of India (Sri Lanka)."
+    },
+    {
+      "id": "bombay",
+      "name": "Bombay",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 19.055,
+      "lon": 72.8692,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c06.p002.s03",
+      "note": "The port city on India's west coast (Mumbai)."
+    },
+    {
+      "id": "malacca",
+      "name": "Malacca",
+      "aliases": [],
+      "kind": "sea",
+      "view": "world",
+      "lat": 2.8306,
+      "lon": 101.0399,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c87.p001.s01",
+      "note": "The long peninsula south of Burma and the strait between it and Sumatra."
+    },
+    {
+      "id": "sumatra",
+      "name": "Sumatra",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": -0.1433,
+      "lon": 101.6241,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c02.p010.s03",
+      "note": "The great island of the East Indies."
+    },
+    {
+      "id": "java",
+      "name": "Java",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": -7.328,
+      "lon": 109.6139,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c59.p001.s01",
+      "note": "The island east of Sumatra in the East Indies."
+    },
+    {
+      "id": "straits-of-sunda",
+      "name": "Straits of Sunda",
+      "aliases": [
+        "straits of Sunda"
+      ],
+      "kind": "sea",
+      "view": "world",
+      "lat": -6.0,
+      "lon": 105.8,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c87.p001.s03",
+      "note": "The narrow strait between Sumatra and Java, a gate from the Indian Ocean to the China seas."
+    },
+    {
+      "id": "timor",
+      "name": "Timor",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": -9.346,
+      "lon": 124.6371,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c45.p005.s02",
+      "note": "An island at the eastern end of the chain that runs from Sumatra."
+    },
+    {
+      "id": "formosa",
+      "name": "Formosa",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 23.9739,
+      "lon": 120.982,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c109.p002.s01",
+      "note": "The island of Taiwan, off the China coast."
+    },
+    {
+      "id": "bashee-isles",
+      "name": "Bashee Isles",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 20.6442,
+      "lon": 121.8939,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c109.p002.s01",
+      "note": "Small islands between Formosa and Luzon (the Batanes), an outlet from the China seas into the Pacific."
+    },
+    {
+      "id": "japan",
+      "name": "Japan",
+      "aliases": [
+        "Japanese Coast"
+      ],
+      "kind": "country",
+      "view": "world",
+      "lat": 36.5,
+      "lon": 138.5,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c07.p005.s01",
+      "note": "The island empire, then closed to foreign ships."
+    },
+    {
+      "id": "volcano-bay",
+      "name": "Volcano Bay",
+      "aliases": [],
+      "kind": "sea",
+      "view": "world",
+      "lat": 42.3489,
+      "lon": 140.6305,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c44.p008.s05",
+      "note": "A bay in Hokkaido, Japan (Uchiura Bay), once a whaling ground."
+    },
+    {
+      "id": "japanese-ground",
+      "name": "Japanese Whaling Ground",
+      "aliases": [
+        "Japanese cruising-ground"
+      ],
+      "kind": "sea",
+      "view": "world",
+      "lat": 35.0,
+      "lon": 150.0,
+      "located": "approximate",
+      "firstSentence": "mobydick:c101.p002.s07",
+      "note": "The sperm-whale ground in the open Pacific east of Japan."
+    },
+    {
+      "id": "pacific",
+      "name": "Pacific",
+      "aliases": [
+        "Pacific Ocean",
+        "South Sea",
+        "South Seas"
+      ],
+      "kind": "sea",
+      "view": "world",
+      "lat": 0.0,
+      "lon": -160.0,
+      "located": "approximate",
+      "firstSentence": "mobydick:f04.p056.s01",
+      "note": "The greatest ocean, the sperm whale's chief home."
+    },
+    {
+      "id": "the-line",
+      "name": "Season-on-the-Line",
+      "aliases": [
+        "the Line in the Pacific",
+        "Equator"
+      ],
+      "kind": "sea",
+      "view": "world",
+      "lat": 0.0,
+      "lon": -150.0,
+      "located": "approximate",
+      "firstSentence": "mobydick:c44.p008.s09",
+      "note": "The Equator in the Pacific, where sperm whales gather in their season."
+    },
+    {
+      "id": "off-shore-ground",
+      "name": "Off-shore Ground",
+      "aliases": [],
+      "kind": "sea",
+      "view": "world",
+      "lat": -6.0,
+      "lon": -105.0,
+      "located": "approximate",
+      "firstSentence": "mobydick:c07.p004.s01",
+      "note": "A sperm-whale ground in the open Pacific, far off the coast of Peru."
+    },
+    {
+      "id": "galapagos",
+      "name": "Galápagos",
+      "aliases": [
+        "Isle of Albemarle"
+      ],
+      "kind": "island",
+      "view": "world",
+      "lat": -0.6288,
+      "lon": -90.3639,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c127.p021.s03",
+      "note": "The volcanic islands on the Equator west of South America."
+    },
+    {
+      "id": "peru",
+      "name": "Peru",
+      "aliases": [],
+      "kind": "country",
+      "view": "world",
+      "lat": -9.0,
+      "lon": -75.0,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c24.p009.s02",
+      "note": "The country on South America's Pacific coast, under the Andes."
+    },
+    {
+      "id": "lima",
+      "name": "Lima",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": -12.046,
+      "lon": -77.0306,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c42.p016.s01",
+      "note": "The capital of Peru, near the Pacific coast."
+    },
+    {
+      "id": "tahiti",
+      "name": "Tahiti",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": -17.6873,
+      "lon": -149.4452,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c40.p053.s03",
+      "note": "The high green island of the Society Islands in the South Pacific."
+    },
+    {
+      "id": "sandwich-islands",
+      "name": "Sandwich Islands",
+      "aliases": [
+        "Oahu"
+      ],
+      "kind": "island",
+      "view": "world",
+      "lat": 21.4834,
+      "lon": -158.0365,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c45.p013.s01",
+      "note": "Hawaii; Oahu's harbour was a great port of call for Pacific whalers."
+    },
+    {
+      "id": "nor-west-coast",
+      "name": "Nor' West Coast",
+      "aliases": [],
+      "kind": "sea",
+      "view": "world",
+      "lat": 52.0,
+      "lon": -135.0,
+      "located": "approximate",
+      "firstSentence": "mobydick:c32.p021.s07",
+      "note": "The North-West Coast of America, a right-whale ground."
+    },
+    {
+      "id": "greenland",
+      "name": "Greenland",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 72.0,
+      "lon": -40.0,
+      "located": "geocoded",
+      "firstSentence": "mobydick:f04.p065.s01",
+      "note": "The great Arctic island; its seas gave the old Dutch and English whale fishery its name."
+    },
+    {
+      "id": "mediterranean",
+      "name": "Mediterranean",
+      "aliases": [],
+      "kind": "sea",
+      "view": "world",
+      "lat": 35.0,
+      "lon": 18.0,
+      "located": "geocoded",
+      "firstSentence": "mobydick:c06.p002.s02",
+      "note": "The inland sea between Europe and Africa."
+    }
+  ]
+}

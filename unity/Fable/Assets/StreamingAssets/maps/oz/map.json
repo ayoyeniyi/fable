@@ -1,0 +1,273 @@
+{
+  "version": 1,
+  "book": "oz",
+  "views": [
+    {
+      "id": "oz",
+      "kind": "scroll",
+      "title": "The Land of Oz",
+      "image": "maps/oz/oz.jpg",
+      "aspect": 1.3333,
+      "height": "maps/oz/oz.height.png",
+      "source": "maps/oz/SOURCE.md",
+      "attribution": "Drawn for Fable after L. Frank Baum (tools/draw_map.py)"
+    }
+  ],
+  "places": [
+    {
+      "id": "kansas",
+      "name": "Kansas",
+      "aliases": [],
+      "kind": "region",
+      "view": "oz",
+      "u": 0.11,
+      "v": 0.078,
+      "located": "drawn",
+      "firstSentence": "oz:c01.p001.s01",
+      "note": "Dorothy's home on the great gray prairies, with Uncle Henry and Aunt Em."
+    },
+    {
+      "id": "great-desert",
+      "name": "Great desert",
+      "aliases": [
+        "the desert"
+      ],
+      "kind": "region",
+      "view": "oz",
+      "u": 0.36,
+      "v": 0.93,
+      "located": "drawn",
+      "firstSentence": "oz:c02.p039.s01",
+      "note": "The desert that surrounds the Land of Oz; none could live to cross it."
+    },
+    {
+      "id": "land-of-north",
+      "name": "Land of the North",
+      "aliases": [],
+      "kind": "region",
+      "view": "oz",
+      "u": 0.5,
+      "v": 0.215,
+      "located": "drawn",
+      "firstSentence": "oz:c02.p019.s01",
+      "note": "Home of the Good Witch of the North."
+    },
+    {
+      "id": "munchkin-land",
+      "name": "Land of the Munchkins",
+      "aliases": [
+        "country of the Munchkins",
+        "land of the East"
+      ],
+      "kind": "region",
+      "view": "oz",
+      "u": 0.85,
+      "v": 0.57,
+      "located": "drawn",
+      "firstSentence": "oz:c02.p007.s01",
+      "note": "The country in the East where Dorothy's house comes down; blue is the Munchkins' colour."
+    },
+    {
+      "id": "yellow-brick-road",
+      "name": "Road of yellow brick",
+      "aliases": [
+        "yellow brick"
+      ],
+      "kind": "road",
+      "view": "oz",
+      "u": 0.7,
+      "v": 0.425,
+      "located": "drawn",
+      "firstSentence": "oz:c02.p057.s01",
+      "note": "The road that leads to the Emerald City."
+    },
+    {
+      "id": "cornfield",
+      "name": "The cornfield",
+      "aliases": [],
+      "kind": "field",
+      "view": "oz",
+      "u": 0.79,
+      "v": 0.49,
+      "located": "drawn",
+      "firstSentence": "oz:c03.p027.s03",
+      "note": "A great cornfield beside the road, where a Scarecrow is set up on a pole."
+    },
+    {
+      "id": "great-forest",
+      "name": "Great forest",
+      "label": "The Great Forest",
+      "aliases": [],
+      "kind": "forest",
+      "view": "oz",
+      "u": 0.68,
+      "v": 0.56,
+      "located": "drawn",
+      "firstSentence": "oz:c04.p028.s02",
+      "note": "A forest where the trees grow so close together that their branches meet over the road."
+    },
+    {
+      "id": "tin-woodman-cottage",
+      "name": "Little cottage",
+      "label": "The Cottage",
+      "aliases": [],
+      "kind": "house",
+      "view": "oz",
+      "u": 0.705,
+      "v": 0.395,
+      "located": "drawn",
+      "firstSentence": "oz:c04.p035.s01",
+      "note": "A cottage of logs and branches in the forest beside the road."
+    },
+    {
+      "id": "great-ditch",
+      "name": "Great ditch",
+      "label": "The Great Ditch",
+      "aliases": [],
+      "kind": "place",
+      "view": "oz",
+      "u": 0.645,
+      "v": 0.475,
+      "located": "drawn",
+      "firstSentence": "oz:c07.p006.s02",
+      "note": "A great ditch across the road through the forest."
+    },
+    {
+      "id": "river",
+      "name": "Broad river",
+      "label": "The River",
+      "aliases": [
+        "the river"
+      ],
+      "kind": "river",
+      "view": "oz",
+      "u": 0.6,
+      "v": 0.3,
+      "located": "drawn",
+      "firstSentence": "oz:c07.p037.s02",
+      "note": "A broad, swift river across the travellers' way."
+    },
+    {
+      "id": "poppy-field",
+      "name": "Poppy field",
+      "label": "The Poppy Field",
+      "aliases": [],
+      "kind": "field",
+      "view": "oz",
+      "u": 0.54,
+      "v": 0.585,
+      "located": "drawn",
+      "firstSentence": "oz:c08.p056.s01",
+      "note": "A great meadow of scarlet poppies beside the river."
+    },
+    {
+      "id": "emerald-city",
+      "name": "Emerald City",
+      "label": "The Emerald City",
+      "aliases": [
+        "City of Emeralds"
+      ],
+      "kind": "city",
+      "view": "oz",
+      "u": 0.465,
+      "v": 0.47,
+      "located": "drawn",
+      "firstSentence": "oz:c02.p031.s03",
+      "note": "The city of Oz, the Great Wizard, where everything is green."
+    },
+    {
+      "id": "winkie-country",
+      "name": "Country of the Winkies",
+      "aliases": [
+        "Land of the West"
+      ],
+      "kind": "region",
+      "view": "oz",
+      "u": 0.15,
+      "v": 0.645,
+      "located": "drawn",
+      "firstSentence": "oz:c12.p005.s01",
+      "note": "The West, ruled by the Wicked Witch; yellow is the Winkies' colour."
+    },
+    {
+      "id": "yellow-castle",
+      "name": "Yellow Castle",
+      "label": "The Yellow Castle",
+      "aliases": [],
+      "kind": "building",
+      "view": "oz",
+      "u": 0.21,
+      "v": 0.46,
+      "located": "drawn",
+      "firstSentence": "oz:c13.p007.s01",
+      "note": "The castle of the Winkies, in the Land of the West."
+    },
+    {
+      "id": "quadling-country",
+      "name": "Country of the Quadlings",
+      "aliases": [
+        "Land of the South"
+      ],
+      "kind": "region",
+      "view": "oz",
+      "u": 0.34,
+      "v": 0.81,
+      "located": "drawn",
+      "firstSentence": "oz:c02.p040.s02",
+      "note": "The South, where red is the colour."
+    },
+    {
+      "id": "china-country",
+      "name": "China country",
+      "label": "The China Country",
+      "aliases": [
+        "china wall"
+      ],
+      "kind": "region",
+      "view": "oz",
+      "u": 0.41,
+      "v": 0.73,
+      "located": "drawn",
+      "firstSentence": "oz:c20.p042.s01",
+      "note": "A country walled in white china, where everything is made of china."
+    },
+    {
+      "id": "old-forest",
+      "name": "Grand old forest",
+      "label": "The Grand Old Forest",
+      "aliases": [],
+      "kind": "forest",
+      "view": "oz",
+      "u": 0.535,
+      "v": 0.7,
+      "located": "drawn",
+      "firstSentence": "oz:c23.p020.s01",
+      "note": "A forest beyond the china country, where the beasts are in need of a King."
+    },
+    {
+      "id": "hammer-heads-hill",
+      "name": "Hill of the Hammer-Heads",
+      "aliases": [],
+      "kind": "mountain",
+      "view": "oz",
+      "u": 0.66,
+      "v": 0.7,
+      "located": "drawn",
+      "firstSentence": "oz:c23.p012.s02",
+      "note": "A rocky hill guarded by the armless Hammer-Heads."
+    },
+    {
+      "id": "glinda-castle",
+      "name": "Castle of Glinda",
+      "label": "The Castle of Glinda",
+      "aliases": [],
+      "kind": "building",
+      "view": "oz",
+      "u": 0.77,
+      "v": 0.79,
+      "located": "drawn",
+      "firstSentence": "oz:c22.p024.s01",
+      "note": "The castle of Glinda, the Good Witch of the South."
+    }
+  ]
+}

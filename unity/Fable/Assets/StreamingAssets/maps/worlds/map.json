@@ -1,0 +1,851 @@
+{
+  "version": 1,
+  "book": "worlds",
+  "views": [
+    {
+      "id": "world",
+      "kind": "globe",
+      "title": "England in The War of the Worlds",
+      "texture": "maps/_globe/earth.jpg",
+      "focus": {
+        "lat": 51.5,
+        "lon": -0.2
+      }
+    }
+  ],
+  "places": [
+    {
+      "id": "woking",
+      "name": "Woking",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.3202,
+      "lon": -0.5565,
+      "located": "geocoded",
+      "firstSentence": "worlds:c02.p003.s01",
+      "note": "The Surrey railway town south-west of London where the narrator lives."
+    },
+    {
+      "id": "woking-station",
+      "name": "Woking station",
+      "aliases": [],
+      "kind": "building",
+      "view": "world",
+      "lat": 51.3191,
+      "lon": -0.556,
+      "located": "geocoded",
+      "firstSentence": "worlds:c03.p010.s01",
+      "note": "The railway station at Woking, on the line to London Waterloo."
+    },
+    {
+      "id": "old-woking",
+      "name": "Old Woking",
+      "aliases": [],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.3046,
+      "lon": -0.545,
+      "located": "geocoded",
+      "firstSentence": "worlds:c09.p041.s05",
+      "note": "The older village south of the railway town of Woking."
+    },
+    {
+      "id": "horsell",
+      "name": "Horsell",
+      "aliases": [
+        "Horsell Bridge"
+      ],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.3247,
+      "lon": -0.5669,
+      "located": "geocoded",
+      "firstSentence": "worlds:c02.p003.s01",
+      "note": "A village just north of Woking, by the canal."
+    },
+    {
+      "id": "horsell-common",
+      "name": "Horsell Common",
+      "aliases": [],
+      "kind": "field",
+      "view": "world",
+      "lat": 51.335,
+      "lon": -0.565,
+      "located": "geocoded",
+      "firstSentence": "worlds:c02.p014.s01",
+      "note": "Heathland and pine woods north of Woking, between Horsell, Ottershaw and Woking."
+    },
+    {
+      "id": "sand-pits",
+      "name": "the sand pits",
+      "aliases": [],
+      "kind": "field",
+      "view": "world",
+      "lat": 51.3325,
+      "lon": -0.556,
+      "located": "approximate",
+      "firstSentence": "worlds:c02.p003.s02",
+      "note": "The sand pits on Horsell Common. Placed at the edge of the common nearest Woking."
+    },
+    {
+      "id": "maybury",
+      "name": "Maybury",
+      "aliases": [
+        "Maybury Hill"
+      ],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.3198,
+      "lon": -0.5413,
+      "located": "geocoded",
+      "firstSentence": "worlds:c03.p005.s07",
+      "note": "The eastern edge of Woking, where the narrator's house stands."
+    },
+    {
+      "id": "ottershaw",
+      "name": "Ottershaw",
+      "aliases": [],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.365,
+      "lon": -0.5303,
+      "located": "geocoded",
+      "firstSentence": "worlds:c01.p010.s03",
+      "note": "A village north of Woking, where Ogilvy has his observatory."
+    },
+    {
+      "id": "chobham",
+      "name": "Chobham",
+      "aliases": [
+        "Chobham Road"
+      ],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.3478,
+      "lon": -0.601,
+      "located": "geocoded",
+      "firstSentence": "worlds:c03.p010.s01",
+      "note": "A village north-west of Woking; the Chobham Road crosses Horsell Common."
+    },
+    {
+      "id": "byfleet",
+      "name": "Byfleet",
+      "aliases": [],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.3402,
+      "lon": -0.4729,
+      "located": "geocoded",
+      "firstSentence": "worlds:c09.p006.s02",
+      "note": "A village east of Woking, among pine woods."
+    },
+    {
+      "id": "pyrford",
+      "name": "Pyrford",
+      "aliases": [],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.3264,
+      "lon": -0.513,
+      "located": "geocoded",
+      "firstSentence": "worlds:c10.p001.s02",
+      "note": "A village between Woking and Ripley, in the valley of the Wey."
+    },
+    {
+      "id": "ripley",
+      "name": "Ripley",
+      "aliases": [],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.3002,
+      "lon": -0.4927,
+      "located": "geocoded",
+      "firstSentence": "worlds:c10.p006.s01",
+      "note": "A village on the Portsmouth road south-east of Woking."
+    },
+    {
+      "id": "leatherhead",
+      "name": "Leatherhead",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.2955,
+      "lon": -0.3293,
+      "located": "geocoded",
+      "firstSentence": "worlds:c09.p028.s02",
+      "note": "A Surrey town about twelve miles east of Woking."
+    },
+    {
+      "id": "weybridge",
+      "name": "Weybridge",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.3727,
+      "lon": -0.4549,
+      "located": "geocoded",
+      "firstSentence": "worlds:c02.p005.s02",
+      "note": "A town where the Wey meets the Thames."
+    },
+    {
+      "id": "st-georges-hill",
+      "name": "St. George's Hill",
+      "aliases": [
+        "St George's Hill"
+      ],
+      "kind": "mountain",
+      "view": "world",
+      "lat": 51.35,
+      "lon": -0.443,
+      "located": "geocoded",
+      "firstSentence": "worlds:c15.p003.s01",
+      "note": "A wooded hill south of Weybridge."
+    },
+    {
+      "id": "addlestone",
+      "name": "Addlestone",
+      "aliases": [],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.3711,
+      "lon": -0.4896,
+      "located": "geocoded",
+      "firstSentence": "worlds:c09.p022.s01",
+      "note": "A village between Chertsey and Weybridge."
+    },
+    {
+      "id": "chertsey",
+      "name": "Chertsey",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.3923,
+      "lon": -0.5038,
+      "located": "geocoded",
+      "firstSentence": "worlds:c01.p015.s05",
+      "note": "A Thames-side town north of Ottershaw."
+    },
+    {
+      "id": "shepperton",
+      "name": "Shepperton",
+      "aliases": [
+        "Shepperton Lock"
+      ],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.3939,
+      "lon": -0.4487,
+      "located": "geocoded",
+      "firstSentence": "worlds:c12.p038.s01",
+      "note": "A village on the Middlesex bank of the Thames, opposite Weybridge."
+    },
+    {
+      "id": "halliford",
+      "name": "Halliford",
+      "aliases": [],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.3886,
+      "lon": -0.4329,
+      "located": "geocoded",
+      "firstSentence": "worlds:c13.p005.s02",
+      "note": "Lower Halliford, a Thames-side village below Shepperton."
+    },
+    {
+      "id": "wey",
+      "name": "Wey",
+      "aliases": [],
+      "kind": "river",
+      "view": "world",
+      "lat": 51.33,
+      "lon": -0.51,
+      "located": "approximate",
+      "firstSentence": "worlds:c10.p007.s01",
+      "note": "The River Wey, which runs past Pyrford to join the Thames at Weybridge (pin set in its valley at Pyrford)."
+    },
+    {
+      "id": "thames",
+      "name": "Thames",
+      "aliases": [],
+      "kind": "river",
+      "view": "world",
+      "lat": 51.42,
+      "lon": -0.38,
+      "located": "approximate",
+      "firstSentence": "worlds:c12.p038.s01",
+      "note": "The river that runs from Shepperton down through London to the sea (pin set on its Surrey reaches)."
+    },
+    {
+      "id": "surrey",
+      "name": "Surrey",
+      "aliases": [],
+      "kind": "region",
+      "view": "world",
+      "lat": 51.2715,
+      "lon": -0.3415,
+      "located": "geocoded",
+      "firstSentence": "worlds:c02.p002.s05",
+      "note": "The county south-west of London."
+    },
+    {
+      "id": "kingston",
+      "name": "Kingston",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.4096,
+      "lon": -0.3063,
+      "located": "geocoded",
+      "firstSentence": "worlds:c13.p002.s04",
+      "note": "Kingston upon Thames, among the hills south-west of London."
+    },
+    {
+      "id": "richmond",
+      "name": "Richmond",
+      "aliases": [
+        "Richmond Park"
+      ],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.4614,
+      "lon": -0.3033,
+      "located": "geocoded",
+      "firstSentence": "worlds:c13.p002.s04",
+      "note": "Richmond, on its hill above the Thames south-west of London."
+    },
+    {
+      "id": "hampton-court",
+      "name": "Hampton Court",
+      "aliases": [],
+      "kind": "building",
+      "view": "world",
+      "lat": 51.4037,
+      "lon": -0.3377,
+      "located": "geocoded",
+      "firstSentence": "worlds:c14.p013.s03",
+      "note": "The royal palace on the Thames above Kingston."
+    },
+    {
+      "id": "twickenham",
+      "name": "Twickenham",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.4467,
+      "lon": -0.3282,
+      "located": "geocoded",
+      "firstSentence": "worlds:c18.p008.s04",
+      "note": "A riverside town between Hampton and Richmond."
+    },
+    {
+      "id": "kew",
+      "name": "Kew",
+      "aliases": [],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.4771,
+      "lon": -0.2856,
+      "located": "geocoded",
+      "firstSentence": "worlds:c14.p015.s01",
+      "note": "A riverside village by Kew Gardens, west of London."
+    },
+    {
+      "id": "sheen",
+      "name": "Sheen",
+      "aliases": [],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.4624,
+      "lon": -0.2671,
+      "located": "geocoded",
+      "firstSentence": "worlds:c18.p016.s01",
+      "note": "East Sheen, between Richmond and Mortlake."
+    },
+    {
+      "id": "mortlake",
+      "name": "Mortlake",
+      "aliases": [],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.4699,
+      "lon": -0.2685,
+      "located": "geocoded",
+      "firstSentence": "worlds:c18.p018.s01",
+      "note": "A village on the Thames between Kew and Barnes."
+    },
+    {
+      "id": "barnes",
+      "name": "Barnes",
+      "aliases": [],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.4737,
+      "lon": -0.2493,
+      "located": "geocoded",
+      "firstSentence": "worlds:c14.p015.s01",
+      "note": "A village in a loop of the Thames south-west of London."
+    },
+    {
+      "id": "wimbledon",
+      "name": "Wimbledon",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.4215,
+      "lon": -0.2064,
+      "located": "geocoded",
+      "firstSentence": "worlds:c14.p015.s01",
+      "note": "A suburb south-west of London with its wide common."
+    },
+    {
+      "id": "putney",
+      "name": "Putney",
+      "aliases": [
+        "Putney Hill"
+      ],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.4625,
+      "lon": -0.2163,
+      "located": "geocoded",
+      "firstSentence": "worlds:c14.p012.s01",
+      "note": "Putney, on the south bank of the Thames, with Putney Hill rising behind."
+    },
+    {
+      "id": "fulham",
+      "name": "Fulham",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.4744,
+      "lon": -0.2068,
+      "located": "geocoded",
+      "firstSentence": "worlds:c25.p001.s01",
+      "note": "Across Putney Bridge on the north bank of the Thames."
+    },
+    {
+      "id": "kensington",
+      "name": "Kensington",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.499,
+      "lon": -0.1991,
+      "located": "geocoded",
+      "firstSentence": "worlds:c24.p083.s05",
+      "note": "A district of west London."
+    },
+    {
+      "id": "south-kensington",
+      "name": "South Kensington",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.4956,
+      "lon": -0.1831,
+      "located": "geocoded",
+      "firstSentence": "worlds:c25.p007.s01",
+      "note": "West London's district of museums."
+    },
+    {
+      "id": "natural-history-museum",
+      "name": "Natural History Museum",
+      "aliases": [],
+      "kind": "building",
+      "view": "world",
+      "lat": 51.4965,
+      "lon": -0.176,
+      "located": "geocoded",
+      "firstSentence": "worlds:c25.p008.s03",
+      "note": "The great museum on Cromwell Road, South Kensington."
+    },
+    {
+      "id": "albert-hall",
+      "name": "Albert Hall",
+      "aliases": [],
+      "kind": "building",
+      "view": "world",
+      "lat": 51.501,
+      "lon": -0.1774,
+      "located": "geocoded",
+      "firstSentence": "worlds:c25.p028.s01",
+      "note": "The Royal Albert Hall in Kensington."
+    },
+    {
+      "id": "hyde-park",
+      "name": "Hyde Park",
+      "aliases": [],
+      "kind": "garden",
+      "view": "world",
+      "lat": 51.5075,
+      "lon": -0.1622,
+      "located": "geocoded",
+      "firstSentence": "worlds:c25.p008.s02",
+      "note": "The great royal park of west London."
+    },
+    {
+      "id": "marble-arch",
+      "name": "Marble Arch",
+      "aliases": [],
+      "kind": "building",
+      "view": "world",
+      "lat": 51.5132,
+      "lon": -0.1589,
+      "located": "geocoded",
+      "firstSentence": "worlds:c25.p011.s01",
+      "note": "The arch at the north-east corner of Hyde Park."
+    },
+    {
+      "id": "oxford-street",
+      "name": "Oxford Street",
+      "aliases": [],
+      "kind": "street",
+      "view": "world",
+      "lat": 51.5158,
+      "lon": -0.1373,
+      "located": "geocoded",
+      "firstSentence": "worlds:c14.p034.s01",
+      "note": "London's long shopping street."
+    },
+    {
+      "id": "baker-street",
+      "name": "Baker Street",
+      "aliases": [],
+      "kind": "street",
+      "view": "world",
+      "lat": 51.5188,
+      "lon": -0.156,
+      "located": "geocoded",
+      "firstSentence": "worlds:c25.p012.s02",
+      "note": "A street running north to Regent's Park."
+    },
+    {
+      "id": "langham",
+      "name": "Langham",
+      "aliases": [
+        "Langham Hotel"
+      ],
+      "kind": "building",
+      "view": "world",
+      "lat": 51.5177,
+      "lon": -0.1436,
+      "located": "geocoded",
+      "firstSentence": "worlds:c24.p085.s03",
+      "note": "The Langham Hotel at the foot of Portland Place."
+    },
+    {
+      "id": "regents-park",
+      "name": "Regent's Park",
+      "aliases": [],
+      "kind": "garden",
+      "view": "world",
+      "lat": 51.5301,
+      "lon": -0.1538,
+      "located": "geocoded",
+      "firstSentence": "worlds:c14.p033.s01",
+      "note": "The royal park in north-west London."
+    },
+    {
+      "id": "primrose-hill",
+      "name": "Primrose Hill",
+      "aliases": [],
+      "kind": "mountain",
+      "view": "world",
+      "lat": 51.539,
+      "lon": -0.1625,
+      "located": "geocoded",
+      "firstSentence": "worlds:c17.p008.s05",
+      "note": "A grassy hill north of Regent's Park with a view over London."
+    },
+    {
+      "id": "st-johns-wood",
+      "name": "St. John's Wood",
+      "aliases": [
+        "St John's Wood"
+      ],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.5317,
+      "lon": -0.1742,
+      "located": "geocoded",
+      "firstSentence": "worlds:c14.p045.s01",
+      "note": "A district north-west of Regent's Park."
+    },
+    {
+      "id": "chalk-farm",
+      "name": "Chalk Farm",
+      "aliases": [],
+      "kind": "building",
+      "view": "world",
+      "lat": 51.5441,
+      "lon": -0.1535,
+      "located": "geocoded",
+      "firstSentence": "worlds:c14.p038.s02",
+      "note": "Chalk Farm, by the railway yards of the line north out of London."
+    },
+    {
+      "id": "hampstead",
+      "name": "Hampstead",
+      "aliases": [
+        "Hampsted"
+      ],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.5565,
+      "lon": -0.1783,
+      "located": "geocoded",
+      "firstSentence": "worlds:c14.p045.s01",
+      "note": "A hill-top district of north London."
+    },
+    {
+      "id": "highgate",
+      "name": "Highgate",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.5706,
+      "lon": -0.1492,
+      "located": "geocoded",
+      "firstSentence": "worlds:c17.p006.s06",
+      "note": "A hill-top village on the northern heights of London."
+    },
+    {
+      "id": "waterloo",
+      "name": "Waterloo",
+      "aliases": [],
+      "kind": "building",
+      "view": "world",
+      "lat": 51.502,
+      "lon": -0.1132,
+      "located": "geocoded",
+      "firstSentence": "worlds:c03.p015.s02",
+      "note": "Waterloo station, London terminus of the line from Woking."
+    },
+    {
+      "id": "westminster",
+      "name": "Westminster",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.5004,
+      "lon": -0.1265,
+      "located": "geocoded",
+      "firstSentence": "worlds:c14.p026.s03",
+      "note": "The seat of Parliament on the Thames."
+    },
+    {
+      "id": "st-pauls",
+      "name": "St. Paul's",
+      "aliases": [
+        "St Paul's"
+      ],
+      "kind": "building",
+      "view": "world",
+      "lat": 51.5138,
+      "lon": -0.0985,
+      "located": "geocoded",
+      "firstSentence": "worlds:c25.p028.s03",
+      "note": "St Paul's Cathedral, its great dome above the City of London."
+    },
+    {
+      "id": "tower-bridge",
+      "name": "Tower Bridge",
+      "aliases": [],
+      "kind": "building",
+      "view": "world",
+      "lat": 51.5055,
+      "lon": -0.0754,
+      "located": "geocoded",
+      "firstSentence": "worlds:c17.p004.s04",
+      "note": "The new bridge across the Thames by the Tower of London."
+    },
+    {
+      "id": "crystal-palace",
+      "name": "Crystal Palace",
+      "aliases": [],
+      "kind": "building",
+      "view": "world",
+      "lat": 51.4194,
+      "lon": -0.0711,
+      "located": "geocoded",
+      "firstSentence": "worlds:c25.p028.s02",
+      "note": "The great glass palace on the hills of south London."
+    },
+    {
+      "id": "london",
+      "name": "London",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 51.5074,
+      "lon": -0.1278,
+      "located": "geocoded",
+      "firstSentence": "worlds:c02.p011.s08",
+      "note": "The capital, some twenty-odd miles north-east of Woking."
+    },
+    {
+      "id": "ealing",
+      "name": "Ealing",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.5127,
+      "lon": -0.3052,
+      "located": "geocoded",
+      "firstSentence": "worlds:c14.p045.s01",
+      "note": "A suburb of west London."
+    },
+    {
+      "id": "edgware",
+      "name": "Edgware",
+      "aliases": [
+        "Edgware Road"
+      ],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.6176,
+      "lon": -0.2767,
+      "located": "geocoded",
+      "firstSentence": "worlds:c16.p005.s01",
+      "note": "A village on the old road north-west out of London."
+    },
+    {
+      "id": "stanmore",
+      "name": "Stanmore",
+      "aliases": [],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.6174,
+      "lon": -0.3095,
+      "located": "geocoded",
+      "firstSentence": "worlds:c16.p021.s01",
+      "note": "A village north-west of London."
+    },
+    {
+      "id": "barnet",
+      "name": "Barnet",
+      "aliases": [
+        "High Barnet",
+        "New Barnet"
+      ],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.6531,
+      "lon": -0.2002,
+      "located": "geocoded",
+      "firstSentence": "worlds:c16.p008.s04",
+      "note": "A town on the Great North Road out of London."
+    },
+    {
+      "id": "st-albans",
+      "name": "St. Albans",
+      "aliases": [
+        "St Albans"
+      ],
+      "kind": "city",
+      "view": "world",
+      "lat": 51.7531,
+      "lon": -0.338,
+      "located": "geocoded",
+      "firstSentence": "worlds:c16.p007.s02",
+      "note": "A cathedral city in Hertfordshire, north of London."
+    },
+    {
+      "id": "epping",
+      "name": "Epping",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.6983,
+      "lon": 0.1103,
+      "located": "geocoded",
+      "firstSentence": "worlds:c17.p009.s02",
+      "note": "A town by Epping Forest, north-east of London."
+    },
+    {
+      "id": "chelmsford",
+      "name": "Chelmsford",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.7345,
+      "lon": 0.4731,
+      "located": "geocoded",
+      "firstSentence": "worlds:c16.p008.s01",
+      "note": "The county town of Essex."
+    },
+    {
+      "id": "tillingham",
+      "name": "Tillingham",
+      "aliases": [],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.6968,
+      "lon": 0.8806,
+      "located": "geocoded",
+      "firstSentence": "worlds:c17.p010.s03",
+      "note": "A village near the Essex coast."
+    },
+    {
+      "id": "blackwater",
+      "name": "Blackwater",
+      "aliases": [],
+      "kind": "river",
+      "view": "world",
+      "lat": 51.735,
+      "lon": 0.88,
+      "located": "approximate",
+      "firstSentence": "worlds:c17.p011.s03",
+      "note": "The estuary of the River Blackwater on the Essex coast (pin set at its mouth)."
+    },
+    {
+      "id": "southend",
+      "name": "Southend",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.5388,
+      "lon": 0.7128,
+      "located": "geocoded",
+      "firstSentence": "worlds:c17.p001.s02",
+      "note": "A seaside town at the mouth of the Thames."
+    },
+    {
+      "id": "shoeburyness",
+      "name": "Shoeburyness",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.5297,
+      "lon": 0.7962,
+      "located": "geocoded",
+      "firstSentence": "worlds:c17.p001.s02",
+      "note": "A garrison town at the mouth of the Thames, east of Southend."
+    },
+    {
+      "id": "foulness",
+      "name": "Foulness",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 51.5886,
+      "lon": 0.8801,
+      "located": "geocoded",
+      "firstSentence": "worlds:c17.p011.s01",
+      "note": "A flat marshy island on the Essex coast."
+    },
+    {
+      "id": "harwich",
+      "name": "Harwich",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.9446,
+      "lon": 1.2899,
+      "located": "geocoded",
+      "firstSentence": "worlds:c16.p027.s02",
+      "note": "The Essex port for ships to the Continent."
+    }
+  ]
+}
