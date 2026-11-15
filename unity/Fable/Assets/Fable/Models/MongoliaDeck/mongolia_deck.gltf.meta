@@ -1,0 +1,274 @@
+fileFormatVersion: 2
+guid: 15a324c32e4b0423f9658f4bb4d99679
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies:
+  - type: 0
+    originalUri: Assets/Fable/Models/MongoliaDeck/mongolia_deck.bin
+    assetPath: Assets/Fable/Models/MongoliaDeck/mongolia_deck.bin
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Ensign_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Ensign_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Ensign_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Ensign_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Valance_Normal.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Valance_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Valance_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Valance_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Valance_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Valance_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Awning_Normal.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Awning_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Awning_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Awning_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Awning_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Awning_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Sail_Normal.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Sail_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Sail_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Sail_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Sail_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Sail_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_FarCoast_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_FarCoast_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_FarCoast_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_FarCoast_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_FarDhow_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_FarDhow_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_FarDhow_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_FarDhow_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_FarSea_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_FarSea_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_FarSea_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_FarSea_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_BlackPaint_Normal.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_BlackPaint_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_BlackPaint_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_BlackPaint_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_BlackPaint_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_BlackPaint_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_BoatCover_Normal.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_BoatCover_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_BoatCover_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_BoatCover_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_BoatCover_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_BoatCover_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_BookCloth_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_BookCloth_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_BookCloth_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_BookCloth_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_BookPages_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_BookPages_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_BookPages_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_BookPages_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Brass_Normal.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Brass_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Brass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Brass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Brass_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Brass_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Cane_Normal.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Cane_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Cane_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Cane_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Cane_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Cane_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_CoveGilt_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_CoveGilt_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_CoveGilt_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_CoveGilt_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_DarkPorts_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_DarkPorts_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_DarkPorts_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_DarkPorts_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_DeckPlanks_Normal.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_DeckPlanks_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_DeckPlanks_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_DeckPlanks_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_DeckPlanks_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_DeckPlanks_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_GreenBall_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_GreenBall_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_GreenBall_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_GreenBall_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_HullPaint_Normal.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_HullPaint_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_HullPaint_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_HullPaint_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_HullPaint_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_HullPaint_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Iron_Normal.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Iron_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Iron_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Iron_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Iron_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Iron_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_LifeBuoy_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_LifeBuoy_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_LifeBuoy_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_LifeBuoy_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_ManilaRope_Normal.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_ManilaRope_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_ManilaRope_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_ManilaRope_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_ManilaRope_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_ManilaRope_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_RedPaint_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_RedPaint_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_RedPaint_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_RedPaint_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Soot_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Soot_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Soot_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Soot_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Spar_Normal.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Spar_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Spar_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Spar_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Spar_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Spar_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_StonePaint_Normal.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_StonePaint_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_StonePaint_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_StonePaint_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_StonePaint_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_StonePaint_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_TarredRope_Normal.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_TarredRope_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_TarredRope_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_TarredRope_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_TarredRope_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_TarredRope_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Teak_Normal.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Teak_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Teak_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Teak_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Teak_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Teak_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Topi_Normal.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Topi_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Topi_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Topi_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_Topi_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_Topi_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_TravelRug_Normal.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_TravelRug_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_TravelRug_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_TravelRug_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_TravelRug_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_TravelRug_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_WhitePaint_Normal.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_WhitePaint_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_WhitePaint_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_WhitePaint_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_WhitePaint_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_WhitePaint_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_SkyDome_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_SkyDome_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_SkylightGlass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_SkylightGlass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MongoliaDeck/textures/T_SkylightGlass_Roughness.jpg
+    assetPath: Assets/Fable/Models/MongoliaDeck/textures/T_SkylightGlass_Roughness.jpg
+  reportItems: []
