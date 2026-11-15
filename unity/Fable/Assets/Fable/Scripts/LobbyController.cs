@@ -79,9 +79,12 @@ namespace Fable
                 var cover = t.GetComponentsInChildren<MeshFilter>().FirstOrDefault(f => f.name.StartsWith("Cover_"));
                 b.CoverNormal = cover && cover.sharedMesh && cover.sharedMesh.normals.Length > 0 ? cover.transform.TransformDirection(cover.sharedMesh.normals[0]).normalized : b.Out;
                 if (Vector3.Dot(b.CoverNormal, b.Out) < 0) b.CoverNormal = -b.CoverNormal;
-                b.Label = MakeLabel(b);
                 books.Add(b);
             }
+            // the labels hang on the ledge's front lip, all square to the shelf (not each turned to the head, which put
+            // them at odd angles through the lip)
+            var shelfOut = ShelfOut();
+            foreach (var b in books) b.Label = MakeLabel(b, shelfOut);
             Debug.Log($"[Fable] lobby: {books.Count} books on the shelf");
             MakeRay();
             if (Input) Input.PinchBegan += OnPinch;
@@ -165,12 +168,32 @@ namespace Fable
 
         /// A small cream card clipped to the front edge of the ledge under the book, tilted back towards the reader, like
         /// a library shelf label: the chapter reached on the first line, its name and how far through the book on the second.
-        TextMeshPro MakeLabel(Shelved b)
+        /// Level, square to the shelf and towards the room: perpendicular to the line of books.
+        Vector3 ShelfOut()
+        {
+            if (books.Count < 2) return books.Count == 1 ? books[0].Out : Vector3.forward;
+            Vector3 a = books[0].T.position, z = a; float far = 0;
+            foreach (var b in books) { var d = (b.T.position - a).sqrMagnitude; if (d > far) { far = d; z = b.T.position; } }
+            var along = z - a; along.y = 0;
+            var n = Vector3.Cross(Vector3.up, along).normalized;
+            var mean = Vector3.zero; foreach (var b in books) mean += b.Out;
+            return Vector3.Dot(n, mean) < 0 ? -n : n;
+        }
+
+        // the ledge's front lip, from the book's pivot (the middle of its bottom edge): its face is LipOut in front, its
+        // top LipTop above (measured on the lobby's bookcase: face 0.28 m out, lip 0.975-1.055 m with books at 1.02 m)
+        const float LipOut = 0.284f, LipTop = 0.035f, LabelTilt = 22f, LabelHeight = 0.074f;
+
+        TextMeshPro MakeLabel(Shelved b, Vector3 shelfOut)
         {
             var go = new GameObject("ProgressCard." + b.Slug);
             go.transform.SetParent(Env, true);
-            go.transform.position = b.T.position + b.Out * 0.30f + Vector3.up * 0.012f;   // clipped to the ledge's front edge (the book's pivot is the middle of its bottom edge)
-            go.transform.rotation = Quaternion.LookRotation(-b.Out, Vector3.up) * Quaternion.Euler(40f, 0, 0);   // tilted back, readable from standing height
+            // hinged at its top edge on the lip's face and tilted back at the bottom, like a card in a brass label holder,
+            // so no part of it is inside the wood; readable from standing height
+            var rot = Quaternion.LookRotation(-shelfOut, Vector3.up) * Quaternion.Euler(LabelTilt, 0, 0);
+            var top = b.T.position + shelfOut * LipOut + Vector3.up * LipTop;
+            go.transform.rotation = rot;
+            go.transform.position = top - rot * Vector3.up * (LabelHeight / 2);
             var card = GameObject.CreatePrimitive(PrimitiveType.Quad); card.name = "Card"; Destroy(card.GetComponent<Collider>());
             card.transform.SetParent(go.transform, false); card.transform.localPosition = new Vector3(0, 0, 0.001f); card.transform.localScale = new Vector3(0.33f, 0.074f, 1);
             card.transform.localRotation = Quaternion.identity;
