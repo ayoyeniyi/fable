@@ -195,6 +195,8 @@ def plain(name, color, rough=0.5, metallic=0.0, emission=None, strength=0.0, coa
     b.inputs["Roughness"].default_value = rough; b.inputs["Metallic"].default_value = metallic
     if coat: b.inputs["Coat Weight"].default_value = coat
     if transmission: b.inputs["Transmission Weight"].default_value = transmission
+    if alpha < 1.0:
+        b.inputs["Alpha"].default_value = alpha
     if emission is not None:
         b.inputs["Emission Color"].default_value = tuple(emission) + (1,); b.inputs["Emission Strength"].default_value = strength
     return m
