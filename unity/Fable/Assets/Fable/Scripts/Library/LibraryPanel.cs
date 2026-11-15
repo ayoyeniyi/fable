@@ -2,13 +2,14 @@
 // front of them, so nobody has to read tiny spines on a far shelf or walk anywhere.
 //
 //   header      "Your library", the counts, "continue: <the book read last> ›" and "+ add a book"
-//   tiles       six to a page: the cover (or a plain one drawn with the title when the book has none), the title,
-//               the author, where it came from ("Fable edition, with its own room" or "your EPUB" / "your PDF"), and
-//               how far the reader has got. A book still arriving shows its stage and real progress; one that failed
+//   tiles       six to a page, Fable's ten classics first and the reader's own books after them: the cover (or a
+//               plain one drawn with the title when the book has none), the title, the author, where it came from
+//               ("Fable edition · own rooms" or "your EPUB" / "your PDF"), and how far the reader has got. Uploads are
+//               an early preview (simpler, generated rooms) and carry an "early preview" tag on the cover. A book still arriving shows its stage and real progress; one that failed
 //               says why and can be dismissed. Imported books have "remove" (pinch twice: it asks first).
 //   footer      ‹ previous · shelf 1 of 2 · next ›, and how much of the 2 GB the imported books use
 //
-// "+ add a book" turns the board into instructions with the headset's address and code (Library / UploadServer) and
+// "+ add a book" (also tagged early preview) turns the board into instructions with the headset's address and code (Library / UploadServer) and
 // follows the transfer and import live. Point and pinch, as everywhere; the board claims its pinches, so pointing at
 // it never opens a book on the shelf behind it.
 using System;
@@ -43,11 +44,12 @@ namespace Fable
         class Tile
         {
             public string Key, State; public RectTransform Rt; public Image Bg, Cover, Bar, BarBack; public RawImage CoverTex; public TMP_Text CoverTitle, Title, Author, Badge, Status;
+            public RectTransform Preview;   // the "early preview" tag across the foot of an uploaded book's cover
             public RectTransform Remove; public TMP_Text RemoveLbl; public float ConfirmUntil; public Action Act; public Action RemoveAct;
         }
         readonly List<Tile> tiles = new(); readonly List<Tile> shown = new();
         RectTransform root, header, grid, addCard, footer, prevBtn, nextBtn, addBtn, continueBtn, backBtn;
-        TMP_Text headerCount, pageLbl, storageLbl, continueLbl, addTitle, addBody, addAddress, addCode, statusText, addStep1, addStep2, addStep3, addStep4;
+        TMP_Text headerCount, pageLbl, storageLbl, continueLbl, addTitle, addNote, addBody, addAddress, addCode, statusText, addStep1, addStep2, addStep3, addStep4;
         Image statusBar, statusBarBack;
         readonly Dictionary<string, Texture2D> covers = new();
         int page; bool adding; string menuSlug; string hoveredKey;
@@ -98,11 +100,12 @@ namespace Fable
         List<Entry> Entries()
         {
             var list = new List<Entry>();
-            // books still arriving or that failed come first, so the reader sees them at once
+            // Fable's ten classics first (shelf order), then the reader's own books, an early preview: those still
+            // arriving or that failed lead them, so the reader sees them as soon as they turn to that page
+            foreach (var kv in Bundled)
+                list.Add(new Entry { Key = kv.Key, Slug = kv.Key, Title = kv.Value.title, Author = kv.Value.author, Bundled = true, Badge = ReadingRooms.Bundled.ContainsKey(kv.Key) ? "Fable edition · own rooms" : "Fable edition", Progress = ProgressText(kv.Key, null) });
             foreach (var j in lib.ActiveJobs())
                 if (j.Status != "ready") list.Add(new Entry { Key = "job:" + j.Id, Title = j.Title ?? BookText.TitleFromFileName(j.FileName), Job = j, Ready = false });
-            foreach (var kv in Bundled)
-                list.Add(new Entry { Key = kv.Key, Slug = kv.Key, Title = kv.Value.title, Author = kv.Value.author, Bundled = true, Badge = "Fable edition · own room", Progress = ProgressText(kv.Key, null) });
             foreach (var e in lib.Imported.OrderByDescending(e => e.AddedUtc))
                 list.Add(new Entry { Key = e.Slug, Slug = e.Slug, Title = e.Title, Author = e.Author, Lib = e, HasCover = e.Cover != null, Badge = e.Format == "pdf" ? (e.HasText ? $"your PDF · {e.PdfPages} pages" : $"your PDF · pages only") : "your EPUB", Progress = ProgressText(e.Slug, e) });
             return list;
@@ -133,7 +136,8 @@ namespace Fable
             header = Rect(root, "Header", new Vector2(0, H / 2 - 34), new Vector2(W - 32, 56));
             var title = Text(header, "Your library", 28, FontStyles.SmallCaps, Ink, TextAlignmentOptions.Left); Place(title.rectTransform, new Vector2(-W / 2 + 16 + 120, 6), new Vector2(240, 36));
             headerCount = Text(header, "", 14, FontStyles.Italic, Soft, TextAlignmentOptions.Left); Place(headerCount.rectTransform, new Vector2(-W / 2 + 16 + 120, -18), new Vector2(240, 20));
-            (addBtn, _) = Button(header, "+ add a book", new Vector2(W / 2 - 16 - 92, 0), new Vector2(184, 46), 20, () => OpenAdd());
+            TMP_Text addLbl; (addBtn, addLbl) = Button(header, "+ add a book\n<size=58%><i><smallcaps>early preview</smallcaps></i></size>", new Vector2(W / 2 - 16 - 92, 0), new Vector2(184, 50), 20, () => OpenAdd());
+            addLbl.lineSpacing = -22; addLbl.margin = new Vector4(0, 2, 0, 0);
             (continueBtn, continueLbl) = Button(header, "continue ›", new Vector2(W / 2 - 16 - 184 - 12 - 130, 0), new Vector2(260, 46), 17, ContinueReading);
 
             grid = Rect(root, "Grid", new Vector2(0, H / 2 - 66 - (Rows * TileH + (Rows - 1) * Gap) / 2), new Vector2(Cols * TileW + (Cols - 1) * Gap, Rows * TileH + (Rows - 1) * Gap));
@@ -150,14 +154,17 @@ namespace Fable
             Img(addCard, "Bg", Vector2.zero, addCard.sizeDelta, TileBg, stretch: true);
             float ct = addCard.sizeDelta.y / 2, cw = addCard.sizeDelta.x - 40;
             addTitle = Text(addCard, "Add a book from your phone or computer", 22, FontStyles.SmallCaps, Accent, TextAlignmentOptions.Left); Place(addTitle.rectTransform, new Vector2(-60, ct - 26), new Vector2(cw - 120, 30));
-            addStep1 = Text(addCard, "", 17, FontStyles.Normal, Ink, TextAlignmentOptions.Left); Place(addStep1.rectTransform, new Vector2(0, ct - 66), new Vector2(cw, 26));
-            addStep2 = Text(addCard, "", 17, FontStyles.Normal, Ink, TextAlignmentOptions.Left); Place(addStep2.rectTransform, new Vector2(0, ct - 98), new Vector2(cw, 26));
-            addAddress = Text(addCard, "", 27, FontStyles.Bold, Ink, TextAlignmentOptions.Left); Place(addAddress.rectTransform, new Vector2(24, ct - 134), new Vector2(cw - 48, 38));
-            addStep3 = Text(addCard, "", 17, FontStyles.Normal, Ink, TextAlignmentOptions.Left); Place(addStep3.rectTransform, new Vector2(0, ct - 176), new Vector2(cw, 26));
-            addCode = Text(addCard, "", 30, FontStyles.Bold, Accent, TextAlignmentOptions.Left); Place(addCode.rectTransform, new Vector2(24 + 150, ct - 176), new Vector2(cw - 200, 40));
+            // uploads are an early preview: said once, under the title, before the steps
+            addNote = Text(addCard, "<b>Early preview.</b> Books you add get simpler, generated rooms; Fable\u2019s ten classics have rooms made by hand.", 13.5f, FontStyles.Italic, Accent, TextAlignmentOptions.Left);
+            Place(addNote.rectTransform, new Vector2(0, ct - 58), new Vector2(cw, 18)); addNote.textWrappingMode = TextWrappingModes.NoWrap; addNote.overflowMode = TextOverflowModes.Ellipsis;
+            addStep1 = Text(addCard, "", 17, FontStyles.Normal, Ink, TextAlignmentOptions.Left); Place(addStep1.rectTransform, new Vector2(0, ct - 80), new Vector2(cw, 26));
+            addStep2 = Text(addCard, "", 17, FontStyles.Normal, Ink, TextAlignmentOptions.Left); Place(addStep2.rectTransform, new Vector2(0, ct - 110), new Vector2(cw, 26));
+            addAddress = Text(addCard, "", 27, FontStyles.Bold, Ink, TextAlignmentOptions.Left); Place(addAddress.rectTransform, new Vector2(24, ct - 144), new Vector2(cw - 48, 38));
+            addStep3 = Text(addCard, "", 17, FontStyles.Normal, Ink, TextAlignmentOptions.Left); Place(addStep3.rectTransform, new Vector2(0, ct - 184), new Vector2(cw, 26));
+            addCode = Text(addCard, "", 30, FontStyles.Bold, Accent, TextAlignmentOptions.Left); Place(addCode.rectTransform, new Vector2(24 + 150, ct - 184), new Vector2(cw - 200, 40));
             addCode.characterSpacing = 30;
-            addStep4 = Text(addCard, "", 17, FontStyles.Normal, Ink, TextAlignmentOptions.Left); Place(addStep4.rectTransform, new Vector2(0, ct - 216), new Vector2(cw, 26));
-            addBody = Text(addCard, "", 13.5f, FontStyles.Italic, Soft, TextAlignmentOptions.TopLeft); Place(addBody.rectTransform, new Vector2(0, ct - 256), new Vector2(cw, 40));
+            addStep4 = Text(addCard, "", 17, FontStyles.Normal, Ink, TextAlignmentOptions.Left); Place(addStep4.rectTransform, new Vector2(0, ct - 220), new Vector2(cw, 26));
+            addBody = Text(addCard, "", 13.5f, FontStyles.Italic, Soft, TextAlignmentOptions.TopLeft); Place(addBody.rectTransform, new Vector2(0, ct - 256), new Vector2(cw, 36));
             statusBarBack = Img(addCard, "BarBack", new Vector2(0, -addCard.sizeDelta.y / 2 + 82), new Vector2(addCard.sizeDelta.x - 40, 10), new Color(0.85f, 0.80f, 0.70f));
             statusBar = Img(addCard, "Bar", new Vector2(0, -addCard.sizeDelta.y / 2 + 82), new Vector2(addCard.sizeDelta.x - 40, 10), Accent);
             statusBar.type = Image.Type.Filled; statusBar.fillMethod = Image.FillMethod.Horizontal; statusBar.sprite = WhiteSprite();
@@ -192,7 +199,7 @@ namespace Fable
         {
             menuSlug = slug; adding = false; addCard.gameObject.SetActive(false);
             var e = Entries().FirstOrDefault(x => x.Slug == slug);
-            menuTitle.text = e?.Title ?? slug; menuAuthor.text = (e?.Author ?? "") + (e != null && e.Bundled ? "  \u00b7  Fable edition" : "  \u00b7  your book");
+            menuTitle.text = e?.Title ?? slug; menuAuthor.text = (e?.Author ?? "") + (!Library.IsImported(slug) ? "  \u00b7  Fable edition" : "  \u00b7  your book \u00b7 early preview");
             ShowRooms();
             bool supported = ChapterExperiences.Supported.Contains(slug);
             chaptersBtn.gameObject.SetActive(supported);
@@ -264,6 +271,11 @@ namespace Fable
             t.BarBack = Img(t.Rt, "BarBack", new Vector2(0, -TileH / 2 + 6), new Vector2(TileW - 16, 5), new Color(0.85f, 0.80f, 0.70f));
             t.Bar = Img(t.Rt, "Bar", new Vector2(0, -TileH / 2 + 6), new Vector2(TileW - 16, 5), Accent); t.Bar.type = Image.Type.Filled; t.Bar.fillMethod = Image.FillMethod.Horizontal; t.Bar.sprite = WhiteSprite();
             (t.Remove, t.RemoveLbl) = Button(t.Rt, "remove", new Vector2(TileW / 2 - 6 - 32, -TileH / 2 + 18), new Vector2(64, 26), 12.5f, null);
+            // the early-preview tag: a dark band across the foot of the cover, for the reader's own books
+            var tag = Img(t.Cover.rectTransform, "PreviewTag", new Vector2(0, -114 / 2 + 9), new Vector2(76, 18), new Color(0.16f, 0.12f, 0.08f, 0.88f));
+            var tagText = Text(tag.rectTransform, "early preview", 10.5f, FontStyles.SmallCaps | FontStyles.Bold, new Color(0.99f, 0.88f, 0.60f), TextAlignmentOptions.Center);
+            Place(tagText.rectTransform, Vector2.zero, new Vector2(76, 18)); tagText.textWrappingMode = TextWrappingModes.NoWrap;
+            t.Preview = tag.rectTransform;
             return t;
         }
 
@@ -275,7 +287,7 @@ namespace Fable
             if (!root) return;
             var all = Entries();
             int bundled = all.Count(e => e.Bundled), imported = all.Count(e => e.Lib != null);
-            headerCount.text = $"{bundled} Fable editions · {imported} of your own" + (all.Any(e => e.Job != null && !e.Job.Done) ? " · one arriving" : "");
+            headerCount.text = $"{bundled} classics · {imported} of your own (early preview)" + (all.Any(e => e.Job != null && !e.Job.Done) ? " · one arriving" : "");
             var last = ProgressStore.LastBook(); var lastEntry = all.FirstOrDefault(e => e.Slug == last);
             continueBtn.gameObject.SetActive(lastEntry != null && !adding);
             if (lastEntry != null) continueLbl.text = $"continue: <i>{Shorten(lastEntry.Title, 22)}</i> ›";
@@ -307,6 +319,7 @@ namespace Fable
             t.Cover.color = tex ? Color.black : Hue(e.Title ?? e.Key);
             t.Remove.gameObject.SetActive(false); t.Act = null; t.RemoveAct = null;
             t.Bar.gameObject.SetActive(false); t.BarBack.gameObject.SetActive(false);
+            t.Preview.gameObject.SetActive(!e.Bundled);
             if (e.Job != null)
             {
                 var j = e.Job;
