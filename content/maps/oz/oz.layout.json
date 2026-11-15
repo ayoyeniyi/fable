@@ -1,0 +1,946 @@
+{
+ "size": [
+  2048,
+  1536
+ ],
+ "seed": 1900,
+ "background": "land",
+ "deserts": [
+  {
+   "poly": [
+    [
+     0,
+     0
+    ],
+    [
+     1,
+     0
+    ],
+    [
+     1,
+     1
+    ],
+    [
+     0,
+     1
+    ]
+   ],
+   "hole": [
+    [
+     0.12,
+     0.14
+    ],
+    [
+     0.3,
+     0.15
+    ],
+    [
+     0.5,
+     0.135
+    ],
+    [
+     0.7,
+     0.15
+    ],
+    [
+     0.88,
+     0.14
+    ],
+    [
+     0.885,
+     0.35
+    ],
+    [
+     0.875,
+     0.6
+    ],
+    [
+     0.88,
+     0.86
+    ],
+    [
+     0.65,
+     0.87
+    ],
+    [
+     0.35,
+     0.85
+    ],
+    [
+     0.12,
+     0.86
+    ],
+    [
+     0.11,
+     0.6
+    ],
+    [
+     0.125,
+     0.35
+    ]
+   ],
+   "rough": 0.5,
+   "tint": "#d8b46a"
+  }
+ ],
+ "regions": [
+  {
+   "poly": [
+    [
+     0.12,
+     0.14
+    ],
+    [
+     0.5,
+     0.145
+    ],
+    [
+     0.88,
+     0.14
+    ],
+    [
+     0.67,
+     0.35
+    ],
+    [
+     0.5,
+     0.34
+    ],
+    [
+     0.34,
+     0.35
+    ]
+   ],
+   "tint": "#9c84b8",
+   "border": "dashed",
+   "rough": 0.0,
+   "smooth": 0
+  },
+  {
+   "poly": [
+    [
+     0.88,
+     0.14
+    ],
+    [
+     0.885,
+     0.5
+    ],
+    [
+     0.88,
+     0.86
+    ],
+    [
+     0.66,
+     0.65
+    ],
+    [
+     0.67,
+     0.5
+    ],
+    [
+     0.67,
+     0.35
+    ]
+   ],
+   "tint": "#6f8fc4",
+   "border": "dashed",
+   "rough": 0.0,
+   "smooth": 0
+  },
+  {
+   "poly": [
+    [
+     0.12,
+     0.86
+    ],
+    [
+     0.5,
+     0.855
+    ],
+    [
+     0.88,
+     0.86
+    ],
+    [
+     0.66,
+     0.65
+    ],
+    [
+     0.5,
+     0.66
+    ],
+    [
+     0.34,
+     0.65
+    ]
+   ],
+   "tint": "#cf6a55",
+   "border": "dashed",
+   "rough": 0.0,
+   "smooth": 0
+  },
+  {
+   "poly": [
+    [
+     0.12,
+     0.14
+    ],
+    [
+     0.34,
+     0.35
+    ],
+    [
+     0.33,
+     0.5
+    ],
+    [
+     0.34,
+     0.65
+    ],
+    [
+     0.12,
+     0.86
+    ],
+    [
+     0.115,
+     0.5
+    ]
+   ],
+   "tint": "#e0c048",
+   "border": "dashed",
+   "rough": 0.0,
+   "smooth": 0
+  },
+  {
+   "poly": [
+    [
+     0.34,
+     0.35
+    ],
+    [
+     0.5,
+     0.34
+    ],
+    [
+     0.67,
+     0.35
+    ],
+    [
+     0.67,
+     0.5
+    ],
+    [
+     0.66,
+     0.65
+    ],
+    [
+     0.5,
+     0.66
+    ],
+    [
+     0.34,
+     0.65
+    ],
+    [
+     0.33,
+     0.5
+    ]
+   ],
+   "tint": "#6faa62",
+   "border": "none",
+   "alpha": 0.4,
+   "rough": 0.0,
+   "smooth": 0
+  }
+ ],
+ "rivers": [
+  {
+   "path": [
+    [
+     0.6,
+     0.16
+    ],
+    [
+     0.62,
+     0.26
+    ],
+    [
+     0.585,
+     0.36
+    ],
+    [
+     0.6,
+     0.46
+    ],
+    [
+     0.58,
+     0.56
+    ],
+    [
+     0.6,
+     0.66
+    ],
+    [
+     0.585,
+     0.76
+    ],
+    [
+     0.6,
+     0.855
+    ]
+   ],
+   "width": 0.007
+  }
+ ],
+ "forests": [
+  {
+   "poly": [
+    [
+     0.62,
+     0.39
+    ],
+    [
+     0.66,
+     0.365
+    ],
+    [
+     0.72,
+     0.37
+    ],
+    [
+     0.745,
+     0.42
+    ],
+    [
+     0.73,
+     0.48
+    ],
+    [
+     0.7,
+     0.55
+    ],
+    [
+     0.66,
+     0.545
+    ],
+    [
+     0.63,
+     0.52
+    ],
+    [
+     0.615,
+     0.46
+    ]
+   ],
+   "kind": "mixed",
+   "density": 1.2
+  },
+  {
+   "poly": [
+    [
+     0.36,
+     0.645
+    ],
+    [
+     0.41,
+     0.63
+    ],
+    [
+     0.46,
+     0.64
+    ],
+    [
+     0.47,
+     0.67
+    ],
+    [
+     0.43,
+     0.695
+    ],
+    [
+     0.37,
+     0.69
+    ]
+   ],
+   "kind": "round",
+   "density": 1.4
+  },
+  {
+   "poly": [
+    [
+     0.49,
+     0.73
+    ],
+    [
+     0.53,
+     0.71
+    ],
+    [
+     0.57,
+     0.72
+    ],
+    [
+     0.585,
+     0.77
+    ],
+    [
+     0.56,
+     0.81
+    ],
+    [
+     0.51,
+     0.81
+    ],
+    [
+     0.485,
+     0.77
+    ]
+   ],
+   "kind": "mixed",
+   "density": 1.2
+  },
+  {
+   "poly": [
+    [
+     0.79,
+     0.21
+    ],
+    [
+     0.83,
+     0.19
+    ],
+    [
+     0.865,
+     0.22
+    ],
+    [
+     0.86,
+     0.29
+    ],
+    [
+     0.82,
+     0.31
+    ],
+    [
+     0.79,
+     0.27
+    ]
+   ],
+   "kind": "round",
+   "density": 1.0
+  }
+ ],
+ "hills": [
+  {
+   "poly": [
+    [
+     0.61,
+     0.75
+    ],
+    [
+     0.66,
+     0.73
+    ],
+    [
+     0.71,
+     0.75
+    ],
+    [
+     0.715,
+     0.8
+    ],
+    [
+     0.66,
+     0.815
+    ],
+    [
+     0.615,
+     0.8
+    ]
+   ],
+   "density": 1.5
+  },
+  {
+   "poly": [
+    [
+     0.15,
+     0.26
+    ],
+    [
+     0.2,
+     0.24
+    ],
+    [
+     0.26,
+     0.25
+    ],
+    [
+     0.27,
+     0.31
+    ],
+    [
+     0.22,
+     0.35
+    ],
+    [
+     0.16,
+     0.34
+    ]
+   ],
+   "density": 1.0
+  }
+ ],
+ "fields": [
+  {
+   "poly": [
+    [
+     0.505,
+     0.505
+    ],
+    [
+     0.55,
+     0.49
+    ],
+    [
+     0.578,
+     0.51
+    ],
+    [
+     0.575,
+     0.555
+    ],
+    [
+     0.535,
+     0.57
+    ],
+    [
+     0.51,
+     0.55
+    ]
+   ],
+   "glyph": "flower",
+   "color": "#c0392b"
+  },
+  {
+   "poly": [
+    [
+     0.745,
+     0.41
+    ],
+    [
+     0.79,
+     0.395
+    ],
+    [
+     0.83,
+     0.41
+    ],
+    [
+     0.83,
+     0.46
+    ],
+    [
+     0.79,
+     0.48
+    ],
+    [
+     0.75,
+     0.465
+    ]
+   ],
+   "glyph": "crop",
+   "color": "#c8a640"
+  },
+  {
+   "poly": [
+    [
+     0.2,
+     0.53
+    ],
+    [
+     0.25,
+     0.505
+    ],
+    [
+     0.3,
+     0.52
+    ],
+    [
+     0.31,
+     0.58
+    ],
+    [
+     0.26,
+     0.61
+    ],
+    [
+     0.21,
+     0.6
+    ]
+   ],
+   "glyph": "flower",
+   "color": "#e0b020"
+  }
+ ],
+ "roads": [
+  {
+   "path": [
+    [
+     0.83,
+     0.38
+    ],
+    [
+     0.79,
+     0.43
+    ],
+    [
+     0.73,
+     0.45
+    ],
+    [
+     0.67,
+     0.47
+    ],
+    [
+     0.62,
+     0.49
+    ],
+    [
+     0.585,
+     0.5
+    ],
+    [
+     0.53,
+     0.5
+    ],
+    [
+     0.47,
+     0.5
+    ]
+   ],
+   "style": "band",
+   "color": "#e3b733",
+   "width": 0.009
+  },
+  {
+   "path": [
+    [
+     0.45,
+     0.51
+    ],
+    [
+     0.38,
+     0.5
+    ],
+    [
+     0.29,
+     0.49
+    ],
+    [
+     0.21,
+     0.47
+    ]
+   ],
+   "style": "dotted"
+  },
+  {
+   "path": [
+    [
+     0.47,
+     0.53
+    ],
+    [
+     0.43,
+     0.62
+    ],
+    [
+     0.42,
+     0.68
+    ],
+    [
+     0.43,
+     0.75
+    ],
+    [
+     0.47,
+     0.77
+    ],
+    [
+     0.54,
+     0.77
+    ],
+    [
+     0.62,
+     0.76
+    ],
+    [
+     0.7,
+     0.79
+    ],
+    [
+     0.75,
+     0.79
+    ]
+   ],
+   "style": "dotted"
+  }
+ ],
+ "places": [
+  {
+   "id": "kansas",
+   "label": "To Kansas,\nbeyond the desert",
+   "u": 0.11,
+   "v": 0.078,
+   "glyph": "house",
+   "labelPos": "right",
+   "italic": true,
+   "labelSize": 0.022
+  },
+  {
+   "id": "great-desert",
+   "label": "",
+   "u": 0.36,
+   "v": 0.93,
+   "glyph": "none"
+  },
+  {
+   "id": "land-of-north",
+   "label": "",
+   "u": 0.5,
+   "v": 0.215,
+   "glyph": "none"
+  },
+  {
+   "id": "munchkin-land",
+   "label": "",
+   "u": 0.85,
+   "v": 0.57,
+   "glyph": "none"
+  },
+  {
+   "id": "winkie-country",
+   "label": "",
+   "u": 0.15,
+   "v": 0.645,
+   "glyph": "none"
+  },
+  {
+   "id": "quadling-country",
+   "label": "",
+   "u": 0.34,
+   "v": 0.81,
+   "glyph": "none"
+  },
+  {
+   "id": "dorothys-house",
+   "label": "Where the house fell",
+   "u": 0.83,
+   "v": 0.37,
+   "glyph": "house",
+   "labelPos": "above",
+   "labelSize": 0.02,
+   "italic": true
+  },
+  {
+   "id": "cornfield",
+   "label": "The Cornfield",
+   "u": 0.79,
+   "v": 0.49,
+   "glyph": "none",
+   "labelSize": 0.02
+  },
+  {
+   "id": "yellow-brick-road",
+   "label": "Road of Yellow Brick",
+   "u": 0.7,
+   "v": 0.425,
+   "glyph": "none",
+   "labelSize": 0.019,
+   "italic": true
+  },
+  {
+   "id": "great-forest",
+   "label": "The Great Forest",
+   "u": 0.68,
+   "v": 0.56,
+   "glyph": "none",
+   "labelSize": 0.021,
+   "italic": true
+  },
+  {
+   "id": "tin-woodman-cottage",
+   "label": "The Cottage",
+   "u": 0.705,
+   "v": 0.395,
+   "glyph": "house",
+   "labelPos": "above",
+   "size": 0.8,
+   "labelSize": 0.018
+  },
+  {
+   "id": "great-ditch",
+   "label": "The Great Ditch",
+   "u": 0.645,
+   "v": 0.475,
+   "glyph": "cross",
+   "labelPos": "below",
+   "size": 0.7,
+   "labelSize": 0.018
+  },
+  {
+   "id": "river",
+   "label": "The River",
+   "u": 0.6,
+   "v": 0.3,
+   "glyph": "none",
+   "italic": true,
+   "labelSize": 0.02
+  },
+  {
+   "id": "poppy-field",
+   "label": "The Poppy Field",
+   "u": 0.54,
+   "v": 0.585,
+   "glyph": "none",
+   "labelSize": 0.019
+  },
+  {
+   "id": "emerald-city",
+   "label": "The Emerald City",
+   "u": 0.465,
+   "v": 0.47,
+   "glyph": "city",
+   "labelPos": "above",
+   "size": 1.5,
+   "labelSize": 0.03
+  },
+  {
+   "id": "yellow-castle",
+   "label": "The Yellow Castle",
+   "u": 0.21,
+   "v": 0.46,
+   "glyph": "castle",
+   "labelPos": "above",
+   "size": 1.2
+  },
+  {
+   "id": "china-country",
+   "label": "The China Country",
+   "u": 0.41,
+   "v": 0.73,
+   "glyph": "town",
+   "labelPos": "right",
+   "size": 0.8,
+   "labelSize": 0.02
+  },
+  {
+   "id": "old-forest",
+   "label": "The Grand Old Forest",
+   "u": 0.535,
+   "v": 0.7,
+   "glyph": "none",
+   "labelSize": 0.019,
+   "italic": true
+  },
+  {
+   "id": "hammer-heads-hill",
+   "label": "Hill of the\nHammer-Heads",
+   "u": 0.66,
+   "v": 0.7,
+   "glyph": "none",
+   "labelSize": 0.019
+  },
+  {
+   "id": "glinda-castle",
+   "label": "The Castle of Glinda",
+   "u": 0.77,
+   "v": 0.79,
+   "glyph": "palace",
+   "labelPos": "above",
+   "size": 1.1
+  }
+ ],
+ "labels": [
+  {
+   "text": "THE LAND OF THE NORTH",
+   "u": 0.5,
+   "v": 0.215,
+   "size": 0.034,
+   "spacing": 0.3,
+   "alpha": 0.75
+  },
+  {
+   "text": "THE LAND OF THE MUNCHKINS",
+   "u": 0.85,
+   "v": 0.57,
+   "size": 0.02,
+   "spacing": 0.25,
+   "angle": 90,
+   "alpha": 0.75
+  },
+  {
+   "text": "THE COUNTRY OF THE WINKIES",
+   "u": 0.15,
+   "v": 0.645,
+   "size": 0.02,
+   "spacing": 0.25,
+   "angle": 90,
+   "alpha": 0.75
+  },
+  {
+   "text": "THE COUNTRY OF THE QUADLINGS",
+   "u": 0.34,
+   "v": 0.81,
+   "size": 0.02,
+   "spacing": 0.25,
+   "alpha": 0.75
+  },
+  {
+   "text": "THE  GREAT  DESERT",
+   "u": 0.36,
+   "v": 0.93,
+   "size": 0.034,
+   "spacing": 0.5,
+   "alpha": 0.7,
+   "italic": true
+  },
+  {
+   "text": "THE  GREAT  DESERT",
+   "u": 0.944,
+   "v": 0.5,
+   "size": 0.028,
+   "spacing": 0.5,
+   "angle": -90,
+   "alpha": 0.6,
+   "italic": true
+  },
+  {
+   "text": "THE  GREAT  DESERT",
+   "u": 0.056,
+   "v": 0.5,
+   "size": 0.028,
+   "spacing": 0.5,
+   "angle": 90,
+   "alpha": 0.6,
+   "italic": true
+  }
+ ],
+ "title": {
+  "text": "The Land of Oz",
+  "sub": "drawn for Fable after L. Frank Baum, 1900",
+  "u": 0.72,
+  "v": 0.075,
+  "size": 0.045
+ },
+ "compass": {
+  "u": 0.7,
+  "v": 0.93,
+  "r": 0.05
+ },
+ "decor": {
+  "tufts": 1.0,
+  "trees": 0.6
+ },
+ "border": true
+}
