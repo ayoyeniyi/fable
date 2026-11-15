@@ -91,7 +91,7 @@ namespace Fable
             if (!ChapterExperiences.Supported.Contains(book.Slug))
             {
                 Text(body, Library.IsImported(book.Slug)
-                    ? "Chapter experiences are prepared for Fable’s own first four books. They are not available yet for books you add.\n\nYour progress through the chapters is still kept."
+                    ? "Chapter experiences are prepared for Fable’s own ten books. They are not available yet for books you add.\n\nYour progress through the chapters is still kept."
                     : "There is no place built for this book’s chapters yet, so they have no experiences. Its three reading rooms are under \u201crooms\u201d.\n\nYour progress through the chapters is still kept.", 19, FontStyles.Normal, Ink, TextAlignmentOptions.TopLeft, new Vector2(0, 120), new Vector2(520, 200));
                 return;
             }

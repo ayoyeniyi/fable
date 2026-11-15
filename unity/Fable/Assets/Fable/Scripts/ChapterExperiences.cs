@@ -78,8 +78,9 @@ namespace Fable
     {
         public enum State { Locked, Preparing, Available, Failed, Unavailable }
         public const int MaxInFlight = 6;
-        /// Books whose text the preparation service holds (the four bundled ones). Imported books: not yet.
-        public static readonly HashSet<string> Supported = new() { "alice", "oz", "odyssey", "gulliver" };
+        /// Books whose text the preparation service holds: Fable's ten classics (the later six since 2026-11-15, staged in
+        /// their own rooms; a chapter none of a book's places stands for is answered unavailable at once). Imported books: not yet.
+        public static readonly HashSet<string> Supported = new() { "alice", "oz", "odyssey", "gulliver", "pride", "mobydick", "worlds", "treasure", "eighty", "frankenstein" };
 
         static ChapterExperiences instance;
         public static ChapterExperiences Instance

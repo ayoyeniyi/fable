@@ -299,3 +299,34 @@ func containsString(xs []string, x string) bool {
 	}
 	return false
 }
+
+// A book whose places name their chapters: an unnamed chapter is unavailable without asking Claude, and a named one
+// is planned among the places that name it only.
+func TestNamedChaptersLimitThePlaces(t *testing.T) {
+	fp := &fakePlanner{env: "reform-club"}
+	s, _ := newTestService(t, fp)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go s.Run(ctx)
+	s.Prepare("eighty", "eighty:c01", true)
+	j := waitFor(t, s, "eighty:c01", Unavailable, Done, Failed)
+	if j.State != Unavailable || !strings.Contains(j.Error, "no place") {
+		t.Fatalf("eighty:c01: state %s (%s), want unavailable: no place", j.State, j.Error)
+	}
+	fp.mu.Lock()
+	asked := len(fp.prompts)
+	fp.mu.Unlock()
+	if asked != 0 {
+		t.Fatalf("asked Claude %d times for a chapter no place names", asked)
+	}
+	s.Prepare("eighty", "eighty:c03", true)
+	j = waitFor(t, s, "eighty:c03", Done, Failed, Unavailable)
+	if j.State != Done {
+		t.Fatalf("eighty:c03: state %s (%s), want done", j.State, j.Error)
+	}
+	fp.mu.Lock()
+	defer fp.mu.Unlock()
+	if len(fp.prompts) == 0 || !strings.Contains(fp.prompts[0], "reform-club") || strings.Contains(fp.prompts[0], "mongolia-deck") {
+		t.Fatal("the plan for chapter 3 was not limited to the Reform Club")
+	}
+}

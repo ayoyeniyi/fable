@@ -32,6 +32,9 @@ type Env struct {
 	Look       string   `json:"look"`
 	Triangles  int      `json:"triangles"`
 	Meshes     int      `json:"meshes"`
+	// Chapters: the chapter ids a place stands for ("eighty:c03"). When a book's places name their chapters, only
+	// those chapters are planned, each among the places that name it; the book's other chapters have no place.
+	Chapters []string `json:"chapters,omitempty"`
 }
 
 type Budget struct {
@@ -102,4 +105,25 @@ func (c *Catalog) BudgetProblems(e Env) []string {
 		p = append(p, fmt.Sprintf("%s is %d meshes, over the %d limit", e.ID, e.Meshes, c.Budget.MaxMeshes))
 	}
 	return p
+}
+
+// ForChapter narrows a book's places to those that name the chapter. named reports whether any of the book's places
+// names its chapters at all (if none does, every place is a candidate and the planner decides).
+func (c *Catalog) ForChapter(slug, chapter string) (envs []Env, named bool) {
+	all := c.ForBook(slug)
+	for _, e := range all {
+		if len(e.Chapters) > 0 {
+			named = true
+		}
+		for _, ch := range e.Chapters {
+			if ch == chapter {
+				envs = append(envs, e)
+				break
+			}
+		}
+	}
+	if !named {
+		return all, false
+	}
+	return envs, true
 }

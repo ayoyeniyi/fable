@@ -428,6 +428,10 @@ func (s *Service) pipeline(ctx context.Context, j *Job, timed func(string, func(
 	if len(s.Catalog.ForBook(j.Book)) == 0 && s.passageFor(j.Chapter) == nil {
 		return &unavailableErr{why: "no place has been built for this book's chapters yet"}
 	}
+	// a book whose places name their chapters: a chapter none of them names has no place, again without asking Claude
+	if envs, named := s.Catalog.ForChapter(j.Book, j.Chapter); named && len(envs) == 0 && s.passageFor(j.Chapter) == nil {
+		return &unavailableErr{why: "no place has been built for this chapter yet"}
+	}
 	dir := s.pkgDir(j.Chapter)
 	work := dir + ".work"
 	os.RemoveAll(work)
@@ -440,6 +444,9 @@ func (s *Service) pipeline(ctx context.Context, j *Job, timed func(string, func(
 	passage := s.passageFor(j.Chapter)
 	fixed := ""
 	allowed := s.Catalog.ForBook(j.Book)
+	if envs, named := s.Catalog.ForChapter(j.Book, j.Chapter); named && passage == nil {
+		allowed = envs
+	}
 	if passage != nil {
 		fixed = passage.Room
 		if fixed == "" {
