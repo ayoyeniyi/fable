@@ -21,10 +21,11 @@ the image height (so they look the same at any resolution). Every key except "si
   "background": "sea" | "land",  what lies outside the "land" polygons (default "land": the whole sheet is land)
   "palette": {"paper": "#e9d8ac", "ink": "#3a2716", "sea": "#9fb2a6", "land": "#e2cf9a"},   optional overrides
   "land":    [{"poly": [[u,v],...], "rough": 0.5}],             coastlines (closed); rough 0..1 = fractal detail
-  "regions": [{"poly": [...], "tint": "#7a9a5a", "border": "dashed"|"solid"|"none", "rough": 0.2}],
+  "regions": [{"poly": [...], "tint": "#7a9a5a", "border": "dashed"|"solid"|"none", "rough": 0.2, "alpha": 0.45,
+               "smooth": 3}],                                     smooth = corner-rounding passes (0 keeps shared edges exact)
                                                                   watercolour washes (countries, gardens)
   "water":   [{"poly": [...], "rough": 0.3}],                     lakes and pools, drawn like the sea
-  "deserts": [{"poly": [...]}],                                   stippled sand
+  "deserts": [{"poly": [...], "hole": [[u,v],...]}],              stippled sand (an optional hole: a ring of desert)
   "fields":  [{"poly": [...], "glyph": "flower"|"grass"|"crop", "color": "#b03020"}],
   "forests": [{"poly": [...], "density": 1.0, "kind": "round"|"pine"|"mixed"}],
   "hills":   [{"poly": [...], "density": 1.0}],                    hachured hillocks
@@ -287,7 +288,7 @@ class Painter:
 
     def regions(self):
         for it in self.L.get("regions", []):
-            pts = self.shape_pts(it, True, 0.1, smooth=3)
+            pts = self.shape_pts(it, True, 0.1, smooth=it.get("smooth", 3))
             m = poly_mask((self.h, self.w), pts) & self.landmask
             self.wash(m, hexrgb(it.get("tint", "#8a9a5a")), it.get("alpha", 0.45), edge=0.6, blur=4)
             b = it.get("border", "dashed")
@@ -303,6 +304,8 @@ class Painter:
         for it in self.L.get("deserts", []):
             pts = self.shape_pts(it, True, 0.2)
             m = poly_mask((self.h, self.w), pts) & self.landmask
+            if it.get("hole"):
+                m &= ~poly_mask((self.h, self.w), self.shape_pts({"poly": it["hole"], "rough": it.get("rough", 0.3)}, True))
             self.wash(m, hexrgb(it.get("tint", "#d9b877")), 0.3)
             dots = (self.rng.random(m.shape) < 0.004) & m
             dots = ndimage.binary_dilation(dots, iterations=1)
@@ -445,9 +448,9 @@ class Painter:
 
     def forests(self):
         for it in self.L.get("forests", []):
-            pts = self.shape_pts(it, True, 0.3)
+            pts = self.shape_pts(it, True, 0.45)
             m = poly_mask((self.h, self.w), pts) & self.landmask & ~self.watermask
-            self.wash(m, hexrgb(it.get("tint", "#6f8a4a")), 0.25, edge=0.5)
+            self.wash(m, hexrgb(it.get("tint", "#6f8a4a")), 0.16, edge=0.15, blur=7)
             sp = self.U(0.03) / it.get("density", 1.0)
             kind = it.get("kind", "round")
             for (x, y) in self.scatter(m, sp, 0.45):
@@ -895,7 +898,7 @@ class Painter:
         im = Image.fromarray((np.clip(hgt, 0, 1) * 255).astype(np.uint8))
         sc = 1024 / max(self.W, self.H)
         im = im.resize((max(1, round(self.W * sc)), max(1, round(self.H * sc))), Image.BILINEAR)
-        return im.filter(ImageFilter.GaussianBlur(3))
+        return im.filter(ImageFilter.GaussianBlur(12))
 
 
 # ----------------------------------------------------------------------------- debug overlay
