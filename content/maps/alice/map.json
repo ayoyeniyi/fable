@@ -1,0 +1,244 @@
+{
+  "version": 1,
+  "book": "alice",
+  "views": [
+    {
+      "id": "wonderland",
+      "kind": "scroll",
+      "title": "Wonderland",
+      "image": "maps/alice/wonderland.jpg",
+      "aspect": 1.3333,
+      "height": "maps/alice/wonderland.height.png",
+      "source": "maps/alice/SOURCE.md",
+      "attribution": "Drawn for Fable after Lewis Carroll (tools/draw_map.py)"
+    }
+  ],
+  "places": [
+    {
+      "id": "rabbit-hole",
+      "name": "The rabbit-hole",
+      "aliases": [
+        "very deep well"
+      ],
+      "kind": "place",
+      "view": "wonderland",
+      "u": 0.13,
+      "v": 0.14,
+      "located": "drawn",
+      "firstSentence": "alice:c01.p003.s03",
+      "note": "The hole under the hedge that the White Rabbit pops down; it drops like a very deep well."
+    },
+    {
+      "id": "long-hall",
+      "name": "Long hall",
+      "aliases": [
+        "the hall",
+        "long, low hall"
+      ],
+      "kind": "room",
+      "view": "wonderland",
+      "u": 0.11,
+      "v": 0.36,
+      "located": "drawn",
+      "firstSentence": "alice:c01.p011.s03",
+      "note": "A long, low hall lit by a row of lamps, with locked doors all round."
+    },
+    {
+      "id": "little-door",
+      "name": "Little door",
+      "aliases": [],
+      "kind": "room",
+      "view": "wonderland",
+      "u": 0.295,
+      "v": 0.37,
+      "located": "drawn",
+      "firstSentence": "alice:c01.p013.s02",
+      "note": "A door about fifteen inches high, behind a curtain in the hall, opening on a passage to a garden."
+    },
+    {
+      "id": "pool-of-tears",
+      "name": "Pool of tears",
+      "aliases": [
+        "the pool"
+      ],
+      "kind": "lake",
+      "view": "wonderland",
+      "u": 0.16,
+      "v": 0.57,
+      "located": "drawn",
+      "firstSentence": "alice:c02.p007.s03",
+      "note": "The pool Alice wept when she was nine feet high."
+    },
+    {
+      "id": "shore",
+      "name": "The shore",
+      "aliases": [],
+      "kind": "coast",
+      "view": "wonderland",
+      "u": 0.29,
+      "v": 0.63,
+      "located": "drawn",
+      "firstSentence": "alice:c02.p025.s03",
+      "note": "Where the swimmers in the pool of tears scramble out to get dry."
+    },
+    {
+      "id": "rabbit-house",
+      "name": "Neat little house",
+      "aliases": [
+        "W. RABBIT"
+      ],
+      "kind": "house",
+      "view": "wonderland",
+      "u": 0.43,
+      "v": 0.45,
+      "located": "drawn",
+      "firstSentence": "alice:c04.p003.s04",
+      "note": "The White Rabbit's house, with a bright brass plate on the door."
+    },
+    {
+      "id": "thick-wood",
+      "name": "Thick wood",
+      "aliases": [
+        "the wood"
+      ],
+      "kind": "forest",
+      "view": "wonderland",
+      "u": 0.45,
+      "v": 0.71,
+      "located": "drawn",
+      "firstSentence": "alice:c04.p034.s04",
+      "note": "The wood Alice runs into from the Rabbit's house."
+    },
+    {
+      "id": "mushroom",
+      "name": "Large mushroom",
+      "aliases": [
+        "the mushroom"
+      ],
+      "kind": "place",
+      "view": "wonderland",
+      "u": 0.5,
+      "v": 0.59,
+      "located": "drawn",
+      "firstSentence": "alice:c04.p041.s03",
+      "note": "A mushroom about Alice's height, growing in the wood."
+    },
+    {
+      "id": "duchess-house",
+      "name": "Large kitchen",
+      "aliases": [],
+      "kind": "house",
+      "view": "wonderland",
+      "u": 0.62,
+      "v": 0.4,
+      "located": "drawn",
+      "firstSentence": "alice:c06.p019.s01",
+      "note": "The Duchess's house, a little house about four feet high in an open place in the wood; its door leads into a smoky kitchen."
+    },
+    {
+      "id": "march-hare-house",
+      "name": "House of the March Hare",
+      "aliases": [],
+      "kind": "house",
+      "view": "wonderland",
+      "u": 0.7,
+      "v": 0.61,
+      "located": "drawn",
+      "firstSentence": "alice:c06.p080.s01",
+      "note": "A house with chimneys shaped like ears and a roof thatched with fur."
+    },
+    {
+      "id": "tea-party",
+      "name": "The tea-party",
+      "aliases": [],
+      "kind": "place",
+      "view": "wonderland",
+      "u": 0.62,
+      "v": 0.7,
+      "located": "drawn",
+      "firstSentence": "alice:c07.p103.s02",
+      "note": "A table set out under a tree in front of the March Hare's house."
+    },
+    {
+      "id": "beautiful-garden",
+      "name": "Beautiful garden",
+      "aliases": [
+        "lovely garden",
+        "loveliest garden",
+        "cool fountains"
+      ],
+      "kind": "garden",
+      "view": "wonderland",
+      "u": 0.8,
+      "v": 0.115,
+      "located": "drawn",
+      "firstSentence": "alice:c01.p014.s01",
+      "note": "The garden Alice glimpses through the little door: bright flowers and cool fountains."
+    },
+    {
+      "id": "rose-tree",
+      "name": "The rose-tree",
+      "aliases": [],
+      "kind": "garden",
+      "view": "wonderland",
+      "u": 0.71,
+      "v": 0.24,
+      "located": "drawn",
+      "firstSentence": "alice:c08.p001.s01",
+      "note": "A large rose-tree near the entrance of the garden."
+    },
+    {
+      "id": "croquet-ground",
+      "name": "The croquet-ground",
+      "aliases": [],
+      "kind": "field",
+      "view": "wonderland",
+      "u": 0.83,
+      "v": 0.31,
+      "located": "drawn",
+      "firstSentence": "alice:c08.p041.s02",
+      "note": "The Queen of Hearts' croquet-ground."
+    },
+    {
+      "id": "mock-turtle-rock",
+      "name": "Ledge of rock",
+      "aliases": [],
+      "kind": "coast",
+      "view": "wonderland",
+      "u": 0.79,
+      "v": 0.79,
+      "located": "drawn",
+      "firstSentence": "alice:c09.p048.s01",
+      "note": "Where the Mock Turtle sits, sad and lonely."
+    },
+    {
+      "id": "sea",
+      "name": "Bottom of the sea",
+      "aliases": [
+        "school in the sea"
+      ],
+      "kind": "sea",
+      "view": "wonderland",
+      "u": 0.8,
+      "v": 0.9,
+      "located": "drawn",
+      "firstSentence": "alice:c09.p055.s01",
+      "note": "The sea where the Mock Turtle went to school."
+    },
+    {
+      "id": "court",
+      "name": "Court of justice",
+      "aliases": [
+        "the court",
+        "jury-box"
+      ],
+      "kind": "building",
+      "view": "wonderland",
+      "u": 0.88,
+      "v": 0.47,
+      "located": "drawn",
+      "firstSentence": "alice:c11.p001.s02",
+      "note": "The court where the King and Queen of Hearts sit on their throne."
+    }
+  ]
+}
