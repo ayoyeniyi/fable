@@ -301,6 +301,11 @@ Material:
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
+--- !u!1 &202979843 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8771091787928289351, guid: 4f144d8fcc8a24be4b1658c4b9b9caa4, type: 3}
+  m_PrefabInstance: {fileID: 1843625648}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &437143011
 GameObject:
   m_ObjectHideFlags: 0
@@ -477,6 +482,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Fable.RoomSound
   Id: glumdalclitchs-room
+  Ambience: room-tone:1+clock:0.45
   AmbienceVolume: 0.5
   MusicVolume: 0.22
   FadeSeconds: 3
@@ -522,6 +528,7 @@ MonoBehaviour:
   TurnStepMetres: 0.1
   HoldToReturn: 1
   HoldOneHand: 0.9
+  LegacyGestures: 0
   LeftHand: {fileID: 8413670318839156595}
   RightHand: {fileID: 3640601515150651557}
   LeftPointer: {fileID: 1900731689}
@@ -889,6 +896,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -44}
   m_SizeDelta: {x: -96, y: 28}
   m_Pivot: {x: 0.5, y: 1}
+--- !u!114 &1237251796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 202979843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1382b4724a79f442a9cdefaa9de43f4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fable.LivingScene
+  WindToward: 60
+  WindStrength: 0
+  Gustiness: 0.5
+  Sources: []
+  SourceVolumes: []
 --- !u!1 &1369777880
 GameObject:
   m_ObjectHideFlags: 0
@@ -932,7 +956,8 @@ MonoBehaviour:
   Dim: {r: 0.13, g: 0.11, b: 0.09, a: 0.62}
   Paper: {r: 0.96, g: 0.93, b: 0.86, a: 1}
   Scale: 1
-  DeadZoneDegrees: 28
+  UserScale: 1
+  ChangeOfHeight: 0.35
   MinBottom: 0.76
   ClampToTable: 1
 --- !u!223 &1369777882
@@ -1406,6 +1431,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 65
       objectReference: {fileID: 0}
+    - target: {fileID: -5579025578255461635, guid: 4f144d8fcc8a24be4b1658c4b9b9caa4, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: a6839f3f2474e459292939da9761b945, type: 2}
     - target: {fileID: -5448410952733348637, guid: 4f144d8fcc8a24be4b1658c4b9b9caa4, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1526,6 +1555,10 @@ PrefabInstance:
       propertyPath: m_ReceiveShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1421829917021955853, guid: 4f144d8fcc8a24be4b1658c4b9b9caa4, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 389c450182580440f85e81b4906d9b36, type: 2}
     - target: {fileID: 1459191258404331811, guid: 4f144d8fcc8a24be4b1658c4b9b9caa4, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1625,6 +1658,9 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 437143012}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8771091787928289351, guid: 4f144d8fcc8a24be4b1658c4b9b9caa4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1237251796}
     - targetCorrespondingSourceObject: {fileID: -5828504271931821328, guid: 4f144d8fcc8a24be4b1658c4b9b9caa4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1843625655}

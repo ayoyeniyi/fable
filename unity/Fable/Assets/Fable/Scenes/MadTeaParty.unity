@@ -565,6 +565,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 791629484}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &329930517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 999313956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1382b4724a79f442a9cdefaa9de43f4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fable.LivingScene
+  WindToward: 60
+  WindStrength: 0.25
+  Gustiness: 0.5
+  Sources: []
+  SourceVolumes: []
 --- !u!1 &361666999
 GameObject:
   m_ObjectHideFlags: 0
@@ -695,9 +712,13 @@ MonoBehaviour:
   Head: {fileID: 791629483}
   ReadingRoom: {fileID: 709986261}
   SceneId: mad-tea-party
+  RoomOnly: 0
+  RoomBook: 
   MiniatureScale: 0.09
   GrowSeconds: 1.8
   ExpandSeconds: 3.2
+  DioramaForward: 0.75
+  DioramaDrop: 0.7
 --- !u!114 &679956085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -712,7 +733,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Fable.ReaderController
   TapSeconds: 0.35
   DragStepMetres: 0.06
+  TurnStepMetres: 0.1
   HoldToReturn: 1
+  HoldOneHand: 0.9
+  LegacyGestures: 0
   LeftHand: {fileID: 8312088559422708745}
   RightHand: {fileID: 3827822020059522015}
   LeftPointer: {fileID: 791629488}
@@ -1312,6 +1336,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -730}
   m_SizeDelta: {x: -96, y: 30}
   m_Pivot: {x: 0.5, y: 1}
+--- !u!1 &999313956 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8771091787928289351, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
+  m_PrefabInstance: {fileID: 1100753375}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1100753375
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1348,6 +1377,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 65
       objectReference: {fileID: 0}
+    - target: {fileID: -7175835697466765919, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: d456da5afdbde4f0f9231b0187bda496, type: 2}
     - target: {fileID: -6688788470137052469, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1380,6 +1413,10 @@ PrefabInstance:
       propertyPath: m_ReceiveShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -4630215896064228816, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 476b325421dab46459f69128d02a33ab, type: 2}
     - target: {fileID: -4413397206898824166, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
       propertyPath: m_Color.b
       value: 0.8
@@ -1396,6 +1433,14 @@ PrefabInstance:
       propertyPath: m_Lightmapping
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -3943383405888531644, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: -2960063564492469815, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
+    - target: {fileID: -3924431133947751993, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 33887e26f6546419fb5925c67523e018, type: 2}
     - target: {fileID: -3910990755373119420, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1456,6 +1501,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 65
       objectReference: {fileID: 0}
+    - target: {fileID: -943227194688169974, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -7811288681384012274, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
     - target: {fileID: -117699253074368042, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1516,6 +1565,22 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 65
       objectReference: {fileID: 0}
+    - target: {fileID: 4078789271550993674, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 00f1b722f9e354976a31c993d049ee03, type: 2}
+    - target: {fileID: 4129710889040473882, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 4bbe2957d328d4efda34219770f0975e, type: 2}
+    - target: {fileID: 4810770151719832430, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: d52c9e7555da84cce8439a7f8bc430ea, type: 2}
+    - target: {fileID: 4842679496903915036, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 062df0ada9ae84105ab0d39e4b70fb9a, type: 2}
     - target: {fileID: 5170086995922694895, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
       propertyPath: m_CastShadows
       value: 0
@@ -1528,6 +1593,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 4e3d620a746cf40e29c7a41e9694e3bb, type: 2}
+    - target: {fileID: 5208064475122827587, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: eb863e711438e4ff19a109c1ac45ba1f, type: 2}
     - target: {fileID: 6327364580323258005, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1579,6 +1648,9 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1444242434}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8771091787928289351, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 329930517}
     - targetCorrespondingSourceObject: {fileID: 6327364580323258005, guid: 4aa77e47621b14e9086c0c3847677c88, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1100753382}
@@ -2093,6 +2165,11 @@ MonoBehaviour:
   Ink: {r: 0.13, g: 0.11, b: 0.09, a: 1}
   Dim: {r: 0.13, g: 0.11, b: 0.09, a: 0.38}
   Paper: {r: 0.96, g: 0.93, b: 0.86, a: 1}
+  Scale: 1
+  UserScale: 1
+  ChangeOfHeight: 0.35
+  MinBottom: 0.76
+  ClampToTable: 1
 --- !u!223 &1549330289
 Canvas:
   m_ObjectHideFlags: 0

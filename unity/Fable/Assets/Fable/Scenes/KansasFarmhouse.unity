@@ -479,6 +479,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1169207255}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &285093241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1278908297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1382b4724a79f442a9cdefaa9de43f4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fable.LivingScene
+  WindToward: 180
+  WindStrength: 1.1
+  Gustiness: 0.5
+  Sources: []
+  SourceVolumes: []
 --- !u!21 &467528706
 Material:
   serializedVersion: 8
@@ -892,6 +909,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Fable.RoomSound
   Id: kansas-farmhouse
+  Ambience: wind-grass:1+wind-high:0.55+room-tone:0.3
   AmbienceVolume: 0.5
   MusicVolume: 0.22
   FadeSeconds: 3
@@ -937,6 +955,7 @@ MonoBehaviour:
   TurnStepMetres: 0.1
   HoldToReturn: 1
   HoldOneHand: 0.9
+  LegacyGestures: 0
   LeftHand: {fileID: 3583259145034832171}
   RightHand: {fileID: 8646652266902906621}
   LeftPointer: {fileID: 1643662173}
@@ -1489,6 +1508,11 @@ ReflectionProbe:
   m_UseOcclusionCulling: 1
   m_Importance: 1
   m_CustomBakedTexture: {fileID: 0}
+--- !u!1 &1278908297 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8771091787928289351, guid: 0e813036077c74273b0a927c8e9b79e8, type: 3}
+  m_PrefabInstance: {fileID: 1296670461}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1296670461
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1521,6 +1545,10 @@ PrefabInstance:
       propertyPath: m_Shadows.m_Type
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -9170422948666498478, guid: 0e813036077c74273b0a927c8e9b79e8, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 316b5b073b601407b8e77d4544022f34, type: 2}
     - target: {fileID: -9129610993392547920, guid: 0e813036077c74273b0a927c8e9b79e8, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1565,6 +1593,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 65
       objectReference: {fileID: 0}
+    - target: {fileID: -5579025578255461635, guid: 0e813036077c74273b0a927c8e9b79e8, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 410517211dd46463b9a3e8969898260f, type: 2}
     - target: {fileID: -5101645209715031752, guid: 0e813036077c74273b0a927c8e9b79e8, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1657,6 +1689,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 65
       objectReference: {fileID: 0}
+    - target: {fileID: -3071742877580519475, guid: 0e813036077c74273b0a927c8e9b79e8, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 22ca1b203687a4b31990e4b0994baf52, type: 2}
     - target: {fileID: -2909723656318446491, guid: 0e813036077c74273b0a927c8e9b79e8, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1729,6 +1765,10 @@ PrefabInstance:
       propertyPath: m_ReceiveShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1421829917021955853, guid: 0e813036077c74273b0a927c8e9b79e8, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b763e86dd12274d7d90f78099d570c85, type: 2}
     - target: {fileID: 1426929832178864299, guid: 0e813036077c74273b0a927c8e9b79e8, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1848,6 +1888,9 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1253803458}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8771091787928289351, guid: 0e813036077c74273b0a927c8e9b79e8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 285093241}
     - targetCorrespondingSourceObject: {fileID: -4460121773026002802, guid: 0e813036077c74273b0a927c8e9b79e8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1296670470}
@@ -2045,7 +2088,8 @@ MonoBehaviour:
   Dim: {r: 0.13, g: 0.11, b: 0.09, a: 0.62}
   Paper: {r: 0.96, g: 0.93, b: 0.86, a: 1}
   Scale: 1
-  DeadZoneDegrees: 28
+  UserScale: 1
+  ChangeOfHeight: 0.35
   MinBottom: 0.76
   ClampToTable: 1
 --- !u!223 &1514326693

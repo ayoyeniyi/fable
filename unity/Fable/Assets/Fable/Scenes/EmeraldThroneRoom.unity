@@ -313,6 +313,9 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1619923178}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8771091787928289351, guid: 5459eeb1f177249fcab019bbd2aaa91b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 620005217}
     - targetCorrespondingSourceObject: {fileID: 7909721101085456062, guid: 5459eeb1f177249fcab019bbd2aaa91b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 620005215}
@@ -356,6 +359,28 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1 &620005216 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8771091787928289351, guid: 5459eeb1f177249fcab019bbd2aaa91b, type: 3}
+  m_PrefabInstance: {fileID: 620005212}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &620005217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620005216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1382b4724a79f442a9cdefaa9de43f4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fable.LivingScene
+  WindToward: 60
+  WindStrength: 0
+  Gustiness: 0.5
+  Sources: []
+  SourceVolumes: []
 --- !u!1 &730196675
 GameObject:
   m_ObjectHideFlags: 0
@@ -1249,7 +1274,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 290558cb395304630b882714099b7650, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Fable.RoomSound
-  Id: hall-lamps
+  Id: emerald-throne-room
+  Ambience: room-tone:0.9
   AmbienceVolume: 0.5
   MusicVolume: 0.22
   FadeSeconds: 3

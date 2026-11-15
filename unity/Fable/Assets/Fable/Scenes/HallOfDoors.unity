@@ -1172,6 +1172,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 65
       objectReference: {fileID: 0}
+    - target: {fileID: -5579025578255461635, guid: fb3c9e356b8f946509ad20a2ffd3d148, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 3eecf3b5348554e74a01880d360599f3, type: 2}
     - target: {fileID: -5157842445361283948, guid: fb3c9e356b8f946509ad20a2ffd3d148, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1348,6 +1352,10 @@ PrefabInstance:
       propertyPath: m_ReceiveShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1421829917021955853, guid: fb3c9e356b8f946509ad20a2ffd3d148, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 553b20d1a33d1458986021d6dc0fee3a, type: 2}
     - target: {fileID: 1541083231847976167, guid: fb3c9e356b8f946509ad20a2ffd3d148, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1479,6 +1487,9 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 253291716}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8771091787928289351, guid: fb3c9e356b8f946509ad20a2ffd3d148, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1627795847}
     - targetCorrespondingSourceObject: {fileID: -5157842445361283948, guid: fb3c9e356b8f946509ad20a2ffd3d148, type: 3}
       insertIndex: -1
       addedObject: {fileID: 767094276}
@@ -2249,6 +2260,28 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -726}
   m_SizeDelta: {x: -96, y: 40}
   m_Pivot: {x: 0.5, y: 1}
+--- !u!1 &1627795846 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8771091787928289351, guid: fb3c9e356b8f946509ad20a2ffd3d148, type: 3}
+  m_PrefabInstance: {fileID: 767094262}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1627795847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1627795846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1382b4724a79f442a9cdefaa9de43f4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fable.LivingScene
+  WindToward: 60
+  WindStrength: 0
+  Gustiness: 0.5
+  Sources: []
+  SourceVolumes: []
 --- !u!1 &1717947843
 GameObject:
   m_ObjectHideFlags: 0

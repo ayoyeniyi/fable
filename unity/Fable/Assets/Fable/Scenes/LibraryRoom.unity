@@ -455,6 +455,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 65
       objectReference: {fileID: 0}
+    - target: {fileID: -5579025578255461635, guid: d5eb659ae83ea49088e144db58a2945a, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 65a82da93c94b479c9afcd9d8c8a4b1e, type: 2}
     - target: {fileID: -5512257508867324088, guid: d5eb659ae83ea49088e144db58a2945a, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -719,6 +723,10 @@ PrefabInstance:
       propertyPath: m_ReceiveShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1421829917021955853, guid: d5eb659ae83ea49088e144db58a2945a, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 06950e6a0075941378067ac8fbb93f7b, type: 2}
     - target: {fileID: 1450145400234903073, guid: d5eb659ae83ea49088e144db58a2945a, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -950,6 +958,9 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1329916572}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8771091787928289351, guid: d5eb659ae83ea49088e144db58a2945a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 202979844}
     - targetCorrespondingSourceObject: {fileID: -5828504271931821328, guid: d5eb659ae83ea49088e144db58a2945a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 118407665}
@@ -1189,6 +1200,28 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1 &202979843 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8771091787928289351, guid: d5eb659ae83ea49088e144db58a2945a, type: 3}
+  m_PrefabInstance: {fileID: 118407648}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &202979844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 202979843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1382b4724a79f442a9cdefaa9de43f4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fable.LivingScene
+  WindToward: 60
+  WindStrength: 0
+  Gustiness: 0.5
+  Sources: []
+  SourceVolumes: []
 --- !u!114 &208718200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1376,6 +1409,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Fable.RoomSound
   Id: lobby
+  Ambience: room-tone:0.8+clock:0.3
   AmbienceVolume: 0.5
   MusicVolume: 0.22
   FadeSeconds: 3

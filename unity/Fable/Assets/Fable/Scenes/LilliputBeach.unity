@@ -910,6 +910,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 65
       objectReference: {fileID: 0}
+    - target: {fileID: -7175835697466765919, guid: 2fdaf3901ddaa487e9dec0d340d717fd, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 21a2551cfeade4254b687287e15ef65e, type: 2}
     - target: {fileID: -6422180195246515584, guid: 2fdaf3901ddaa487e9dec0d340d717fd, type: 3}
       propertyPath: m_CastShadows
       value: 0
@@ -934,6 +938,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 65
       objectReference: {fileID: 0}
+    - target: {fileID: -4692018811316863400, guid: 2fdaf3901ddaa487e9dec0d340d717fd, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: bc774f1df7b3d49e89cca3229d68bc5b, type: 2}
     - target: {fileID: -4671947001591678467, guid: 2fdaf3901ddaa487e9dec0d340d717fd, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1050,6 +1058,18 @@ PrefabInstance:
       propertyPath: m_ReceiveShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4078789271550993674, guid: 2fdaf3901ddaa487e9dec0d340d717fd, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 16fa104ff45c54ba49ac89fae0e59f99, type: 2}
+    - target: {fileID: 4842679496903915036, guid: 2fdaf3901ddaa487e9dec0d340d717fd, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 13725ce1cc8b34e3ca16e15f6eb93873, type: 2}
+    - target: {fileID: 5208064475122827587, guid: 2fdaf3901ddaa487e9dec0d340d717fd, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 8f625b958d3e54ba4b6a3c212de2a4c5, type: 2}
     - target: {fileID: 5527544928852849435, guid: 2fdaf3901ddaa487e9dec0d340d717fd, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1066,6 +1086,10 @@ PrefabInstance:
       propertyPath: m_ReceiveShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6339765504339659207, guid: 2fdaf3901ddaa487e9dec0d340d717fd, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: d5a0bdfdf4dd94e3f8a9497c750cac4b, type: 2}
     - target: {fileID: 6791994361228797396, guid: 2fdaf3901ddaa487e9dec0d340d717fd, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1121,6 +1145,9 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 856860939}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8771091787928289351, guid: 2fdaf3901ddaa487e9dec0d340d717fd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2068748922}
     - targetCorrespondingSourceObject: {fileID: 802037077099623635, guid: 2fdaf3901ddaa487e9dec0d340d717fd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 825798983}
@@ -2217,7 +2244,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 290558cb395304630b882714099b7650, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Fable.RoomSound
-  Id: garden-afternoon
+  Id: lilliput-beach
+  Ambience: surf:0.8+gulls:0.35+wind-grass:0.35
   AmbienceVolume: 0.5
   MusicVolume: 0.22
   FadeSeconds: 3
@@ -2464,6 +2492,28 @@ Transform:
   - {fileID: 387327452}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2068748921 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8771091787928289351, guid: 2fdaf3901ddaa487e9dec0d340d717fd, type: 3}
+  m_PrefabInstance: {fileID: 825798978}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2068748922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2068748921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1382b4724a79f442a9cdefaa9de43f4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fable.LivingScene
+  WindToward: 100
+  WindStrength: 0.45
+  Gustiness: 0.5
+  Sources: []
+  SourceVolumes: []
 --- !u!1 &2111218141
 GameObject:
   m_ObjectHideFlags: 0

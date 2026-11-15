@@ -28,3 +28,56 @@ the default outdoors; indoors there is none, except where a window or door is op
 - fire: at most 3 particle systems per scene, at most 1 real-time light per fire
 - wind: vertex animation only (no physics)
 - sound: at most 6 positional sources plus the ambience
+
+## What the Unity side does (2026-11-14)
+
+`Editor/FableLiving.cs` runs inside `FableBuild.BuildScene` (before the bake) and, for scenes already baked,
+`FableLiving.ApplyLiving()` (menu Fable > Apply Living Scenes) re-applies in place without a rebake: meshes keep their
+lightmap UVs and renderers their lightmap slots. It always starts again from the glTF originals, so running it twice
+is harmless. Generated meshes and materials go to `Assets/Fable/Living/<scene>/`, shared textures to
+`Assets/Fable/Living/Shared/`. What it finds, by the renderer's own name or its parent's:
+
+- `water.ocean.*` → `Fable/Water` (Ocean): three Gerstner waves (height and length from `SceneDef.WaterOverride`,
+  direction from `SceneDef.WindToward`), two drifting detail-normal layers, sky reflection by Fresnel from the scene's
+  fog colour (horizon) and ambient sky colour (overhead) unless the SceneDef gives its own, a sun glint where the
+  baked shadow mask lets the sun through, foam from vertex colour **G** and on the crests. The mesh is subdivided to
+  about 2.5 m edges (at most ~12k vertices) so the swell has vertices to move. The body colour is the mesh's own
+  base-colour texture lit by its lightmap, so baked shadows (a hull's, a cliff's) stay on the water.
+- `water.river.*` / `water.stream.*` → `Fable/Water` (River): the detail normals scroll downstream along the direction
+  V increases (worked out per vertex at import, so keep V running downstream). No swell.
+- `water.pond.*` / `water.puddle.*` → `Fable/Water` (Pond): very slow ripples, no swell.
+- `veg.<kind>.*` → `Fable/LivingLit` (same inputs as glTFast's material, so it looks the same; it samples the
+  lightmap): sways in the scene wind. Vertex colour **R** is the weight and is never used as a tint. Without vertex
+  colour, the weight is the vertex's height above the surface under it (a downward ray against the rest of the room),
+  reaching 1 at 0.6 m for grass, 0.7 flowers, 1 crop, 1.2 reeds, 1.8 shrub, 3 leaves, 8 crown. Per-kind amplitude (m
+  at weight 1 in a strength-1 wind): grass 0.11, flowers 0.09, crop 0.14, reeds 0.13, shrub 0.05, leaves 0.05
+  (mostly flutter), crown 0.12. A gust wave rolls downwind across the scene.
+- `cloth.<kind>.*` → `Fable/LivingLit` billow along the normal: sail 0.25 m, flag 0.15, curtain 0.05, washing 0.1.
+  Without vertex colour the weight is 0 at the top edge and 1 at the bottom (hung from the top).
+- `fx.fire.*` → `living.fire.*`: flame particles (≤32, additive, one soft texture), ember particles (≤14), one
+  realtime flickering point light (no shadows, low intensity: the steady light belongs in the bake), and the crackle
+  (`amb.fire`) as a positional source. **Radius:** glTF does not carry an empty's display size, so set a custom
+  property `radius` on the empty (`e["radius"] = size`) and export with `export_extras=True`; otherwise the empty's
+  scale is used if it is not 1, else 0.25 m.
+- `fx.candle.*` → a small billboard flame card that flickers. No light, no sound.
+- `fx.torch.*` / `fx.lantern.*` → a larger flame card, a flickering light (within the budget) and a quiet hiss
+  (`amb.candle`).
+- `sound.<kind>.*` → a looping positional source; the clip is `amb.<clip>` with surf→surf, river→river, fire→fire,
+  wind-trees→wind-pines, wind→wind-grass, birds→birds, gulls→gulls, rigging→rigging, crowd→tavern, clock→clock,
+  rain→rain.
+- A modelled flame mesh (the older rooms' `MESH_Flame`) → `Fable/Flame`: unlit, flickers and licks.
+
+The budget above is enforced: fires beyond the third particle system get no particles, lights beyond three none,
+sources beyond six are dropped (the build log says so). `LivingScene` (on the environment root) drives the wind
+globals (`_FableWind`, `_FableWindTime`) with slow gusts and sets the positional sources' volume from the reader's
+ambience setting. Note that `fx.*` names are also script-controlled asset names (`SceneRegistry`, hidden at a beat
+reset), so the generated fire is a sibling (`living.fire.*`), not a child, of the empty.
+
+**Rooms built before the conventions** are mapped by name in `FableLiving.Legacy` (for example Odysseus's `MESH_Sea`
+→ `water.ocean`, the poppy field's `MESH_PoppyPetal` → `veg.flowers`), and their hearths (Calypso's cave, the hall at
+Ithaca) get a fire at the base of the modelled flame.
+
+**Wiring a new room:** in `FableBuild.Scenes` give the SceneDef `Sound` (ambience layers, `"surf:0.8+gulls:0.3"`;
+kinds listed in `audio/SOURCES.md`), `Wind` and `WindToward` if the default (0.35 outdoors, 0 indoors) does not
+suit, `Music` if it should play another scene's music, and `WaterOverride` for a rougher or calmer sea or a faster
+river. Then `FableBuild.BuildScene("<id>")` and `FableBuild.BakeLighting("<id>")` as usual.

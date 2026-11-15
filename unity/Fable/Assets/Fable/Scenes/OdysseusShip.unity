@@ -1116,6 +1116,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -8633578381397633226, guid: fc8c3e7b589fa48d4a4be8304ef48cb7, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: ea564877eb0f54e28b063c23d962562e, type: 2}
     - target: {fileID: -8585584622575233546, guid: fc8c3e7b589fa48d4a4be8304ef48cb7, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1144,6 +1148,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 65
       objectReference: {fileID: 0}
+    - target: {fileID: -6771832338989378511, guid: fc8c3e7b589fa48d4a4be8304ef48cb7, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 7a861ccb60bef49b1ac36c447982b621, type: 2}
     - target: {fileID: -6555800250066998779, guid: fc8c3e7b589fa48d4a4be8304ef48cb7, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1228,10 +1236,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -3152770121609405821, guid: fc8c3e7b589fa48d4a4be8304ef48cb7, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: abdc6df1bc2574ab687478c2e83308b4, type: 2}
     - target: {fileID: -2909723656318446491, guid: fc8c3e7b589fa48d4a4be8304ef48cb7, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
       objectReference: {fileID: 0}
+    - target: {fileID: -2333337372522273843, guid: fc8c3e7b589fa48d4a4be8304ef48cb7, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2333337372522273843, guid: fc8c3e7b589fa48d4a4be8304ef48cb7, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: bffc878579709421989887ebea63a67d, type: 2}
     - target: {fileID: -1964831109335356740, guid: fc8c3e7b589fa48d4a4be8304ef48cb7, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1264,6 +1284,10 @@ PrefabInstance:
       propertyPath: m_ReceiveShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -228592186083092811, guid: fc8c3e7b589fa48d4a4be8304ef48cb7, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 63f5a1a21cc81485fbd56877a621d61e, type: 2}
     - target: {fileID: 802037077099623635, guid: fc8c3e7b589fa48d4a4be8304ef48cb7, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1312,6 +1336,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 65
       objectReference: {fileID: 0}
+    - target: {fileID: 6060517061710825981, guid: fc8c3e7b589fa48d4a4be8304ef48cb7, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: f614e7c1fe91848e3a6df8169c6fc2d3, type: 2}
     - target: {fileID: 6063781199092297813, guid: fc8c3e7b589fa48d4a4be8304ef48cb7, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1359,6 +1387,9 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 480179452}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8771091787928289351, guid: fc8c3e7b589fa48d4a4be8304ef48cb7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1601443345}
     - targetCorrespondingSourceObject: {fileID: 802037077099623635, guid: fc8c3e7b589fa48d4a4be8304ef48cb7, type: 3}
       insertIndex: -1
       addedObject: {fileID: 999875150}
@@ -1777,6 +1808,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Fable.RoomSound
   Id: calypsos-cave
+  Ambience: sea-open:0.8+harbour:0.5+rigging:0.6+gulls:0.15
   AmbienceVolume: 0.5
   MusicVolume: 0.22
   FadeSeconds: 3
@@ -2036,6 +2068,28 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -76}
   m_SizeDelta: {x: -96, y: 52}
   m_Pivot: {x: 0.5, y: 1}
+--- !u!1 &1601443344 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8771091787928289351, guid: fc8c3e7b589fa48d4a4be8304ef48cb7, type: 3}
+  m_PrefabInstance: {fileID: 999875145}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1601443345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1601443344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1382b4724a79f442a9cdefaa9de43f4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fable.LivingScene
+  WindToward: 40
+  WindStrength: 0.6
+  Gustiness: 0.5
+  Sources: []
+  SourceVolumes: []
 --- !u!1 &1730826781
 GameObject:
   m_ObjectHideFlags: 0

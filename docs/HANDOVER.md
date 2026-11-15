@@ -2,6 +2,33 @@
 
 Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs/TOOLING.md`. Everything below was true at the commit that last touched this file. "Verified" always says where: **editor** (Unity play mode on a Mac, desktop camera, no HMD) or **headset**. Nothing has been verified on a headset yet.
 
+## Living scenes: moving water, wind, fire and real ambient sound (2026-11-14)
+
+- **Sound library:** 17 real field-recording loops (`Resources/Audio/amb.<kind>.ogg`: surf, harbour, sea-open, river,
+  wind-grass, wind-pines, wind-high, birds, gulls, rigging, room-tone, tavern, night, rain, fire, candle, clock) and
+  the four Alice nature effects (`sfx.garden-birds`, `birdsong`, `wind-hedges`, `leaves`), CC0 except `amb.gulls` and
+  `amb.clock` (CC BY 4.0). Sources, licences, sections and edits: `audio/SOURCES.md`, `CREDITS.md`; rebuilt by
+  `audio/make_ambience.py`. 10.5 MB. The synthesised per-room ambiences are gone; `amb.formal-garden`,
+  `amb.garden-afternoon` and `amb.hall-lamps` (used by Alice scene scripts) are still synthesised. Nobody has
+  listened yet: check `amb.tavern` for intelligible words first, then gulls, birds (distant aircraft), room tone.
+- **Unity side:** `Shaders/` (`Fable/Water`, `Fable/LivingLit`, `Fable/Flame`, `Fable/FlameGlow`),
+  `Scripts/Atmosphere/` (`LivingScene`, `FireFlicker`), `Editor/FableLiving.cs`, `RoomSound` (ambience layers).
+  Details and the wiring of a new room: `docs/LIVING_SCENES.md`. SceneDef: `Sound` is now ambience layers
+  (`"surf:0.8+gulls:0.3"`), plus `Music`, `Wind`, `WindToward`, `WaterOverride`.
+- **Existing rooms** (applied in place by `FableLiving.ApplyLiving()`, lightmaps kept, no rebake): moving sea at
+  Odysseus's ship (near and far), Calypso's cave (sea, rills, hearth fire with particles and flicker light, foliage),
+  Lilliput beach (sea, hedges, trees); poppy field (river, poppies, meadow flowers, herbage, trees); Laputa (grass,
+  flowers, shrubs, trees, wall plants, high wind); Kansas (prairie grass in a strong wind); tea party and croquet
+  ground (hedges, leaves, flowers, roses); Ithaca (hearth fire, courtyard weeds); flickering modelled flames in the
+  lobby, library room, hall of doors, Kansas lamp and Glumdalclitch's candle. New ambience for every room.
+- **Verified in the editor:** the shaders compile; Odysseus's sea moves with swell, ripples and crest foam (checked
+  in an editor render). Found on the way: replacing a mesh asset's contents in place leaves the GPU drawing the old
+  vertices, so FableLiving writes fresh mesh assets.
+- **Not verified:** anything on the headset; frame time (expected cost: one opaque water pass with 2 texture reads
+  per pixel and ~6k vertices of swell, a few hundred extra ALU per foliage vertex, ≤46 additive particles and one
+  per-pixel point light per fire scene; should fit 72 Hz but the poppy field, Laputa and Kansas are already heavy);
+  how the sounds actually sound.
+
 ## Translate into 54 languages, and wait estimates (2026-11-14)
 
 - **Languages:** 54 (`TranslateLanguages.cs` = `interpreter/internal/server/languages.go`, checked by

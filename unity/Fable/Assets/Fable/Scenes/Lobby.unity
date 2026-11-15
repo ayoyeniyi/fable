@@ -591,6 +591,23 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &509629160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1627795846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1382b4724a79f442a9cdefaa9de43f4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fable.LivingScene
+  WindToward: 60
+  WindStrength: 0
+  Gustiness: 0.5
+  Sources: []
+  SourceVolumes: []
 --- !u!114 &550987580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -836,6 +853,11 @@ Transform:
   - {fileID: 212344031}
   m_Father: {fileID: 118407654}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1627795846 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8771091787928289351, guid: d5eb659ae83ea49088e144db58a2945a, type: 3}
+  m_PrefabInstance: {fileID: 1867982053}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1767660421
 GameObject:
   m_ObjectHideFlags: 0
@@ -1051,6 +1073,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 65
       objectReference: {fileID: 0}
+    - target: {fileID: -5579025578255461635, guid: d5eb659ae83ea49088e144db58a2945a, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 27548443ec8934cfe921373a44cae74f, type: 2}
     - target: {fileID: -5512257508867324088, guid: d5eb659ae83ea49088e144db58a2945a, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1327,6 +1353,10 @@ PrefabInstance:
       propertyPath: m_ReceiveShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1421829917021955853, guid: d5eb659ae83ea49088e144db58a2945a, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: ad82a1d818be144d482aaa259d41440d, type: 2}
     - target: {fileID: 1450145400234903073, guid: d5eb659ae83ea49088e144db58a2945a, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 65
@@ -1574,6 +1604,9 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1358062671}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8771091787928289351, guid: d5eb659ae83ea49088e144db58a2945a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 509629160}
     - targetCorrespondingSourceObject: {fileID: -5828504271931821328, guid: d5eb659ae83ea49088e144db58a2945a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1867982070}
@@ -1876,6 +1909,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Fable.RoomSound
   Id: lobby
+  Ambience: room-tone:0.8+clock:0.3
   AmbienceVolume: 0.5
   MusicVolume: 0.22
   FadeSeconds: 3

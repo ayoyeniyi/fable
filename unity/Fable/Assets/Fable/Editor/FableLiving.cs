@@ -29,7 +29,7 @@ namespace Fable.Editor
             ["odysseus-ship"] = new() { ["MESH_Sea"] = "water.ocean.near", ["far.Sea"] = "water.ocean.far", ["MESH_Maquis"] = "veg.shrub.maquis" },
             ["lilliput-beach"] = new() { ["far.sea"] = "water.ocean.sea", ["MESH_Hedge"] = "veg.shrub.hedge", ["MESH_Leaves"] = "veg.leaves.trees" },
             ["poppy-field"] = new() { ["MESH_Water"] = "water.river.brook", ["MESH_PoppyPetal"] = "veg.flowers.poppies", ["MESH_MeadowFlowers"] = "veg.flowers.meadow", ["MESH_Herbage"] = "veg.grass.herbage", ["MESH_TreeLeaves"] = "veg.leaves.trees", ["MESH_LeavesShade"] = "veg.leaves.shade" },
-            ["mad-tea-party"] = new() { ["MESH_Grass"] = "veg.grass.lawn", ["MESH_Hedge"] = "veg.shrub.hedge", ["MESH_Leaves"] = "veg.leaves.tree", ["MESH_FlowerPink"] = "veg.flowers.pink", ["MESH_FlowerYellow"] = "veg.flowers.yellow" },
+            ["mad-tea-party"] = new() { ["MESH_Hedge"] = "veg.shrub.hedge", ["MESH_Leaves"] = "veg.leaves.tree", ["MESH_FlowerPink"] = "veg.flowers.pink", ["MESH_FlowerYellow"] = "veg.flowers.yellow" },
             ["queens-croquet-ground"] = new() { ["MESH_Hedge"] = "veg.shrub.hedge", ["MESH_TreeLeaves"] = "veg.leaves.trees", ["MESH_RoseLeaves"] = "veg.shrub.roses", ["MESH_RoseRed"] = "veg.flowers.red", ["MESH_RoseWhite"] = "veg.flowers.white" },
             ["laputa"] = new() { ["MESH_Grass"] = "veg.grass.lawns", ["MESH_Flowers"] = "veg.flowers.beds", ["MESH_Leaves"] = "veg.leaves.shrubs", ["MESH_TreeFoliage"] = "veg.crown.trees", ["MESH_WallPlants"] = "veg.leaves.wall" },
             ["kansas-farmhouse"] = new() { ["MESH_PrairieGrass"] = "veg.grass.prairie", ["MESH_Flame"] = "flame.lamp" },
