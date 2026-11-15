@@ -1,0 +1,399 @@
+{
+  "version": 1,
+  "book": "treasure",
+  "views": [
+    {
+      "id": "world",
+      "kind": "globe",
+      "title": "The World of Treasure Island",
+      "texture": "maps/_globe/earth.jpg",
+      "focus": {
+        "lat": 30.0,
+        "lon": -40.0
+      }
+    },
+    {
+      "id": "island",
+      "kind": "scroll",
+      "title": "Treasure Island",
+      "image": "maps/treasure/island.jpg",
+      "aspect": 0.5791,
+      "parent": "world",
+      "anchor": "treasure-island",
+      "source": "maps/treasure/SOURCE.md",
+      "attribution": "Map by Robert Louis Stevenson, as printed in the 1885 Cassell edition (public domain)"
+    }
+  ],
+  "places": [
+    {
+      "id": "admiral-benbow",
+      "name": "Admiral Benbow",
+      "aliases": [
+        "Admiral Benbow Inn",
+        "Benbow"
+      ],
+      "kind": "building",
+      "view": "world",
+      "lat": 51.205,
+      "lon": -3.62,
+      "located": "approximate",
+      "firstSentence": "treasure:c01.p001.s01",
+      "note": "The Hawkins family's inn on a lonely West Country cove, by the coast road to Bristol. Invented; placed on the Bristol Channel coast."
+    },
+    {
+      "id": "black-hill-cove",
+      "name": "Black Hill Cove",
+      "aliases": [],
+      "kind": "coast",
+      "view": "world",
+      "lat": 51.212,
+      "lon": -3.605,
+      "located": "approximate",
+      "firstSentence": "treasure:c03.p023.s01",
+      "note": "The cove below the Admiral Benbow. Invented; placed with the inn."
+    },
+    {
+      "id": "kitts-hole",
+      "name": "Kitt's Hole",
+      "aliases": [],
+      "kind": "coast",
+      "view": "world",
+      "lat": 51.218,
+      "lon": -3.64,
+      "located": "approximate",
+      "firstSentence": "treasure:c04.p003.s05",
+      "note": "An inlet along the coast near the Admiral Benbow. Invented; placed near the inn."
+    },
+    {
+      "id": "bristol",
+      "name": "Bristol",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 51.4538,
+      "lon": -2.5973,
+      "located": "geocoded",
+      "firstSentence": "treasure:c01.p009.s06",
+      "note": "The great port of the West Country, on the coast road from the Admiral Benbow."
+    },
+    {
+      "id": "london",
+      "name": "London",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 51.5074,
+      "lon": -0.1278,
+      "located": "geocoded",
+      "firstSentence": "treasure:c07.p001.s02",
+      "note": "The capital."
+    },
+    {
+      "id": "execution-dock",
+      "name": "Execution Dock",
+      "aliases": [],
+      "kind": "harbour",
+      "view": "world",
+      "lat": 51.5034,
+      "lon": -0.0572,
+      "located": "geocoded",
+      "firstSentence": "treasure:c11.p025.s01",
+      "note": "At Wapping on the Thames, where pirates were hanged."
+    },
+    {
+      "id": "savannah",
+      "name": "Savannah",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 32.079,
+      "lon": -81.0921,
+      "located": "geocoded",
+      "firstSentence": "treasure:c03.p016.s07",
+      "note": "The port in the colony of Georgia."
+    },
+    {
+      "id": "dry-tortugas",
+      "name": "Dry Tortugas",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 24.6652,
+      "lon": -82.8554,
+      "located": "geocoded",
+      "firstSentence": "treasure:c01.p013.s02",
+      "note": "Low islands off the tip of Florida, a byword in sea stories."
+    },
+    {
+      "id": "spanish-main",
+      "name": "Spanish Main",
+      "aliases": [],
+      "kind": "coast",
+      "view": "world",
+      "lat": 11.0,
+      "lon": -74.0,
+      "located": "approximate",
+      "firstSentence": "treasure:c01.p013.s02",
+      "note": "Spain's Caribbean coast of South America, the haunt of buccaneers."
+    },
+    {
+      "id": "trinidad",
+      "name": "Trinidad",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 10.4427,
+      "lon": -61.2614,
+      "located": "geocoded",
+      "firstSentence": "treasure:c06.p023.s06",
+      "note": "The island off the coast of Venezuela."
+    },
+    {
+      "id": "portobello",
+      "name": "Portobello",
+      "aliases": [],
+      "kind": "harbour",
+      "view": "world",
+      "lat": 9.5538,
+      "lon": -79.6549,
+      "located": "geocoded",
+      "firstSentence": "treasure:c10.p022.s03",
+      "note": "Portobelo, the Spanish treasure port on the Isthmus of Panama."
+    },
+    {
+      "id": "surinam",
+      "name": "Surinam",
+      "aliases": [],
+      "kind": "country",
+      "view": "world",
+      "lat": 4.1413,
+      "lon": -56.0771,
+      "located": "geocoded",
+      "firstSentence": "treasure:c10.p022.s03",
+      "note": "The Dutch colony on the north coast of South America."
+    },
+    {
+      "id": "madagascar",
+      "name": "Madagascar",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": -19.0,
+      "lon": 46.7,
+      "located": "geocoded",
+      "firstSentence": "treasure:c10.p022.s03",
+      "note": "The great island off East Africa, a pirate haven."
+    },
+    {
+      "id": "malabar",
+      "name": "Malabar",
+      "aliases": [],
+      "kind": "coast",
+      "view": "world",
+      "lat": 11.2451,
+      "lon": 75.7755,
+      "located": "geocoded",
+      "firstSentence": "treasure:c10.p022.s03",
+      "note": "The Malabar Coast of south-west India (pin at Kozhikode)."
+    },
+    {
+      "id": "goa",
+      "name": "Goa",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 15.3005,
+      "lon": 74.0855,
+      "located": "geocoded",
+      "firstSentence": "treasure:c10.p022.s06",
+      "note": "The Portuguese colony on India's west coast."
+    },
+    {
+      "id": "corso-castle",
+      "name": "Corso Castle",
+      "aliases": [],
+      "kind": "building",
+      "view": "world",
+      "lat": 5.1036,
+      "lon": -1.2411,
+      "located": "geocoded",
+      "firstSentence": "treasure:c11.p001.s04",
+      "note": "Cape Coast Castle on the Gold Coast of Africa, where pirates were tried and hanged."
+    },
+    {
+      "id": "treasure-island",
+      "name": "Treasure Island",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 15.5,
+      "lon": -72.5,
+      "located": "approximate",
+      "firstSentence": "treasure:c01.p001.s01",
+      "note": "The island of the story. Its chart gives no latitude or longitude; pinned in the Caribbean, where the voyage is bound."
+    },
+    {
+      "id": "foremast-hill",
+      "name": "Foremast Hill",
+      "aliases": [],
+      "kind": "mountain",
+      "view": "island",
+      "u": 0.33,
+      "v": 0.236,
+      "located": "scan",
+      "firstSentence": "treasure:c12.p007.s03",
+      "note": "The northern hill of the three that run in a row down the island."
+    },
+    {
+      "id": "spy-glass",
+      "name": "Spy-glass",
+      "aliases": [
+        "Spy-glass shoulder"
+      ],
+      "kind": "mountain",
+      "view": "island",
+      "u": 0.262,
+      "v": 0.43,
+      "located": "scan",
+      "firstSentence": "treasure:c06.p041.s03",
+      "note": "The tallest hill on the island, marked on the chart as The Spy-glass."
+    },
+    {
+      "id": "north-inlet",
+      "name": "North Inlet",
+      "aliases": [],
+      "kind": "harbour",
+      "view": "island",
+      "u": 0.452,
+      "v": 0.318,
+      "located": "scan",
+      "firstSentence": "treasure:c06.p047.s01",
+      "note": "The inlet on the island's north coast."
+    },
+    {
+      "id": "rum-cove",
+      "name": "Rum Cove",
+      "aliases": [],
+      "kind": "harbour",
+      "view": "island",
+      "u": 0.62,
+      "v": 0.362,
+      "located": "scan",
+      "firstSentence": "treasure:c33.p035.s05",
+      "note": "A cove on the island's east coast."
+    },
+    {
+      "id": "stockade",
+      "name": "stockade",
+      "aliases": [
+        "blockhouse",
+        "log-house"
+      ],
+      "kind": "building",
+      "view": "island",
+      "u": 0.54,
+      "v": 0.404,
+      "located": "scan",
+      "firstSentence": "treasure:c13.p010.s03",
+      "note": "A log house within a palisade near a spring, marked on the chart."
+    },
+    {
+      "id": "marsh",
+      "name": "marsh",
+      "aliases": [],
+      "kind": "field",
+      "view": "island",
+      "u": 0.428,
+      "v": 0.446,
+      "located": "scan",
+      "firstSentence": "treasure:c14.p003.s03",
+      "note": "The swampy low ground drained by the streams into the anchorage."
+    },
+    {
+      "id": "kidds-anchorage",
+      "name": "Captain Kidd's Anchorage",
+      "aliases": [
+        "Kidd's anchorage"
+      ],
+      "kind": "harbour",
+      "view": "island",
+      "u": 0.424,
+      "v": 0.548,
+      "located": "scan",
+      "firstSentence": "treasure:c12.p010.s04",
+      "note": "The anchorage on the south, sheltered behind Skeleton Island."
+    },
+    {
+      "id": "skeleton-island",
+      "name": "Skeleton Island",
+      "aliases": [],
+      "kind": "island",
+      "view": "island",
+      "u": 0.456,
+      "v": 0.583,
+      "located": "scan",
+      "firstSentence": "treasure:c06.p044.s01",
+      "note": "The islet off the south of the main island."
+    },
+    {
+      "id": "white-rock",
+      "name": "white rock",
+      "aliases": [],
+      "kind": "coast",
+      "view": "island",
+      "u": 0.6,
+      "v": 0.565,
+      "located": "scan",
+      "firstSentence": "treasure:c15.p050.s03",
+      "note": "A pale rock on the shore east of Skeleton Island."
+    },
+    {
+      "id": "cape-of-the-woods",
+      "name": "Cape of the Woods",
+      "aliases": [],
+      "kind": "coast",
+      "view": "island",
+      "u": 0.145,
+      "v": 0.514,
+      "located": "scan",
+      "firstSentence": "treasure:c24.p006.s03",
+      "note": "The wooded cape on the island's west coast."
+    },
+    {
+      "id": "mizzenmast-hill",
+      "name": "Mizzenmast Hill",
+      "aliases": [],
+      "kind": "mountain",
+      "view": "island",
+      "u": 0.205,
+      "v": 0.6,
+      "located": "scan",
+      "firstSentence": "treasure:c24.p002.s01",
+      "note": "The southern hill of the three, rough and cliffy."
+    },
+    {
+      "id": "haulbowline-head",
+      "name": "Haulbowline Head",
+      "aliases": [],
+      "kind": "coast",
+      "view": "island",
+      "u": 0.24,
+      "v": 0.626,
+      "located": "scan",
+      "firstSentence": "treasure:c24.p002.s01",
+      "note": "The headland at the island's south-west corner."
+    },
+    {
+      "id": "ben-gunns-cave",
+      "name": "Ben Gunn's cave",
+      "aliases": [],
+      "kind": "place",
+      "view": "island",
+      "u": 0.485,
+      "v": 0.352,
+      "located": "approximate",
+      "firstSentence": "treasure:c33.p027.s01",
+      "note": "A cave on the two-pointed hill at the island's north-east angle. Not drawn on the chart; placed there."
+    }
+  ]
+}
