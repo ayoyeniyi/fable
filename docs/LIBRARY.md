@@ -1,21 +1,30 @@
 # The personal library and book uploads
 
-The lobby is the reader's personal library. The four bundled books are always on it. Readers can add their own
-books from a phone or computer without a cable, an account or any cloud service, and start reading while a book
-imports.
+The lobby is the reader's personal library. Fable centres on a curated library of **ten classics**, always on it
+(oldest first, as on the shelf: The Odyssey, Gulliver's Travels, Pride and Prejudice, Frankenstein, Moby-Dick, Alice,
+Around the World in Eighty Days, Treasure Island, The War of the Worlds, Oz). Readers can also add their own books
+from a phone or computer without a cable, an account or any cloud service, and start reading while a book imports.
+**Uploads are an early preview:** they get simpler, generated rooms instead of hand-built ones, and the board says so.
 
 ## The library board
 
 - **Where it is:** a lectern-height board in front of the reader in the lobby (`Scripts/Library/LibraryPanel.cs`).
-- **What it shows:** every book, six to a page. Each tile has:
+- **What it shows:** every book, six to a page: the ten classics first in shelf order, then the reader's own books
+  (books still arriving or that failed lead those). Each tile has:
   - the cover, or a plain cloth cover drawn with the title when the book has none
   - the title and author
-  - where the book came from: *Fable edition · own room*, *your EPUB*, *your PDF · 230 pages*, or *your PDF · pages only*
+  - where the book came from: *Fable edition · own rooms* (*Fable edition* for a classic whose rooms are not built
+    yet: Around the World in Eighty Days and Frankenstein read in the library room for now), *your EPUB*,
+    *your PDF · 230 pages*, or *your PDF · pages only*
+  - on an uploaded book, an **early preview** tag across the foot of the cover
   - how far the reader has got
 - **Controls:**
   - "continue: <book read last> ›" reopens the last book.
   - "‹ previous / next ›" turn through the shelf pages for a larger collection.
-  - "+ add a book" opens the upload card.
+  - "+ add a book" (tagged *early preview*) opens the upload card, whose first line says that books you add get
+    simpler, generated rooms while Fable's ten classics have rooms made by hand.
+  - The header counts "10 classics · N of your own (early preview)"; an upload's book menu says *your book · early
+    preview*.
   - Imported books have **remove**, which asks once ("sure?") before deleting.
 - **Arriving books:** a book that is still arriving shows its stage and measured progress. A failed one says why, and
   pinching it gives the details.

@@ -2,6 +2,39 @@
 
 Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs/TOOLING.md`. Everything below was true at the commit that last touched this file. "Verified" always says where: **editor** (Unity play mode on a Mac, desktop camera, no HMD) or **headset**. Nothing has been verified on a headset yet.
 
+## Ten classics: Around the World in Eighty Days and Frankenstein (2026-11-15)
+
+- **Decision (owner):** Fable centres on a curated library of ten classics at full quality; uploaded books stay but
+  are presented as an **early preview** (simpler, generated rooms).
+- **Books:** `eighty` (Jules Verne, George Makepeace Towle's translation; 37 chapters, 3,525 sentences, 62k words)
+  and `frankenstein` (Mary Shelley; Standard Ebooks publishes the 1831 revised text with her 1831 Introduction;
+  4 letters, 24 chapters and "Walton, in Continuation", 3,316 sentences, 78k words). Standard Ebooks EPUBs, CC0
+  edition / public-domain text; URL, SHA-256 and licence in `content/books/<slug>/SOURCE.md`; SE covers in
+  `content/covers`. `tools/ingest_book.py` gained two fixes (a nested section no longer lends its title to its
+  parent; a non-"Chapter" `se:label` names the chapter, so "Letter I"); the other eight books come out byte-identical.
+  Slugs added to `books.Slugs`, the mock schema, the interpreter flag, `check_maps.py`, the dictionary
+  (re-ingested: 15,867 headwords).
+- **Rooms:** none yet. Both books open in the **library room** (`LobbyController.ReadingScene` maps them to
+  `LibraryRoom`); their menus list only "The library" and "No place is built for this book's chapters yet".
+  No generated rooms are bundled (`BundledRooms.json` is `{}`). Three Blender rooms each are being built in
+  parallel (eighty: reform-club, mongolia-deck, pillaji-forest; frankenstein: ingolstadt-garret, mer-de-glace,
+  arctic-ice); integrating them means `FableBuild.Scenes`, `ReadingRooms.Bundled`/`Name`, `ReadingScene`, and
+  `schema/environments.json` place entries (the chapters service test expects the two books to have no places
+  until then: `TestBookWithNoPlacesIsUnavailableWithoutAsking`).
+- **Lobby:** ten books on a 4.4 m bookcase at 0.40 m centres (`blender/build_lobby.py`), lobby and library-room
+  scenes rebuilt and baked (13,610 tris, 65 meshes). Ledge, lip and lean are unchanged, so the labels' `LipOut` /
+  `LipTop` still fit. `LobbyController` sorts the books left to right, so the board follows the shelf.
+- **Board:** classics first, uploads after with an "early preview" tag; "+ add a book" tagged and its card explains
+  (`docs/LIBRARY.md`).
+- **Maps:** globes for both (`content/maps/{eighty,frankenstein}/map.json`): eighty 111 places along the whole route
+  (63 geocoded, 48 approximate), frankenstein 72 places (43 geocoded). The schema has no route/path, so the route is
+  only its pins. Overlays: `captures/maps/{eighty,frankenstein}/`.
+- **Verified in the editor:** the lobby finds 10 books, labels clear of the wood (close and side previews), the board
+  lists all ten then the uploads, both books open in the library room from the shelf/board and turn pages, 0
+  console errors; `go test ./...` passes. Desktop previews: `captures/unity/lobby/desktop-preview_lobby_ten_*`,
+  `desktop-preview_library_board_*`, `captures/unity/books/`. The APK builds: 726.3 MB (was 722.3 MB).
+- **Not verified:** anything on the headset (shelf legibility at ten books, pointing accuracy at 0.40 m pitch).
+
 ## Book maps on the headset (2026-11-15)
 
 - **What:** Peek on a phrase that names a place on the book's map (`content/maps`, `docs/MAPS.md`) opens that map
@@ -113,7 +146,7 @@ Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs
   pride 61 ch / 5,801 sentences / 121k words; mobydick 135 ch + epilogue / 8,611 / 209k; worlds 27 / 3,209 / 60k;
   treasure 34 / 3,556 / 68k. Slugs are in `books.Slugs`, the Peek clay schema and Define's dictionary (now 15k
   headwords).
-- **Lobby:** eight books face out on a 3.9 m bookcase (`blender/build_lobby.py`), scenes rebuilt and baked. Verified in
+- **Lobby (superseded 2026-11-15: ten books on a 4.4 m case, see the top):** eight books face out on a 3.9 m bookcase (`blender/build_lobby.py`), scenes rebuilt and baked. Verified in
   the editor: eight books found, pointing hits each, progress cards fit. Desktop previews:
   `captures/desktop/desktop-preview_Lobby_lobby-shelf-eight*.png`; Blender renders `captures/blender/lobby/lobby8_*`.
 - **Rooms:** three generated rooms per book, made by the room service and bundled (`content/rooms`, details and the
