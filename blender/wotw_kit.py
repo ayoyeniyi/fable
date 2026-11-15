@@ -345,12 +345,12 @@ def fbm(x, y, octaves=5, seed=0, gain=0.5):
 def sstep(a, b, x):
     t = np.clip((x - a) / (b - a), 0.0, 1.0); return t * t * (3 - 2 * t)
 
-def card_material(name, img, rough=0.75, clip=True, emissive=False, normal_img=None, double=True, blend=False):
+def card_material(name, img, rough=0.75, clip=True, emissive=False, normal_img=None, double=True, blend=False, repeat=False):
     """A material reading its colour (and alpha, clipped at 0.5) from a numpy-painted image; exported as-is.
     blend=True links the alpha straight (glTF alphaMode BLEND: mist)."""
     m, nt, b = new_mat(name)
     uv = node(nt, "ShaderNodeUVMap"); tex = node(nt, "ShaderNodeTexImage"); tex.image = img
-    tex.interpolation = 'Linear'; tex.extension = 'EXTEND'
+    tex.interpolation = 'Linear'; tex.extension = 'REPEAT' if repeat else 'EXTEND'
     nt.links.new(uv.outputs["UV"], tex.inputs["Vector"])
     nt.links.new(tex.outputs["Color"], b.inputs["Base Color"])
     b.inputs["Roughness"].default_value = rough
@@ -613,7 +613,13 @@ def render_stills(scene, cams, exposure=None, default_exp=0.0):
         scene.camera = c
         scene.view_settings.exposure = exposure.get(c.name, default_exp)
         scene.render.filepath = os.path.join(OUT, f"{ARGS.prefix}{c.name[4:].lower()}.png")
-        bpy.ops.render.render(write_still=True); print("rendered", scene.render.filepath)
+        try:
+            bpy.ops.render.render(write_still=True)
+        except RuntimeError as e:
+            # the GPU is shared with other jobs on this Mac: on a Metal out-of-memory error, finish on the CPU
+            print("GPU render failed, retrying on the CPU:", str(e)[:120]); scene.cycles.device = 'CPU'
+            bpy.ops.render.render(write_still=True)
+        print("rendered", scene.render.filepath)
 
 
 # ----------------------------------------------------------------------------- bake + merge + export for Unity
@@ -782,6 +788,8 @@ def bleed_alpha(img, iters=8):
             acc += np.roll(np.roll(rgb * a[..., None], dx, 1), dy, 0); cnt += np.roll(np.roll(a, dx, 1), dy, 0)
         fill = (a == 0) & (cnt > 0)
         rgb[fill] = acc[fill] / cnt[fill][:, None]; a = np.maximum(a, fill.astype(np.float32))
+    solid = img[..., 3] > 0.5
+    if np.any(solid): rgb[a == 0] = rgb[solid].mean(0)       # the rest: the mean colour, so far mips don't darken the edges
     img[..., :3] = rgb
     return img
 
