@@ -1,4 +1,4 @@
-// The book's menu, opened from the bar under the page ("chapters", "rooms", "sound"): a card over the page.
+// The book's menu, opened from the bar under the page ("chapters", "rooms", "settings"): a card over the page.
 //
 //   chapters   one tile per chapter. Before a chapter is finished its tile is a padlock and "Chapter 3", nothing
 //              else, whatever preparation has done. After: the experience's picture and title once it is ready;
@@ -6,8 +6,8 @@
 //              built for this chapter yet" if none fits. A locked chapter before the one being read can be marked
 //              as already read (it asks first), for a reader resuming a book read elsewhere.
 //   rooms      where this book can be read: its own room, the library
-//   sound      music on or off, room sound off / quiet / normal, and the language Translate uses (saved in the
-//              reader's preferences)
+//   settings   music on or off, room sound off / quiet / normal, and the language Translate uses: pinch it for the
+//              language picker (LanguagePicker). Saved in the reader's preferences. (The tab's key is still "sound".)
 // Titles and pictures come only through ChapterExperiences.Title / Thumbnail, which refuse them for unfinished chapters.
 using System;
 using System.Collections.Generic;
@@ -69,11 +69,11 @@ namespace Fable
         void Rebuild()
         {
             Clear();
-            Text(body, Tab == "chapters" ? "Chapter experiences" : Tab == "rooms" ? "Reading rooms" : "Sound and translation", 26, FontStyles.SmallCaps, Accent, TextAlignmentOptions.Left, new Vector2(-60, 316), new Vector2(430, 40));
+            Text(body, Tab == "chapters" ? "Chapter experiences" : Tab == "rooms" ? "Reading rooms" : "Settings", 26, FontStyles.SmallCaps, Accent, TextAlignmentOptions.Left, new Vector2(-60, 316), new Vector2(430, 40));
             Button(body, "close ×", new Vector2(230, 316), new Vector2(100, 40), 17, "close", Close);
             float x = -190;
             foreach (var t in new[] { "chapters", "rooms", "sound" })
-            { var tt = t; var b = Button(body, t, new Vector2(x, 268), new Vector2(170, 38), 17, "tab:" + t, () => { Tab = tt; Rebuild(); }); if (t == Tab) b.GetComponent<Image>().color = Lit; x += 190; }
+            { var tt = t; var b = Button(body, t == "sound" ? "settings" : t, new Vector2(x, 268), new Vector2(170, 38), 17, "tab:" + t, () => { Tab = tt; Rebuild(); }); if (t == Tab) b.GetComponent<Image>().color = Lit; x += 190; }
             if (Tab == "chapters") Chapters(); else if (Tab == "rooms") Rooms(); else Sound();
         }
 
@@ -146,6 +146,9 @@ namespace Fable
                     Img(body, "Dark", pic, picSize, new Color(0.30f, 0.27f, 0.22f));
                     var u = Img(body, "Open", pic, new Vector2(48, 48), new Color(0.93f, 0.86f, 0.70f, 0.85f)); u.sprite = LockSprite(true);
                     line2 = "unlocked · " + ce.StageOf(ch.Id);
+                    // how long it still needs, on the picture where it is easy to read (ChapterExperiences.EstimateOf)
+                    var est = ce.EstimateOf(ch.Id);
+                    if (est != "") { u.rectTransform.anchoredPosition = new Vector2(pic.x, pic.y + 14); Text(body, est, 13.5f, FontStyles.Italic, new Color(0.95f, 0.89f, 0.74f), TextAlignmentOptions.Center, new Vector2(pic.x, pic.y - 30), new Vector2(picSize.x - 8, 22)); }
                     break;
                 case ChapterExperiences.State.Available:
                     var tex = ce.Thumbnail(ch.Id);
@@ -208,11 +211,18 @@ namespace Fable
                 int lv = i; var b = Button(body, names[i], new Vector2(20 + i * 110, 120), new Vector2(100, 46), 17, "amb:" + i, () => { var q = ProgressStore.LoadPrefs(); q.AmbienceLevel = lv; ProgressStore.SavePrefs(q); RoomSound.NotifySettings(); Rebuild(); });
                 if (p.AmbienceLevel == i) b.GetComponent<Image>().color = Lit;
             }
-            // Translate's language: one row that cycles through TranslateLanguages.Names on each pinch
-            Text(body, "Translate to", 19, FontStyles.SmallCaps, Ink, TextAlignmentOptions.Left, new Vector2(-150, 50), new Vector2(200, 40));
-            Button(body, TranslateLanguages.Current() + "  ›", new Vector2(120, 50), new Vector2(240, 46), 19, "translate", () => { var q = ProgressStore.LoadPrefs(); q.TranslateTo = TranslateLanguages.Next(TranslateLanguages.Current()); ProgressStore.SavePrefs(q); Rebuild(); });
-            Text(body, "Pinch to change. The highlight ring’s Translate petal uses it (with the interpreter).", 14, FontStyles.Italic, Soft, TextAlignmentOptions.Center, new Vector2(0, 8), new Vector2(520, 24));
-            Text(body, "Saved for every room and every book.", 15, FontStyles.Italic, Soft, TextAlignmentOptions.Center, new Vector2(0, -24), new Vector2(500, 30));
+            // Translate's language: pinch it for the picker (every language, the likely ones first)
+            Text(body, "Translate into", 19, FontStyles.SmallCaps, Ink, TextAlignmentOptions.Left, new Vector2(-150, 50), new Vector2(200, 40));
+            Button(body, TranslateLanguages.Current().Name + "  <size=70%>▼</size>", new Vector2(120, 50), new Vector2(260, 52), 19, "translate", OpenLanguages);
+            Text(body, $"Pinch to choose from {TranslateLanguages.All.Length} languages. Highlight words and pinch Translate to use it.", 14, FontStyles.Italic, Soft, TextAlignmentOptions.Center, new Vector2(0, 2), new Vector2(520, 40));
+            Text(body, "Saved for every room and every book.", 15, FontStyles.Italic, Soft, TextAlignmentOptions.Center, new Vector2(0, -36), new Vector2(500, 30));
+        }
+
+        /// The language picker over the page; the settings show the new choice when it closes.
+        public void OpenLanguages()
+        {
+            var picker = LanguagePicker.For(page, Flow.Pointer, Flow.Input, Font);
+            picker.Open(_ => { if (IsOpen) Rebuild(); });
         }
 
         // ---------------------------------------------------------------- pointing

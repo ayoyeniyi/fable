@@ -46,7 +46,7 @@ namespace Fable
             {
                 // generated rooms: bundled in the app for some of Fable's own books, fetched from the service for uploads
                 foreach (var r in GeneratedRooms.Instance.Rooms(slug))
-                    list.Add(new Entry { Label = r.Title ?? $"Room {r.N}", Generated = r.N, Ready = r.Ready, Note = r.Ready ? null : Describe(r) });
+                    list.Add(new Entry { Label = r.Title ?? $"Room {r.N}", Generated = r.N, Ready = r.Ready, Note = r.Ready ? null : Describe(r) + (r.Estimate() is var est && est != "" ? " · " + est : "") });
             }
             if (Application.CanStreamedLevelBeLoaded(LobbyController.ImportedScene)) list.Add(new Entry { Label = "The library", Scene = LobbyController.ImportedScene, Ready = true });
             return list;

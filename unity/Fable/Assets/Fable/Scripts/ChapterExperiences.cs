@@ -39,6 +39,8 @@ namespace Fable
         public string ServerState, Stage, Error;
         public string RequestedUtc, ReadyUtc;
         public float HeadsetSeconds;      // from the first request to the package checked and stored here
+        /// The service's estimate of the seconds left (etaSeconds in its status answer), and when it said so.
+        public float EtaSeconds; public string EtaAtUtc;
         public int Attempts;
         [UnityEngine.Scripting.Preserve] public ChapterRecord() { }
     }
@@ -197,6 +199,22 @@ namespace Fable
 
         static string Short(string s) => s.Length > 110 ? s.Substring(0, 109) + "…" : s;
 
+        /// How long the experience still needs, in plain words ("about 2 minutes left"), or "" when there is nothing to
+        /// wait for or no way to know (no connection). The service's own estimate when it sent one (it knows its queue
+        /// and its recent build times); else this headset's average time from asking to ready.
+        public string EstimateOf(string chapter)
+        {
+            var r = Record(chapter);
+            if (r == null || !(r.Job is "queued" or "requested" or "building")) return "";
+            if (r.Stage == "fetching to the headset" || r.ServerState == "done") return "a few seconds left";
+            if (r.EtaSeconds > 0 && !string.IsNullOrEmpty(r.EtaAtUtc))
+            {
+                float since = WaitEstimate.Since(r.EtaAtUtc);
+                return r.EtaSeconds - since > 0 ? WaitEstimate.About(r.EtaSeconds - since) + " left" : "nearly done, or taking a little longer than usual";
+            }
+            return WaitEstimate.Left(WaitEstimate.Since(r.RequestedUtc), WaitEstimate.Expected("chapter"));
+        }
+
         // ---------------------------------------------------------------- the access boundary
 
         /// The experience's title, only once the chapter is completed and the experience ready.
@@ -279,14 +297,15 @@ namespace Fable
             if (Apply(r, req.downloadHandler.text)) yield return Fetch(r);
         }
 
-        class Status { public string state, stage, error; public int attempts; }
+        class Status { public string state, stage, error; public int attempts; public float etaSeconds; }
 
         /// Take a status answer. Returns true when the package is built and should be fetched.
         bool Apply(ChapterRecord r, string json)
         {
             Status s; try { s = JsonConvert.DeserializeObject<Status>(json); } catch (Exception e) { Debug.LogWarning($"[Fable] experiences: {r.Chapter}: unreadable reply from the service ({e.Message})"); return false; }
-            var before = r.Job + r.ServerState + r.Stage;
+            var before = r.Job + r.ServerState + r.Stage; var estBefore = EstimateOf(r.Chapter);
             r.ServerState = s.state; r.Stage = s.stage; r.Attempts = s.attempts;
+            if (s.etaSeconds > 0) { r.EtaSeconds = s.etaSeconds; r.EtaAtUtc = DateTime.UtcNow.ToString("o"); } else r.EtaAtUtc = null;
             switch (s.state)
             {
                 case "done": r.Job = "building"; break;
@@ -295,6 +314,7 @@ namespace Fable
                 default: r.Job = "building"; break;
             }
             if (before != r.Job + r.ServerState + r.Stage) Save();
+            else if (estBefore != EstimateOf(r.Chapter)) Changed?.Invoke();   // the wording of the estimate moved on: shown, not saved
             return s.state == "done";
         }
 
@@ -328,6 +348,7 @@ namespace Fable
             r.Job = "ready"; r.ReadyUtc = DateTime.UtcNow.ToString("o"); r.Stage = "ready"; r.Error = null;
             if (DateTime.TryParse(r.RequestedUtc, null, System.Globalization.DateTimeStyles.RoundtripKind, out var t0)) r.HeadsetSeconds = (float)(DateTime.UtcNow - t0).TotalSeconds;
             Debug.Log($"[Fable] experiences: {r.Chapter} ready on the headset {r.HeadsetSeconds:F0} s after it was first asked for (chapter {(r.Completed ? "completed" : "still locked")})");
+            if (r.Attempts <= 1 && r.HeadsetSeconds > 0) WaitEstimate.Record("chapter", r.HeadsetSeconds);
             Save();
             if (r.Completed) BecameAvailable?.Invoke(r);
             var body = new Newtonsoft.Json.Linq.JObject { ["chapter"] = r.Chapter, ["headsetSeconds"] = r.HeadsetSeconds }.ToString(Formatting.None);

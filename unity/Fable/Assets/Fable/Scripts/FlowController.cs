@@ -289,7 +289,7 @@ namespace Fable
         void OnDestroy()
         {
             if (Library.Exists) Library.Instance.BookReady -= OnBookReady;
-            ChapterExperiences.Instance.BecameAvailable -= OnExperienceNews;
+            ChapterExperiences.Instance.BecameAvailable -= OnExperienceNews; ChapterExperiences.Instance.Changed -= OnExperienceChanged;
             ExperienceMood.Restore();
         }
 
@@ -317,7 +317,7 @@ namespace Fable
                     View.Tip("place", "This is the chapter\u2019s place. Look around, turn with the bar; \u201creturn to reading\u201d takes you back to your page.");
                     break;
                 case "Reading":
-                    View.SetActions(("chapters", () => Menu.Open("chapters")), ("rooms", () => Menu.Open("rooms")), ("sound", () => Menu.Open("sound")));
+                    View.SetActions(("chapters", () => Menu.Open("chapters")), ("rooms", () => Menu.Open("rooms")), ("settings", () => Menu.Open("sound")));
                     View.Tip("view", "\u2039 turn and turn \u203a show you the room around you. Recentre brings the page back.");
                     break;
                 default: View.SetActions(); break;   // moving between states: only the view buttons
@@ -338,6 +338,7 @@ namespace Fable
             Reader.RetryExperience += ch => ce.Retry(ch);
             Reader.ExperienceStatus = ExperienceLine;
             ce.BecameAvailable += OnExperienceNews;
+            ce.Changed += OnExperienceChanged;
             Menu = Panel.GetComponent<BookMenu>() ? Panel.GetComponent<BookMenu>() : Panel.gameObject.AddComponent<BookMenu>();
             Menu.Init(this);
             // the chapter on the page now is "entered" (the reader opened the book in it)
@@ -363,9 +364,12 @@ namespace Fable
                 "ready" => ("This chapter’s experience is ready.", true, false),
                 "failed" => ($"This chapter’s experience could not be prepared: {ce.StageOf(chapter)}. Your reading is not affected.", false, true),
                 "unavailable" => ("There is no place built for this chapter yet, so it has no experience.", false, false),
-                _ => ($"This chapter’s experience is being prepared ({ce.StageOf(chapter)}). It will wait for you under “chapters”; keep reading meanwhile.", false, false),
+                _ => ($"This chapter’s experience is being prepared ({ce.StageOf(chapter)}{(ce.EstimateOf(chapter) is var est && est != "" ? ": " + est : "")}). It will wait for you under “chapters”; keep reading meanwhile.", false, false),
             };
         }
+
+        /// A preparation moved on (stage or estimate): the end-of-chapter card, if it is up, says so.
+        void OnExperienceChanged() { if (Reader && Reader.AtChapterEnd) Reader.RefreshChapterEnd(); }
 
         void OnExperienceNews(ChapterRecord r)
         {

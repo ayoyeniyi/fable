@@ -44,6 +44,19 @@ namespace Fable
             public int N; public string State = "none", Stage, Title, Place, Error;
             /// Fetched, checked and on the headset.
             public bool Ready;
+            /// The service's estimate of the seconds until this room is built (etaSeconds), and when it said so
+            /// (Time.realtimeSinceStartup); 0 when it sent none.
+            public float EtaSeconds, EtaAt;
+
+            /// "about 40 minutes left", or "" when there is nothing to wait for. The service's estimate (it knows its
+            /// queue and how long its recent rooms took); an older service sends none, and the usual time is said instead.
+            public string Estimate()
+            {
+                if (Ready || State is "none" or "failed" or "unavailable" or "waiting" or "no connection") return "";
+                if (State == "done") return "a few seconds left";
+                if (EtaSeconds > 0) { float left = EtaSeconds - (Time.realtimeSinceStartup - EtaAt); return left > 0 ? WaitEstimate.About(left) + " left" : "nearly done, or taking a little longer than usual"; }
+                return "a room usually takes " + WaitEstimate.About(WaitEstimate.Expected("room"));
+            }
         }
 
         class Tracked { public string Slug; public bool Sent; public Room[] Rooms; public float NextPoll; public string LastNote; }
@@ -136,8 +149,11 @@ namespace Fable
                     int n = (int)s["room"]; if (n < 1 || n > PerBook) continue;
                     var r = t.Rooms[n - 1]; if (r.Ready) continue;
                     var st = (string)s["state"]; var stage = (string)s["stage"]; var title = (string)s["title"];
+                    var estBefore = r.Estimate();
+                    r.EtaSeconds = (float?)s["etaSeconds"] ?? 0f; r.EtaAt = Time.realtimeSinceStartup;
                     if (st != r.State || stage != r.Stage || title != r.Title) changed = true;
                     r.State = st; r.Stage = stage; r.Title = title; r.Error = (string)s["error"];
+                    if (r.Estimate() != estBefore) changed = true;
                 }
                 if (changed) Changed?.Invoke();
             }

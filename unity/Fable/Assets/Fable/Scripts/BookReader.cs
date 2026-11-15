@@ -520,6 +520,16 @@ namespace Fable
             PageChanged?.Invoke();
         }
 
+        /// The end card's line about the chapter's experience again (its preparation moved on while the card is up).
+        public void RefreshChapterEnd()
+        {
+            if (!AtChapterEnd || Book == null) return;
+            var ch = Book.Chapters[ChapterIndex]; bool last = ChapterIndex + 1 >= Book.Chapters.Count;
+            var (line, canEnter, canRetry) = ExperienceStatus != null ? ExperienceStatus(ch.Id) : ("", false, false);
+            Panel.Body.text = (last ? "<i>The end of the book.</i>\n\n" : "") + (string.IsNullOrEmpty(line) ? "" : $"<size=80%>{line}</size>");
+            endStepBtn.gameObject.SetActive(canEnter); endRetryBtn.gameObject.SetActive(canRetry);
+        }
+
         void HideChapterEnd()
         {
             if (!AtChapterEnd) return;

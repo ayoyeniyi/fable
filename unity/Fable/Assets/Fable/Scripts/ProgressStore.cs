@@ -46,8 +46,13 @@ namespace Fable
         /// Room sound: music on or off, and the ambience level (0 off, 1 quiet, 2 normal).
         public bool MusicOn = true;
         public int AmbienceLevel = 2;
-        /// Translate's target language, a name from TranslateLanguages.Names; empty = the headset's language, else Spanish.
+        /// Translate's target language, a code from TranslateLanguages.All (older files hold an English name, also
+        /// accepted); empty = the headset's language, else Spanish. TranslateRecent: the last few chosen, newest first.
         public string TranslateTo = "";
+        public List<string> TranslateRecent = new();
+        /// How long each kind of wait took on this headset ("peek", "translate", "chapter", "room"): a running average in
+        /// seconds, so the estimates shown while waiting follow this headset's network and service (WaitEstimate).
+        public Dictionary<string, float> WaitSeconds = new();
         /// Contextual hints already shown once.
         public List<string> HintsShown = new();
     }
@@ -81,7 +86,7 @@ namespace Fable
                     var f = JsonConvert.DeserializeObject<ProgressFile>(File.ReadAllText(ProgressPath)) ?? new ProgressFile();
                     f.Scenes ??= new Dictionary<string, Progress>();
                     f.Books ??= new Dictionary<string, BookProgress>();
-                    f.Prefs ??= new Prefs(); f.Prefs.HintsShown ??= new List<string>();
+                    f.Prefs ??= new Prefs(); f.Prefs.HintsShown ??= new List<string>(); f.Prefs.TranslateRecent ??= new List<string>(); f.Prefs.WaitSeconds ??= new Dictionary<string, float>();
                     if (!string.IsNullOrEmpty(f.SceneId) && !f.Scenes.ContainsKey(f.SceneId))
                     {
                         f.Scenes[f.SceneId] = new Progress { SceneId = f.SceneId, BeatIndex = f.BeatIndex, SentenceId = f.SentenceId, SavedAtUtc = f.SavedAtUtc };

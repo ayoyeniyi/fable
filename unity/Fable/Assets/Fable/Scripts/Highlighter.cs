@@ -6,8 +6,9 @@
 //   point at a petal and pinch                          do it; pinch anywhere else to close
 //
 // Define looks the word up in Webster 1913 (offline). Translate asks the interpreter (POST /translate) for the highlight
-// in the language chosen on the bar's sound tab (TranslateLanguages); only the highlighted words and the book's title
-// are sent, so it works for imported books too. Search lists the sentences already read that contain the highlight.
+// in the reader's language (TranslateLanguages: 54 of them, chosen with the picker from the card's "to Spanish ▼" or the
+// bar's settings); only the highlighted words and the book's title are sent, so it works for imported books too. Scripts
+// the page's font cannot shape or lay out right to left come back drawn by the service and are shown as a picture. Search lists the sentences already read that contain the highlight.
 // Peek shows a low-fi model beside the page: a library model first (a prop of the loaded room or a shipped clay model),
 // else a clay model from the interpreter when it is reachable. Step In stages the passage from the highlight's
 // sentence. Spoiler rule: only text up to the end of the highlight leaves the device, library entries are offered only
@@ -57,6 +58,8 @@ namespace Fable
         readonly List<(RectTransform rt, string sentence)> resultRows = new();
         Transform peekRoot; readonly Dictionary<string, Transform> peekParts = new(); readonly List<(TextMeshPro text, LineRenderer line, Transform target)> peekLabels = new();
         Material lineMat; Coroutine peekJob, translateJob;
+        RectTransform langBtn; TMP_Text langLbl; RawImage cardPicture; Texture2D cardTexture; RectTransform waitTrack, waitFill;
+        float waitExpected; string waitKind;
 
         public static readonly string[] Actions = { "define", "translate", "search", "peek", "chapters" };
         static readonly string[] ActionNames = { "Define", "Translate", "Search", "Peek", "Chapters" };
@@ -116,9 +119,34 @@ namespace Fable
             }
             if (Current == Mode.Menu || Current == Mode.Card) Hover();
             if (peekRoot) TurnPeek();
-            if ((PeekStatus == "generating" || TranslateStatus == "generating") && cardBody && Time.time >= nextTick) { nextTick = Time.time + 1f; cardBody.text = generatingText + $"\n<size=80%>{Mathf.FloorToInt(Time.realtimeSinceStartup - peekStarted)} s so far</size>"; }
+            if ((PeekStatus == "generating" || TranslateStatus == "generating") && cardBody && Time.time >= nextTick) { nextTick = Time.time + 1f; TickWait(); }
         }
         float nextTick, peekStarted; string generatingText = "";
+
+        /// While Peek or Translate waits: seconds so far, what is likely left (WaitEstimate), and a bar. Translate is
+        /// usually done in a couple of seconds, so it gets the count only, and the estimate once it is slow.
+        void TickWait()
+        {
+            float el = Time.realtimeSinceStartup - peekStarted;
+            bool estimate = waitKind == "peek" || el > waitExpected * 0.75f;
+            cardBody.text = generatingText + $"\n<size=80%>{Mathf.FloorToInt(el)} s so far{(estimate ? " · " + WaitEstimate.Left(el, waitExpected) : "")}</size>";
+            if (waitTrack) waitTrack.anchoredPosition = new Vector2(0, -(56f + cardBody.preferredHeight + 14f));   // just under the words
+            ShowWaitBar(estimate ? WaitEstimate.Fraction(el, waitExpected) : -1);
+        }
+
+        void StartWait(string kind, float t0)
+        {
+            waitKind = kind; waitExpected = WaitEstimate.Expected(kind); peekStarted = t0; nextTick = Time.time + 1f;
+            ShowWaitBar(kind == "peek" ? 0f : -1f);
+        }
+
+        /// The thin bar under the card's text: fraction 0..1, or below 0 to hide it.
+        void ShowWaitBar(float fraction)
+        {
+            if (!waitTrack) return;
+            waitTrack.gameObject.SetActive(fraction >= 0);
+            if (fraction >= 0) waitFill.sizeDelta = new Vector2(waitTrack.rect.width * Mathf.Clamp01(fraction), waitFill.sizeDelta.y);
+        }
 
         // ---------------------------------------------------------------- turning the Peek model by hand
 
@@ -245,7 +273,7 @@ namespace Fable
         /// Why a petal is greyed, or what it will do, in two or three words under its name.
         string Note(string action) => action switch
         {
-            "translate" => $"\n<size=55%>to {TranslateLanguages.Current()}</size>",
+            "translate" => $"\n<size=55%>to {TranslateLanguages.Current().Name}</size>",
             "peek" when Reader.Imported => "\n<size=55%>not for your books yet</size>",
             "chapters" => "\n<size=55%>step into a finished chapter</size>",
             _ => "",
@@ -262,6 +290,7 @@ namespace Fable
             if (Current == Mode.Card)
             {
                 if (Pointer.Over(right, cardClose)) { Clear(); return true; }
+                if (langBtn && langBtn.gameObject.activeSelf && Pointer.Over(right, langBtn)) { OpenLanguages(); return true; }
                 foreach (var r in resultRows) if (r.rt.gameObject.activeSelf && Pointer.Over(right, r.rt)) { var s = r.sentence; Clear(); Reader.GoToSentence(s); return true; }
                 if (Pointer.Over(right, card)) return true;   // a pinch on the card itself does nothing
                 Clear(); return false;                         // elsewhere on the page: close it, and the page turns as usual
@@ -380,9 +409,9 @@ namespace Fable
         {
             var url = Director ? Director.InterpreterUrl : "";
             if (string.IsNullOrEmpty(url)) { ShowCard("Peek", $"No model for “{Phrase.Trim()}” in the library, and the interpreter is not set up, so one cannot be made now."); PeekStatus = "no-match-offline"; yield break; }
-            generatingText = $"Making a clay model of “{Phrase.Trim()}”…\n<size=80%><i>Claude is shown the book up to the end of your highlight, and nothing after it.</i></size>";
+            generatingText = $"Making a clay model of “{Phrase.Trim()}”: usually {WaitEstimate.About(WaitEstimate.Expected("peek"))}.\n<size=80%><i>Claude is shown the book up to the end of your highlight, and nothing after it.</i></size>";
             ShowCard("Peek", generatingText);
-            PeekStatus = "generating"; peekStarted = t0; nextTick = Time.time + 1f;
+            PeekStatus = "generating"; StartWait("peek", t0); TickWait();
             var body = new Newtonsoft.Json.Linq.JObject { ["book"] = Reader.Book.Slug, ["sentenceId"] = LastSentence, ["phrase"] = Phrase.Trim(), ["waitSeconds"] = 8 }.ToString(Formatting.None);
             while (Time.realtimeSinceStartup - t0 < PeekWaitSeconds)
             {
@@ -393,6 +422,7 @@ namespace Fable
                 {
                     var m = JsonConvert.DeserializeObject<MockModel>(req.downloadHandler.text);
                     var cache = req.GetResponseHeader("X-Fable-Cache");
+                    if (cache != "hit") WaitEstimate.Record("peek", Time.realtimeSinceStartup - t0);
                     ShowClay(m, cache == "hit" ? "made earlier by Claude" : "made just now by Claude");
                     LastTimings = $"match {tMatch:F1} ms, interpreter {(Time.realtimeSinceStartup - t0) * 1000 - tMatch:F0} ms ({cache})";
                     yield break;
@@ -421,19 +451,29 @@ namespace Fable
 
         // ---------------------------------------------------------------- Translate
 
-        class Translation { [JsonProperty("translation")] public string Text; [JsonProperty("language")] public string Language; [JsonProperty("model")] public string Model; }
+        class Translation
+        {
+            [JsonProperty("translation")] public string Text; [JsonProperty("language")] public string Language; [JsonProperty("model")] public string Model;
+            [JsonProperty("image")] public byte[] Image; [JsonProperty("imageWidth")] public int ImageWidth; [JsonProperty("imageHeight")] public int ImageHeight;
+        }
         const string TranslateOffline = "Translate needs the interpreter; Define and Search work offline.";
+        /// The card's text area is 516 units wide; drawn translations come at twice that, for a sharp picture.
+        const int PictureScale = 2;
 
-        IEnumerator Translate()
+        IEnumerator Translate(bool forcePicture = false)
         {
             var t0 = Time.realtimeSinceStartup; var lang = TranslateLanguages.Current(); var text = Phrase.Trim();
             var url = Director ? Director.InterpreterUrl : "";
-            if (string.IsNullOrEmpty(url)) { ShowCard("Translate", TranslateOffline); TranslateStatus = "offline"; yield break; }
-            generatingText = $"Translating “{Shorten(text, 60)}” into {lang}…\n<size=80%><i>Only the highlighted words and the book's title leave the headset.</i></size>";
-            ShowCard("Translate", generatingText);
-            TranslateStatus = "generating"; peekStarted = t0; nextTick = Time.time + 1f;
-            // bookId names a bundled book (the server knows its title); bookTitle covers imported ones
-            var body = new Newtonsoft.Json.Linq.JObject { ["text"] = text, ["language"] = lang, ["bookId"] = Reader.Book.Slug, ["bookTitle"] = Reader.Book.Title, ["sentenceId"] = LastSentence, ["waitSeconds"] = 8 }.ToString(Formatting.None);
+            ClearPicture();
+            if (string.IsNullOrEmpty(url)) { ShowCard("Translate", TranslateOffline); ShowLanguageButton(lang); TranslateStatus = "offline"; yield break; }
+            generatingText = $"Translating “{Shorten(text, 60)}” into {lang.Name}…\n<size=80%><i>Only the highlighted words and the book's title leave the headset.</i></size>";
+            ShowCard("Translate", generatingText); ShowLanguageButton(lang);
+            TranslateStatus = "generating"; StartWait("translate", t0);
+            // bookId names a bundled book (the server knows its title); bookTitle covers imported ones. render: scripts the
+            // page's font cannot show come back drawn as well, at the card's width
+            var req0 = new Newtonsoft.Json.Linq.JObject { ["text"] = text, ["language"] = lang.Code, ["bookId"] = Reader.Book.Slug, ["bookTitle"] = Reader.Book.Title, ["sentenceId"] = LastSentence, ["waitSeconds"] = 8 };
+            if (lang.Drawn || forcePicture) req0["render"] = new Newtonsoft.Json.Linq.JObject { ["width"] = Mathf.RoundToInt(BodyWidth * PictureScale), ["size"] = cardBody.fontSize * PictureScale, ["ink"] = "#" + ColorUtility.ToHtmlStringRGB(cardBody.color), ["force"] = forcePicture };
+            var body = req0.ToString(Formatting.None);
             while (Time.realtimeSinceStartup - t0 < TranslateWaitSeconds)
             {
                 using var req = Post(url, "/translate", body);
@@ -443,24 +483,88 @@ namespace Fable
                 {
                     var r = JsonConvert.DeserializeObject<Translation>(req.downloadHandler.text);
                     var cache = req.GetResponseHeader("X-Fable-Cache");
-                    ShowCard("Translate", $"{r.Text}\n\n<size=80%><i>{r.Language}  ·  translated by the interpreter{(cache == "hit" ? ", from its cache" : "")}</i></size>");
+                    if (cache != "hit") WaitEstimate.Record("translate", Time.realtimeSinceStartup - t0);
+                    var caption = $"<size=80%><i>{r.Language}  ·  translated by the interpreter{(cache == "hit" ? ", from its cache" : "")}</i></size>";
                     TranslateStatus = cache == "hit" ? "cache" : "live";
                     LastTimings = $"translate {(Time.realtimeSinceStartup - t0) * 1000:F0} ms ({cache})";
+                    if (r.Image != null && r.Image.Length > 0 && ShowPicture(r.Image, caption)) { TranslateStatus += "+picture"; yield break; }
+                    if (lang.Drawn)
+                    {
+                        // the service answered in text only (an older service, or its fonts are missing): never show text this font would break
+                        ShowCard("Translate", $"The translation into {lang.Name} arrived, but this headset shows {lang.Name} only as the picture the service draws, and the service did not send one.\n<size=80%><i>The service needs its fonts (tools/fetch_fonts.py) or an update.</i></size>");
+                        ShowLanguageButton(lang); TranslateStatus = "no-picture"; yield break;
+                    }
+                    if (!forcePicture && !cardBody.font.HasCharacters(r.Text, out uint[] missing, true, true))
+                    {
+                        // a character the page's font lacks: ask again (a cache hit now) for the drawn version
+                        Debug.LogWarning($"[Fable] translate: {missing.Length} character(s) not in {cardBody.font.name}; asking for the drawn translation");
+                        translateJob = StartCoroutine(Translate(true)); yield break;
+                    }
+                    ShowCard("Translate", $"{r.Text}\n\n{caption}"); ShowLanguageButton(lang);
                     yield break;
                 }
                 if (req.result == UnityWebRequest.Result.Success && req.responseCode == 202) continue;   // still translating
                 if (req.result == UnityWebRequest.Result.ConnectionError || req.responseCode == 0)
                 {
-                    Debug.LogWarning($"[Fable] translate \"{text}\": interpreter unreachable at {url}: {req.error}");
-                    ShowCard("Translate", TranslateOffline); TranslateStatus = "offline"; yield break;
+                    Debug.LogWarning($"[Fable] translate \"{text}\": interpreter unreachable at {FableService.Describe(url)}: {req.error}");
+                    ShowCard("Translate", TranslateOffline); ShowLanguageButton(lang); TranslateStatus = "offline"; yield break;
                 }
                 var why = (req.downloadHandler.text ?? req.error ?? "").Trim().Split('\n')[0]; if (why.Length > 160) why = why.Substring(0, 159) + "…";
                 Debug.LogWarning($"[Fable] translate \"{text}\": {req.responseCode} {req.error} {req.downloadHandler.text}");
-                ShowCard("Translate", $"Could not translate “{Shorten(text, 60)}” right now.\n<size=80%><i>The interpreter said: {why}</i></size>");
+                ShowCard("Translate", $"Could not translate “{Shorten(text, 60)}” right now.\n<size=80%><i>The interpreter said: {why}</i></size>"); ShowLanguageButton(lang);
                 TranslateStatus = "failed"; yield break;
             }
-            ShowCard("Translate", $"The translation is taking too long ({TranslateWaitSeconds:F0} s), so Translate has given up for now. Try again in a moment: it may be ready.");
+            ShowCard("Translate", $"The translation is taking too long ({TranslateWaitSeconds:F0} s), so Translate has given up for now. Try again in a moment: it may be ready."); ShowLanguageButton(lang);
             TranslateStatus = "timeout";
+        }
+
+        float BodyWidth => cardBody ? ((RectTransform)cardBody.transform.parent).rect.width : 516f;
+
+        /// The drawn translation on the card, with the caption under it. False if the picture would not load.
+        bool ShowPicture(byte[] png, string caption)
+        {
+            ClearPicture();
+            var tex = new Texture2D(2, 2, TextureFormat.RGBA32, false) { name = "translation", wrapMode = TextureWrapMode.Clamp };
+            if (!tex.LoadImage(png, true)) { Destroy(tex); return false; }
+            ShowCard("Translate", ""); ShowLanguageButton(TranslateLanguages.Current());
+            cardTexture = tex;
+            var area = (RectTransform)cardBody.transform.parent;
+            float w = tex.width / (float)PictureScale, h = tex.height / (float)PictureScale, room = area.rect.height - 44f;
+            float k = h > room ? room / h : 1f;   // a long translation is shown smaller rather than cut off
+            cardPicture.texture = tex; cardPicture.rectTransform.sizeDelta = new Vector2(w * k, h * k);
+            cardPicture.gameObject.SetActive(true);
+            cardBody.margin = new Vector4(0, h * k + 10f, 0, 0);
+            cardBody.text = caption;
+            return true;
+        }
+
+        void ClearPicture()
+        {
+            if (cardPicture) { cardPicture.gameObject.SetActive(false); cardPicture.texture = null; }
+            if (cardTexture) { Destroy(cardTexture); cardTexture = null; }
+            if (cardBody) cardBody.margin = Vector4.zero;
+        }
+
+        /// "to Spanish ▼" in the card's corner: the language picker, and the translation again in the new language.
+        void ShowLanguageButton(TranslateLanguages.Language lang)
+        {
+            if (!langBtn) return;
+            langLbl.text = $"to {lang.Name}  <size=70%>▼</size>";
+            langBtn.sizeDelta = new Vector2(Mathf.Clamp(langLbl.GetPreferredValues(langLbl.text).x + 30f, 150f, 300f), langBtn.sizeDelta.y);
+            langBtn.gameObject.SetActive(true);
+            ((RectTransform)cardBody.transform.parent).offsetMin = new Vector2(22, 62);   // the text stops above the button
+        }
+
+        /// Open the picker over the page; a new choice translates the highlight again.
+        public void OpenLanguages()
+        {
+            var picker = LanguagePicker.For(Pointer.Page, Pointer, Input, Reader.Panel.Body.font);
+            picker.Open(l =>
+            {
+                if (Current != Mode.Card || string.IsNullOrEmpty(Phrase.Trim())) return;
+                if (translateJob != null) StopCoroutine(translateJob);
+                translateJob = StartCoroutine(Translate());
+            });
         }
 
         /// Shown no taller than this, so the model sits under the card's caption (the card is 42 cm tall).
@@ -608,6 +712,9 @@ namespace Fable
             card.anchoredPosition = new Vector2(0, low ? -52 : 52);
             cardTitle.text = title + "  ·  <i>" + Shorten(Phrase.Trim(), 48) + "</i>";
             cardBody.text = text;
+            if (langBtn) { langBtn.gameObject.SetActive(false); ((RectTransform)cardBody.transform.parent).offsetMin = new Vector2(22, 16); }
+            if (title != "Translate") ClearPicture();
+            ShowWaitBar(-1);
             foreach (var r in resultRows) r.rt.gameObject.SetActive(false);
         }
 
@@ -622,7 +729,8 @@ namespace Fable
             if (card) card.gameObject.SetActive(false);
             ClosePeek(); PeekStatus = "";
             if (translateJob != null) { StopCoroutine(translateJob); translateJob = null; }
-            TranslateStatus = "";
+            TranslateStatus = ""; ClearPicture();
+            var picker = Pointer && Pointer.Page ? Pointer.Page.GetComponent<LanguagePicker>() : null; if (picker && picker.IsOpen) picker.Close();
         }
 
         void Hover()
@@ -634,7 +742,7 @@ namespace Fable
                 if (img.color != c) img.color = c;
             }
             if (Current == Mode.Menu) foreach (var p in petals) H(p.rt, new Color(0.99f, 0.86f, 0.52f, 1f));
-            if (Current == Mode.Card) { H(cardClose, new Color(0.45f, 0.36f, 0.24f, 0.25f)); foreach (var r in resultRows) H(r.rt, new Color(0.45f, 0.36f, 0.24f, 0.16f)); }
+            if (Current == Mode.Card) { H(cardClose, new Color(0.45f, 0.36f, 0.24f, 0.25f)); H(langBtn, new Color(0.99f, 0.86f, 0.52f, 1f)); foreach (var r in resultRows) H(r.rt, new Color(0.45f, 0.36f, 0.24f, 0.16f)); }
         }
         readonly Dictionary<RectTransform, Color> baseColor = new();
 
@@ -681,6 +789,19 @@ namespace Fable
             var bodyRt = new GameObject("Body", typeof(RectTransform)).GetComponent<RectTransform>(); bodyRt.SetParent(card, false);
             bodyRt.anchorMin = new Vector2(0, 0); bodyRt.anchorMax = new Vector2(1, 1); bodyRt.offsetMin = new Vector2(22, 16); bodyRt.offsetMax = new Vector2(-22, -56);
             cardBody = Text(bodyRt, 18.5f, TextAlignmentOptions.TopLeft, Vector2.zero); cardBody.overflowMode = TextOverflowModes.Ellipsis; cardBody.lineSpacing = 4;
+            // the translation drawn by the service (scripts this font cannot shape), above the caption
+            cardPicture = new GameObject("Picture", typeof(RectTransform)).AddComponent<RawImage>(); cardPicture.transform.SetParent(bodyRt, false);
+            cardPicture.raycastTarget = false; var pr = cardPicture.rectTransform; pr.anchorMin = pr.anchorMax = pr.pivot = new Vector2(0, 1); pr.anchoredPosition = Vector2.zero;
+            cardPicture.gameObject.SetActive(false);
+            // "to Spanish ▼": opens the language picker
+            langBtn = Box("Language", card, new Vector2(200, 42), new Color(0.99f, 0.96f, 0.89f, 1f)); langBtn.anchorMin = langBtn.anchorMax = langBtn.pivot = new Vector2(1, 0); langBtn.anchoredPosition = new Vector2(-14, 12);
+            var lo = langBtn.gameObject.AddComponent<Outline>(); lo.effectColor = new Color(0.45f, 0.33f, 0.18f, 0.9f); lo.effectDistance = new Vector2(1.5f, -1.5f);
+            langLbl = Text(langBtn, 17, TextAlignmentOptions.Center, new Vector2(6, 0)); langLbl.fontStyle = FontStyles.SmallCaps; langLbl.textWrappingMode = TextWrappingModes.NoWrap;
+            langBtn.gameObject.SetActive(false);
+            // the wait bar: elapsed against the expected time (WaitEstimate)
+            waitTrack = Box("WaitBar", card, new Vector2(516, 5), new Color(0.45f, 0.36f, 0.24f, 0.18f)); waitTrack.anchorMin = waitTrack.anchorMax = waitTrack.pivot = new Vector2(0.5f, 1); waitTrack.anchoredPosition = new Vector2(0, -150);
+            waitFill = Box("Fill", waitTrack, new Vector2(0, 5), new Color(0.55f, 0.36f, 0.08f, 0.85f)); waitFill.anchorMin = waitFill.anchorMax = waitFill.pivot = new Vector2(0, 0.5f); waitFill.anchoredPosition = Vector2.zero;
+            waitTrack.gameObject.SetActive(false);
             for (int r = 0; r < 6; r++)
             {
                 var row = Box("Result" + r, card, new Vector2(530, 44), new Color(0.45f, 0.36f, 0.24f, 0f)); row.anchorMin = row.anchorMax = row.pivot = new Vector2(0.5f, 1);
@@ -692,27 +813,5 @@ namespace Fable
         }
 
         public string Describe() => $"highlight={Current} phrase=\"{Phrase.Trim()}\" from={FirstSentence ?? "-"} to={LastSentence ?? "-"} peek={PeekStatus} tris={PeekTriangles} translate={TranslateStatus} timings=[{LastTimings}] dict={(dict != null)} library={(library != null)}";
-    }
-
-    /// The languages Translate offers, in one place. The interpreter accepts these names (server.Languages is the same
-    /// list); the reader picks one on the bar's sound tab and it is kept in Prefs.TranslateTo.
-    public static class TranslateLanguages
-    {
-        public static readonly string[] Names = { "Spanish", "French", "Portuguese", "German", "Italian", "Shona", "isiNdebele", "Swahili", "Chinese (Simplified)", "Hindi", "Arabic" };
-
-        /// The headset's language when it is on the list and not English; otherwise Spanish.
-        public static string Default() => Application.systemLanguage switch
-        {
-            SystemLanguage.Spanish => "Spanish", SystemLanguage.French => "French", SystemLanguage.Portuguese => "Portuguese",
-            SystemLanguage.German => "German", SystemLanguage.Italian => "Italian", SystemLanguage.Hindi => "Hindi", SystemLanguage.Arabic => "Arabic",
-            SystemLanguage.Chinese or SystemLanguage.ChineseSimplified or SystemLanguage.ChineseTraditional => "Chinese (Simplified)",
-            _ => "Spanish",
-        };
-
-        /// The reader's choice, or Default() while they have not made one.
-        public static string Current() { var p = ProgressStore.LoadPrefs(); return System.Array.IndexOf(Names, p.TranslateTo) >= 0 ? p.TranslateTo : Default(); }
-
-        /// The language after this one, round the list (the settings row cycles).
-        public static string Next(string from) { int i = System.Array.IndexOf(Names, from); return Names[(i + 1) % Names.Length]; }
     }
 }
