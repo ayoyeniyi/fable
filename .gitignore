@@ -35,3 +35,7 @@ unity/Fable/Assets/Resources/fable-service.txt.meta
 # generated rooms bundled for Fable's later books: copied from content/rooms by FableBuild.SyncData
 unity/Fable/Assets/StreamingAssets/rooms/
 unity/Fable/Assets/StreamingAssets/rooms.meta
+
+# Noto fonts for drawn translations: fetched by tools/fetch_fonts.py (content/fonts/SOURCE.md)
+content/fonts/*.ttf
+content/fonts/*.otf

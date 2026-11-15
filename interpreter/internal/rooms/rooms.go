@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"os/exec"
@@ -29,6 +30,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Thabhelo/fable/interpreter/internal/eta"
 	"github.com/Thabhelo/fable/interpreter/internal/guard"
 	"github.com/Thabhelo/fable/interpreter/internal/llm"
 )
@@ -88,6 +90,8 @@ type Job struct {
 	Client    string             `json:"client,omitempty"` // who asked (a hash of their address), for PerClient
 	Queued    time.Time          `json:"queued"`
 	NotBefore time.Time          `json:"notBefore,omitempty"` // after a passing network failure: try again then
+	Started   time.Time          `json:"started,omitempty"`   // this attempt's start
+	Finished  time.Time          `json:"finished,omitempty"`
 	Timings   map[string]float64 `json:"timings"`
 }
 
@@ -339,6 +343,7 @@ func (s *Service) runJob(parent context.Context, j *Job) {
 	defer cancel()
 	start := time.Now()
 	s.mu.Lock()
+	j.Started = start
 	j.Attempts++
 	j.Timings["queueWait"] = time.Since(j.Queued).Seconds()
 	s.mu.Unlock()
@@ -402,6 +407,7 @@ func (s *Service) runJob(parent context.Context, j *Job) {
 				return
 			}
 			j.Timings["total"] = time.Since(start).Seconds()
+			j.Finished = time.Now()
 			s.set(j, Done)
 			log.Printf("rooms %s: %q built in %.0f s (attempt %d, %d triangles)", j.Key(), st.Title, j.Timings["total"], attempt, res.Triangles)
 			if !s.KeepWork {
@@ -743,15 +749,61 @@ type statusOut struct {
 	Error    string             `json:"error,omitempty"`
 	Attempts int                `json:"attempts"`
 	Timings  map[string]float64 `json:"timings,omitempty"`
+	// ETA: estimated seconds until this room is built (queued or running rooms only), from this server's recent
+	// builds (internal/eta); Elapsed: seconds since it was queued.
+	ETA     float64 `json:"etaSeconds,omitempty"`
+	Elapsed float64 `json:"elapsedSeconds,omitempty"`
+}
+
+// SeedRunSeconds is one room's build before this server has finished any: about 15 minutes for a reviewed room on
+// the 4-vCPU droplet (docs/BACKEND.md), rounded up.
+const SeedRunSeconds = 1000
+
+func (s *Service) typicalLocked() float64 {
+	var done []*Job
+	for _, o := range s.jobs {
+		if o.State == Done && o.Timings["total"] > 0 {
+			done = append(done, o)
+		}
+	}
+	sort.Slice(done, func(a, b int) bool { return done[a].Finished.Before(done[b].Finished) })
+	var runs []float64
+	for _, o := range done {
+		runs = append(runs, o.Timings["total"])
+	}
+	return eta.Typical(runs, SeedRunSeconds)
+}
+
+// etaLocked: how long until j is built. One worker; jobs run in the order next() picks them (queued first, then room).
+func (s *Service) etaLocked(j *Job, typical float64) float64 {
+	running := func(o *Job) bool { return o.Active() || o.State == Reviewing }
+	if running(j) {
+		return eta.Remaining(typical, true, time.Since(j.Started).Seconds(), 0, 0)
+	}
+	ahead, left := 0, 0.0
+	for _, o := range s.jobs {
+		if running(o) {
+			left = eta.Left(typical, time.Since(o.Started).Seconds())
+		} else if o != j && o.State == Queued && (o.Queued.Before(j.Queued) || (o.Queued.Equal(j.Queued) && o.Room < j.Room)) {
+			ahead++
+		}
+	}
+	return eta.Remaining(typical, false, 0, left, ahead)
 }
 
 func (s *Service) Status(book string) []statusOut {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	var out []statusOut
+	typical := s.typicalLocked()
 	for n := 1; n <= RoomsPerBook; n++ {
 		if j := s.jobs[fmt.Sprintf("%s:r%d", book, n)]; j != nil {
-			out = append(out, statusOut{j.Room, j.State, StageText[j.State], j.Title, j.Error, j.Attempts, j.Timings})
+			st := statusOut{Room: j.Room, State: j.State, Stage: StageText[j.State], Title: j.Title, Error: j.Error, Attempts: j.Attempts, Timings: j.Timings}
+			if j.State == Queued || j.Active() || j.State == Reviewing {
+				st.ETA = math.Ceil(s.etaLocked(j, typical))
+				st.Elapsed = math.Round(time.Since(j.Queued).Seconds())
+			}
+			out = append(out, st)
 		}
 	}
 	return out

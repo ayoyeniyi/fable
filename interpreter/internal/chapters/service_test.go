@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"image"
 	"image/color"
 	"image/png"
@@ -245,5 +246,34 @@ func TestFailureIsRetriedOnRequestAndQueueIsBounded(t *testing.T) {
 	}
 	if !errors.Is(err, ErrFull) {
 		t.Fatalf("queue not bounded: %v", err)
+	}
+}
+
+// Status answers estimate the wait from this server's recent runs: the seed before any, then the median run, with a
+// queued job waiting for the running one and every job ahead of it.
+func TestStatusEstimatesTheWait(t *testing.T) {
+	s, _ := newTestService(t, &fakePlanner{env: "kansas-farmhouse"})
+	s.Prepare("oz", "oz:c02", false)
+	time.Sleep(5 * time.Millisecond)
+	s.Prepare("oz", "oz:c03", false)
+	if st := s.statusFor(s.Status("oz:c02")); st.ETA != SeedRunSeconds {
+		t.Fatalf("first in an idle queue with no history: the seed, got %v", st.ETA)
+	}
+	s.mu.Lock()
+	for i, run := range []float64{40, 60, 50} {
+		ch := fmt.Sprintf("oz:c%02d", 10+i)
+		s.jobs[ch] = &Job{Book: "oz", Chapter: ch, State: Done, Finished: time.Now().Add(time.Duration(i) * time.Second), Timings: map[string]float64{"queueWait": 5, "total": run + 5}}
+	}
+	j := s.jobs["oz:c02"]
+	j.State, j.Started = Rendering, time.Now().Add(-20*time.Second)
+	s.mu.Unlock()
+	if st := s.statusFor(s.Status("oz:c02")); st.ETA < 29 || st.ETA > 31 {
+		t.Fatalf("running for 20 s of a typical 50: about 30 left, got %v", st.ETA)
+	}
+	if st := s.statusFor(s.Status("oz:c03")); st.ETA < 79 || st.ETA > 81 || st.Position != 2 {
+		t.Fatalf("queued behind it: its 30 s and a run of 50, got %v (position %d)", st.ETA, st.Position)
+	}
+	if st := s.statusFor(s.Status("oz:c10")); st.ETA != 0 {
+		t.Fatalf("a built experience has no estimate, got %v", st.ETA)
 	}
 }

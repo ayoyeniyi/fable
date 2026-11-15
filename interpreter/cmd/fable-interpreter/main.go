@@ -14,6 +14,8 @@
 //	fable-interpreter mock      --check content/library/clay/*.json     validate mock models against the schema rules
 //	fable-interpreter translate --text "..." --lang es [--book alice] [--model id]
 //	    only the highlighted text (and the book's title) is sent to Claude; --lang takes a code or a name
+//	fable-interpreter render-names [--out unity/Fable/Assets/Fable/Resources]
+//	    draws the native names of the languages the headset cannot show as text into LanguageNames.png (+ .json rects)
 package main
 
 import (
@@ -21,6 +23,9 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"image"
+	"image/color"
+	"image/draw"
 	"log"
 	"net/http"
 	"os"
@@ -39,6 +44,7 @@ import (
 	"github.com/Thabhelo/fable/interpreter/internal/rooms"
 	"github.com/Thabhelo/fable/interpreter/internal/script"
 	"github.com/Thabhelo/fable/interpreter/internal/server"
+	"github.com/Thabhelo/fable/interpreter/internal/textimg"
 )
 
 func loadManifest(root, sceneID string) (*script.Manifest, error) {
@@ -55,7 +61,7 @@ func loadManifest(root, sceneID string) (*script.Manifest, error) {
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, "usage: fable-interpreter validate|generate|serve|mock|translate [flags]")
+		fmt.Fprintln(os.Stderr, "usage: fable-interpreter validate|generate|serve|mock|translate|render-names [flags]")
 		os.Exit(2)
 	}
 	root := os.Getenv("FABLE_ROOT")
@@ -214,6 +220,8 @@ func main() {
 		runMock(root, os.Args[2:])
 	case "translate":
 		runTranslate(root, os.Args[2:])
+	case "render-names":
+		runRenderNames(root, os.Args[2:])
 	default:
 		log.Fatalf("unknown command %q", os.Args[1])
 	}
@@ -303,7 +311,7 @@ func runMock(root string, args []string) {
 func runTranslate(root string, args []string) {
 	fs := flag.NewFlagSet("translate", flag.ExitOnError)
 	text := fs.String("text", "", "the highlighted text")
-	lang := fs.String("lang", "es", "target language: a code (es, fr, pt, de, it, sn, nd, sw, zh, hi, ar) or its name")
+	lang := fs.String("lang", "es", "target language: a code from server.Languages (es, sn, nd, zh-Hant, ...) or its English name")
 	slug := fs.String("book", "", "alice | oz | odyssey | gulliver (its title is sent for register; optional)")
 	model := fs.String("model", os.Getenv("FABLE_MODEL"), "Claude model id")
 	fs.Parse(args)
@@ -329,11 +337,70 @@ func runTranslate(root string, args []string) {
 	defer cancel()
 	d := llm.New(*model)
 	t0 := time.Now()
-	out, err := d.Translate(ctx, server.NormaliseText(*text), name, title)
+	l, _ := server.FindLanguage(name)
+	out, err := d.Translate(ctx, server.NormaliseText(*text), l.ForModel(), title)
 	took := time.Since(t0)
 	if err != nil {
 		log.Fatalf("%v (after %s)", err, took.Round(time.Millisecond))
 	}
 	fmt.Fprintf(os.Stderr, "%s -> %s: %d chars in %s (model %s)\n", strings.TrimSpace(*text), name, len(out), took.Round(time.Millisecond), d.Model())
 	fmt.Println(out)
+}
+
+// runRenderNames draws the picker's native names for the languages the headset cannot show as text (Arabic, Hindi,
+// Japanese, ...) once, at build time, into a white-on-transparent atlas the headset tints: the app needs no font for them.
+func runRenderNames(root string, args []string) {
+	fs := flag.NewFlagSet("render-names", flag.ExitOnError)
+	out := fs.String("out", filepath.Join(root, "unity", "Fable", "Assets", "Fable", "Resources"), "folder for LanguageNames.png and LanguageNames.json")
+	size := fs.Float64("size", 52, "pixels per em")
+	fs.Parse(args)
+	r := textimg.New(filepath.Join(root, "content", "fonts"))
+	type rect struct{ X, Y, W, H int }
+	const width = 1024
+	var tiles []*image.NRGBA
+	var codes []string
+	for _, l := range server.Languages {
+		if l.Font == "" {
+			continue
+		}
+		img, err := r.Draw(l.Native, textimg.Options{Font: l.Font, Lang: l.Code, RTL: l.RTL, Width: width, Size: float32(*size), Ink: color.NRGBA{255, 255, 255, 255}})
+		if err != nil {
+			log.Fatalf("%s: %v", l.Code, err)
+		}
+		tiles = append(tiles, textimg.Crop(img, 2))
+		codes = append(codes, l.Code)
+	}
+	rects := map[string]rect{}
+	x, y, rowH := 0, 0, 0
+	for i, t := range tiles {
+		w, h := t.Bounds().Dx(), t.Bounds().Dy()
+		if x+w > width {
+			x, y, rowH = 0, y+rowH+2, 0
+		}
+		rects[codes[i]] = rect{x, y, w, h}
+		x += w + 2
+		rowH = max(rowH, h)
+	}
+	hgt := 1
+	for hgt < y+rowH {
+		hgt *= 2
+	}
+	atlas := image.NewNRGBA(image.Rect(0, 0, width, hgt))
+	for i, t := range tiles {
+		rc := rects[codes[i]]
+		draw.Draw(atlas, image.Rect(rc.X, rc.Y, rc.X+rc.W, rc.Y+rc.H), t, image.Point{}, draw.Src)
+	}
+	png, err := textimg.PNG(atlas)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// Unity's texture rows start at the bottom: the headset flips Y when it cuts the sprites
+	js, _ := json.MarshalIndent(map[string]any{"width": width, "height": hgt, "names": rects}, "", "  ")
+	if err := os.WriteFile(filepath.Join(*out, "LanguageNames.png"), png, 0o644); err != nil {
+		log.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(*out, "LanguageNames.json"), js, 0o644); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Fprintf(os.Stderr, "%d names in a %dx%d atlas (%d kB)\n", len(tiles), width, hgt, len(png)/1024)
 }

@@ -20,6 +20,7 @@ import (
 	"github.com/Thabhelo/fable/interpreter/internal/book"
 	"github.com/Thabhelo/fable/interpreter/internal/llm"
 	"github.com/Thabhelo/fable/interpreter/internal/script"
+	"github.com/Thabhelo/fable/interpreter/internal/textimg"
 )
 
 // Interpreter is what llm.Director implements; tests substitute a fake.
@@ -50,6 +51,7 @@ type Server struct {
 	Translator  Translator                            // Translate; nil answers 503 unless the cache has one
 	Chapters    interface{ Register(*http.ServeMux) } // chapter experiences (internal/chapters); nil = off
 	Rooms       interface{ Register(*http.ServeMux) } // generated reading rooms for uploaded books (internal/rooms); nil = off
+	Fonts       *textimg.Renderer                     // draws translations the headset cannot show as text (content/fonts)
 
 	peek      peeks
 	translate translates
@@ -58,7 +60,8 @@ type Server struct {
 }
 
 func New(root string, bk *book.Book, in Interpreter) *Server {
-	return &Server{Root: root, Book: bk, Interp: in, GenTimeout: 8 * time.Minute, DefaultWait: 3 * time.Second, MaxWait: 120 * time.Second, jobs: map[string]*job{}}
+	return &Server{Root: root, Book: bk, Interp: in, GenTimeout: 8 * time.Minute, DefaultWait: 3 * time.Second, MaxWait: 120 * time.Second, jobs: map[string]*job{},
+		Fonts: textimg.New(filepath.Join(root, "content", "fonts"))}
 }
 
 func (s *Server) manifest(sceneID string) (*script.Manifest, error) {

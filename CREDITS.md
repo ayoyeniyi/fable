@@ -50,6 +50,12 @@ public domain (US), cut to the words Fable's eight books use. `content/dictionar
   not ship in the app.
 - Standard Ebooks' covers carry League Spartan and Sorts Mill Goudy (The League of Moveable Type, SIL OFL 1.1),
   rendered into the images by Standard Ebooks.
+- **Noto** (Noto Serif; Noto Serif Devanagari, Bengali, Gurmukhi, Gujarati, Tamil, Telugu, Kannada, Malayalam, Thai,
+  Hebrew, Ethiopic; Noto Naskh Arabic; Noto Nastaliq Urdu; Noto Serif CJK SC, TC, JP, KR), The Noto Project Authors,
+  SIL Open Font License 1.1 (`content/fonts/OFL.txt`; sources, commits and SHA-256 in `content/fonts/SOURCE.md`).
+  Used by the preparation service to draw translations in scripts the headset's text cannot shape, and once at build
+  time for the language picker's native names (`unity/Fable/Assets/Fable/Resources/LanguageNames.png`, the only part
+  in the app). The fonts themselves do not ship in the app.
 
 ## Music
 

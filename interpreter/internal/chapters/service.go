@@ -13,6 +13,7 @@ import (
 	"image/jpeg"
 	"image/png"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"os/exec"
@@ -24,6 +25,7 @@ import (
 
 	"github.com/Thabhelo/fable/interpreter/internal/book"
 	"github.com/Thabhelo/fable/interpreter/internal/books"
+	"github.com/Thabhelo/fable/interpreter/internal/eta"
 	"github.com/Thabhelo/fable/interpreter/internal/script"
 )
 
@@ -617,25 +619,60 @@ type statusOut struct {
 	Position  int                `json:"position,omitempty"` // place in the queue (1 = next)
 	Timings   map[string]float64 `json:"timings,omitempty"`
 	Completed bool               `json:"completed"`
+	// ETA is the estimated seconds until the experience is built (queued or running jobs only), from this server's
+	// recent runs (internal/eta); Elapsed is how long it has been since the job was queued.
+	ETA     float64 `json:"etaSeconds,omitempty"`
+	Elapsed float64 `json:"elapsedSeconds,omitempty"`
 }
 
-// statusFor never carries a title, place or image: only how far the job has got.
-func (s *Service) statusFor(j *Job) statusOut {
-	out := statusOut{Chapter: j.Chapter, State: j.State, Stage: StageText[j.State], Error: j.Error, Attempts: j.Attempts, Timings: j.Timings, Completed: j.Completed}
-	if j.State == Queued {
-		s.mu.Lock()
-		n := 1
-		for _, o := range s.jobs {
-			if o != j && o.State == Queued && ((o.Completed && !j.Completed) || (o.Completed == j.Completed && o.Queued.Before(j.Queued))) {
-				n++
-			}
-			if o.Active() {
-				n++
-			}
+// SeedRunSeconds is a chapter's preparation time before this server has finished any: plan, script and a CPU render
+// on the hosted VM (docs/LATENCY.md, docs/BACKEND.md), rounded up.
+const SeedRunSeconds = 90
+
+// typicalLocked is the median run (queue wait excluded) of the recently built experiences.
+func (s *Service) typicalLocked() float64 {
+	var done []*Job
+	for _, o := range s.jobs {
+		if o.State == Done && o.Timings["total"] > 0 {
+			done = append(done, o)
 		}
-		s.mu.Unlock()
-		out.Position = n
 	}
+	sort.Slice(done, func(a, b int) bool { return done[a].Finished.Before(done[b].Finished) })
+	var runs []float64
+	for _, o := range done {
+		runs = append(runs, o.Timings["total"]-o.Timings["queueWait"])
+	}
+	return eta.Typical(runs, SeedRunSeconds)
+}
+
+// statusFor never carries a title, place or image: only how far the job has got, and how long it may take.
+func (s *Service) statusFor(j *Job) statusOut {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	out := statusOut{Chapter: j.Chapter, State: j.State, Stage: StageText[j.State], Error: j.Error, Attempts: j.Attempts, Timings: j.Timings, Completed: j.Completed}
+	if j.State != Queued && !j.Active() {
+		return out
+	}
+	typical := s.typicalLocked()
+	out.Elapsed = math.Round(time.Since(j.Queued).Seconds())
+	if j.Active() {
+		out.ETA = math.Ceil(eta.Remaining(typical, true, time.Since(j.Started).Seconds(), 0, 0))
+		return out
+	}
+	ahead, left := 0, 0.0
+	n := 1
+	for _, o := range s.jobs {
+		if o.Chapter != j.Chapter && o.State == Queued && ((o.Completed && !j.Completed) || (o.Completed == j.Completed && o.Queued.Before(j.Queued))) {
+			n++
+			ahead++
+		}
+		if o.Active() {
+			n++
+			left = eta.Left(typical, time.Since(o.Started).Seconds())
+		}
+	}
+	out.Position = n
+	out.ETA = math.Ceil(eta.Remaining(typical, false, 0, left, ahead))
 	return out
 }
 
