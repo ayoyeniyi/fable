@@ -583,6 +583,8 @@ namespace Fable.Editor
         /// Generated reading rooms bundled for Fable's own books that have no hand-built rooms: content/rooms/<slug>/r<N>
         /// (tools/bundle_rooms.py) -> StreamingAssets/rooms/<slug>/r<N>, only the files each package.json lists, plus an
         /// index the app reads synchronously (Resources/BundledRooms.json: titles and each package.json's SHA-256).
+        /// A book with hand-built rooms (ReadingRooms.Bundled) is skipped: since 2026-11-15 that is all four later books,
+        /// whose generated rooms stay in content/rooms for the record but are no longer shipped.
         static int SyncBundledRooms(string repo, string dst)
         {
             var src = Path.Combine(repo, "content", "rooms"); var to = Path.Combine(dst, "rooms"); int n = 0;
@@ -591,6 +593,7 @@ namespace Fable.Editor
             if (Directory.Exists(src))
                 foreach (var bookDir in Directory.GetDirectories(src).OrderBy(d => d))
                 {
+                    if (ReadingRooms.Bundled.ContainsKey(Path.GetFileName(bookDir))) continue;
                     var rooms = new Newtonsoft.Json.Linq.JArray();
                     foreach (var roomDir in Directory.GetDirectories(bookDir, "r*").OrderBy(d => d))
                     {

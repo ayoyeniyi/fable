@@ -1,6 +1,7 @@
 // Every book's reading rooms, for the lobby's book menu and the menu beside the page: three per book, then the library.
-// Fable's first four books: built scenes (Bundled below). Fable's other books: three generated rooms bundled in the
-// app (GeneratedRooms.IsBundled). The reader's books: three generated rooms made for them (docs/GENERATED_ROOMS.md).
+// Fable's eight books: built scenes (Bundled below). A Fable book without built scenes could have three generated rooms
+// bundled in the app (GeneratedRooms.IsBundled; none since 2026-11-15). The reader's books: three generated rooms made
+// for them (docs/GENERATED_ROOMS.md).
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,6 +16,10 @@ namespace Fable
             ["oz"] = new[] { "KansasFarmhouse", "PoppyField", "EmeraldThroneRoom" },
             ["odyssey"] = new[] { "CalypsosCave", "OdysseusShip", "IthacaHall" },
             ["gulliver"] = new[] { "GlumdalclitchsRoom", "LilliputBeach", "Laputa" },
+            ["mobydick"] = new[] { "BatteryWaterfront", "SpouterInn", "PequodDeck" },
+            ["worlds"] = new[] { "OgilvysObservatory", "HorsellSandpits", "MayburyDiningRoom" },
+            ["treasure"] = new[] { "BenbowCove", "SquiresLibrary", "SpyglassTavern" },
+            ["pride"] = new[] { "LongbournLibrary", "FieldsToNetherfield", "NetherfieldDrawingRoom" },
         };
 
         public static string Name(string scene) => scene switch
@@ -23,6 +28,10 @@ namespace Fable
             "KansasFarmhouse" => "The Kansas farmhouse", "PoppyField" => "The poppy field", "EmeraldThroneRoom" => "The Throne Room of Oz",
             "CalypsosCave" => "Calypso’s cave", "OdysseusShip" => "Off the Sirens’ island", "IthacaHall" => "The hall at Ithaca",
             "GlumdalclitchsRoom" => "Glumdalclitch’s room", "LilliputBeach" => "The shore of Lilliput", "Laputa" => "The flying island",
+            "BatteryWaterfront" => "The Battery, Manhattan", "SpouterInn" => "The Spouter-Inn", "PequodDeck" => "The Pequod at the wharf",
+            "OgilvysObservatory" => "Ogilvy’s observatory", "HorsellSandpits" => "The sand pits on Horsell Common", "MayburyDiningRoom" => "The dining room at Maybury",
+            "BenbowCove" => "The cove below the Admiral Benbow", "SquiresLibrary" => "The squire’s library", "SpyglassTavern" => "The Spy-glass tavern",
+            "LongbournLibrary" => "Mr Bennet’s library", "FieldsToNetherfield" => "The fields to Netherfield", "NetherfieldDrawingRoom" => "The drawing-room at Netherfield",
             "LibraryRoom" => "The library", _ => scene,
         };
 

@@ -26,6 +26,7 @@ namespace Fable
         public static readonly Dictionary<string, string> ReadingScene = new()
         {
             ["alice"] = "HallOfDoors", ["oz"] = "KansasFarmhouse", ["odyssey"] = "CalypsosCave", ["gulliver"] = "GlumdalclitchsRoom",
+            ["mobydick"] = "BatteryWaterfront", ["worlds"] = "OgilvysObservatory", ["treasure"] = "BenbowCove", ["pride"] = "LongbournLibrary",
         };
         const string FallbackScene = "HallOfDoors";
         /// Where the reader's own books are read: the library room itself, with the page in front of the shelves.
