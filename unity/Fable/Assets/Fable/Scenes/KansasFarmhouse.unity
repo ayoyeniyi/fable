@@ -479,23 +479,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1169207255}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &285093241
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1278908297}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1382b4724a79f442a9cdefaa9de43f4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Fable.LivingScene
-  WindToward: 180
-  WindStrength: 1.1
-  Gustiness: 0.5
-  Sources: []
-  SourceVolumes: []
 --- !u!21 &467528706
 Material:
   serializedVersion: 8
@@ -1443,6 +1426,23 @@ Transform:
   - {fileID: 166423451}
   m_Father: {fileID: 1643662172}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1189180764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1278908297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1382b4724a79f442a9cdefaa9de43f4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fable.LivingScene
+  WindToward: 180
+  WindStrength: 1.1
+  Gustiness: 0.5
+  Sources: []
+  SourceVolumes: []
 --- !u!1 &1253803457
 GameObject:
   m_ObjectHideFlags: 0
@@ -1890,7 +1890,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8771091787928289351, guid: 0e813036077c74273b0a927c8e9b79e8, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 285093241}
+      addedObject: {fileID: 1189180764}
     - targetCorrespondingSourceObject: {fileID: -4460121773026002802, guid: 0e813036077c74273b0a927c8e9b79e8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1296670470}

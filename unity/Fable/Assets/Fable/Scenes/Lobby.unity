@@ -148,6 +148,23 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &114172119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1627795846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1382b4724a79f442a9cdefaa9de43f4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fable.LivingScene
+  WindToward: 60
+  WindStrength: 0
+  Gustiness: 0.5
+  Sources: []
+  SourceVolumes: []
 --- !u!1 &114561721
 GameObject:
   m_ObjectHideFlags: 0
@@ -591,23 +608,6 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
---- !u!114 &509629160
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1627795846}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1382b4724a79f442a9cdefaa9de43f4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Fable.LivingScene
-  WindToward: 60
-  WindStrength: 0
-  Gustiness: 0.5
-  Sources: []
-  SourceVolumes: []
 --- !u!114 &550987580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1606,7 +1606,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8771091787928289351, guid: d5eb659ae83ea49088e144db58a2945a, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 509629160}
+      addedObject: {fileID: 114172119}
     - targetCorrespondingSourceObject: {fileID: -5828504271931821328, guid: d5eb659ae83ea49088e144db58a2945a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1867982070}
