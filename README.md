@@ -19,7 +19,7 @@ Built so far: the eight books ingested and readable page by page with contents, 
 | `interpreter/` | Go: `fable-interpreter generate|validate|serve|mock`. Asks Claude for a SceneScript (or a Peek clay model), validates, repairs once, never emits an invalid one. Claude only ever sees the book up to the reader's highlight |
 | `scripts/` | hand-authored, validated baseline scripts bundled in the app for offline use |
 | `blender/` | `build_lobby.py` (the room the app opens in: the bookcase with the eight books face out), `build_kansas_farmhouse.py`, `build_calypsos_cave.py`, `build_glumdalclitchs_room.py`, `build_poppy_field.py`, `build_emerald_throne_room.py`, `build_odysseus_ship.py`, `build_ithaca_hall.py`, `build_lilliput_beach.py`, `build_laputa.py` (the Oz, Odyssey and Gulliver rooms), `roomkit.py` + `roomgen.py` (generated rooms for uploaded books), `build_hall_of_doors.py`, `build_mad_tea_party.py`, `build_queens_croquet_ground.py`: each environment as code; renders, bakes, exports `.gltf` + textures; `check_glb_ids.py` checks manifest coverage |
-| `audio/` | `synth_sfx.py` (the Alice rooms) and `synth_rooms.py` (lobby and the step 7 rooms, plus Calypso's lyre): every ambience and foley clip, synthesised |
+| `audio/` | `make_ambience.py`: the ambient beds, positional loops (fire, candle, clock) and four Alice sfx, cut from CC0 / CC-BY field recordings listed in `SOURCES.md`; `synth_sfx.py` (the Alice rooms) and `synth_rooms.py` (lobby and the step 7 rooms, plus Calypso's lyre): the remaining foley and room clips, synthesised |
 | `unity/Fable` | Unity 6000.3 URP project; runtime in `Assets/Fable/Scripts`, batch pipeline in `Assets/Fable/Editor` |
 | `captures/` | `blender/` (Cycles renders), `desktop/` (Unity editor camera), `headset/` (adb screencap from the Quest). Never mixed |
 | `CREDITS.md` | every text, image, typeface, recording and tool, with source and licence |
@@ -39,6 +39,7 @@ done
 # 2. sounds
 blender -b --python audio/synth_sfx.py -- --out unity/Fable/Assets/Fable/Resources/Audio
 blender -b --python audio/synth_rooms.py -- --out unity/Fable/Assets/Fable/Resources/Audio
+~/fable-sound-tools-venv/bin/python -I audio/make_ambience.py ~/fable-sound-downloads   # recordings listed in audio/SOURCES.md
 python3 tools/fetch_music.py                            # CC0 Satie and Handel (macOS afconvert for the FLAC one)
 
 # 3. interpreter (needs ANTHROPIC_API_KEY for generate/serve; validate works offline)

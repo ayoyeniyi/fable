@@ -1,6 +1,6 @@
 """Procedural sound set for all three scenes (hall, tea-party, croquet ground). Runs on Blender's bundled Python (numpy).
    blender -b --python audio/synth_sfx.py -- --out unity/Fable/Assets/Fable/Audio
-   Every clip is synthesised: no third-party samples, no licence questions."""
+   Every clip here is synthesised; four former ones (RECORDED below) now come from make_ambience.py."""
 import sys, os, wave, struct, argparse
 import numpy as np
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else sys.argv[1:]
@@ -28,7 +28,10 @@ def highpass(x, cutoff): return x - lowpass(x, cutoff)
 def noise(n): return rng.standard_normal(n)
 def norm(x, peak=0.8):
     m = np.max(np.abs(x)) or 1; return x/m*peak
+# These four are now cut from real recordings by audio/make_ambience.py (.ogg); don't write a clashing .wav.
+RECORDED = {"sfx.garden-birds", "sfx.birdsong", "sfx.wind-hedges", "sfx.leaves"}
 def save(name, x):
+    if name in RECORDED: print("skip", name, "(real recording, see audio/SOURCES.md)"); return
     os.makedirs(a.out, exist_ok=True); p = os.path.join(a.out, name + ".wav")
     x = np.clip(x, -1, 1); w = wave.open(p, 'wb'); w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR)
     w.writeframes((x*32767).astype('<i2').tobytes()); w.close(); print("wrote", p, f"{len(x)/SR:.2f}s")

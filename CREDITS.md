@@ -1,7 +1,8 @@
 # Credits
 
 Everything Fable shows or plays, where it comes from, and under what licence. Fable's own code and content (the
-environments, sounds, schemas, scripts and composed images) were made for this project. Nothing is used without a
+environments, synthesised sounds, schemas, scripts and composed images) were made for this project; the
+ambient recordings are credited below. Nothing is used without a
 recorded licence; the per-folder `SOURCE.md` files hold the hashes and download details.
 
 ## Books (the text you read)
@@ -70,9 +71,42 @@ Satie file is FLAC in Ogg, which Unity cannot import, so it is decoded to mono W
 
 ## Sound
 
-Every ambience and sound effect is synthesised from code: `audio/synth_sfx.py` (the Alice rooms) and
-`audio/synth_rooms.py` (the lobby, the Kansas storm, Ogygia's surf, rills, fire and birds, the giant room in
-Brobdingnag). No samples, no recordings. CC0 1.0 (Fable's own).
+The ambient beds, the fire, candle and clock loops, and four Alice one-shots (`sfx.garden-birds`,
+`sfx.birdsong`, `sfx.wind-hedges`, `sfx.leaves`) are real field recordings (CC0 1.0 or CC BY 4.0), cut, looped
+and levelled by `audio/make_ambience.py`; see "Ambient sound recordings" below and `audio/SOURCES.md`. The other
+sound effects are still synthesised from code by `audio/synth_sfx.py` (the Alice rooms) and
+`audio/synth_rooms.py`, CC0 1.0 (Fable's own).
+
+## Ambient sound recordings
+
+Edited (cut, filtered, looped, normalised, re-encoded). Section offsets, edits and SHA-256 hashes are in
+`audio/SOURCES.md`.
+
+| Output | Recording | Author | Licence |
+|---|---|---|---|
+| `amb.surf` | [Waves on Shingle and Rock Mid Afternoon](https://freesound.org/people/leesparey/sounds/653395/) | leesparey | CC0 1.0 |
+| `amb.harbour` | [water lake waves light gentle lap at boats on beach](https://freesound.org/people/kyles/sounds/637945/) | kyles | CC0 1.0 |
+| `amb.sea-open` | [Sailing boat, bow wave (close perspective)](https://freesound.org/people/Pfannkuchn/sounds/360631/) | Pfannkuchn | CC0 1.0 |
+| `amb.river` | [Stream flow over the stones in the fields in spring](https://freesound.org/people/lastraindrop/sounds/730159/) | lastraindrop | CC0 1.0 |
+| `amb.wind-grass` | [Wind blowing in the bush on the top of Kitt Peak mountain](https://freesound.org/people/felix.blume/sounds/135193/) | Felix Blume | CC0 1.0 |
+| `amb.wind-pines` | [Wind_pine.wav](https://freesound.org/people/sinewave1kHz/sounds/202989/) | sinewave1kHz | CC0 1.0 |
+| `amb.wind-high` | [wind open field](https://freesound.org/people/Globofonia/sounds/553733/) | Globofonia | CC0 1.0 |
+| `amb.birds` | [Dawn chorus - Hampshire countryside Springtime](https://freesound.org/people/richwise/sounds/466242/) | richwise | CC0 1.0 |
+| `amb.gulls` | [Burnham Overy harbour atmosphere](https://commons.wikimedia.org/wiki/File:Burnham_Overy_harbour_atmosphere_(W_PALEARCTIC_COASTAL_R4_C4).ogg), with gull calls from [Seagulls / gaviotas clean wildtrack](https://freesound.org/people/Soojay/sounds/462462/) | Richard Margoschis / The British Library; Soojay | CC BY 4.0; CC0 1.0 |
+| `amb.rigging` | [LargeWoodenShip.mp3](https://freesound.org/people/PimFeijen/sounds/195193/) | PimFeijen | CC0 1.0 |
+| `amb.room-tone` | [AMB_INT_Old Castle_Schloß empty room morning](https://freesound.org/people/mogrm/sounds/774374/), creaks from [Wood Creak Single V3](https://freesound.org/people/Rudmer_Rotteveel/sounds/502511/) and [V1](https://freesound.org/people/Rudmer_Rotteveel/sounds/502505/) | mogrm; Rudmer Rotteveel | CC0 1.0 |
+| `amb.tavern` | [Restaurant Atmosphere (crowded)](https://freesound.org/people/felix.blume/sounds/422097/) | Felix Blume | CC0 1.0 |
+| `amb.night` | [COUNTRY_NIGHT_CRICKETS.wav](https://freesound.org/people/keng-wai-chane-chick-te/sounds/431519/) | keng-wai-chane-chick-te | CC0 1.0 |
+| `amb.rain` | [Rain light 2 (rural)](https://freesound.org/people/jmbphilmes/sounds/200273/) | jmbphilmes | CC0 1.0 |
+| `amb.fire` | [Wood fire crackling, near flames](https://freesound.org/people/felix.blume/sounds/779877/) | Felix Blume | CC0 1.0 |
+| `amb.candle` | [Candle wood wick flame mono 01.wav](https://freesound.org/people/roisin.gleeson/sounds/680476/) | roisin.gleeson | CC0 1.0 |
+| `amb.clock` | [WWS Wallclockwithweightticking.ogg](https://commons.wikimedia.org/wiki/File:WWS_Wallclockwithweightticking.ogg) | Work With Sounds / Technical Museum of Slovenia (recordist Dušan Oblak) | CC BY 4.0 |
+| `sfx.garden-birds` | [blackbirds at dawn.wav](https://freesound.org/people/squashy555/sounds/341675/) | squashy555 | CC0 1.0 |
+| `sfx.birdsong` | [Blackbird in forest.wav](https://freesound.org/people/carlito62/sounds/176746/) | carlito62 | CC0 1.0 |
+| `sfx.wind-hedges` | [Forest, close up of trees rustling in the wind.wav](https://freesound.org/people/Anya_Media/sounds/523389/) | Anya_Media | CC0 1.0 |
+| `sfx.leaves` | [Rustling leaves](https://freesound.org/people/giddster/sounds/437356/) | giddster | CC0 1.0 |
+
+CC BY 4.0: https://creativecommons.org/licenses/by/4.0/ . CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/ .
 
 ## 3D environments and models
 
