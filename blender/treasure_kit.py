@@ -504,6 +504,12 @@ def bake_and_export(basename, keep_names, size_for, keep_uv=(), lightmap_uv=(), 
             if spec[1]: passes.append(("Roughness", 'ROUGHNESS', {}, True, spec[1]))
             if spec[2]: passes.append(("Normal", 'NORMAL', {}, True, spec[2]))
         baked = {}
+        # the diffuse-colour pass of a metal is black: bake the colour with Metallic at 0, restore it on the export
+        metallic = bsdf.inputs["Metallic"].default_value
+        if bsdf.inputs["Metallic"].is_linked:
+            metallic = 0.6
+            for l in list(bsdf.inputs["Metallic"].links): nt.links.remove(l)
+        bsdf.inputs["Metallic"].default_value = 0.0
         for pass_name, btype, extra, noncolor, size in passes:
             size = max(32, size)
             img = bpy.data.images.new(f"T_{m.name[2:]}_{pass_name}", size, size, alpha=False)
@@ -530,7 +536,6 @@ def bake_and_export(basename, keep_names, size_for, keep_uv=(), lightmap_uv=(), 
             tex_bytes_gpu += size * size * (8.0 / 36.0) * 4.0 / 3.0 / 1.0   # ASTC 6x6 (3.56 bpp) with mips
             tex_sizes.setdefault(o.name, []).append(size)
             print("baked", img.name, size)
-        metallic = bsdf.inputs["Metallic"].default_value
         emis = bsdf.inputs["Emission Strength"].default_value; ecol = tuple(bsdf.inputs["Emission Color"].default_value)
         elinked = bsdf.inputs["Emission Color"].is_linked
         rough_v = bsdf.inputs["Roughness"].default_value
