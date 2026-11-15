@@ -2,6 +2,25 @@
 
 Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs/TOOLING.md`. Everything below was true at the commit that last touched this file. "Verified" always says where: **editor** (Unity play mode on a Mac, desktop camera, no HMD) or **headset**. Nothing has been verified on a headset yet.
 
+## Book maps on the headset (2026-11-15)
+
+- **What:** Peek on a phrase that names a place on the book's map (`content/maps`, `docs/MAPS.md`) opens that map
+  beside the page instead of a clay model. Real places go on a globe in a brass stand, turned so the pin faces the
+  reader. Invented places go on a scroll that unrolls with the book's map, pins at u,v. The matched pin is lit and
+  labelled, places the reader has reached are dim pins, and pointing at a pin names it. A card button switches
+  between a scroll and its parent globe. No match, or a place not reached yet: clay Peek as before. Details,
+  numbers and hooks: `docs/MAPS_HEADSET.md`.
+- **Code:** `Scripts/Maps/` (`BookMap`, `MapView`, `MapAssets`), `Shaders/FableMap.shader`, `Highlighter.Peek`.
+  `FableBuild.SyncData` now copies `map.json` into `StreamingAssets/maps` and the images into `Resources/Maps`
+  (ASTC). Props: `Models/MapProps` from `blender/build_map_props.py`.
+- **Changed behaviour:** a map match wins over the Peek library. Alice's "mushroom" now opens the Wonderland
+  scroll, not the clay mushroom and Caterpillar.
+- **Verified in the editor:** globe, scroll, toggle, pointing, hand turn, spoiler fallback and the clay fallback in
+  War of the Worlds, Alice, Treasure Island, Gulliver and Moby-Dick. 0 console errors; the APK builds. Desktop
+  previews: `captures/unity/maps/`.
+- **Not verified:** anything on the headset (frame rate, placement, how the hand turn feels, label size).
+  Texture budget: Earth 5.0 MB plus 3.6 MB per scroll opened, released when the book closes.
+
 ## Hand-built rooms for the four later books (2026-11-15)
 
 - **Rooms:** twelve Blender rooms (`blender/build_*.py`, renders in `captures/blender/<room>/`) built and baked in
