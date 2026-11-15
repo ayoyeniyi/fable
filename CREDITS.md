@@ -58,7 +58,7 @@ The contract is `docs/MAPS.md`.
 | Gulliver's Travels, plates I–IV (`content/maps/gulliver/{lilliput,brobdingnag,laputa,houyhnhnms}.jpg`) | maps from the first edition, Benjamin Motte, London, 1726; Thomas Fisher Rare Book Library, University of Toronto, via the Internet Archive: https://archive.org/details/travelsintosever01swif (pages n21, n177), https://archive.org/details/travelsintosever02swif (pages n13, n181) | public domain |
 | Wonderland and the Land of Oz (`content/maps/alice/wonderland.jpg`, `content/maps/oz/oz.jpg`) | drawn for Fable by `tools/draw_map.py` from hand-written layouts; lettering EB Garamond (SIL OFL 1.1) | CC0 1.0 (Fable's own) |
 
-Coordinates of real places (all eight books' `map.json`): looked up with OpenStreetMap Nominatim and checked by
+Coordinates of real places (all ten books' `map.json`): looked up with OpenStreetMap Nominatim and checked by
 hand; coordinates © OpenStreetMap contributors, ODbL 1.0 (https://www.openstreetmap.org/copyright). Positions of
 invented and traditionally identified places are Fable's own.
 

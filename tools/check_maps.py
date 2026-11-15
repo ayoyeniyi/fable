@@ -20,7 +20,7 @@ import json, os, re, struct, sys, unicodedata
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 CONTENT = os.path.join(ROOT, "content")
-SLUGS = ["alice", "oz", "odyssey", "gulliver", "pride", "mobydick", "worlds", "treasure"]
+SLUGS = ["alice", "oz", "odyssey", "gulliver", "pride", "mobydick", "worlds", "treasure", "eighty", "frankenstein"]
 LOCATED = {"geocoded", "book", "approximate", "traditional", "drawn", "scan"}
 KINDS = {"city", "town", "village", "house", "building", "street", "region", "country", "island", "sea", "coast",
          "harbour", "river", "lake", "mountain", "forest", "road", "field", "garden", "room", "ship-position", "place"}
