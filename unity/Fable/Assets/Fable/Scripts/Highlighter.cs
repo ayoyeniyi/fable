@@ -392,8 +392,10 @@ namespace Fable
             var t0 = Time.realtimeSinceStartup;
             ClosePeek();
             int end = Reader.Book.Ordinal(LastSentence);
-            // a place on the book's map, reached by the highlight: the map, not a model
-            var place = maps ? maps.Match(Phrase, end, out _) : null;
+            // a hand-made library model wins (Alice's mushroom is both a model and a map place); otherwise a place on the
+            // book's map, reached by the highlight, opens the map, not a generated model
+            var e = library?.Match(Reader.Book.Slug, Phrase, end, Reader.Book.Ordinal, out _);
+            var place = e == null && maps ? maps.Match(Phrase, end, out _) : null;
             var placeView = place != null ? maps.Doc.FindView(place.View) : null;
             if (placeView != null)
             {
@@ -402,7 +404,6 @@ namespace Fable
                 peekJob = StartCoroutine(PeekMap(placeView, place, t0, tm));
                 return;
             }
-            var e = library?.Match(Reader.Book.Slug, Phrase, end, Reader.Book.Ordinal, out _);
             float tMatch = (Time.realtimeSinceStartup - t0) * 1000;
             if (e != null && e.Kind == "prefab")
             {
