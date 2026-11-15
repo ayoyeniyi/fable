@@ -1,0 +1,500 @@
+{
+  "version": 1,
+  "book": "odyssey",
+  "views": [
+    {
+      "id": "world",
+      "kind": "globe",
+      "title": "The World of the Odyssey",
+      "texture": "maps/_globe/earth.jpg",
+      "focus": {
+        "lat": 38.0,
+        "lon": 20.0
+      }
+    }
+  ],
+  "places": [
+    {
+      "id": "troy",
+      "name": "Troy",
+      "aliases": [
+        "Ilius"
+      ],
+      "kind": "city",
+      "view": "world",
+      "lat": 39.9569,
+      "lon": 26.2392,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c01.p001.s01",
+      "note": "The city the Achaeans sacked after ten years of war; its ruins are at Hisarlik in north-west Turkey."
+    },
+    {
+      "id": "ithaca",
+      "name": "Ithaca",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 38.4019,
+      "lon": 20.6701,
+      "located": "traditional",
+      "firstSentence": "odyssey:c01.p002.s02",
+      "note": "Ulysses' rocky home island in the Ionian Sea, traditionally the modern island of Ithaki."
+    },
+    {
+      "id": "neritum",
+      "name": "Neritum",
+      "aliases": [],
+      "kind": "mountain",
+      "view": "world",
+      "lat": 38.43,
+      "lon": 20.67,
+      "located": "traditional",
+      "firstSentence": "odyssey:c01.p014.s04",
+      "note": "The wooded mountain of Ithaca, traditionally Mount Niritos in the north of the island."
+    },
+    {
+      "id": "ogygia",
+      "name": "Ogygian island",
+      "aliases": [
+        "Ogygian"
+      ],
+      "kind": "island",
+      "view": "world",
+      "lat": 36.0468,
+      "lon": 14.2583,
+      "located": "traditional",
+      "firstSentence": "odyssey:c01.p007.s01",
+      "note": "Calypso's island, far out in the sea. Since antiquity often identified with Gozo, off Malta."
+    },
+    {
+      "id": "pylos",
+      "name": "Pylos",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 37.0272,
+      "lon": 21.6949,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c01.p007.s02",
+      "note": "Nestor's sandy Pylos on the western Peloponnese; pinned at the Mycenaean 'Palace of Nestor'."
+    },
+    {
+      "id": "sparta",
+      "name": "Sparta",
+      "aliases": [
+        "Lacedaemon"
+      ],
+      "kind": "city",
+      "view": "world",
+      "lat": 37.0744,
+      "lon": 22.4302,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c01.p007.s02",
+      "note": "Menelaus' city in the valley of Lacedaemon, in the southern Peloponnese."
+    },
+    {
+      "id": "scheria",
+      "name": "Scheria",
+      "aliases": [
+        "land of the Phaeacians",
+        "Phaeacian coast"
+      ],
+      "kind": "island",
+      "view": "world",
+      "lat": 39.5913,
+      "lon": 19.8596,
+      "located": "traditional",
+      "firstSentence": "odyssey:c05.p004.s02",
+      "note": "Land of the seafaring Phaeacians, traditionally Corfu (Butler himself argued for Trapani in Sicily)."
+    },
+    {
+      "id": "ismarus",
+      "name": "Ismarus",
+      "aliases": [
+        "city of the Cicons"
+      ],
+      "kind": "city",
+      "view": "world",
+      "lat": 40.9071,
+      "lon": 25.5192,
+      "located": "traditional",
+      "firstSentence": "odyssey:c09.p003.s01",
+      "note": "City of the Cicons on the Thracian coast, near modern Maroneia."
+    },
+    {
+      "id": "malea",
+      "name": "Cape Malea",
+      "aliases": [
+        "Malea"
+      ],
+      "kind": "coast",
+      "view": "world",
+      "lat": 36.4359,
+      "lon": 23.1985,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c04.p043.s01",
+      "note": "The stormy south-eastern cape of the Peloponnese, where ships are blown off course."
+    },
+    {
+      "id": "cythera",
+      "name": "Cythera",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 36.258,
+      "lon": 23.0024,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c09.p004.s05",
+      "note": "Island off Cape Malea, modern Kythira."
+    },
+    {
+      "id": "lotus-eaters",
+      "name": "land of the Lotus-eaters",
+      "aliases": [
+        "Lotus-eaters"
+      ],
+      "kind": "island",
+      "view": "world",
+      "lat": 33.7736,
+      "lon": 10.8862,
+      "located": "traditional",
+      "firstSentence": "odyssey:c09.p005.s01",
+      "note": "Land of those who eat the lotus; ancient tradition places it on Djerba, off Tunisia."
+    },
+    {
+      "id": "cyclopes",
+      "name": "land of the Cyclopes",
+      "aliases": [],
+      "kind": "coast",
+      "view": "world",
+      "lat": 37.5638,
+      "lon": 15.1614,
+      "located": "traditional",
+      "firstSentence": "odyssey:c09.p007.s01",
+      "note": "Country of the one-eyed giants, traditionally the coast below Etna in Sicily (the Cyclops rocks at Aci Trezza)."
+    },
+    {
+      "id": "aeolia",
+      "name": "Aeolian island",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 38.4693,
+      "lon": 14.9565,
+      "located": "traditional",
+      "firstSentence": "odyssey:c10.p001.s01",
+      "note": "Home of Aeolus, keeper of the winds, traditionally Lipari north of Sicily."
+    },
+    {
+      "id": "laestrygonians",
+      "name": "Laestrygonians",
+      "aliases": [
+        "city of the Laestrygonians",
+        "Lamus-Telepylus"
+      ],
+      "kind": "city",
+      "view": "world",
+      "lat": 41.2593,
+      "lon": 13.608,
+      "located": "traditional",
+      "firstSentence": "odyssey:c10.p008.s02",
+      "note": "The rocky stronghold of Lamus-Telepylus; ancient writers placed it at Formiae (Formia) on the coast of Latium."
+    },
+    {
+      "id": "aeaea",
+      "name": "Aeaean island",
+      "aliases": [
+        "Aeaean"
+      ],
+      "kind": "island",
+      "view": "world",
+      "lat": 41.2379,
+      "lon": 13.0459,
+      "located": "traditional",
+      "firstSentence": "odyssey:c09.p002.s06",
+      "note": "Circe's island, traditionally the promontory of Monte Circeo, south of Rome."
+    },
+    {
+      "id": "sirens",
+      "name": "island of the two Sirens",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 40.5817,
+      "lon": 14.4297,
+      "located": "traditional",
+      "firstSentence": "odyssey:c12.p014.s01",
+      "note": "Where the Sirens sing; traditionally the Li Galli islets off the Amalfi coast."
+    },
+    {
+      "id": "scylla",
+      "name": "Scylla",
+      "aliases": [],
+      "kind": "coast",
+      "view": "world",
+      "lat": 38.2507,
+      "lon": 15.719,
+      "located": "traditional",
+      "firstSentence": "odyssey:c12.p007.s05",
+      "note": "A monster's cave on one side of a narrow strait, traditionally Scilla on the Calabrian side of the Strait of Messina."
+    },
+    {
+      "id": "charybdis",
+      "name": "Charybdis",
+      "aliases": [],
+      "kind": "sea",
+      "view": "world",
+      "lat": 38.2679,
+      "lon": 15.6531,
+      "located": "traditional",
+      "firstSentence": "odyssey:c12.p008.s02",
+      "note": "The whirlpool across the strait from Scylla, traditionally off Capo Peloro, Sicily."
+    },
+    {
+      "id": "thrinacia",
+      "name": "Thrinacian island",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 38.2208,
+      "lon": 15.2415,
+      "located": "traditional",
+      "firstSentence": "odyssey:c11.p008.s03",
+      "note": "Island of the sun-god's herds, traditionally Sicily; ancient writers put the herds near Mylae (Milazzo)."
+    },
+    {
+      "id": "crete",
+      "name": "Crete",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 35.3085,
+      "lon": 24.4633,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c03.p016.s04",
+      "note": "The great island south of the Aegean, home of Idomeneus and once of Minos."
+    },
+    {
+      "id": "egypt",
+      "name": "Egypt",
+      "aliases": [
+        "river Aegyptus"
+      ],
+      "kind": "country",
+      "view": "world",
+      "lat": 30.8,
+      "lon": 31.0,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c03.p024.s07",
+      "note": "The land of the Nile (Homer's river Aegyptus); pinned in the Delta, where Greek ships put in."
+    },
+    {
+      "id": "olympus",
+      "name": "Olympus",
+      "aliases": [
+        "Mount Olympus"
+      ],
+      "kind": "mountain",
+      "view": "world",
+      "lat": 40.0863,
+      "lon": 22.3586,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c01.p008.s01",
+      "note": "The mountain home of the gods, on the border of Thessaly and Macedonia."
+    },
+    {
+      "id": "argos",
+      "name": "Argos",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 37.635,
+      "lon": 22.7285,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c01.p024.s02",
+      "note": "City and plain in the north-east Peloponnese."
+    },
+    {
+      "id": "dulichium",
+      "name": "Dulichium",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 38.7066,
+      "lon": 20.6417,
+      "located": "approximate",
+      "firstSentence": "odyssey:c01.p017.s03",
+      "note": "A wheat-growing island near Ithaca whose site is disputed; often placed at Lefkada."
+    },
+    {
+      "id": "zacynthus",
+      "name": "Zacynthus",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 37.7891,
+      "lon": 20.7901,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c01.p017.s03",
+      "note": "The wooded island south of Ithaca, modern Zakynthos."
+    },
+    {
+      "id": "tenedos",
+      "name": "Tenedos",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 39.8171,
+      "lon": 26.0395,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c03.p015.s04",
+      "note": "Small island off the coast of Troy, modern Bozcaada."
+    },
+    {
+      "id": "lesbos",
+      "name": "Lesbos",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 39.1758,
+      "lon": 25.9989,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c03.p015.s06",
+      "note": "The large island off the coast of Asia Minor, south of Troy."
+    },
+    {
+      "id": "chios",
+      "name": "Chios",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 38.3758,
+      "lon": 26.0647,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c03.p015.s06",
+      "note": "Island on the sea route home from Troy, south of Lesbos."
+    },
+    {
+      "id": "euboea",
+      "name": "Euboea",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 38.4942,
+      "lon": 23.9111,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c03.p015.s07",
+      "note": "The long island lying along the coast of mainland Greece."
+    },
+    {
+      "id": "athens",
+      "name": "Athens",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 37.9756,
+      "lon": 23.7348,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c03.p024.s02",
+      "note": "City of Erechtheus, dear to Minerva."
+    },
+    {
+      "id": "cyprus",
+      "name": "Cyprus",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 35.1294,
+      "lon": 33.2298,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c04.p009.s02",
+      "note": "Island of the eastern Mediterranean, sacred to Venus."
+    },
+    {
+      "id": "phoenicia",
+      "name": "Phoenicia",
+      "aliases": [
+        "Sidon"
+      ],
+      "kind": "region",
+      "view": "world",
+      "lat": 33.5642,
+      "lon": 35.3753,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c04.p009.s02",
+      "note": "The coast of the seafaring Phoenicians, pinned at Sidon."
+    },
+    {
+      "id": "libya",
+      "name": "Libya",
+      "aliases": [],
+      "kind": "country",
+      "view": "world",
+      "lat": 32.12,
+      "lon": 20.0812,
+      "located": "approximate",
+      "firstSentence": "odyssey:c04.p009.s02",
+      "note": "Homer's Libya: the coast west of Egypt, pinned near Benghazi."
+    },
+    {
+      "id": "thesprotia",
+      "name": "Thesprotian coast",
+      "aliases": [],
+      "kind": "coast",
+      "view": "world",
+      "lat": 39.544,
+      "lon": 20.3084,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c14.p016.s06",
+      "note": "The coast of the Thesprotians in Epirus, on the mainland north of Ithaca."
+    },
+    {
+      "id": "dodona",
+      "name": "Dodona",
+      "aliases": [],
+      "kind": "place",
+      "view": "world",
+      "lat": 39.5439,
+      "lon": 20.7717,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c14.p017.s04",
+      "note": "Jove's oracle of the oak in Epirus."
+    },
+    {
+      "id": "parnassus",
+      "name": "Parnassus",
+      "aliases": [],
+      "kind": "mountain",
+      "view": "world",
+      "lat": 38.5349,
+      "lon": 22.6223,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c19.p025.s03",
+      "note": "The mountain above Delphi, where Autolycus and his sons hunt."
+    },
+    {
+      "id": "elis",
+      "name": "Elis",
+      "aliases": [],
+      "kind": "region",
+      "view": "world",
+      "lat": 37.8913,
+      "lon": 21.3736,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c04.p054.s02",
+      "note": "Land of the Epeans on the north-west Peloponnese, over against Ithaca."
+    },
+    {
+      "id": "hellespont",
+      "name": "Hellespont",
+      "aliases": [],
+      "kind": "sea",
+      "view": "world",
+      "lat": 40.2092,
+      "lon": 26.4414,
+      "located": "geocoded",
+      "firstSentence": "odyssey:c24.p007.s01",
+      "note": "The strait by Troy, today's Dardanelles."
+    }
+  ]
+}
