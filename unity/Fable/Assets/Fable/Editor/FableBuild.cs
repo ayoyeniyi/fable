@@ -34,7 +34,14 @@ namespace Fable.Editor
         ///   Wind: strength (0 calm, 0.35 a gentle breeze, 1 fresh, 2 a gale); -1 means 0.35 outdoors, 0 indoors.
         ///   WindToward: compass degrees the wind blows toward in world XZ (0 = +Z).
         ///   Water: swell, flow and sky colours for the scene's water.* (defaults suit a calm sea under the scene's sky).
-        public class SceneDef { public string Id, Scene, Glb, Book, Sound, Music; public bool Outdoor, Lobby, Room, LobbyLook; public float LightScale = 1f, Wind = -1f, WindToward = 60f; public WaterLook WaterOverride; }
+        ///   Lights: per-light overrides applied after the indoor/outdoor rules (a light whose name is Name or starts with
+        ///          Name + "."): intensity, range and colour, e.g. a cool moon or starlight, or one room's lamp balance.
+        ///   Ambient: the ambient colour (flat indoors, the sky colour outdoors) when the default does not suit.
+        ///   Fog: haze density when the default (0.008 outdoors, 0.035 indoors) hides what the scene is for (a far shore).
+        public class SceneDef { public string Id, Scene, Glb, Book, Sound, Music; public bool Outdoor, Lobby, Room, LobbyLook; public float LightScale = 1f, Wind = -1f, WindToward = 60f; public WaterLook WaterOverride; public LightLook[] Lights; public Color? Ambient; public float Fog = -1f; }
+        public class LightLook { public string Name; public float Intensity = -1f, Range = -1f; public Color? Color; }
+        static LightLook L(string name, float intensity, float range = -1f, Color? color = null) => new LightLook { Name = name, Intensity = intensity, Range = range, Color = color };
+        static readonly Color Cool = new(0.62f, 0.70f, 1f), FireGlow = new(1f, 0.62f, 0.30f), CandleGlow = new(1f, 0.78f, 0.52f), Dawn = new(1f, 0.78f, 0.56f);
         public class WaterLook { public float SwellHeight = 0.35f, SwellLength = 18f, FlowSpeed = 0.6f; public float? FlowToward; public Color? SkyHorizon, SkyZenith; }
         public static string MusicId(SceneDef d) => d.Music ?? d.Id;
         public static float WindOf(SceneDef d) => d.Wind >= 0 ? d.Wind : d.Outdoor ? 0.35f : 0f;
@@ -59,6 +66,29 @@ namespace Fable.Editor
             new SceneDef { Id = "ithaca-hall", Scene = "Assets/Fable/Scenes/IthacaHall.unity", Glb = "Assets/Fable/Models/IthacaHall/ithaca_hall.gltf", Outdoor = true, Room = true, Book = "odyssey", Sound = "room-tone:0.6+birds:0.25", Music = "lobby", Wind = 0.15f },
             new SceneDef { Id = "lilliput-beach", Scene = "Assets/Fable/Scenes/LilliputBeach.unity", Glb = "Assets/Fable/Models/LilliputBeach/lilliput_beach.gltf", Outdoor = true, Room = true, Book = "gulliver", Sound = "surf:0.8+gulls:0.35+wind-grass:0.35", Wind = 0.45f, WindToward = 100f, WaterOverride = new WaterLook { SwellHeight = 0.3f, SwellLength = 16f } },
             new SceneDef { Id = "laputa", Scene = "Assets/Fable/Scenes/Laputa.unity", Glb = "Assets/Fable/Models/Laputa/laputa.gltf", Outdoor = true, Room = true, Book = "gulliver", Sound = "wind-high:0.9+birds:0.2", Wind = 0.6f, WindToward = 120f },
+            // the three rooms each of Moby-Dick, The War of the Worlds, Treasure Island and Pride and Prejudice (2026-11-15;
+            // blender/build_*.py, replacing their bundled generated rooms). Light balances follow the Blender lamp wattages.
+            new SceneDef { Id = "battery-waterfront", Scene = "Assets/Fable/Scenes/BatteryWaterfront.unity", Glb = "Assets/Fable/Models/BatteryWaterfront/battery_waterfront.gltf", Outdoor = true, Room = true, Book = "mobydick", Sound = "harbour:0.6+gulls:0.35+wind-grass:0.45+birds:0.15", Wind = 0.6f, WindToward = 70f, Fog = 0.003f, WaterOverride = new WaterLook { SwellHeight = 0.25f, SwellLength = 12f } },
+            new SceneDef { Id = "spouter-inn", Scene = "Assets/Fable/Scenes/SpouterInn.unity", Glb = "Assets/Fable/Models/SpouterInn/spouter_inn.gltf", Room = true, Book = "mobydick", Sound = "room-tone:0.8+tavern:0.15+wind-high:0.2",
+                Lights = new[] { L("Lamp.entryHanging", 1.2f), L("Lamp.entryLantern", 1.1f), L("Lamp.barLantern", 1.1f), L("Lamp.roomHanging", 1.0f), L("Lamp.stove", 0.8f, 6f, FireGlow), L("Lamp.candles", 0.45f, 5f, CandleGlow), L("Lamp.doorCandle", 0.35f, 4f, CandleGlow) } },
+            new SceneDef { Id = "pequod-deck", Scene = "Assets/Fable/Scenes/PequodDeck.unity", Glb = "Assets/Fable/Models/PequodDeck/pequod_deck.gltf", Outdoor = true, Room = true, Book = "mobydick", Sound = "harbour:0.7+rigging:0.5+gulls:0.3+wind-high:0.3", Wind = 0.5f, WindToward = 110f, Fog = 0.004f, WaterOverride = new WaterLook { SwellHeight = 0.12f, SwellLength = 8f } },
+            new SceneDef { Id = "ogilvys-observatory", Scene = "Assets/Fable/Scenes/OgilvysObservatory.unity", Glb = "Assets/Fable/Models/OgilvysObservatory/ogilvys_observatory.gltf", Room = true, Book = "worlds", Sound = "night:0.55+room-tone:0.5",
+                Lights = new[] { L("Lamp.lantern", 1.2f), L("Lamp.lanternglow", 0.5f, 5f), L("Lamp.starlight", 0.6f, 9f, Cool) } },
+            new SceneDef { Id = "horsell-sandpits", Scene = "Assets/Fable/Scenes/HorsellSandpits.unity", Glb = "Assets/Fable/Models/HorsellSandpits/horsell_sandpits.gltf", Outdoor = true, Room = true, Book = "worlds", Sound = "birds:0.65+wind-pines:0.35", Wind = 0.25f, WindToward = 80f,
+                Lights = new[] { L("light.sun", 1.2f, -1f, Dawn), L("light.sky", 0.3f, -1f, new Color(0.62f, 0.70f, 0.95f)) } },
+            new SceneDef { Id = "maybury-dining-room", Scene = "Assets/Fable/Scenes/MayburyDiningRoom.unity", Glb = "Assets/Fable/Models/MayburyDiningRoom/maybury_dining_room.gltf", Room = true, Book = "worlds", Sound = "room-tone:0.8+birds:0.15",
+                Lights = new[] { L("Lamp.table", 1.5f, 7.5f, new Color(1f, 0.76f, 0.66f)), L("Lamp.dusk", 1.1f, 9f, new Color(0.55f, 0.64f, 1f)), L("Lamp.fire", 0.7f, 6f, FireGlow), L("Lamp.candles", 0.35f, 4f, CandleGlow) } },
+            new SceneDef { Id = "benbow-cove", Scene = "Assets/Fable/Scenes/BenbowCove.unity", Glb = "Assets/Fable/Models/BenbowCove/benbow_cove.gltf", Outdoor = true, Room = true, Book = "treasure", Sound = "surf:0.8+gulls:0.3+wind-high:0.4", Wind = 0.5f, WindToward = 30f,
+                Lights = new[] { L("light.sun", 1.1f, -1f, Dawn), L("light.sky", 0.35f, -1f, new Color(0.70f, 0.78f, 0.95f)) } },
+            new SceneDef { Id = "squires-library", Scene = "Assets/Fable/Scenes/SquiresLibrary.unity", Glb = "Assets/Fable/Models/SquiresLibrary/squires_library.gltf", Room = true, Book = "treasure", Sound = "room-tone:0.8+wind-high:0.1",
+                Lights = new[] { L("Lamp.fire", 2.0f, 9f, FireGlow), L("Lamp.candles", 0.5f, 5f, CandleGlow), L("Lamp.mantel", 0.35f, 4f, CandleGlow), L("Lamp.moon", 0.25f, -1f, Cool) } },
+            new SceneDef { Id = "spyglass-tavern", Scene = "Assets/Fable/Scenes/SpyglassTavern.unity", Glb = "Assets/Fable/Models/SpyglassTavern/spyglass_tavern.gltf", Outdoor = true, Room = true, Book = "treasure", Sound = "tavern:0.45+harbour:0.5+gulls:0.25", Wind = 0.3f, WaterOverride = new WaterLook { SwellHeight = 0.1f, SwellLength = 8f } },
+            new SceneDef { Id = "longbourn-library", Scene = "Assets/Fable/Scenes/LongbournLibrary.unity", Glb = "Assets/Fable/Models/LongbournLibrary/longbourn_library.gltf", Room = true, Book = "pride", Sound = "room-tone:0.8+birds:0.15",
+                Lights = new[] { L("Lamp.window", 1.1f, 8f, new Color(0.86f, 0.90f, 1f)), L("Lamp.fire", 1.1f, 7f, FireGlow) }, Ambient = new Color(0.13f, 0.12f, 0.11f) },
+            new SceneDef { Id = "fields-to-netherfield", Scene = "Assets/Fable/Scenes/FieldsToNetherfield.unity", Glb = "Assets/Fable/Models/FieldsToNetherfield/fields_to_netherfield.gltf", Outdoor = true, Room = true, Book = "pride", Sound = "birds:0.7+wind-grass:0.5", Wind = 0.4f, WindToward = 90f,
+                Lights = new[] { L("light.sun", 0.45f), L("light.sky", 0.45f) } },
+            new SceneDef { Id = "netherfield-drawing-room", Scene = "Assets/Fable/Scenes/NetherfieldDrawingRoom.unity", Glb = "Assets/Fable/Models/NetherfieldDrawingRoom/netherfield_drawing_room.gltf", Room = true, Book = "pride", Sound = "room-tone:0.8",
+                Lights = new[] { L("Lamp.fire", 1.5f, 8f, FireGlow), L("Lamp.candles.table", 0.6f, 5f, CandleGlow), L("Lamp.candles.mantel", 0.55f, 5f, CandleGlow), L("Lamp.candle.books", 0.35f, 4f, CandleGlow) } },
         };
         const string ScenePath = "Assets/Fable/Scenes/HallOfDoors.unity";   // the hall: desktop previews
         static SceneDef Def(string id) => Scenes.First(d => d.Id == id);
@@ -256,7 +286,9 @@ namespace Fable.Editor
                             var path = $"Assets/Fable/Materials/{sceneId}_Sky.mat"; Directory.CreateDirectory("Assets/Fable/Materials");
                             var src = r.sharedMaterial; var tex = src.HasProperty("baseColorTexture") ? src.GetTexture("baseColorTexture") : src.mainTexture;
                             var m = AssetDatabase.LoadAssetAtPath<Material>(path); if (!m) { m = new Material(unlit); AssetDatabase.CreateAsset(m, path); }
-                            m.SetTexture("_BaseMap", tex); m.SetColor("_BaseColor", tex ? Color.white : new Color(0.62f, 0.75f, 0.9f)); EditorUtility.SetDirty(m);
+                            m.SetTexture("_BaseMap", tex); m.SetColor("_BaseColor", tex ? Color.white : new Color(0.62f, 0.75f, 0.9f));
+                            m.SetFloat("_Cull", (float)CullMode.Off);   // Blender domes are often wound outward (doubleSided in glTF)
+                            EditorUtility.SetDirty(m);
                             r.sharedMaterial = m;
                         }
                     }
@@ -285,6 +317,14 @@ namespace Fable.Editor
                     if (l.name.StartsWith("Lamp")) l.intensity = l.name.Contains("WindowFill") ? 450f : l.name.Contains("Window") ? 600f : 45f;   // inverse-square over 6-50 m
                 RenderSettings.ambientLight = new Color(0.30f, 0.27f, 0.24f);
             }
+            // per-scene light balance and ambient (SceneDef.Lights / Ambient), after the general rules above
+            if (def.Lights != null)
+                foreach (var l in env.GetComponentsInChildren<Light>(true))
+                    foreach (var o in def.Lights)
+                        if (l.name == o.Name || l.name.StartsWith(o.Name + "."))
+                        { if (o.Intensity >= 0) l.intensity = o.Intensity; if (o.Range > 0) l.range = o.Range; if (o.Color.HasValue) l.color = o.Color.Value; }
+            if (def.Ambient.HasValue) { if (outdoor) RenderSettings.ambientSkyColor = def.Ambient.Value; else RenderSettings.ambientLight = def.Ambient.Value; }
+            if (def.Fog >= 0) RenderSettings.fogDensity = def.Fog;
             // glass and transparent props: switch to URP Lit transparent so the table and bottle read as glass
             Directory.CreateDirectory("Assets/Fable/Materials");
             Material Glassy(string name, Color tint, float smooth)
@@ -388,7 +428,12 @@ namespace Fable.Editor
                            ?? env.GetComponentsInChildren<Transform>(true).FirstOrDefault(t => t.name.StartsWith("anchor.reader."));
             if (entrance) rig.transform.position = entrance.position;
             var cameras = rig.GetComponentsInChildren<Camera>(true);
-            foreach (var c in cameras) { c.nearClipPlane = 0.05f; c.farClipPlane = 150f; c.clearFlags = CameraClearFlags.SolidColor; c.backgroundColor = Color.black; var d = c.GetUniversalAdditionalCameraData(); if (d) { d.renderPostProcessing = false; d.antialiasing = AntialiasingMode.None; } }
+            // far plane: 150 m, or further when the scene reaches further (a harbour's far shore, a 600 m sky dome)
+            float reach = 150f;
+            foreach (var r in env.GetComponentsInChildren<Renderer>(true))
+                reach = Mathf.Max(reach, Vector3.Distance(rig.transform.position, r.bounds.center) + r.bounds.extents.magnitude * 0.75f);
+            reach = Mathf.Min(reach * 1.05f, 1200f);
+            foreach (var c in cameras) { c.nearClipPlane = 0.05f; c.farClipPlane = reach; c.clearFlags = CameraClearFlags.SolidColor; c.backgroundColor = Color.black; var d = c.GetUniversalAdditionalCameraData(); if (d) { d.renderPostProcessing = false; d.antialiasing = AntialiasingMode.None; } }
 
             // the reader faces the room's view: anchor.reader.look (rooms) or the lobby's shelf
             var facing = FindDeep(env.transform, "anchor.reader.look") ?? FindDeep(env.transform, "anchor.lobby.shelf");

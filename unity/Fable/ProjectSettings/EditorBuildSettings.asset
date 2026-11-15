@@ -47,6 +47,42 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Fable/Scenes/Laputa.unity
     guid: a5741837b03f9451f9af45a3d3a4b635
+  - enabled: 1
+    path: Assets/Fable/Scenes/BatteryWaterfront.unity
+    guid: d959874f3a3954b8583d460a26a54332
+  - enabled: 1
+    path: Assets/Fable/Scenes/SpouterInn.unity
+    guid: 2cf757a0345e24e63a320799cdca7306
+  - enabled: 1
+    path: Assets/Fable/Scenes/PequodDeck.unity
+    guid: 15fb63100feca4cb78d800549181dc68
+  - enabled: 1
+    path: Assets/Fable/Scenes/OgilvysObservatory.unity
+    guid: 31d575f825eb84aba9f46b9bb0f276aa
+  - enabled: 1
+    path: Assets/Fable/Scenes/HorsellSandpits.unity
+    guid: 0a6355a28dbdb4c7e81bd9e51dedf0b6
+  - enabled: 1
+    path: Assets/Fable/Scenes/MayburyDiningRoom.unity
+    guid: 3866a54f7713c4262afeb570b2163936
+  - enabled: 1
+    path: Assets/Fable/Scenes/BenbowCove.unity
+    guid: e84f9e690f55f4995b305a845c314152
+  - enabled: 1
+    path: Assets/Fable/Scenes/SquiresLibrary.unity
+    guid: 5ca28e92c6ded4e8c95f423a37c0ae92
+  - enabled: 1
+    path: Assets/Fable/Scenes/SpyglassTavern.unity
+    guid: 1152d1bc996b74cfe800beb0e1fa9514
+  - enabled: 1
+    path: Assets/Fable/Scenes/LongbournLibrary.unity
+    guid: 1a17e58eaecc44f5b9392b4834a304b6
+  - enabled: 1
+    path: Assets/Fable/Scenes/FieldsToNetherfield.unity
+    guid: bee2033158c094c8dadb9fdea152f2fe
+  - enabled: 1
+    path: Assets/Fable/Scenes/NetherfieldDrawingRoom.unity
+    guid: 58a660bf4ef894b468b8ea51cbb4766b
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 26154d77f6c974987ae91a02379cdc30, type: 2}
