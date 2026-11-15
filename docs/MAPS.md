@@ -99,7 +99,7 @@ goes to a place's view).
 ### Matching a highlight
 
 1. Normalise the highlighted phrase and every place phrase (`name` and each alias) the same way: Unicode NFKC;
-   curly quotes to straight; every dash to `-`; any character that is not a letter, digit, apostrophe, hyphen or
+   curly quotes to straight; figure, en and em dashes (U+2012 to U+2015) to a space, and the Unicode hyphens U+2010 and U+2011 to `-`; any character that is not a letter, digit, apostrophe, hyphen or
    space becomes a space; collapse whitespace; trim; lower-case; drop one leading `the `.
 2. A place matches when its normalised phrase equals the highlight, or occurs inside the highlight as whole words
    (bounded by the ends of the string or a space). So highlighting "the Admiral Benbow inn" matches the alias

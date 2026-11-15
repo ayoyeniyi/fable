@@ -190,7 +190,8 @@
       "name": "Laestrygonians",
       "aliases": [
         "city of the Laestrygonians",
-        "Lamus-Telepylus"
+        "Lamus Telepylus",
+        "Telepylus"
       ],
       "kind": "city",
       "view": "world",
@@ -198,7 +199,7 @@
       "lon": 13.608,
       "located": "traditional",
       "firstSentence": "odyssey:c10.p008.s02",
-      "note": "The rocky stronghold of Lamus-Telepylus; ancient writers placed it at Formiae (Formia) on the coast of Latium."
+      "note": "The rocky stronghold of Lamus—Telepylus; ancient writers placed it at Formiae (Formia) on the coast of Latium."
     },
     {
       "id": "aeaea",
@@ -287,6 +288,18 @@
       "located": "geocoded",
       "firstSentence": "odyssey:c03.p024.s07",
       "note": "The land of the Nile (Homer's river Aegyptus); pinned in the Delta, where Greek ships put in."
+    },
+    {
+      "id": "pharos",
+      "name": "Pharos",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 31.214,
+      "lon": 29.885,
+      "located": "traditional",
+      "firstSentence": "odyssey:c04.p029.s02",
+      "note": "An island off the mouth of the Egyptian river with a good harbour; traditionally the Pharos off Alexandria."
     },
     {
       "id": "olympus",

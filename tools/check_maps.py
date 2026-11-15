@@ -31,11 +31,12 @@ ID_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 
 
 def norm(s):
-    """The headset's normalisation (docs/MAPS.md): NFKC, curly quotes and dashes folded, punctuation other than
+    """The headset's normalisation (docs/MAPS.md): NFKC, curly quotes folded, en/em dashes to spaces, hyphens to '-', punctuation other than
     apostrophes and hyphens removed, whitespace collapsed, lower-cased, a leading 'the ' dropped."""
     s = unicodedata.normalize("NFKC", s)
     s = s.replace("’", "'").replace("‘", "'").replace("“", '"').replace("”", '"')
-    s = re.sub(r"[‐-―]", "-", s)
+    s = re.sub("[\u2012-\u2015]", " ", s)  # figure, en and em dashes separate words
+    s = re.sub("[\u2010\u2011]", "-", s)  # hyphens join them
     s = re.sub(r"[^\w'\- ]+", " ", s)
     s = re.sub(r"\s+", " ", s).strip().lower()
     if s.startswith("the "):
@@ -47,7 +48,8 @@ def fold(s):
     """Text form used to search the book: like norm() but keeps case and the leading article."""
     s = unicodedata.normalize("NFKC", s)
     s = s.replace("’", "'").replace("‘", "'")
-    s = re.sub(r"[‐-―]", "-", s)
+    s = re.sub("[\u2012-\u2015]", " ", s)  # figure, en and em dashes separate words
+    s = re.sub("[\u2010\u2011]", "-", s)  # hyphens join them
     s = re.sub(r"[^\w'\- ]+", " ", s)
     return re.sub(r"\s+", " ", s).strip()
 
