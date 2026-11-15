@@ -1,0 +1,597 @@
+{
+  "version": 1,
+  "book": "gulliver",
+  "views": [
+    {
+      "id": "world",
+      "kind": "globe",
+      "title": "Gulliver's World",
+      "texture": "maps/_globe/earth.jpg",
+      "focus": {
+        "lat": 10.0,
+        "lon": 100.0
+      }
+    },
+    {
+      "id": "lilliput",
+      "kind": "scroll",
+      "title": "Lilliput and Blefuscu (Plate I)",
+      "image": "maps/gulliver/lilliput.jpg",
+      "aspect": 0.6421,
+      "parent": "world",
+      "anchor": "van-diemens-land",
+      "source": "maps/gulliver/SOURCE.md",
+      "attribution": "Plate from the first edition, Benjamin Motte, London, 1726 (public domain); scan: Thomas Fisher Rare Book Library, University of Toronto, via the Internet Archive"
+    },
+    {
+      "id": "brobdingnag",
+      "kind": "scroll",
+      "title": "Brobdingnag (Plate II)",
+      "image": "maps/gulliver/brobdingnag.jpg",
+      "aspect": 0.603,
+      "parent": "world",
+      "anchor": "california",
+      "source": "maps/gulliver/SOURCE.md",
+      "attribution": "Plate from the first edition, Benjamin Motte, London, 1726 (public domain); scan: Thomas Fisher Rare Book Library, University of Toronto, via the Internet Archive"
+    },
+    {
+      "id": "laputa",
+      "kind": "scroll",
+      "title": "Laputa, Balnibarbi, Luggnagg, Glubbdubdrib (Plate III)",
+      "image": "maps/gulliver/laputa.jpg",
+      "aspect": 0.6353,
+      "parent": "world",
+      "anchor": "japan",
+      "source": "maps/gulliver/SOURCE.md",
+      "attribution": "Plate from the first edition, Benjamin Motte, London, 1726 (public domain); scan: Thomas Fisher Rare Book Library, University of Toronto, via the Internet Archive"
+    },
+    {
+      "id": "houyhnhnms",
+      "kind": "scroll",
+      "title": "The Land of the Houyhnhnms (Plate IV)",
+      "image": "maps/gulliver/houyhnhnms.jpg",
+      "aspect": 0.5903,
+      "parent": "world",
+      "anchor": "new-holland",
+      "source": "maps/gulliver/SOURCE.md",
+      "attribution": "Plate from the first edition, Benjamin Motte, London, 1726 (public domain); scan: Thomas Fisher Rare Book Library, University of Toronto, via the Internet Archive"
+    }
+  ],
+  "places": [
+    {
+      "id": "redriff",
+      "name": "Redriff",
+      "aliases": [],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.4969,
+      "lon": -0.0388,
+      "located": "geocoded",
+      "firstSentence": "gulliver:f01.p001.s02",
+      "note": "Rotherhithe, on the Thames below London, where Gulliver keeps his house."
+    },
+    {
+      "id": "london",
+      "name": "London",
+      "aliases": [
+        "Old Jewry",
+        "Fetter Lane"
+      ],
+      "kind": "city",
+      "view": "world",
+      "lat": 51.5145,
+      "lon": -0.0908,
+      "located": "geocoded",
+      "firstSentence": "gulliver:f02.p005.s05",
+      "note": "The City of London."
+    },
+    {
+      "id": "wapping",
+      "name": "Wapping",
+      "aliases": [],
+      "kind": "harbour",
+      "view": "world",
+      "lat": 51.5071,
+      "lon": -0.062,
+      "located": "geocoded",
+      "firstSentence": "gulliver:c01.p004.s02",
+      "note": "The sailors' quarter on the Thames."
+    },
+    {
+      "id": "bristol",
+      "name": "Bristol",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 51.4538,
+      "lon": -2.5973,
+      "located": "geocoded",
+      "firstSentence": "gulliver:c01.p004.s04",
+      "note": "The port Gulliver sails from on his first voyage."
+    },
+    {
+      "id": "downs",
+      "name": "Downs",
+      "aliases": [],
+      "kind": "harbour",
+      "view": "world",
+      "lat": 51.22,
+      "lon": 1.45,
+      "located": "approximate",
+      "firstSentence": "gulliver:c08.p011.s02",
+      "note": "The sheltered anchorage off Deal in Kent, where ships waited for a wind."
+    },
+    {
+      "id": "portsmouth",
+      "name": "Portsmouth",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 50.8,
+      "lon": -1.0906,
+      "located": "geocoded",
+      "firstSentence": "gulliver:c23.p002.s03",
+      "note": "The naval port on the south coast of England."
+    },
+    {
+      "id": "nottinghamshire",
+      "name": "Nottinghamshire",
+      "aliases": [],
+      "kind": "region",
+      "view": "world",
+      "lat": 53.1459,
+      "lon": -1.0215,
+      "located": "geocoded",
+      "firstSentence": "gulliver:f01.p001.s02",
+      "note": "The county where Gulliver's father had a small estate."
+    },
+    {
+      "id": "emanuel-college",
+      "name": "Emanuel College",
+      "aliases": [
+        "Cambridge"
+      ],
+      "kind": "building",
+      "view": "world",
+      "lat": 52.2037,
+      "lon": 0.1252,
+      "located": "geocoded",
+      "firstSentence": "gulliver:c01.p001.s02",
+      "note": "Gulliver's college at Cambridge."
+    },
+    {
+      "id": "leyden",
+      "name": "Leyden",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 52.1518,
+      "lon": 4.4811,
+      "located": "geocoded",
+      "firstSentence": "gulliver:c01.p001.s04",
+      "note": "Leiden in Holland, where Gulliver studied physic."
+    },
+    {
+      "id": "amsterdam",
+      "name": "Amsterdam",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 52.3731,
+      "lon": 4.8925,
+      "located": "geocoded",
+      "firstSentence": "gulliver:c27.p005.s02",
+      "note": "The great Dutch port."
+    },
+    {
+      "id": "lisbon",
+      "name": "Lisbon",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 38.7078,
+      "lon": -9.1366,
+      "located": "geocoded",
+      "firstSentence": "gulliver:c38.p008.s03",
+      "note": "The capital of Portugal."
+    },
+    {
+      "id": "teneriffe",
+      "name": "Teneriffe",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 28.2936,
+      "lon": -16.6214,
+      "located": "geocoded",
+      "firstSentence": "gulliver:c28.p001.s03",
+      "note": "Tenerife in the Canary Islands."
+    },
+    {
+      "id": "barbados",
+      "name": "Barbados",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 13.15,
+      "lon": -59.525,
+      "located": "geocoded",
+      "firstSentence": "gulliver:c28.p002.s01",
+      "note": "The English sugar island in the West Indies."
+    },
+    {
+      "id": "leeward-islands",
+      "name": "Leeward Islands",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": 17.0,
+      "lon": -62.0,
+      "located": "approximate",
+      "firstSentence": "gulliver:c28.p002.s01",
+      "note": "The chain of small Caribbean islands north of Barbados."
+    },
+    {
+      "id": "cape-of-good-hope",
+      "name": "Cape of Good Hope",
+      "aliases": [],
+      "kind": "coast",
+      "view": "world",
+      "lat": -34.3572,
+      "lon": 18.474,
+      "located": "geocoded",
+      "firstSentence": "gulliver:c09.p001.s02",
+      "note": "The southern cape of Africa, on the way to the East Indies."
+    },
+    {
+      "id": "madagascar",
+      "name": "Madagascar",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": -19.0,
+      "lon": 46.7,
+      "located": "geocoded",
+      "firstSentence": "gulliver:c09.p001.s03",
+      "note": "The great island off East Africa."
+    },
+    {
+      "id": "surat",
+      "name": "Surat",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 21.2095,
+      "lon": 72.8317,
+      "located": "geocoded",
+      "firstSentence": "gulliver:c08.p012.s07",
+      "note": "The East India Company's trading port in Gujarat."
+    },
+    {
+      "id": "fort-st-george",
+      "name": "Fort St George",
+      "aliases": [],
+      "kind": "building",
+      "view": "world",
+      "lat": 13.0799,
+      "lon": 80.2847,
+      "located": "geocoded",
+      "firstSentence": "gulliver:c17.p003.s01",
+      "note": "The English fort at Madras (Chennai)."
+    },
+    {
+      "id": "molucca-islands",
+      "name": "Molucca Islands",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": -2.5842,
+      "lon": 127.4789,
+      "located": "geocoded",
+      "firstSentence": "gulliver:c09.p001.s03",
+      "note": "The Spice Islands of the East Indies."
+    },
+    {
+      "id": "tonquin",
+      "name": "Tonquin",
+      "aliases": [],
+      "kind": "region",
+      "view": "world",
+      "lat": 21.0283,
+      "lon": 105.854,
+      "located": "approximate",
+      "firstSentence": "gulliver:c16.p014.s01",
+      "note": "Tonkin, northern Vietnam (pin at Hanoi)."
+    },
+    {
+      "id": "japan",
+      "name": "Japan",
+      "aliases": [],
+      "kind": "country",
+      "view": "world",
+      "lat": 36.5748,
+      "lon": 139.2394,
+      "located": "geocoded",
+      "firstSentence": "gulliver:c08.p009.s14",
+      "note": "The empire Swift's third plate draws beside Luggnagg."
+    },
+    {
+      "id": "nangasac",
+      "name": "Nangasac",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 32.7502,
+      "lon": 129.8781,
+      "located": "geocoded",
+      "firstSentence": "gulliver:c27.p004.s12",
+      "note": "Nagasaki, the one Japanese port open to Dutch ships."
+    },
+    {
+      "id": "xamoschi",
+      "name": "Xamoschi",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 35.2,
+      "lon": 139.7,
+      "located": "approximate",
+      "firstSentence": "gulliver:c27.p004.s04",
+      "note": "A small port the book places on the south-east of Japan. Not identified; pinned on that coast."
+    },
+    {
+      "id": "van-diemens-land",
+      "name": "Van Diemen's Land",
+      "aliases": [],
+      "kind": "island",
+      "view": "world",
+      "lat": -42.0351,
+      "lon": 146.6367,
+      "located": "geocoded",
+      "firstSentence": "gulliver:c01.p005.s01",
+      "note": "Tasmania. Swift's first plate draws Lilliput to its north-west."
+    },
+    {
+      "id": "new-holland",
+      "name": "New Holland",
+      "aliases": [],
+      "kind": "country",
+      "view": "world",
+      "lat": -24.7761,
+      "lon": 134.755,
+      "located": "geocoded",
+      "firstSentence": "gulliver:c16.p014.s02",
+      "note": "Australia, as the Dutch named it. Swift's fourth plate draws its south coast."
+    },
+    {
+      "id": "california",
+      "name": "California",
+      "aliases": [],
+      "kind": "region",
+      "view": "world",
+      "lat": 36.7015,
+      "lon": -118.756,
+      "located": "geocoded",
+      "firstSentence": "gulliver:c12.p001.s03",
+      "note": "Swift's second plate draws Brobdingnag on the coast north of it."
+    },
+    {
+      "id": "pacific-ocean",
+      "name": "Pacific Ocean",
+      "aliases": [
+        "South Sea"
+      ],
+      "kind": "sea",
+      "view": "world",
+      "lat": -0.7,
+      "lon": -150.0,
+      "located": "approximate",
+      "firstSentence": "gulliver:c01.p004.s03",
+      "note": "The South Sea, the great ocean west of the Americas."
+    },
+    {
+      "id": "lilliput",
+      "name": "Lilliput",
+      "aliases": [
+        "Lilliputians"
+      ],
+      "kind": "island",
+      "view": "lilliput",
+      "u": 0.213,
+      "v": 0.781,
+      "located": "scan",
+      "firstSentence": "gulliver:f02.p007.s01",
+      "note": "The island empire of Part I. Swift's plate puts it north-west of Van Diemen's Land, discovered 1699."
+    },
+    {
+      "id": "mildendo",
+      "name": "Mildendo",
+      "aliases": [],
+      "kind": "city",
+      "view": "lilliput",
+      "u": 0.189,
+      "v": 0.757,
+      "located": "scan",
+      "firstSentence": "gulliver:c04.p001.s01",
+      "note": "The capital of Lilliput (the plate spells it Mendendo)."
+    },
+    {
+      "id": "blefuscu",
+      "name": "Blefuscu",
+      "aliases": [
+        "Blefuscudians"
+      ],
+      "kind": "island",
+      "view": "lilliput",
+      "u": 0.237,
+      "v": 0.713,
+      "located": "scan",
+      "firstSentence": "gulliver:c03.p015.s01",
+      "note": "The island empire across a narrow channel from Lilliput."
+    },
+    {
+      "id": "brobdingnag",
+      "name": "Brobdingnag",
+      "aliases": [
+        "Brobdingnagians"
+      ],
+      "kind": "country",
+      "view": "brobdingnag",
+      "u": 0.294,
+      "v": 0.048,
+      "located": "scan",
+      "firstSentence": "gulliver:f02.p007.s01",
+      "note": "The great peninsula of Part II, drawn by Swift joined to north-west America, discovered 1703."
+    },
+    {
+      "id": "lorbrulgrud",
+      "name": "Lorbrulgrud",
+      "aliases": [],
+      "kind": "city",
+      "view": "brobdingnag",
+      "u": 0.377,
+      "v": 0.085,
+      "located": "scan",
+      "firstSentence": "gulliver:c10.p008.s01",
+      "note": "The metropolis of Brobdingnag, 'Pride of the Universe'."
+    },
+    {
+      "id": "flanflasnic",
+      "name": "Flanflasnic",
+      "aliases": [],
+      "kind": "city",
+      "view": "brobdingnag",
+      "u": 0.193,
+      "v": 0.07,
+      "located": "scan",
+      "firstSentence": "gulliver:c16.p003.s01",
+      "note": "A city near the sea, with a royal palace nearby."
+    },
+    {
+      "id": "laputa",
+      "name": "Laputa",
+      "aliases": [
+        "flying island"
+      ],
+      "kind": "island",
+      "view": "laputa",
+      "u": 0.8,
+      "v": 0.423,
+      "located": "scan",
+      "firstSentence": "gulliver:f02.p007.s01",
+      "note": "The island of Part III, drawn by Swift beside Balnibarbi, discovered 1701."
+    },
+    {
+      "id": "balnibarbi",
+      "name": "Balnibarbi",
+      "aliases": [],
+      "kind": "country",
+      "view": "laputa",
+      "u": 0.89,
+      "v": 0.468,
+      "located": "scan",
+      "firstSentence": "gulliver:c19.p006.s02",
+      "note": "The continent ruled by the monarch of the flying island."
+    },
+    {
+      "id": "lagado",
+      "name": "Lagado",
+      "aliases": [],
+      "kind": "city",
+      "view": "laputa",
+      "u": 0.945,
+      "v": 0.491,
+      "located": "scan",
+      "firstSentence": "gulliver:c18.p007.s02",
+      "note": "The metropolis of Balnibarbi."
+    },
+    {
+      "id": "luggnagg",
+      "name": "Luggnagg",
+      "aliases": [],
+      "kind": "island",
+      "view": "laputa",
+      "u": 0.427,
+      "v": 0.615,
+      "located": "scan",
+      "firstSentence": "gulliver:c23.p001.s01",
+      "note": "The great island south-east of Japan."
+    },
+    {
+      "id": "traldragdubh",
+      "name": "Traldragdubh",
+      "aliases": [
+        "Trildrogdrib"
+      ],
+      "kind": "city",
+      "view": "laputa",
+      "u": 0.393,
+      "v": 0.638,
+      "located": "scan",
+      "firstSentence": "gulliver:c25.p004.s02",
+      "note": "The royal seat of Luggnagg."
+    },
+    {
+      "id": "glubbdubdrib",
+      "name": "Glubbdubdrib",
+      "aliases": [],
+      "kind": "island",
+      "view": "laputa",
+      "u": 0.355,
+      "v": 0.681,
+      "located": "scan",
+      "firstSentence": "gulliver:c23.p002.s05",
+      "note": "The little island of sorcerers, five leagues south-west of Maldonada."
+    },
+    {
+      "id": "maldonada",
+      "name": "Maldonada",
+      "aliases": [],
+      "kind": "harbour",
+      "view": "laputa",
+      "u": 0.305,
+      "v": 0.664,
+      "located": "scan",
+      "firstSentence": "gulliver:c23.p002.s02",
+      "note": "The port where Gulliver waits for a ship to Luggnagg."
+    },
+    {
+      "id": "clumegnig",
+      "name": "Clumegnig",
+      "aliases": [],
+      "kind": "harbour",
+      "view": "laputa",
+      "u": 0.545,
+      "v": 0.632,
+      "located": "scan",
+      "firstSentence": "gulliver:c25.p001.s05",
+      "note": "A seaport at the south-east point of Luggnagg."
+    },
+    {
+      "id": "glanguenstald",
+      "name": "Glanguenstald",
+      "aliases": [],
+      "kind": "harbour",
+      "view": "laputa",
+      "u": 0.273,
+      "v": 0.645,
+      "located": "scan",
+      "firstSentence": "gulliver:c27.p004.s02",
+      "note": "A royal port on the south-west of Luggnagg."
+    },
+    {
+      "id": "houyhnhnms",
+      "name": "Houyhnhnms",
+      "aliases": [
+        "Houyhnhnm"
+      ],
+      "kind": "country",
+      "view": "houyhnhnms",
+      "u": 0.166,
+      "v": 0.49,
+      "located": "scan",
+      "firstSentence": "gulliver:f02.p001.s03",
+      "note": "The land of the Houyhnhnms (Part IV), drawn by Swift south-west of New Holland, discovered 1711."
+    }
+  ]
+}
