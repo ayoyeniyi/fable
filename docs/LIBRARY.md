@@ -13,8 +13,8 @@ from a phone or computer without a cable, an account or any cloud service, and s
   (books still arriving or that failed lead those). Each tile has:
   - the cover, or a plain cloth cover drawn with the title when the book has none
   - the title and author
-  - where the book came from: *Fable edition · own rooms* (*Fable edition* for a classic whose rooms are not built
-    yet: Around the World in Eighty Days and Frankenstein read in the library room for now), *your EPUB*,
+  - where the book came from: *Fable edition · own rooms* (all ten classics have their three rooms since 2026-11-15;
+    a classic without built rooms would say *Fable edition*), *your EPUB*,
     *your PDF · 230 pages*, or *your PDF · pages only*
   - on an uploaded book, an **early preview** tag across the foot of the cover
   - how far the reader has got

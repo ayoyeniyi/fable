@@ -2,7 +2,7 @@
 
 A reader for whole books on Meta Quest. You stand in a quiet room with a shelf of ten public-domain classics (Homer's Odyssey in Samuel Butler's translation, Gulliver's Travels, Pride and Prejudice, Frankenstein, Moby-Dick, Alice, Around the World in Eighty Days in George Makepeace Towle's translation, Treasure Island, The War of the Worlds, Oz), open one as a floating page and read it cover to cover. Highlight a passage to look a word up, search the book, Peek at a small annotated model of the thing described, or Step In: the passage is staged as a miniature that grows around you, driven by a validated SceneScript from the interpreter (prebuilt assets only, nothing past where you have read).
 
-Built so far: the ten books ingested and readable page by page with contents, bookmarks and text sizes; the Alice rooms (Hall of Doors, Mad Tea-Party, Queen's Croquet-Ground) with Step In from the page; live interpretation; point-and-pinch input on a Quest 2. See `docs/PLAN.md` for the tiers and `docs/HANDOVER.md` for what is verified where.
+Built so far: the ten books ingested and readable page by page with contents, bookmarks and text sizes; the Alice rooms (Hall of Doors, Mad Tea-Party, Queen's Croquet-Ground) with Step In from the page; three hand-built rooms for each of the ten classics (thirty scenes), with chapter experiences prepared per chapter in them; live interpretation; point-and-pinch input on a Quest 2. See `docs/PLAN.md` for the tiers and `docs/HANDOVER.md` for what is verified where.
 
 ## Layout
 

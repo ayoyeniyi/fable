@@ -2,6 +2,33 @@
 
 Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs/TOOLING.md`. Everything below was true at the commit that last touched this file. "Verified" always says where: **editor** (Unity play mode on a Mac, desktop camera, no HMD) or **headset**. Nothing has been verified on a headset yet.
 
+## Hand-built rooms for Around the World in Eighty Days and Frankenstein; chapter experiences for all ten (2026-11-15)
+
+- **Rooms:** six Blender rooms (`blender/build_*.py`, renders in `captures/blender/<room>/`) built and baked in Unity,
+  first room (earliest chapter) first: Eighty Days `ReformClub` (ch. 3, 37), `MongoliaDeck` (8-9), `PillajiForest`
+  (12-13); Frankenstein `ArcticIce` (Letter 4, ch. 24, Walton in Continuation), `IngolstadtGarret` (4-5), `MerDeGlace`
+  (9-10, 17). Both books now open in their first room (`LobbyController.ReadingScene`, `ReadingRooms.Bundled`), list
+  three rooms and the library, and carry the "own rooms" badge. Unity triangles / meshes: Reform Club 32,027 / 31,
+  Mongolia 39,953 / 33, Pillaji 46,336 / 32, garret 31,584 / 31, Mer de Glace 45,181 / 10, Arctic 42,176 / 17.
+- **FableBuild:** a sky dome split in halves (`SkyDome.front` / `.back`) gets a material per half (they shared one);
+  `SceneDef.ClearPanes` (the Reform Club's dusk window, the Mongolia's skylights stay clear glass instead of the bright
+  unlit daylight pane); an interior's `far.*` backdrop is drawn unlit from its picture (it rendered black);
+  `SceneDef.FlipNormals` (the Reform Club's painting was exported facing the wall and baked black). Fog lowered where
+  the default haze washed out painted far land (Mer de Glace and Arctic 0.0006, Pillaji 0.002). WindToward is Unity's
+  compass: a Blender bearing plus 180.
+- **Chapter experiences for all ten classics:** `ChapterExperiences.Supported` lists the six later books too. Their 18
+  place environments name their chapters (`schema/environments.json` `chapters`); the service plans a named chapter
+  among the places that name it and answers any other chapter unavailable at once without asking Claude
+  (`TestNamedChaptersLimitThePlaces`). The hosted service needs a redeploy with this schema. Chapters to prepare:
+  mobydick c01-c05, c10-c11, c16-c22; worlds c01-c05, c07-c08; treasure c01-c08; pride c02, c07-c11, c15, c20, c57,
+  c59; eighty c03, c08-c09, c12-c13, c37; frankenstein c04, c08-c09, c13-c14, c21, c28-c29.
+- **Verified in the editor:** all six scenes build and bake (Arctic's bake took 72 minutes, the others 3 to 100 s);
+  from the lobby Eighty Days opens in the Reform Club with Chapter I on the page and its rooms listed. Desktop
+  previews: `captures/unity/<room>/desktop-preview_<Scene>_reader.png`. The APK builds: 803.8 MB with 32 scenes (was 726.3 MB).
+- **Not verified:** anything on the headset: frame rate (Pillaji 46k triangles with dense alpha-tested foliage and three
+  realtime torch lights 55 m off; Mer de Glace's alpha-tested spruces and grass; the 1,200 m far plane), texture memory,
+  sound. Chapter experiences for the later six were not prepared live (the fake planner test only).
+
 ## Ten classics: Around the World in Eighty Days and Frankenstein (2026-11-15)
 
 - **Decision (owner):** Fable centres on a curated library of ten classics at full quality; uploaded books stay but
@@ -14,7 +41,7 @@ Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs
   parent; a non-"Chapter" `se:label` names the chapter, so "Letter I"); the other eight books come out byte-identical.
   Slugs added to `books.Slugs`, the mock schema, the interpreter flag, `check_maps.py`, the dictionary
   (re-ingested: 15,867 headwords).
-- **Rooms:** none yet. Both books open in the **library room** (`LobbyController.ReadingScene` maps them to
+- **Rooms (superseded the same day, see above):** none yet. Both books opened in the **library room** (`LobbyController.ReadingScene` maps them to
   `LibraryRoom`); their menus list only "The library" and "No place is built for this book's chapters yet".
   No generated rooms are bundled (`BundledRooms.json` is `{}`). Three Blender rooms each are being built in
   parallel (eighty: reform-club, mongolia-deck, pillaji-forest; frankenstein: ingolstadt-garret, mer-de-glace,
