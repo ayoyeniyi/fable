@@ -1,4 +1,4 @@
-// The lobby: a panelled reading room where Fable opens, with Fable's eight books standing face out on a bookcase
+// The lobby: a panelled reading room where Fable opens, with Fable's ten books standing face out on a bookcase
 // (blender/build_lobby.py). Point at a book with either hand (or the mouse in the editor) and it slides forward;
 // pinch to open it. A small card in front of each book says how far the reader has got. The page's "shelf" control
 // comes back here.
@@ -27,6 +27,9 @@ namespace Fable
         {
             ["alice"] = "HallOfDoors", ["oz"] = "KansasFarmhouse", ["odyssey"] = "CalypsosCave", ["gulliver"] = "GlumdalclitchsRoom",
             ["mobydick"] = "BatteryWaterfront", ["worlds"] = "OgilvysObservatory", ["treasure"] = "BenbowCove", ["pride"] = "LongbournLibrary",
+            // the two newest classics are read in the library room until their own rooms (Reform Club, Ingolstadt garret)
+            // are built into scenes; then they move to ReadingRooms.Bundled and their first room goes here
+            ["eighty"] = ImportedScene, ["frankenstein"] = ImportedScene,
         };
         const string FallbackScene = "HallOfDoors";
         /// Where the reader's own books are read: the library room itself, with the page in front of the shelves.
@@ -80,6 +83,13 @@ namespace Fable
                 b.CoverNormal = cover && cover.sharedMesh && cover.sharedMesh.normals.Length > 0 ? cover.transform.TransformDirection(cover.sharedMesh.normals[0]).normalized : b.Out;
                 if (Vector3.Dot(b.CoverNormal, b.Out) < 0) b.CoverNormal = -b.CoverNormal;
                 books.Add(b);
+            }
+            // shelf order, left to right as the reader sees it (oldest first): the glTF lists the books alphabetically,
+            // and the library board takes its order from this list
+            if (books.Count > 1 && Head)
+            {
+                var right = Vector3.Cross(Vector3.up, Vector3.ProjectOnPlane(books[0].T.position - Head.position, Vector3.up)).normalized;
+                books.Sort((a, c) => Vector3.Dot(a.T.position, right).CompareTo(Vector3.Dot(c.T.position, right)));
             }
             // the labels hang on the ledge's front lip, all square to the shelf (not each turned to the head, which put
             // them at odd angles through the lip)

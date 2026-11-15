@@ -1,5 +1,6 @@
 // Every book's reading rooms, for the lobby's book menu and the menu beside the page: three per book, then the library.
-// Fable's eight books: built scenes (Bundled below). A Fable book without built scenes could have three generated rooms
+// Fable's ten books: built scenes (Bundled below; Around the World in Eighty Days and Frankenstein have none yet and
+// are read in the library room, LobbyController.ReadingScene). A Fable book without built scenes could have three generated rooms
 // bundled in the app (GeneratedRooms.IsBundled; none since 2026-11-15). The reader's books: three generated rooms made
 // for them (docs/GENERATED_ROOMS.md).
 using System.Collections.Generic;
