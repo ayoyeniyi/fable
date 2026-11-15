@@ -466,6 +466,7 @@ namespace Fable
         {
             if (!mapView || mapAlt.view == null) return "no other map view";
             mapOnAlt = !mapOnAlt; var (v, p) = mapOnAlt ? mapAlt : mapHome;
+            if (peekJob != null) StopCoroutine(peekJob);   // a second press while the first view is still loading
             peekJob = StartCoroutine(PeekMap(v, p, Time.realtimeSinceStartup, 0));
             return Describe();
         }

@@ -98,7 +98,7 @@ scroll, mid-unroll and pointing at a pin; Treasure Island's Skeleton Island on t
 Treasure Island lit; Gulliver's Mildendo on the Lilliput plate, then Van Diemen's Land on the globe; Moby-Dick's
 Season-on-the-Line on the globe with 21 pins. "equator" in Moby-Dick chapter 2, before that place's `firstSentence`
 in chapter 44, falls through to clay, and the same place opens the globe from chapter 44. "White Rabbit" (no place)
-still opens the clay rabbit. A hand drag turned the globe about 70°; the map closes with the card. No console errors.
+still opens the clay rabbit. A hand drag turned the globe about 70°; the map closes with the card. No console errors. The APK builds: 722.3 MB (704.7 MB before the maps).
 
 **Not verified:** anything on the headset. Still open there: frame rate with a map open, whether 0.25 m of hand
 travel per three-quarter turn feels right, the map's place beside the page (0.26 m left of the page's edge, 0.30 m
