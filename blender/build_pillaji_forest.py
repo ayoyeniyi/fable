@@ -79,33 +79,44 @@ Z0 = H(0, 0)
 def gz(x, y): return H(x, y) - Z0
 
 def ground_mat(name="M_ForestFloor"):
-    """dry-season forest floor: a deep litter of big brown sal and teak leaves over red-brown earth, the trodden path
-    bare and paler, roots and dark damp patches, a few green seedlings."""
+    """dry-season forest floor at low contrast: packed red-brown earth under a scatter of fallen sal leaves (two sizes,
+    ochre to tan, curled edges a little darker), thinning to bare earth in drifts; the trodden path smooth, paler and
+    leafless, with a few leaves kicked to its edges; faint damp darkening; a few seedlings."""
     m, nt, b = new_mat(name)
-    co = obj_coords(nt); s = sep_xyz(nt, co, (-1800, 0))
+    co = obj_coords(nt)
     pa = node(nt, "ShaderNodeAttribute", (-1800, 500)); pa.attribute_name = "bare"
     bare = pa.outputs["Fac"]
-    v1 = voronoi_(nt, co, 9.0, 'F1', (-1500, 200)); v2 = voronoi_(nt, co, 23.0, 'F1', (-1500, 0))
+    warp = noise_(nt, co, 6.0, 2, 0.5, loc=(-1800, 200))
+    wv = node(nt, "ShaderNodeVectorMath", (-1650, 200), operation='MULTIPLY_ADD'); wv.inputs[1].default_value = (0.04, 0.04, 0.0)
+    nt.links.new(warp.outputs["Color"], wv.inputs[0]); nt.links.new(co, wv.inputs[2])
+    v1 = voronoi_(nt, wv.outputs[0], 11.0, 'F1', (-1500, 200)); v2 = voronoi_(nt, wv.outputs[0], 19.0, 'F1', (-1500, 0))
     lc = node(nt, "ShaderNodeSeparateColor", (-1300, 200)); nt.links.new(v1.outputs["Color"], lc.inputs["Color"])
-    leafy = ramp(nt, [(0.0, c4(K.srgb((0.30, 0.20, 0.11)))), (0.3, c4(K.srgb((0.42, 0.28, 0.14)))), (0.55, c4(K.srgb((0.52, 0.38, 0.20)))),
-                      (0.75, c4(K.srgb((0.36, 0.25, 0.14)))), (1.0, c4(K.srgb((0.24, 0.17, 0.10))))], (-1100, 200))
-    nt.links.new(lc.outputs[0], leafy.inputs["Fac"])
-    edge = maprange(nt, v1.outputs["Distance"], 0.25, 0.5, 1.0, 0.6, (-1100, 0))
+    lc2 = node(nt, "ShaderNodeSeparateColor", (-1300, 0)); nt.links.new(v2.outputs["Color"], lc2.inputs["Color"])
+    leafy = ramp(nt, [(0.0, c4(K.srgb((0.36, 0.25, 0.15)))), (0.35, c4(K.srgb((0.45, 0.32, 0.19)))), (0.7, c4(K.srgb((0.54, 0.41, 0.24)))),
+                      (1.0, c4(K.srgb((0.41, 0.29, 0.17))))], (-1100, 200))
+    nt.links.new(math_(nt, 'ADD', math_(nt, 'MULTIPLY', lc.outputs[0], 0.6, (-1200, 300)), math_(nt, 'MULTIPLY', lc2.outputs[1], 0.4, (-1200, 150)), (-1150, 250)), leafy.inputs["Fac"])
+    edge = maprange(nt, math_(nt, 'MINIMUM', v1.outputs["Distance"], math_(nt, 'MULTIPLY', v2.outputs["Distance"], 1.4, (-1200, -50)), (-1100, 0)), 0.0, 0.18, 0.76, 1.0, (-1000, 0))
     col = mix_rgb(nt, 'MULTIPLY', 1.0, leafy.outputs["Color"], edge, (-900, 200))
-    lc2 = node(nt, "ShaderNodeSeparateColor", (-1300, -100)); nt.links.new(v2.outputs["Color"], lc2.inputs["Color"])
-    col = mix_rgb(nt, 'MIX', maprange(nt, lc2.outputs[1], 0.6, 0.62, 0, 0.6, (-1100, -100)), col, c4(K.srgb((0.56, 0.44, 0.26))), (-800, 200))
-    n = noise_(nt, co, 0.35, 5, 0.6, loc=(-1500, -300))
-    earth = mix_rgb(nt, 'MIX', maprange(nt, n.outputs["Fac"], 0.3, 0.7, 0, 1, (-1300, -300)), c4(K.srgb((0.36, 0.24, 0.16))), c4(K.srgb((0.46, 0.33, 0.22))), (-1100, -300))
-    gaps = maprange(nt, noise_(nt, co, 1.4, 4, 0.6, loc=(-1500, -500)).outputs["Fac"], 0.58, 0.66, 0, 1, (-1300, -500))
-    col = mix_rgb(nt, 'MIX', math_(nt, 'MAXIMUM', gaps, bare, (-1000, -400)), col, earth, (-650, 200))
-    damp = maprange(nt, n.outputs["Fac"], 0.62, 0.7, 0, 0.35, (-1000, -650))
-    col = mix_rgb(nt, 'MULTIPLY', damp, col, (0.55, 0.5, 0.45, 1), (-500, 200))
-    sd = maprange(nt, noise_(nt, co, 3.0, 3, 0.5, loc=(-1500, -800)).outputs["Fac"], 0.68, 0.72, 0, 0.7, (-1300, -800))
-    col = mix_rgb(nt, 'MIX', math_(nt, 'MULTIPLY', sd, math_(nt, 'SUBTRACT', 1.0, bare, (-1100, -900)), (-1000, -850)), col, c4(K.srgb((0.22, 0.30, 0.10))), (-400, 200))
-    col = K.ao_mul(nt, col, 0.4, 0.5, (-300, -900))
+    n = noise_(nt, co, 0.5, 4, 0.55, loc=(-1500, -300))
+    fine = noise_(nt, co, 40.0, 3, 0.6, loc=(-1500, -450))
+    earth = mix_rgb(nt, 'MIX', maprange(nt, n.outputs["Fac"], 0.3, 0.7, 0, 1, (-1300, -300)), c4(K.srgb((0.42, 0.32, 0.23))), c4(K.srgb((0.46, 0.35, 0.25))), (-1100, -300))
+    earth = mix_rgb(nt, 'MULTIPLY', 1.0, earth, maprange(nt, fine.outputs["Fac"], 0.3, 0.7, 0.93, 1.04, (-1300, -450)), (-1000, -350))
+    path = c4(K.srgb((0.50, 0.40, 0.30)))
+    earth = mix_rgb(nt, 'MIX', bare, earth, path, (-900, -400))
+    cover = maprange(nt, noise_(nt, co, 0.9, 4, 0.6, loc=(-1500, -600)).outputs["Fac"], 0.3, 0.55, 0.62, 1.0, (-1300, -600))
+    cover = math_(nt, 'MULTIPLY', cover, maprange(nt, bare, 0.2, 0.7, 1.0, 0.0, (-1300, -750)), (-1100, -650))
+    # individual leaves sit on the earth where a cell's random value falls under the cover
+    pick = maprange(nt, math_(nt, 'SUBTRACT', cover, lc.outputs[2], (-1000, -600)), -0.02, 0.02, 0, 1, (-900, -600))
+    col = mix_rgb(nt, 'MIX', pick, earth, col, (-700, 200))
+    damp = maprange(nt, n.outputs["Fac"], 0.62, 0.72, 0, 0.18, (-1000, -850))
+    col = mix_rgb(nt, 'MULTIPLY', damp, col, (0.7, 0.66, 0.62, 1), (-500, 200))
+    sd = maprange(nt, noise_(nt, co, 3.0, 3, 0.5, loc=(-1500, -1000)).outputs["Fac"], 0.70, 0.72, 0, 0.5, (-1300, -1000))
+    col = mix_rgb(nt, 'MIX', math_(nt, 'MULTIPLY', sd, math_(nt, 'SUBTRACT', 1.0, bare, (-1100, -1100)), (-1000, -1050)), col, c4(K.srgb((0.30, 0.36, 0.16))), (-400, 200))
+    col = K.ao_mul(nt, col, 0.4, 0.4, (-300, -1100))
     nt.links.new(col, b.inputs["Base Color"])
-    nt.links.new(maprange(nt, n.outputs["Fac"], 0.3, 0.7, 0.92, 0.75, (-300, -200)), b.inputs["Roughness"])
-    bump_from(nt, b, math_(nt, 'ADD', v1.outputs["Distance"], math_(nt, 'MULTIPLY', v2.outputs["Distance"], 0.5, (-700, -1100)), (-550, -1100)), 0.35, 0.01)
+    nt.links.new(mix_f(nt, pick, 0.82, 0.9, (-300, -200)), b.inputs["Roughness"])
+    hgt = math_(nt, 'ADD', math_(nt, 'MULTIPLY', pick, math_(nt, 'MULTIPLY', edge, 1.0, (-700, -1300)), (-600, -1300)), math_(nt, 'MULTIPLY', fine.outputs["Fac"], 0.15, (-700, -1400)), (-500, -1350))
+    bump_from(nt, b, hgt, 0.25, 0.006)
     return m
 
 def bark_mat(name, base, dark, light, scale=1.0, fissure=0.6, moss=0.2):
@@ -300,27 +311,43 @@ def under_atlas(S=1024):
     cv.clip = None; cv.bleed(6)
     return np_image("A_Understorey", cv.a)
 
-def treeline_atlas(W=2048, Hh=256):
-    """the forest beyond the clearing, seen between the trunks: one continuous mass below a gently rolling skyline,
-    its top broken into rounded crowns of different sizes (a few taller emergents), hazed toward the dusk sky."""
-    cv = Canvas(W, Hh); R = random.Random(41)
-    base = np.array([0.15, 0.165, 0.175])
-    xs = np.arange(W)
-    sky = (110 + 30 * np.sin(xs / W * 2 * np.pi * 3 + 1.3) + 14 * np.sin(xs / W * 2 * np.pi * 11 + 0.4)).astype(np.float32)
-    for x in range(W):
-        y0 = int(sky[x] + 12)
-        cv.a[y0:, x, :3] = base; cv.a[y0:, x, 3] = 1.0
-    x = 0
-    while x < W:
-        r = R.uniform(10, 24) * (1.7 if R.random() < 0.07 else 1.0)
-        top = sky[min(W - 1, int(x))] - (r * 0.9 if r > 30 else 0.0)
-        for k in range(8):
-            sh = R.uniform(0.9, 1.08)
-            rr = r * R.uniform(0.55, 0.85)
-            cv.ellipse(x + R.gauss(0, r * 0.5), top + r * 0.9 + R.gauss(0, r * 0.25), rr * 1.15, rr, 0.0, tuple(base * sh) + (1.0,))
-        x += R.uniform(8, 18)
-    cv.bleed(4)
-    return np_image("A_TreeLine", cv.a)
+def treeline_atlas(W=2048, Hrow=256):
+    """the distance in four bands, one per atlas row (top row first): low hills in the warm sunset haze, then far,
+    middle and near forest canopy, each a soft silhouette made of rounded crowns (union of circles, no points),
+    darker and less hazed the nearer the band; a little tone in each crown, lighter on its upper edge."""
+    rows = []
+    specs = [  # (base height px, crown radius range px, colour, haze-lit top tint)
+        (60, (70, 140), (0.50, 0.40, 0.39), (0.58, 0.45, 0.40)),
+        (95, (22, 46), (0.34, 0.30, 0.30), (0.40, 0.34, 0.32)),
+        (100, (18, 38), (0.24, 0.23, 0.22), (0.29, 0.26, 0.23)),
+        (90, (14, 32), (0.16, 0.165, 0.15), (0.20, 0.19, 0.16)),
+    ]
+    xs = np.arange(W, dtype=np.float32)
+    for k, (base, (r0, r1), col, tint) in enumerate(specs):
+        R = random.Random(50 + k)
+        h = np.full(W, float(base), np.float32)
+        x = 0.0
+        while x < W:
+            r = R.uniform(r0, r1); cy = base + R.uniform(-0.6, 0.15) * r + (25 * math.sin(x / W * 2 * math.pi * 2 + k) if k else 0)
+            for off in (-W, 0, W):
+                d = xs - (x + off)
+                inside = np.abs(d) < r
+                h = np.where(inside, np.maximum(h, cy + np.sqrt(np.maximum(0.0, r * r - d * d))), h)
+            x += R.uniform(0.45, 0.9) * r
+        h = np.minimum(h, Hrow - 4)
+        yy = np.arange(Hrow, dtype=np.float32)[:, None]            # 0 at the bottom of the band
+        inside = yy < h[None, :]
+        img = np.zeros((Hrow, W, 4), np.float32)
+        topness = np.clip(1.0 - (h[None, :] - yy) / 18.0, 0, 1)    # within 18 px of the edge: lit by the sky
+        n = np.random.RandomState(7 + k).rand(Hrow, W).astype(np.float32) * 0.02
+        for c in range(3):
+            img[..., c] = col[c] * (1 - topness) + tint[c] * topness + n
+        img[..., 3] = inside.astype(np.float32)
+        # bleed colour into the transparent pixels (no dark fringe under mipmapping)
+        img[..., :3] = np.where(inside[..., None], img[..., :3], np.array(tint, np.float32))
+        rows.append(img[::-1])                                    # row 0 = top of the band
+    atlas = np.concatenate(rows, axis=0)
+    return np_image("A_TreeLine", atlas)
 
 print("painting atlases ...", flush=True)
 IMG_SAL = spray_atlas("A_SalSprays", 'sal', 11)
@@ -336,7 +363,7 @@ M_BANYANL = image_mat("M_BanyanLeaves", IMG_BANYAN, rough=0.45, alpha=True)
 M_BAMBOOL = image_mat("M_BambooLeaves", IMG_BAMBOO, rough=0.5, alpha=True)
 M_UNDER = image_mat("M_Understorey", IMG_UNDER, rough=0.6, alpha=True)
 M_GRASS = image_mat("M_FloorGrass", IMG_UNDER, rough=0.6, alpha=True)
-M_TREELINE = image_mat("M_TreeLine", IMG_TREELINE, rough=1.0, alpha=True)
+M_TREELINE = image_mat("M_TreeLine", IMG_TREELINE, rough=1.0, alpha=True, spec=0.0)
 M_GROUND = ground_mat()
 M_SALBARK = bark_mat("M_SalBark", K.srgb((0.24, 0.20, 0.16)), K.srgb((0.08, 0.06, 0.05)), K.srgb((0.34, 0.30, 0.25)), scale=1.0, fissure=0.7, moss=0.15)
 M_TEAKBARK = bark_mat("M_TeakBark", K.srgb((0.36, 0.32, 0.26)), K.srgb((0.16, 0.13, 0.10)), K.srgb((0.46, 0.42, 0.35)), scale=1.6, fissure=0.5, moss=0.05)
@@ -380,16 +407,16 @@ M_FLAME = plain("M_RenderFlame", (1.0, 0.6, 0.2), emission=(1.0, 0.55, 0.18), st
 RG0 = 2.5
 def v_of_r(r): return math.log1p(r / RG0) / math.log1p(NEAR_R / RG0)
 def ground():
-    NA, NR = 52, 26
+    NA, NR = 48, 23
     verts = []; faces = []; uvs = {}; bare = []
     rs = [0.0] + [RG0 * math.expm1(v * math.log1p(NEAR_R / RG0)) for v in [(j / NR) for j in range(1, NR + 1)]]
-    verts.append((0.0, 0.0, gz(0, 0))); bare.append(smoothstep(0.9, 0.3, path_d(0, 0)))
+    verts.append((0.0, 0.0, gz(0, 0))); bare.append(smoothstep(1.1, 0.45, path_d(0, 0)))
     for j in range(1, NR + 1):
         r = rs[j]
         for i in range(NA):
             a = 2 * math.pi * i / NA
             x, y = r * math.sin(a), r * math.cos(a)
-            verts.append((x, y, gz(x, y))); bare.append(smoothstep(0.9, 0.3, path_d(x, y)) * 0.85)
+            verts.append((x, y, gz(x, y))); bare.append(smoothstep(1.1, 0.45, path_d(x, y)))
     def vi(j, i): return 0 if j == 0 else 1 + (j - 1) * NA + (i % NA)
     loops_uv = []
     for j in range(NR):
@@ -528,12 +555,12 @@ TREES = [  # x, y, height, spread, kind, seed, near?
 for k, (x, y, h, s, kind, seed, near) in enumerate(TREES):
     leaves = "sal" if kind == "sal" else "teak"
     tree(f"Tree{k}", x, y, h, s, kind, seed, M_SALBARK if kind == "sal" else M_TEAKBARK, leaves, nlimbs=5 if near else 4, detail=1.0 if near else 0.5,
-         cards_per_tip=2 if near else 3, card_size=(1.8 if kind == "sal" else 2.0) * (1.0 if near else 1.5), fill=48 if near else 36)
+         cards_per_tip=2 if near else 3, card_size=(1.8 if kind == "sal" else 2.0) * (1.0 if near else 1.5), fill=54 if near else 32)
 
 # a ring of cheap distant trees (trunk, four limbs, cards) between the clearing's trees and the skyline strip
 FR = random.Random(909)
-for k in range(22):
-    a = 2 * math.pi * (k + FR.uniform(-0.3, 0.3)) / 22; r = FR.uniform(31.0, 45.0)
+for k in range(14):
+    a = 2 * math.pi * (k + FR.uniform(-0.3, 0.3)) / 14; r = FR.uniform(31.0, 45.0)
     x, y = r * math.sin(a), r * math.cos(a)
     if math.hypot(x - PAGODA.x, y - PAGODA.y) < 10: continue
     tree(f"FarTree{k}", x, y, FR.uniform(18, 24), FR.uniform(5, 6.5), "far", 600 + k, M_SALBARK, "sal", nlimbs=4, detail=0.3,
@@ -547,7 +574,7 @@ def banyan():
         a = 2 * math.pi * k / 6 + R.uniform(-0.2, 0.2); d = Vector((math.cos(a), math.sin(a), 0))
         b0 = BANYAN + d * 0.45; b0.z = gz(b0.x, b0.y) - 0.1
         tube(f"BanyanFlute{k}", [b0, b0 + d * 0.15 + Vector((0, 0, 1.5)), BANYAN + d * 0.25 + Vector((0, 0, 3.4))], [0.32, 0.22, 0.18], M_BANYANBARK, sides=6)
-    for k in range(28):   # aerial roots
+    for k in range(20):   # aerial roots
         a = R.uniform(0, 2 * math.pi); r = R.uniform(2.0, 8.5)
         p = BANYAN + Vector((math.cos(a) * r, math.sin(a) * r, 0)); top_z = gz(p.x, p.y) + R.uniform(4.0, 6.0)
         prop = R.random() < 0.3
@@ -606,7 +633,7 @@ def understorey():
             card(mbx, (x, y, z - 0.03), right, Vector((R.gauss(0, 0.06), R.gauss(0, 0.06), hgt)), UNDER[kind], 0.0, 1.0, segs=2 if r < 6 else 1,
                  bend=Vector((R.gauss(0, 0.15), R.gauss(0, 0.15), 0)) * hgt)
         placed += 1
-        if placed > 1700: break
+        if placed > 1250: break
     o1 = mbu.build("Understorey", M_UNDER); o2 = mbg.build("FloorGrass", M_GRASS)
     for o in (o1, o2):
         if o is not None: set_card_normals(o, lambda p: Vector((0, 0, 1)))
@@ -645,14 +672,14 @@ def pagoda():
         B(f"Niche{sx}{sy}", (1.0 if sx == 0 else 0.1, 1.0 if sy == 0 else 0.1, 1.4), (sx * 2.72, sy * 2.72, zb + 2.3), M_LOG)
     B("SanctumCornice", (5.6, 5.6, 0.35), (0, 0, zb + 4.05))
     # the curvilinear tower (shikhara): many thin courses, each a little smaller, the profile bowing inward to the top
-    zt = zb + 4.2; N = 16
+    zt = zb + 4.2; N = 12
     for k in range(N):
-        t = k / N; w = 5.2 * (1.0 - 0.72 * t ** 1.35); h = 0.52
+        t = k / N; w = 5.2 * (1.0 - 0.72 * t ** 1.35); h = 0.69
         B(f"Course{k}", (w, w, h * 0.82), (0, 0, zt + k * h + h * 0.41), bevel=0.0)
         B(f"CourseLip{k}", (w + 0.16, w + 0.16, h * 0.18), (0, 0, zt + k * h + h * 0.91), bevel=0.0)
         for sx, sy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
             B(f"CourseRatha{k}{sx}{sy}", (w * 0.36 if sx == 0 else 0.3, w * 0.36 if sy == 0 else 0.3, h * 0.8), (sx * (w / 2 + 0.1), sy * (w / 2 + 0.1), zt + k * h + h * 0.4), bevel=0.0)
-    ztop = zt + N * 0.52
+    ztop = zt + N * 0.69
     # the amalaka (ribbed stone disc) and the kalasha (finial pot)
     me = bpy.data.meshes.new("Amalaka"); bm = bmesh.new(); ns = 32; rings = []
     for (rr, zz) in ((0.6, 0.0), (1.05, 0.18), (1.12, 0.32), (1.0, 0.48), (0.55, 0.6)):
@@ -712,7 +739,7 @@ for layer in range(6):
 
 # ----------------------------------------------------------------------------- Kiouni
 print("Kiouni ...", flush=True)
-EL_BODY, EL_OBJS, EL_PTS = EL.build("Kiouni", (ELE.x, ELE.y, gz(ELE.x, ELE.y) - 0.04), ELE_YAW, M_SKIN, M_JHOOL, M_HOWDAH, M_ROPE, M_BRASS, M_IVORY, M_NAIL, M_EYE, target_tris=5000)
+EL_BODY, EL_OBJS, EL_PTS = EL.build("Kiouni", (ELE.x, ELE.y, gz(ELE.x, ELE.y) - 0.04), ELE_YAW, M_SKIN, M_JHOOL, M_HOWDAH, M_ROPE, M_BRASS, M_IVORY, M_NAIL, M_EYE, target_tris=4600)
 
 # ----------------------------------------------------------------------------- crowns (built once, one swaying mesh per kind), far tree line, sky
 for key, mb in CROWN_MB.items():
@@ -725,23 +752,28 @@ for key, mb in CROWN_MB.items():
         return (((p - C) * Vector((1 / a_, 1 / a_, 1 / c_))) + Vector((0, 0, 0.6))).normalized()
     set_card_normals(o, nfn)
 def far_treeline():
-    verts = []; faces = []; uvs = []; N = 64
-    for i in range(N + 1):
-        a = 2 * math.pi * i / N; r = 49.0 + 2.5 * math.sin(a * 3.0)
-        x, y = r * math.sin(a), r * math.cos(a)
-        verts += [(x, y, 9.5), (x, y, -1.5)]; uvs += [(i / N * 4.0 % 1.0001, 0.0), (i / N * 4.0 % 1.0001, 1.0)]
-    for i in range(N):
-        a0 = 2 * i; faces.append((a0, a0 + 2, a0 + 3, a0 + 1))
+    """four concentric bands carrying the atlas rows: near canopy at 47 m, middle at 57 m, far at 70 m, the hills at
+    125 m; each band's foot is below the ground, the atlas repeats four times round."""
+    verts = []; faces = []; luv = []; N = 64
+    bands = [(47.0, 8.0, 3), (57.0, 11.0, 2), (70.0, 14.0, 1), (125.0, 22.0, 0)]
+    for (r0, top_, row) in bands:
+        b0 = len(verts)
+        for i in range(N + 1):
+            a = 2 * math.pi * i / N + row * 0.37; r = r0 + 2.0 * math.sin(a * 3.0 + row)
+            x, y = r * math.sin(a), r * math.cos(a)
+            verts += [(x, y, top_), (x, y, -1.5)]
+        v_lo = (3 - row) / 4.0; v_hi = v_lo + 0.25
+        for i in range(N):
+            q = b0 + 2 * i; faces.append((q, q + 2, q + 3, q + 1))
+            u0 = (i % 16) / 16.0; u1 = u0 + 1 / 16.0
+            luv.append([(u0, v_hi - 0.002), (u1, v_hi - 0.002), (u1, v_lo + 0.002), (u0, v_lo + 0.002)])
     me = bpy.data.meshes.new("TreeLine"); me.from_pydata(verts, [], faces); me.update()
-    for p in me.polygons: p.use_smooth = True
     uvl = me.uv_layers.new(name="UVMap")
-    for p in me.polygons:
-        i = p.index
-        for li, vi_ in zip(p.loop_indices, p.vertices):
-            col = (vi_ // 2 - i)                       # 0 or 1: which edge of this strip
-            uvl.data[li].uv = ((col) * 0.25 + (i % 4) * 0.25, 1.0 - float(vi_ % 2))
+    for p, uvs in zip(me.polygons, luv):
+        for li, uv in zip(p.loop_indices, uvs): uvl.data[li].uv = uv
     o = bpy.data.objects.new("TreeLine", me); me.materials.append(M_TREELINE); link(o)
     orient(o, lambda c: (-c.x, -c.y, 0))
+    for p in me.polygons: p.use_smooth = True
     set_card_normals(o, lambda p: Vector((0, 0, 1)))       # even shading all round (no facets lit by the low sun)
     return o
 far_treeline()
