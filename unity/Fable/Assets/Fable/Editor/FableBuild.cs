@@ -24,29 +24,41 @@ namespace Fable.Editor
         // One Unity scene per passage, each with its own lightmaps. Outdoor scenes get daylight, an unlit sky dome and haze.
         /// Room: a book's own room with no staged passage (the page floats in it; FlowController.RoomOnly). LightScale
         /// stretches indoor light ranges for rooms built at giant scale (Glumdalclitch's room is 12x).
-        /// LobbyLook: lit like the lobby (the library room, where imported books are read). Sound: the RoomSound id, when
-        /// it is not the scene's own.
-        public class SceneDef { public string Id, Scene, Glb, Book, Sound; public bool Outdoor, Lobby, Room, LobbyLook; public float LightScale = 1f; }
+        /// LobbyLook: lit like the lobby (the library room, where imported books are read).
+        /// Living scenes (docs/LIVING_SCENES.md, FableLiving.cs):
+        ///   Sound: the ambience layers, "kind[:volume]+kind[:volume]" from the sound library (Resources/Audio/amb.<kind>,
+        ///          audio/SOURCES.md): surf, harbour, sea-open, river, wind-grass, wind-pines, wind-high, birds, gulls,
+        ///          rigging, room-tone, clock, tavern, night, rain, fire, candle. Null: room tone indoors, birds and a
+        ///          breeze outdoors.
+        ///   Music: music.<id> to play (default the scene's own id; nothing if there is no such clip).
+        ///   Wind: strength (0 calm, 0.35 a gentle breeze, 1 fresh, 2 a gale); -1 means 0.35 outdoors, 0 indoors.
+        ///   WindToward: compass degrees the wind blows toward in world XZ (0 = +Z).
+        ///   Water: swell, flow and sky colours for the scene's water.* (defaults suit a calm sea under the scene's sky).
+        public class SceneDef { public string Id, Scene, Glb, Book, Sound, Music; public bool Outdoor, Lobby, Room, LobbyLook; public float LightScale = 1f, Wind = -1f, WindToward = 60f; public WaterLook WaterOverride; }
+        public class WaterLook { public float SwellHeight = 0.35f, SwellLength = 18f, FlowSpeed = 0.6f; public float? FlowToward; public Color? SkyHorizon, SkyZenith; }
+        public static string MusicId(SceneDef d) => d.Music ?? d.Id;
+        public static float WindOf(SceneDef d) => d.Wind >= 0 ? d.Wind : d.Outdoor ? 0.35f : 0f;
+        public static string AmbienceOf(SceneDef d) => d.Sound ?? (d.Outdoor ? "birds:0.6+wind-grass:0.7" : "room-tone");
         public static readonly SceneDef[] Scenes =
         {
             // first in the build: the app opens in the lobby (blender/build_lobby.py)
-            new SceneDef { Id = "lobby", Scene = "Assets/Fable/Scenes/Lobby.unity", Glb = "Assets/Fable/Models/Lobby/lobby.gltf", Lobby = true },
+            new SceneDef { Id = "lobby", Scene = "Assets/Fable/Scenes/Lobby.unity", Glb = "Assets/Fable/Models/Lobby/lobby.gltf", Lobby = true, Sound = "room-tone:0.8+clock:0.3" },
             new SceneDef { Id = "hall-of-doors", Scene = "Assets/Fable/Scenes/HallOfDoors.unity", Glb = "Assets/Fable/Models/HallOfDoors/hall_of_doors.gltf" },
-            new SceneDef { Id = "mad-tea-party", Scene = "Assets/Fable/Scenes/MadTeaParty.unity", Glb = "Assets/Fable/Models/MadTeaParty/mad_tea_party.gltf", Outdoor = true },
-            new SceneDef { Id = "queens-croquet-ground", Scene = "Assets/Fable/Scenes/QueensCroquetGround.unity", Glb = "Assets/Fable/Models/QueensCroquetGround/queens_croquet_ground.gltf", Outdoor = true },
+            new SceneDef { Id = "mad-tea-party", Scene = "Assets/Fable/Scenes/MadTeaParty.unity", Glb = "Assets/Fable/Models/MadTeaParty/mad_tea_party.gltf", Outdoor = true, Wind = 0.25f },
+            new SceneDef { Id = "queens-croquet-ground", Scene = "Assets/Fable/Scenes/QueensCroquetGround.unity", Glb = "Assets/Fable/Models/QueensCroquetGround/queens_croquet_ground.gltf", Outdoor = true, Wind = 0.25f },
             // step 7: one room per book for the other three books
-            new SceneDef { Id = "kansas-farmhouse", Scene = "Assets/Fable/Scenes/KansasFarmhouse.unity", Glb = "Assets/Fable/Models/KansasFarmhouse/kansas_farmhouse.gltf", Outdoor = true, Room = true, Book = "oz" },
-            new SceneDef { Id = "calypsos-cave", Scene = "Assets/Fable/Scenes/CalypsosCave.unity", Glb = "Assets/Fable/Models/CalypsosCave/calypsos_cave.gltf", Outdoor = true, Room = true, Book = "odyssey" },
+            new SceneDef { Id = "kansas-farmhouse", Scene = "Assets/Fable/Scenes/KansasFarmhouse.unity", Glb = "Assets/Fable/Models/KansasFarmhouse/kansas_farmhouse.gltf", Outdoor = true, Room = true, Book = "oz", Sound = "wind-grass:1+wind-high:0.55+room-tone:0.3", Wind = 1.1f, WindToward = 180f },
+            new SceneDef { Id = "calypsos-cave", Scene = "Assets/Fable/Scenes/CalypsosCave.unity", Glb = "Assets/Fable/Models/CalypsosCave/calypsos_cave.gltf", Outdoor = true, Room = true, Book = "odyssey", Sound = "surf:0.55+birds:0.4+wind-pines:0.25", Wind = 0.3f, WaterOverride = new WaterLook { SwellHeight = 0.3f, SwellLength = 14f, FlowSpeed = 0.5f } },
             // the reader's own books are read in the library itself: a neutral room with no staged passages
-            new SceneDef { Id = "library-room", Scene = "Assets/Fable/Scenes/LibraryRoom.unity", Glb = "Assets/Fable/Models/Lobby/lobby.gltf", Room = true, LobbyLook = true, Sound = "lobby" },
-            new SceneDef { Id = "glumdalclitchs-room", Scene = "Assets/Fable/Scenes/GlumdalclitchsRoom.unity", Glb = "Assets/Fable/Models/GlumdalclitchsRoom/glumdalclitchs_room.gltf", Room = true, Book = "gulliver", LightScale = 12f },
+            new SceneDef { Id = "library-room", Scene = "Assets/Fable/Scenes/LibraryRoom.unity", Glb = "Assets/Fable/Models/Lobby/lobby.gltf", Room = true, LobbyLook = true, Sound = "room-tone:0.8+clock:0.3", Music = "lobby" },
+            new SceneDef { Id = "glumdalclitchs-room", Scene = "Assets/Fable/Scenes/GlumdalclitchsRoom.unity", Glb = "Assets/Fable/Models/GlumdalclitchsRoom/glumdalclitchs_room.gltf", Room = true, Book = "gulliver", LightScale = 12f, Sound = "room-tone:1+clock:0.45" },
             // the second and third rooms of Oz, the Odyssey and Gulliver (2026-11-03; blender/build_*.py, one subagent each)
-            new SceneDef { Id = "poppy-field", Scene = "Assets/Fable/Scenes/PoppyField.unity", Glb = "Assets/Fable/Models/PoppyField/poppy_field.gltf", Outdoor = true, Room = true, Book = "oz", Sound = "garden-afternoon" },
-            new SceneDef { Id = "emerald-throne-room", Scene = "Assets/Fable/Scenes/EmeraldThroneRoom.unity", Glb = "Assets/Fable/Models/EmeraldThroneRoom/emerald_throne_room.gltf", Room = true, Book = "oz", Sound = "hall-lamps" },
-            new SceneDef { Id = "odysseus-ship", Scene = "Assets/Fable/Scenes/OdysseusShip.unity", Glb = "Assets/Fable/Models/OdysseusShip/odysseus_ship.gltf", Outdoor = true, Room = true, Book = "odyssey", Sound = "calypsos-cave" },
-            new SceneDef { Id = "ithaca-hall", Scene = "Assets/Fable/Scenes/IthacaHall.unity", Glb = "Assets/Fable/Models/IthacaHall/ithaca_hall.gltf", Outdoor = true, Room = true, Book = "odyssey", Sound = "lobby" },
-            new SceneDef { Id = "lilliput-beach", Scene = "Assets/Fable/Scenes/LilliputBeach.unity", Glb = "Assets/Fable/Models/LilliputBeach/lilliput_beach.gltf", Outdoor = true, Room = true, Book = "gulliver", Sound = "garden-afternoon" },
-            new SceneDef { Id = "laputa", Scene = "Assets/Fable/Scenes/Laputa.unity", Glb = "Assets/Fable/Models/Laputa/laputa.gltf", Outdoor = true, Room = true, Book = "gulliver", Sound = "garden-afternoon" },
+            new SceneDef { Id = "poppy-field", Scene = "Assets/Fable/Scenes/PoppyField.unity", Glb = "Assets/Fable/Models/PoppyField/poppy_field.gltf", Outdoor = true, Room = true, Book = "oz", Sound = "birds:0.7+wind-grass:0.6", Wind = 0.4f, WindToward = 75f, WaterOverride = new WaterLook { FlowSpeed = 0.45f, FlowToward = 0f } },
+            new SceneDef { Id = "emerald-throne-room", Scene = "Assets/Fable/Scenes/EmeraldThroneRoom.unity", Glb = "Assets/Fable/Models/EmeraldThroneRoom/emerald_throne_room.gltf", Room = true, Book = "oz", Sound = "room-tone:0.9" },
+            new SceneDef { Id = "odysseus-ship", Scene = "Assets/Fable/Scenes/OdysseusShip.unity", Glb = "Assets/Fable/Models/OdysseusShip/odysseus_ship.gltf", Outdoor = true, Room = true, Book = "odyssey", Sound = "sea-open:0.8+harbour:0.5+rigging:0.6+gulls:0.15", Music = "calypsos-cave", Wind = 0.6f, WindToward = 40f, WaterOverride = new WaterLook { SwellHeight = 0.55f, SwellLength = 22f } },
+            new SceneDef { Id = "ithaca-hall", Scene = "Assets/Fable/Scenes/IthacaHall.unity", Glb = "Assets/Fable/Models/IthacaHall/ithaca_hall.gltf", Outdoor = true, Room = true, Book = "odyssey", Sound = "room-tone:0.6+birds:0.25", Music = "lobby", Wind = 0.15f },
+            new SceneDef { Id = "lilliput-beach", Scene = "Assets/Fable/Scenes/LilliputBeach.unity", Glb = "Assets/Fable/Models/LilliputBeach/lilliput_beach.gltf", Outdoor = true, Room = true, Book = "gulliver", Sound = "surf:0.8+gulls:0.35+wind-grass:0.35", Wind = 0.45f, WindToward = 100f, WaterOverride = new WaterLook { SwellHeight = 0.3f, SwellLength = 16f } },
+            new SceneDef { Id = "laputa", Scene = "Assets/Fable/Scenes/Laputa.unity", Glb = "Assets/Fable/Models/Laputa/laputa.gltf", Outdoor = true, Room = true, Book = "gulliver", Sound = "wind-high:0.9+birds:0.2", Wind = 0.6f, WindToward = 120f },
         };
         const string ScenePath = "Assets/Fable/Scenes/HallOfDoors.unity";   // the hall: desktop previews
         static SceneDef Def(string id) => Scenes.First(d => d.Id == id);
@@ -326,6 +338,9 @@ namespace Fable.Editor
                 if (rs.Length > 0) { var b = rs[0].bounds; foreach (var r in rs) b.Encapsulate(r.bounds); var size = Vector3.Min(b.size, new Vector3(80, 50, 80)); probeGo.transform.position = b.center; probe.size = size; probe.boxProjection = !outdoor; }
             }
 
+            // living scenes: moving water, swaying foliage, fires and candles, positional sounds (docs/LIVING_SCENES.md)
+            Debug.Log($"[FableBuild] living {sceneId}: {FableLiving.Apply(env, def)}");
+
             // camera rig
             GameObject rig; Transform head;
 #if FABLE_META_XR
@@ -387,7 +402,7 @@ namespace Fable.Editor
 #endif
                 var lobby = lobbySystems.AddComponent<LobbyController>(); lobby.Input = lobbyInput; lobby.Head = head; lobby.Env = env.transform;
                 lobby.Font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fable/Fonts/EBGaramond-Regular SDF.asset");
-                lobbySystems.AddComponent<RoomSound>().Id = "lobby";
+                var lobbySound = lobbySystems.AddComponent<RoomSound>(); lobbySound.Id = MusicId(def); lobbySound.Ambience = AmbienceOf(def);
                 Directory.CreateDirectory(Path.GetDirectoryName(def.Scene));
                 EditorSceneManager.SaveScene(scene, def.Scene);
                 SetBuildScenes();
@@ -417,7 +432,7 @@ namespace Fable.Editor
             var panel = BuildPanel(head);
             var flow = systems.AddComponent<FlowController>(); flow.Director = director; flow.Input = input; flow.Panel = panel; flow.Head = head; flow.ReadingRoom = reading;
             flow.SceneId = sceneId;
-            if (def.Room) { flow.RoomOnly = true; flow.RoomBook = def.Book; systems.AddComponent<RoomSound>().Id = def.Sound ?? sceneId; }
+            if (def.Room) { flow.RoomOnly = true; flow.RoomBook = def.Book; var roomSound = systems.AddComponent<RoomSound>(); roomSound.Id = MusicId(def); roomSound.Ambience = AmbienceOf(def); }
 
             Directory.CreateDirectory(Path.GetDirectoryName(def.Scene));
             EditorSceneManager.SaveScene(scene, def.Scene);
