@@ -27,9 +27,7 @@ namespace Fable
         {
             ["alice"] = "HallOfDoors", ["oz"] = "KansasFarmhouse", ["odyssey"] = "CalypsosCave", ["gulliver"] = "GlumdalclitchsRoom",
             ["mobydick"] = "BatteryWaterfront", ["worlds"] = "OgilvysObservatory", ["treasure"] = "BenbowCove", ["pride"] = "LongbournLibrary",
-            // the two newest classics are read in the library room until their own rooms (Reform Club, Ingolstadt garret)
-            // are built into scenes; then they move to ReadingRooms.Bundled and their first room goes here
-            ["eighty"] = ImportedScene, ["frankenstein"] = ImportedScene,
+            ["eighty"] = "ReformClub", ["frankenstein"] = "ArcticIce",
         };
         const string FallbackScene = "HallOfDoors";
         /// Where the reader's own books are read: the library room itself, with the page in front of the shelves.

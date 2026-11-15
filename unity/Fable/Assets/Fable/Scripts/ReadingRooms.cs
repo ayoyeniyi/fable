@@ -1,6 +1,5 @@
 // Every book's reading rooms, for the lobby's book menu and the menu beside the page: three per book, then the library.
-// Fable's ten books: built scenes (Bundled below; Around the World in Eighty Days and Frankenstein have none yet and
-// are read in the library room, LobbyController.ReadingScene). A Fable book without built scenes could have three generated rooms
+// Fable's ten books: built scenes (Bundled below). A Fable book without built scenes could have three generated rooms
 // bundled in the app (GeneratedRooms.IsBundled; none since 2026-11-15). The reader's books: three generated rooms made
 // for them (docs/GENERATED_ROOMS.md).
 using System.Collections.Generic;
@@ -21,6 +20,8 @@ namespace Fable
             ["worlds"] = new[] { "OgilvysObservatory", "HorsellSandpits", "MayburyDiningRoom" },
             ["treasure"] = new[] { "BenbowCove", "SquiresLibrary", "SpyglassTavern" },
             ["pride"] = new[] { "LongbournLibrary", "FieldsToNetherfield", "NetherfieldDrawingRoom" },
+            ["eighty"] = new[] { "ReformClub", "MongoliaDeck", "PillajiForest" },
+            ["frankenstein"] = new[] { "ArcticIce", "IngolstadtGarret", "MerDeGlace" },
         };
 
         public static string Name(string scene) => scene switch
@@ -33,6 +34,8 @@ namespace Fable
             "OgilvysObservatory" => "Ogilvy’s observatory", "HorsellSandpits" => "The sand pits on Horsell Common", "MayburyDiningRoom" => "The dining room at Maybury",
             "BenbowCove" => "The cove below the Admiral Benbow", "SquiresLibrary" => "The squire’s library", "SpyglassTavern" => "The Spy-glass tavern",
             "LongbournLibrary" => "Mr Bennet’s library", "FieldsToNetherfield" => "The fields to Netherfield", "NetherfieldDrawingRoom" => "The drawing-room at Netherfield",
+            "ReformClub" => "The Reform Club", "MongoliaDeck" => "The Mongolia off Aden", "PillajiForest" => "The forest near Pillaji",
+            "ArcticIce" => "Walton’s ship in the ice", "IngolstadtGarret" => "The garret at Ingolstadt", "MerDeGlace" => "Above the Mer de Glace",
             "LibraryRoom" => "The library", _ => scene,
         };
 
