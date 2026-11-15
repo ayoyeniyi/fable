@@ -1,0 +1,281 @@
+fileFormatVersion: 2
+guid: 7232546e885b94f88a5457c0c4caefe5
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies:
+  - type: 0
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/netherfield_drawing_room.bin
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/netherfield_drawing_room.bin
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_BookPages_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_BookPages_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_BookPages_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_BookPages_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_BookPages_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_BookPages_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Brass_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Brass_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Brass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Brass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Brass_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Brass_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Calf_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Calf_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Calf_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Calf_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Calf_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Calf_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Carpet_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Carpet_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Carpet_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Carpet_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Carpet_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Carpet_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Ceiling_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Ceiling_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Ceiling_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Ceiling_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Ceiling_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Ceiling_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_ChairSilk_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_ChairSilk_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_ChairSilk_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_ChairSilk_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_ChairSilk_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_ChairSilk_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_ClockFace_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_ClockFace_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_ClockFace_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_ClockFace_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Curtains_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Curtains_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Curtains_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Curtains_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Curtains_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Curtains_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_DadoPaint_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_DadoPaint_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_DadoPaint_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_DadoPaint_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_DadoPaint_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_DadoPaint_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_DoorMahogany_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_DoorMahogany_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_DoorMahogany_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_DoorMahogany_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_DoorMahogany_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_DoorMahogany_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Embers_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Embers_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Embers_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Embers_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Embers_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Embers_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_FloorBoards_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_FloorBoards_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_FloorBoards_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_FloorBoards_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_FloorBoards_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_FloorBoards_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Gilt_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Gilt_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Gilt_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Gilt_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Gilt_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Gilt_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_GreenCloth_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_GreenCloth_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_GreenCloth_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_GreenCloth_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_GreenCloth_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_GreenCloth_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Iron_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Iron_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Iron_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Iron_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Iron_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Iron_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Joinery_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Joinery_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Joinery_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Joinery_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Joinery_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Joinery_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Landscape1_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Landscape1_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Landscape1_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Landscape1_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Landscape1_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Landscape1_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Landscape2_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Landscape2_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Landscape2_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Landscape2_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Landscape2_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Landscape2_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Mahogany_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Mahogany_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Mahogany_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Mahogany_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Mahogany_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Mahogany_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Marble_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Marble_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Marble_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Marble_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Marble_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Marble_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Mirror_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Mirror_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Mirror_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Mirror_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Pearl_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Pearl_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Pearl_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Pearl_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_PlayingCards_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_PlayingCards_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_PlayingCards_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_PlayingCards_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Silver_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Silver_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Silver_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Silver_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Silver_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Silver_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_SofaSilk_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_SofaSilk_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_SofaSilk_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_SofaSilk_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_SofaSilk_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_SofaSilk_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Soot_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Soot_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Soot_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Soot_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_WallPaint_Normal.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_WallPaint_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_WallPaint_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_WallPaint_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_WallPaint_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_WallPaint_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Wax_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Wax_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Wax_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Wax_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Wick_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Wick_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Wick_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_Wick_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_WindowGlassNight_BaseColor.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_WindowGlassNight_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_WindowGlassNight_Roughness.jpg
+    assetPath: Assets/Fable/Models/NetherfieldDrawingRoom/textures/T_WindowGlassNight_Roughness.jpg
+  reportItems:
+  - type: 2
+    code: 20
+    messages:
+    - KHR_materials_emissive_strength

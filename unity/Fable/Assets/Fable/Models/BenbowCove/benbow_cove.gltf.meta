@@ -1,0 +1,193 @@
+fileFormatVersion: 2
+guid: b68cb940acb5b4d5e9d49b347fa21bc5
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies:
+  - type: 0
+    originalUri: Assets/Fable/Models/BenbowCove/benbow_cove.bin
+    assetPath: Assets/Fable/Models/BenbowCove/benbow_cove.bin
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_FarLand_Normal.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_FarLand_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_FarLand_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_FarLand_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_BoatTar_Normal.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_BoatTar_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_BoatTar_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_BoatTar_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_BoatTar_Roughness.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_BoatTar_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_Boulders_Normal.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_Boulders_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_Boulders_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_Boulders_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_Boulders_Roughness.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_Boulders_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_CliffFar_Normal.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_CliffFar_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_CliffFar_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_CliffFar_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_CliffNear_Normal.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_CliffNear_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_CliffNear_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_CliffNear_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_CliffNear_Roughness.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_CliffNear_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_Cobbles_Normal.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_Cobbles_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_Cobbles_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_Cobbles_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_Cobbles_Roughness.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_Cobbles_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_Driftwood_Normal.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_Driftwood_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_Driftwood_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_Driftwood_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_Driftwood_Roughness.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_Driftwood_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_FieldWall_Normal.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_FieldWall_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_FieldWall_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_FieldWall_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_GroundMid_Normal.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_GroundMid_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_GroundMid_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_GroundMid_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_GroundMid_Roughness.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_GroundMid_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_GroundNear_Normal.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_GroundNear_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_GroundNear_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_GroundNear_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_GroundNear_Roughness.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_GroundNear_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_Hawthorn_Normal.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_Hawthorn_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_Hawthorn_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_Hawthorn_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_Hawthorn_Roughness.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_Hawthorn_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_InnPaint_Normal.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_InnPaint_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_InnPaint_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_InnPaint_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_InnPaint_Roughness.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_InnPaint_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_InnRoof_Normal.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_InnRoof_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_InnRoof_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_InnRoof_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_InnTimber_Normal.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_InnTimber_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_InnTimber_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_InnTimber_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_InnTimber_Roughness.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_InnTimber_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_InnWalls_Normal.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_InnWalls_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_InnWalls_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_InnWalls_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_InnWindowGlass_Normal.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_InnWindowGlass_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_InnWindowGlass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_InnWindowGlass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_InnWindowGlass_Roughness.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_InnWindowGlass_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_ShingleFeet_Normal.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_ShingleFeet_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_ShingleFeet_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_ShingleFeet_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_ShingleFeet_Roughness.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_ShingleFeet_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_Signboard_Normal.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_Signboard_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_Signboard_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_Signboard_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_Signboard_Roughness.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_Signboard_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_SkyDome_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_SkyDome_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_Grass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_Grass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_Gorse_Normal.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_Gorse_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_Gorse_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_Gorse_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BenbowCove/textures/T_Sea_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BenbowCove/textures/T_Sea_BaseColor.jpg
+  reportItems: []

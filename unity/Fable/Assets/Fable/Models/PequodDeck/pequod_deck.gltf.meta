@@ -1,0 +1,313 @@
+fileFormatVersion: 2
+guid: 7294bf0253ede4129b8ec85b71b9a8bf
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies:
+  - type: 0
+    originalUri: Assets/Fable/Models/PequodDeck/pequod_deck.bin
+    assetPath: Assets/Fable/Models/PequodDeck/pequod_deck.bin
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Baleen_cloth_flag_tuft_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Baleen_cloth_flag_tuft_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Baleen_cloth_flag_tuft_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Baleen_cloth_flag_tuft_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Baleen_cloth_flag_tuft_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Baleen_cloth_flag_tuft_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Sail_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Sail_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Sail_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Sail_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Sail_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Sail_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_FarSea_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_FarSea_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_FarSea_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_FarSea_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_FarSea_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_FarSea_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_FarShips_far_Shore_FarShips_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_FarShips_far_Shore_FarShips_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_FarShips_far_Shore_FarShips_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_FarShips_far_Shore_FarShips_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_FarShips_far_Shore_FarShips_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_FarShips_far_Shore_FarShips_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_FarShore_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_FarShore_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_FarShore_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_FarShore_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_FarShore_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_FarShore_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Baleen_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Baleen_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Baleen_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Baleen_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Baleen_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Baleen_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Bulwark_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Bulwark_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Bulwark_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Bulwark_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Bulwark_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Bulwark_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Cask_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Cask_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Cask_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Cask_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Cask_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Cask_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_ChairOak_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_ChairOak_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_ChairOak_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_ChairOak_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_ChairOak_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_ChairOak_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Clapboard_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Clapboard_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Clapboard_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Clapboard_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Clapboard_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Clapboard_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_DarkWindow_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_DarkWindow_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_DarkWindow_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_DarkWindow_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_DarkWindow_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_DarkWindow_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_DeckPlanks_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_DeckPlanks_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_DeckPlanks_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_DeckPlanks_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_DeckPlanks_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_DeckPlanks_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Fittings_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Fittings_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Fittings_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Fittings_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Fittings_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Fittings_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_HullOuter_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_HullOuter_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_HullOuter_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_HullOuter_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_HullOuter_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_HullOuter_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Iron_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Iron_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Iron_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Iron_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Iron_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Iron_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_JawBone_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_JawBone_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_JawBone_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_JawBone_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_JawBone_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_JawBone_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_ManilaRope_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_ManilaRope_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_ManilaRope_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_ManilaRope_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_ManilaRope_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_ManilaRope_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_RailCap_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_RailCap_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_RailCap_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_RailCap_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_RailCap_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_RailCap_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Sail_MESH_Sail_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Sail_MESH_Sail_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Sail_MESH_Sail_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Sail_MESH_Sail_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Sail_MESH_Sail_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Sail_MESH_Sail_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Shingles_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Shingles_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Shingles_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Shingles_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Shingles_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Shingles_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_FarShips_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_FarShips_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_FarShips_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_FarShips_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_FarShips_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_FarShips_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Snow_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Snow_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Snow_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Snow_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Snow_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Snow_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Spar_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Spar_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Spar_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Spar_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Spar_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Spar_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_TarredRope_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_TarredRope_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_TarredRope_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_TarredRope_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_TarredRope_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_TarredRope_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Teeth_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Teeth_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Teeth_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Teeth_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Teeth_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Teeth_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_FarTown_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_FarTown_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_FarTown_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_FarTown_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_FarTown_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_FarTown_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Snow_MESH_Town_Snow_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Snow_MESH_Town_Snow_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Snow_MESH_Town_Snow_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Snow_MESH_Town_Snow_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Snow_MESH_Town_Snow_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Snow_MESH_Town_Snow_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_TryworksBrick_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_TryworksBrick_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_TryworksBrick_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_TryworksBrick_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_TryworksBrick_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_TryworksBrick_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_WharfGround_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_WharfGround_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_WharfGround_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_WharfGround_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_WharfGround_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_WharfGround_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_WharfTimber_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_WharfTimber_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_WharfTimber_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_WharfTimber_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_WharfTimber_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_WharfTimber_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Yard_Normal.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Yard_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Yard_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Yard_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_Yard_Roughness.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_Yard_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/PequodDeck/textures/T_SkyDome_BaseColor.jpg
+    assetPath: Assets/Fable/Models/PequodDeck/textures/T_SkyDome_BaseColor.jpg
+  reportItems: []

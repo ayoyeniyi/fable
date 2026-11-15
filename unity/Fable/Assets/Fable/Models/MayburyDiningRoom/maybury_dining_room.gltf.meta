@@ -1,0 +1,226 @@
+fileFormatVersion: 2
+guid: 01623f5be4b3d41789f721b7b473c84b
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies:
+  - type: 0
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/maybury_dining_room.bin
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/maybury_dining_room.bin
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Velvet_Normal.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Velvet_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Velvet_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Velvet_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Velvet_Roughness.png
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Velvet_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_GardenDusk.png
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_GardenDusk.png
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_BlackSlate_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_BlackSlate_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_BlackSlate_Roughness.png
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_BlackSlate_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Brass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Brass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Brass_Roughness.png
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Brass_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_CastIron_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_CastIron_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_CastIron_Roughness.png
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_CastIron_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Ceiling_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Ceiling_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_China_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_China_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Coal_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Coal_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_ColdBeef_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_ColdBeef_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Crust_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Crust_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Damask_Normal.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Damask_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Damask_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Damask_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Damask_Roughness.png
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Damask_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Dial_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Dial_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Embers_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Embers_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Floorboards_Normal.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Floorboards_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Floorboards_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Floorboards_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Floorboards_Roughness.png
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Floorboards_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Frieze_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Frieze_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Gilt_Normal.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Gilt_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Gilt_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Gilt_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Gilt_Roughness.png
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Gilt_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Glass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Glass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_GrainedDoor_Normal.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_GrainedDoor_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_GrainedDoor_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_GrainedDoor_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_GrainedDoor_Roughness.png
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_GrainedDoor_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_LampFontGlass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_LampFontGlass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_LampGlass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_LampGlass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_LampShade_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_LampShade_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Leather_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Leather_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Leather_Roughness.png
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Leather_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Lincrusta_Normal.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Lincrusta_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Lincrusta_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Lincrusta_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Lincrusta_Roughness.png
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Lincrusta_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Liquid_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Liquid_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Mahogany_Normal.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Mahogany_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Mahogany_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Mahogany_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Mahogany_Roughness.png
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Mahogany_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Mirror_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Mirror_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Mouldings_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Mouldings_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Mouldings_Roughness.png
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Mouldings_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Nuts_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Nuts_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Painting0.png
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Painting0.png
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Painting1.png
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Painting1.png
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Painting2.png
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Painting2.png
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Salad_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Salad_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_SashPaint_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_SashPaint_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Silver_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Silver_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Silver_Roughness.png
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Silver_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Tiles_Normal.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Tiles_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Tiles_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Tiles_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Tiles_Roughness.png
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Tiles_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Wallpaper_Normal.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Wallpaper_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Wallpaper_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Wallpaper_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Wallpaper_Roughness.png
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Wallpaper_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/MayburyDiningRoom/textures/T_Wax_BaseColor.jpg
+    assetPath: Assets/Fable/Models/MayburyDiningRoom/textures/T_Wax_BaseColor.jpg
+  reportItems:
+  - type: 2
+    code: 31
+    messages: []
+  - type: 2
+    code: 31
+    messages: []
+  - type: 2
+    code: 31
+    messages: []
+  - type: 2
+    code: 31
+    messages: []

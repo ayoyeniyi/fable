@@ -1,0 +1,175 @@
+fileFormatVersion: 2
+guid: 9d4d58960704a4f18bc5bdff474515a7
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies:
+  - type: 0
+    originalUri: Assets/Fable/Models/OgilvysObservatory/ogilvys_observatory.bin
+    assetPath: Assets/Fable/Models/OgilvysObservatory/ogilvys_observatory.bin
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_NightSky.png
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_NightSky.png
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Books_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Books_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Books_Roughness.png
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Books_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Brass_Normal.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Brass_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Brass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Brass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Brass_Roughness.png
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Brass_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_CastIron_Normal.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_CastIron_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_CastIron_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_CastIron_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_CastIron_Roughness.png
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_CastIron_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_DomePaint_Normal.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_DomePaint_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_DomePaint_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_DomePaint_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_DomePaint_Roughness.png
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_DomePaint_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_DomeRibs_Normal.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_DomeRibs_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_DomeRibs_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_DomeRibs_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_DomeRibs_Roughness.png
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_DomeRibs_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_DoorBoards_Normal.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_DoorBoards_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_DoorBoards_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_DoorBoards_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_DoorBoards_Roughness.png
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_DoorBoards_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Ebonite_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Ebonite_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Floorboards_Normal.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Floorboards_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Floorboards_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Floorboards_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Floorboards_Roughness.png
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Floorboards_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Japanned_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Japanned_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Japanned_Roughness.png
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Japanned_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_LanternLens_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_LanternLens_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Leather_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Leather_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Leather_Roughness.png
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Leather_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Mahogany_Normal.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Mahogany_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Mahogany_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Mahogany_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Mahogany_Roughness.png
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Mahogany_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Matchboard_Normal.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Matchboard_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Matchboard_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Matchboard_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Matchboard_Roughness.png
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Matchboard_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Oak_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Oak_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Oak_Roughness.png
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Oak_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Paper_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Paper_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Pewter_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Pewter_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_PierStone_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_PierStone_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_PineTrim_Normal.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_PineTrim_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_PineTrim_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_PineTrim_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_PineTrim_Roughness.png
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_PineTrim_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Rope_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Rope_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Rug_Normal.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Rug_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Rug_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Rug_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_Rug_Roughness.png
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_Rug_Roughness.png
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_SiphonGlass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_SiphonGlass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/OgilvysObservatory/textures/T_StarChart.png
+    assetPath: Assets/Fable/Models/OgilvysObservatory/textures/T_StarChart.png
+  reportItems:
+  - type: 2
+    code: 31
+    messages: []

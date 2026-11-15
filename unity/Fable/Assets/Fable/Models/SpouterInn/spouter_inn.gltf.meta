@@ -1,0 +1,340 @@
+fileFormatVersion: 2
+guid: 59a292381d7844c16bfee5f31f34039d
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies:
+  - type: 0
+    originalUri: Assets/Fable/Models/SpouterInn/spouter_inn.bin
+    assetPath: Assets/Fable/Models/SpouterInn/spouter_inn.bin
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Ash_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Ash_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Ash_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Ash_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Ash_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Ash_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Beams_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Beams_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Beams_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Beams_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Beams_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Beams_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_BottleGlass_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_BottleGlass_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_BottleGlass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_BottleGlass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_BottleGlass_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_BottleGlass_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Brass_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Brass_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Brass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Brass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Brass_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Brass_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Brick_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Brick_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Brick_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Brick_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Brick_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Brick_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_CaseGlass_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_CaseGlass_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_CaseGlass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_CaseGlass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_CaseGlass_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_CaseGlass_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_CastIron_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_CastIron_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_CastIron_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_CastIron_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_CastIron_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_CastIron_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_CeilingBoards_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_CeilingBoards_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_CeilingBoards_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_CeilingBoards_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_CeilingBoards_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_CeilingBoards_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_ClockDial_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_ClockDial_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_ClockDial_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_ClockDial_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_ClockDial_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_ClockDial_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_ClubWood_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_ClubWood_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_ClubWood_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_ClubWood_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_ClubWood_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_ClubWood_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Coral_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Coral_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Coral_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Coral_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Coral_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Coral_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Curios_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Curios_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Curios_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Curios_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Curios_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Curios_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_DoorPlanks_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_DoorPlanks_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_DoorPlanks_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_DoorPlanks_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_DoorPlanks_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_DoorPlanks_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Embers_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Embers_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Embers_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Embers_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Embers_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Embers_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_FloorPlanks_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_FloorPlanks_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_FloorPlanks_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_FloorPlanks_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_FloorPlanks_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_FloorPlanks_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Furniture_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Furniture_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Furniture_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Furniture_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Furniture_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Furniture_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Hair_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Hair_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Hair_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Hair_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Hair_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Hair_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_JawBone_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_JawBone_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_JawBone_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_JawBone_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_JawBone_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_JawBone_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Joists_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Joists_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Joists_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Joists_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Joists_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Joists_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_LampGlass_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_LampGlass_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_LampGlass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_LampGlass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_LampGlass_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_LampGlass_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_NightPane_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_NightPane_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_NightPane_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_NightPane_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_NightPane_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_NightPane_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Oilskin_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Oilskin_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Oilskin_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Oilskin_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Oilskin_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Oilskin_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Painting_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Painting_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Painting_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Painting_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Painting_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Painting_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_PaintingFrame_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_PaintingFrame_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_PaintingFrame_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_PaintingFrame_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_PaintingFrame_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_PaintingFrame_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Pewter_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Pewter_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Pewter_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Pewter_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Pewter_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Pewter_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Plaster_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Plaster_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Plaster_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Plaster_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Plaster_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Plaster_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Rope_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Rope_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Rope_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Rope_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Rope_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Rope_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_RustyIron_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_RustyIron_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_RustyIron_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_RustyIron_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_RustyIron_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_RustyIron_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_SillStone_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_SillStone_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_SillStone_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_SillStone_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_SillStone_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_SillStone_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Tallow_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Tallow_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Tallow_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Tallow_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Tallow_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Tallow_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Teeth_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Teeth_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Teeth_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Teeth_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Teeth_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Teeth_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_TumblerGlass_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_TumblerGlass_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_TumblerGlass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_TumblerGlass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_TumblerGlass_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_TumblerGlass_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Wainscot_Normal.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Wainscot_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Wainscot_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Wainscot_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpouterInn/textures/T_Wainscot_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpouterInn/textures/T_Wainscot_Roughness.jpg
+  reportItems:
+  - type: 2
+    code: 31
+    messages: []
+  - type: 2
+    code: 31
+    messages: []
+  - type: 2
+    code: 31
+    messages: []
+  - type: 2
+    code: 31
+    messages: []

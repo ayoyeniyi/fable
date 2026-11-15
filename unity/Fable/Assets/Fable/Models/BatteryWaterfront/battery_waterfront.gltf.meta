@@ -1,0 +1,286 @@
+fileFormatVersion: 2
+guid: 68fd85d7008b141dfb95e696b2488a02
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies:
+  - type: 0
+    originalUri: Assets/Fable/Models/BatteryWaterfront/battery_waterfront.bin
+    assetPath: Assets/Fable/Models/BatteryWaterfront/battery_waterfront.bin
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Flag_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Flag_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Flag_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Flag_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Flag_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Flag_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Flag_cloth_flag_ships_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Flag_cloth_flag_ships_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Flag_cloth_flag_ships_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Flag_cloth_flag_ships_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Flag_cloth_flag_ships_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Flag_cloth_flag_ships_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_FarLand_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_FarLand_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_FarLand_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_FarLand_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_FarLand_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_FarLand_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Sandstone_far_Land2_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Sandstone_far_Land2_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Sandstone_far_Land2_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Sandstone_far_Land2_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Sandstone_far_Land2_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Sandstone_far_Land2_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_FarSea_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_FarSea_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_FarSea_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_FarSea_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_FarSea_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_FarSea_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_FarTown_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_FarTown_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_FarTown_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_FarTown_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_FarTown_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_FarTown_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_FarTown_far_Town2_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_FarTown_far_Town2_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_FarTown_far_Town2_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_FarTown_far_Town2_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_FarTown_far_Town2_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_FarTown_far_Town2_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_BenchWood_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_BenchWood_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_BenchWood_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_BenchWood_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_BenchWood_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_BenchWood_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_CastIron_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_CastIron_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_CastIron_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_CastIron_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_CastIron_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_CastIron_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Coping_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Coping_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Coping_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Coping_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Coping_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Coping_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_ElmBark_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_ElmBark_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_ElmBark_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_ElmBark_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_ElmBark_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_ElmBark_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Facades_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Facades_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Facades_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Facades_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Facades_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Facades_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_FarShips_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_FarShips_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_FarShips_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_FarShips_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_FarShips_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_FarShips_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Granite_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Granite_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Granite_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Granite_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Granite_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Granite_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Gravel_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Gravel_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Gravel_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Gravel_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Gravel_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Gravel_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Lawn_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Lawn_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Lawn_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Lawn_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Lawn_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Lawn_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_PierTimber_MESH_Piers_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_PierTimber_MESH_Piers_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_PierTimber_MESH_Piers_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_PierTimber_MESH_Piers_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_PierTimber_MESH_Piers_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_PierTimber_MESH_Piers_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_PierTimber_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_PierTimber_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_PierTimber_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_PierTimber_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_PierTimber_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_PierTimber_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Roofs_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Roofs_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Roofs_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Roofs_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Roofs_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Roofs_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Sandstone_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Sandstone_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Sandstone_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Sandstone_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Sandstone_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Sandstone_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_FarShips_MESH_Ships_FarShips_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_FarShips_MESH_Ships_FarShips_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_FarShips_MESH_Ships_FarShips_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_FarShips_MESH_Ships_FarShips_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_FarShips_MESH_Ships_FarShips_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_FarShips_MESH_Ships_FarShips_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipHulls_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipHulls_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipHulls_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipHulls_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipHulls_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipHulls_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipSails_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipSails_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipSails_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipSails_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipSails_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipSails_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipSpars_MESH_Ships_ShipSpars_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipSpars_MESH_Ships_ShipSpars_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipSpars_MESH_Ships_ShipSpars_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipSpars_MESH_Ships_ShipSpars_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipSpars_MESH_Ships_ShipSpars_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipSpars_MESH_Ships_ShipSpars_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipSpars_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipSpars_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipSpars_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipSpars_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipSpars_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_ShipSpars_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Facades_MESH_Town_Facades_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Facades_MESH_Town_Facades_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Facades_MESH_Town_Facades_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Facades_MESH_Town_Facades_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Facades_MESH_Town_Facades_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Facades_MESH_Town_Facades_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Roofs_MESH_Town_Roofs_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Roofs_MESH_Town_Roofs_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Roofs_MESH_Town_Roofs_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Roofs_MESH_Town_Roofs_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_Roofs_MESH_Town_Roofs_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_Roofs_MESH_Town_Roofs_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_SkyDome_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_SkyDome_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_ElmLeaves_Normal.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_ElmLeaves_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_ElmLeaves_BaseColor.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_ElmLeaves_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/BatteryWaterfront/textures/T_ElmLeaves_Roughness.jpg
+    assetPath: Assets/Fable/Models/BatteryWaterfront/textures/T_ElmLeaves_Roughness.jpg
+  reportItems: []

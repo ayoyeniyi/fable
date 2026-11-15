@@ -1,0 +1,341 @@
+fileFormatVersion: 2
+guid: 2c482d1f9e5364fafada31cca0007172
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies:
+  - type: 0
+    originalUri: Assets/Fable/Models/SpyglassTavern/spyglass_tavern.bin
+    assetPath: Assets/Fable/Models/SpyglassTavern/spyglass_tavern.bin
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_RedCurtain_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_RedCurtain_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_RedCurtain_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_RedCurtain_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Pennant_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Pennant_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Pennant_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Pennant_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Pennant_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Pennant_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_FarMasts_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_FarMasts_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_FarMasts_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_FarMasts_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_FarMasts_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_FarMasts_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_FarWarehouses_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_FarWarehouses_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_FarWarehouses_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_FarWarehouses_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_FarWarehouses_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_FarWarehouses_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_FarWindow_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_FarWindow_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_FarWindow_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_FarWindow_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_FarWindow_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_FarWindow_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_BarWood_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_BarWood_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_BarWood_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_BarWood_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_BarWood_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_BarWood_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Beams_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Beams_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Beams_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Beams_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Beams_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Beams_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_BottleGlass_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_BottleGlass_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_BottleGlass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_BottleGlass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_BottleGlass_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_BottleGlass_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Brass_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Brass_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Brass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Brass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Brass_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Brass_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Brick_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Brick_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Brick_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Brick_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Cards_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Cards_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Cards_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Cards_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Cards_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Cards_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Casks_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Casks_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Casks_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Casks_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_CeilingBoards_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_CeilingBoards_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_CeilingBoards_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_CeilingBoards_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_ClayPipe_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_ClayPipe_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_ClayPipe_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_ClayPipe_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_ClayPipe_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_ClayPipe_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Deck_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Deck_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Deck_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Deck_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Deck_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Deck_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_ElmTables_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_ElmTables_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_ElmTables_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_ElmTables_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_ElmTables_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_ElmTables_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Embers_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Embers_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Embers_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Embers_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Embers_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Embers_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Figurehead_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Figurehead_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Figurehead_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Figurehead_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Figurehead_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Figurehead_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Flame_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Flame_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Flame_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Flame_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Flame_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Flame_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_FurledSail_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_FurledSail_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_FurledSail_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_FurledSail_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_FurledSail_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_FurledSail_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Glass_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Glass_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Glass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Glass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Glass_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Glass_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_HearthStone_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_HearthStone_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_HearthStone_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_HearthStone_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Hull_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Hull_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Hull_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Hull_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Iron_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Iron_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Iron_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Iron_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Iron_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Iron_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Logs_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Logs_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Logs_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Logs_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Logs_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Logs_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Pewter_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Pewter_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Pewter_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Pewter_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Pewter_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Pewter_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_PrintPaper_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_PrintPaper_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_PrintPaper_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_PrintPaper_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_PrintPaper_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_PrintPaper_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Quay_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Quay_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Quay_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Quay_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_QuayWall_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_QuayWall_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_QuayWall_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_QuayWall_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Rigging_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Rigging_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Rigging_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Rigging_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Rigging_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Rigging_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Rope_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Rope_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Rope_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Rope_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Rope_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Rope_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_SandedFloor_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_SandedFloor_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_SandedFloor_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_SandedFloor_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_SandedFloor_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_SandedFloor_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_SignPaint_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_SignPaint_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_SignPaint_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_SignPaint_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_SignPaint_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_SignPaint_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Soot_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Soot_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Soot_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Soot_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Soot_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Soot_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Spars_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Spars_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Stoneware_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Stoneware_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Stoneware_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Stoneware_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Stoneware_Roughness.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Stoneware_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Whitewash_Normal.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Whitewash_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Whitewash_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Whitewash_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_SkyDome_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_SkyDome_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SpyglassTavern/textures/T_Harbour_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SpyglassTavern/textures/T_Harbour_BaseColor.jpg
+  reportItems:
+  - type: 2
+    code: 20
+    messages:
+    - KHR_materials_emissive_strength

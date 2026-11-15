@@ -1,0 +1,344 @@
+fileFormatVersion: 2
+guid: 30899bb7d5d8a4446bae6ee4e6b09a87
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 715df9372183c47e389bb6e19fbc3b52, type: 3}
+  editorImportSettings:
+    generateSecondaryUVSet: 0
+  importSettings:
+    nodeNameMethod: 1
+    animationMethod: 2
+    generateMipMaps: 1
+    texturesReadable: 0
+    defaultMinFilterMode: 9729
+    defaultMagFilterMode: 9729
+    anisotropicFilterLevel: 1
+  instantiationSettings:
+    mask: -1
+    layer: 0
+    skinUpdateWhenOffscreen: 1
+    lightIntensityFactor: 1
+    sceneObjectCreation: 2
+  assetDependencies:
+  - type: 0
+    originalUri: Assets/Fable/Models/SquiresLibrary/squires_library.bin
+    assetPath: Assets/Fable/Models/SquiresLibrary/squires_library.bin
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_FarTrees_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_FarTrees_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_FarTrees_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_FarTrees_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_FarTrees_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_FarTrees_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_FarGarden_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_FarGarden_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_FarSlate_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_FarSlate_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_FarSlate_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_FarSlate_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_FarSlate_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_FarSlate_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_FarWindow_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_FarWindow_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_FarWindow_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_FarWindow_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_FarWindow_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_FarWindow_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_FarWindowLit_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_FarWindowLit_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_FarWindowLit_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_FarWindowLit_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_FarWindowLit_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_FarWindowLit_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_FarStucco_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_FarStucco_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_AccountBook_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_AccountBook_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_AccountBook_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_AccountBook_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_AccountBook_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_AccountBook_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Books_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Books_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Books_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Books_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Books_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Books_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Brass_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Brass_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Brass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Brass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Brass_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Brass_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_BustMarble_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_BustMarble_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_BustMarble_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_BustMarble_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Carpet_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Carpet_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Carpet_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Carpet_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Ceiling_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Ceiling_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_ChairLeather_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_ChairLeather_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_ChairLeather_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_ChairLeather_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_ChairLeather_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_ChairLeather_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_China_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_China_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_China_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_China_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_China_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_China_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_ClayPipe_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_ClayPipe_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_ClayPipe_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_ClayPipe_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_ClayPipe_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_ClayPipe_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_ClockFace_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_ClockFace_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_ClockFace_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_ClockFace_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_ClockFace_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_ClockFace_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Curtain_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Curtain_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Curtain_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Curtain_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Decanter_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Decanter_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Decanter_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Decanter_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Decanter_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Decanter_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Embers_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Embers_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Embers_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Embers_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Embers_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Embers_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Firebox_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Firebox_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Firebox_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Firebox_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Flame_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Flame_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Flame_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Flame_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Flame_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Flame_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Floor_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Floor_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Floor_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Floor_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Floor_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Floor_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Gilt_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Gilt_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Gilt_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Gilt_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Gilt_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Gilt_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Glass_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Glass_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Glass_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Glass_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Glass_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Glass_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Globe_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Globe_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Globe_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Globe_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Globe_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Globe_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Iron_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Iron_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Iron_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Iron_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Iron_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Iron_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Logs_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Logs_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Logs_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Logs_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Logs_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Logs_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Mahogany_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Mahogany_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Mahogany_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Mahogany_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Mahogany_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Mahogany_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_MahoganyFurniture_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_MahoganyFurniture_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_MahoganyFurniture_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_MahoganyFurniture_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_MahoganyFurniture_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_MahoganyFurniture_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Map_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Map_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Marble_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Marble_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Marble_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Marble_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Matting_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Matting_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Matting_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Matting_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Matting_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Matting_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_OakDoor_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_OakDoor_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_OakDoor_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_OakDoor_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Oilskin_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Oilskin_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Oilskin_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Oilskin_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Oilskin_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Oilskin_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_PaintedPanel_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_PaintedPanel_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_PaintedPanel_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_PaintedPanel_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Painting_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Painting_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Paper_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Paper_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Paper_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Paper_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Paper_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Paper_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Plaster_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Plaster_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Plaster_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Plaster_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Quill_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Quill_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Quill_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Quill_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Quill_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Quill_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Wax_Normal.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Wax_Normal.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Wax_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Wax_BaseColor.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_Wax_Roughness.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_Wax_Roughness.jpg
+  - type: 1
+    originalUri: Assets/Fable/Models/SquiresLibrary/textures/T_SkyDome_BaseColor.jpg
+    assetPath: Assets/Fable/Models/SquiresLibrary/textures/T_SkyDome_BaseColor.jpg
+  reportItems:
+  - type: 2
+    code: 20
+    messages:
+    - KHR_materials_emissive_strength

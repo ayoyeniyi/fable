@@ -3,8 +3,10 @@
 // TextureImporter instead, so they are compressed for Quest here. Each image's role is read from the .gltf itself:
 //   normalTexture                          -> normal map, linear, ASTC 4x4
 //   metallicRoughnessTexture, occlusion    -> linear data, ASTC 6x6
-//   everything else (base colour, emission) -> sRGB colour, ASTC 6x6
-// Mipmaps on, 2048 max, except a 4K colour map (the one ground texture the budget allows) which keeps 4096.
+//   everything else (base colour, emission) -> sRGB colour, ASTC 6x6; alpha kept only for the base colour of a MASK or
+//                                             BLEND material (leaf and grass cards), dropped everywhere else
+// Mipmaps on, 2048 max, except a 4K colour map (the one ground texture the budget allows) which keeps 4096, unless the
+// room is listed in No4K (its texture memory is over budget at 4K: the fields to Netherfield, ~60 MB estimated).
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json.Linq;
@@ -16,7 +18,8 @@ namespace Fable.Editor
     public class FableTextureImport : AssetPostprocessor
     {
         const string Root = "Assets/Fable/Models/";
-        enum Role { Color, Linear, Normal }
+        enum Role { Color, ColorAlpha, Linear, Normal }
+        static readonly string[] No4K = { Root + "FieldsToNetherfield/" };
 
         void OnPreprocessTexture()
         {
@@ -25,10 +28,11 @@ namespace Fable.Editor
             var role = RoleOf(assetPath);
             ti.textureShape = TextureImporterShape.Texture2D;   // glTFast requires 2D
             ti.textureType = role == Role.Normal ? TextureImporterType.NormalMap : TextureImporterType.Default;
-            ti.sRGBTexture = role == Role.Color;
-            ti.mipmapEnabled = true; ti.isReadable = false; ti.alphaSource = TextureImporterAlphaSource.None;
+            ti.sRGBTexture = role == Role.Color || role == Role.ColorAlpha;
+            ti.mipmapEnabled = true; ti.isReadable = false;
+            ti.alphaSource = role == Role.ColorAlpha ? TextureImporterAlphaSource.FromInput : TextureImporterAlphaSource.None; ti.alphaIsTransparency = role == Role.ColorAlpha;
             ti.GetSourceTextureWidthAndHeight(out var w, out var h);
-            bool ground = role == Role.Color && Mathf.Max(w, h) >= 4096;
+            bool ground = role != Role.Linear && role != Role.Normal && Mathf.Max(w, h) >= 4096 && !System.Array.Exists(No4K, assetPath.StartsWith);
             ti.maxTextureSize = ground ? 4096 : 2048;
             ti.anisoLevel = ground ? 4 : 1;
             var android = ti.GetPlatformTextureSettings("Android");
@@ -77,14 +81,15 @@ namespace Fable.Editor
                 {
                     var f = ImageFile(texInfo); if (f == null) return;
                     // a file used both as colour and data keeps the stricter (data) role
-                    if (!roles.TryGetValue(f, out var prev) || r != Role.Color && prev == Role.Color) roles[f] = r;
+                    if (!roles.TryGetValue(f, out var prev) || (r == Role.Linear || r == Role.Normal) && (prev == Role.Color || prev == Role.ColorAlpha) || r == Role.ColorAlpha && prev == Role.Color) roles[f] = r;
                 }
                 foreach (var m in (JArray)doc["materials"] ?? new JArray())
                 {
                     Mark(m["normalTexture"], Role.Normal);
                     Mark(m["occlusionTexture"], Role.Linear);
                     Mark(m["pbrMetallicRoughness"]?["metallicRoughnessTexture"], Role.Linear);
-                    Mark(m["pbrMetallicRoughness"]?["baseColorTexture"], Role.Color);
+                    var mode = m["alphaMode"]?.Value<string>();
+                    Mark(m["pbrMetallicRoughness"]?["baseColorTexture"], mode == "MASK" || mode == "BLEND" ? Role.ColorAlpha : Role.Color);
                     Mark(m["emissiveTexture"], Role.Color);
                 }
             }
