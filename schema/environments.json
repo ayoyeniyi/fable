@@ -89,6 +89,9 @@
       "gltf": "unity/Fable/Assets/Fable/Models/IngolstadtGarret/ingolstadt_garret.gltf", "eye": "anchor.reader.entrance", "look": "anchor.reader.look", "triangles": 31582, "meshes": 30 },
     { "id": "mer-de-glace", "unityScene": "MerDeGlace", "staging": "place", "books": ["frankenstein"],
       "place": "The mule path at the top of the ascent to Montanvert above the Mer de Glace, a little after noon as the mist lifts (Frankenstein, chapters 9-10, and 17 where the creature's tale ends): the sea of ice running up the valley in grey crevassed swells with dark moraines, the bare granite of the far side, the aiguilles and the snowy wall at the valley's head, dark spruces, alpenrose and boulders on the near slope, and the valley falling away to Chamounix under the last of the mist.",
-      "gltf": "unity/Fable/Assets/Fable/Models/MerDeGlace/mer_de_glace.gltf", "eye": "anchor.reader.entrance", "look": "anchor.reader.look", "triangles": 45181, "meshes": 10 }
+      "gltf": "unity/Fable/Assets/Fable/Models/MerDeGlace/mer_de_glace.gltf", "eye": "anchor.reader.entrance", "look": "anchor.reader.look", "triangles": 45181, "meshes": 10 },
+    { "id": "arctic-ice", "unityScene": "ArcticIce", "staging": "place", "books": ["frankenstein"],
+      "place": "The frozen sea off Walton's ship late on a summer night, the sun a few degrees above the northern horizon (Frankenstein, Letter 4, chapter 24 and Walton, in Continuation): a snow-covered floe among hummocks and pressure ridges; the three-masted ship beset in the pack fifty metres off, listing a little, sails furled and snow-laden, rigging rimed, ice rafted against her side, a gangway and an ice anchor's hawser down to the floe; a dog-sledge's track running away across the ice toward a far tabular berg; a dark lead of open water; vast plains of ice to the horizon.",
+      "gltf": "unity/Fable/Assets/Fable/Models/ArcticIce/arctic_ice.gltf", "eye": "anchor.reader.entrance", "look": "anchor.reader.look", "triangles": 42176, "meshes": 17 }
   ]
 }
