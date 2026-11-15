@@ -84,7 +84,8 @@ goes to a place's view).
 | field | | |
 |---|---|---|
 | `id` | required | lower-case-hyphenated, unique in the book |
-| `name` | required | the label the headset shows when the pin is lit (the book's spelling) |
+| `name` | required | the place's name as the book writes it; it must occur in the text and is always matched |
+| `label` | optional | what the headset shows when the pin is lit, when that should read better than `name` (Alice's "Neat little house" is labelled "The White Rabbit's House"); defaults to `name`. Never matched |
 | `aliases` | required (may be `[]`) | other phrases a reader might highlight for this place, in the book's spelling. The name is always matched too; repeating it in `aliases` is harmless |
 | `kind` | required | one of `city town village house building street region country island sea coast harbour river lake mountain forest road field garden room ship-position place`. The headset may pick a pin shape from it; `region`, `country` and `sea` are areas, so their pin sits at the middle and may be drawn as a soft ring rather than a needle |
 | `view` | required | the id of the view the place is on |
@@ -109,8 +110,8 @@ goes to a place's view).
    strings; front matter `f01` comes before `c01`).
 4. If several revealed places match, take the one whose matched phrase is longest; if still tied, the one
    listed first in `places`.
-5. Match: open the map on that place's `view`, turned or panned to the place, its pin lit, its `name` and `note`
-   shown. No match: Peek makes its clay model as before.
+5. Match: open the map on that place's `view`, turned or panned to the place, its pin lit, its `label` (or `name`) and
+   `note` shown. No match: Peek makes its clay model as before.
 
 No phrase belongs to two places (`check_maps.py` enforces this), and phrases are at least three characters.
 

@@ -96,6 +96,7 @@
     {
       "id": "great-forest",
       "name": "Great forest",
+      "label": "The Great Forest",
       "aliases": [],
       "kind": "forest",
       "view": "oz",
@@ -108,6 +109,7 @@
     {
       "id": "tin-woodman-cottage",
       "name": "Little cottage",
+      "label": "The Cottage",
       "aliases": [],
       "kind": "house",
       "view": "oz",
@@ -120,6 +122,7 @@
     {
       "id": "great-ditch",
       "name": "Great ditch",
+      "label": "The Great Ditch",
       "aliases": [],
       "kind": "place",
       "view": "oz",
@@ -132,6 +135,7 @@
     {
       "id": "river",
       "name": "Broad river",
+      "label": "The River",
       "aliases": [
         "the river"
       ],
@@ -146,6 +150,7 @@
     {
       "id": "poppy-field",
       "name": "Poppy field",
+      "label": "The Poppy Field",
       "aliases": [],
       "kind": "field",
       "view": "oz",
@@ -158,6 +163,7 @@
     {
       "id": "emerald-city",
       "name": "Emerald City",
+      "label": "The Emerald City",
       "aliases": [
         "City of Emeralds"
       ],
@@ -186,6 +192,7 @@
     {
       "id": "yellow-castle",
       "name": "Yellow Castle",
+      "label": "The Yellow Castle",
       "aliases": [],
       "kind": "building",
       "view": "oz",
@@ -212,6 +219,7 @@
     {
       "id": "china-country",
       "name": "China country",
+      "label": "The China Country",
       "aliases": [
         "china wall"
       ],
@@ -226,6 +234,7 @@
     {
       "id": "old-forest",
       "name": "Grand old forest",
+      "label": "The Grand Old Forest",
       "aliases": [],
       "kind": "forest",
       "view": "oz",
@@ -250,6 +259,7 @@
     {
       "id": "glinda-castle",
       "name": "Castle of Glinda",
+      "label": "The Castle of Glinda",
       "aliases": [],
       "kind": "building",
       "view": "oz",

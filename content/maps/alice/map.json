@@ -31,6 +31,7 @@
     {
       "id": "long-hall",
       "name": "Long hall",
+      "label": "The Long Hall",
       "aliases": [
         "the hall",
         "long, low hall"
@@ -46,6 +47,7 @@
     {
       "id": "little-door",
       "name": "Little door",
+      "label": "The Little Door",
       "aliases": [],
       "kind": "room",
       "view": "wonderland",
@@ -58,6 +60,7 @@
     {
       "id": "pool-of-tears",
       "name": "Pool of tears",
+      "label": "The Pool of Tears",
       "aliases": [
         "the pool"
       ],
@@ -84,6 +87,7 @@
     {
       "id": "rabbit-house",
       "name": "Neat little house",
+      "label": "The White Rabbit's House",
       "aliases": [
         "W. RABBIT"
       ],
@@ -98,6 +102,7 @@
     {
       "id": "thick-wood",
       "name": "Thick wood",
+      "label": "The Thick Wood",
       "aliases": [
         "the wood"
       ],
@@ -112,6 +117,7 @@
     {
       "id": "mushroom",
       "name": "Large mushroom",
+      "label": "The Caterpillar's Mushroom",
       "aliases": [
         "the mushroom"
       ],
@@ -126,6 +132,7 @@
     {
       "id": "duchess-house",
       "name": "Large kitchen",
+      "label": "The Duchess's House",
       "aliases": [],
       "kind": "house",
       "view": "wonderland",
@@ -150,6 +157,7 @@
     {
       "id": "tea-party",
       "name": "The tea-party",
+      "label": "The Mad Tea-Party",
       "aliases": [],
       "kind": "place",
       "view": "wonderland",
@@ -162,6 +170,7 @@
     {
       "id": "beautiful-garden",
       "name": "Beautiful garden",
+      "label": "The Beautiful Garden",
       "aliases": [
         "lovely garden",
         "loveliest garden",
@@ -190,6 +199,7 @@
     {
       "id": "croquet-ground",
       "name": "The croquet-ground",
+      "label": "The Queen's Croquet-ground",
       "aliases": [],
       "kind": "field",
       "view": "wonderland",
@@ -202,6 +212,7 @@
     {
       "id": "mock-turtle-rock",
       "name": "Ledge of rock",
+      "label": "The Mock Turtle's Rock",
       "aliases": [],
       "kind": "coast",
       "view": "wonderland",
@@ -214,6 +225,7 @@
     {
       "id": "sea",
       "name": "Bottom of the sea",
+      "label": "The Bottom of the Sea",
       "aliases": [
         "school in the sea"
       ],
@@ -228,6 +240,7 @@
     {
       "id": "court",
       "name": "Court of justice",
+      "label": "The Court of Justice",
       "aliases": [
         "the court",
         "jury-box"

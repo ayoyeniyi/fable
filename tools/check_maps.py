@@ -24,7 +24,7 @@ SLUGS = ["alice", "oz", "odyssey", "gulliver", "pride", "mobydick", "worlds", "t
 LOCATED = {"geocoded", "book", "approximate", "traditional", "drawn", "scan"}
 KINDS = {"city", "town", "village", "house", "building", "street", "region", "country", "island", "sea", "coast",
          "harbour", "river", "lake", "mountain", "forest", "road", "field", "garden", "room", "ship-position", "place"}
-PLACE_KEYS = {"id", "name", "aliases", "view", "lat", "lon", "u", "v", "located", "kind", "firstSentence", "note"}
+PLACE_KEYS = {"id", "name", "label", "aliases", "view", "lat", "lon", "u", "v", "located", "kind", "firstSentence", "note"}
 VIEW_KEYS = {"globe": {"id", "kind", "title", "texture", "normal", "focus"},
              "scroll": {"id", "kind", "title", "image", "aspect", "height", "parent", "anchor", "source", "attribution"}}
 ID_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
@@ -205,6 +205,8 @@ def check(slug, fill=False):
         extra = set(pl) - PLACE_KEYS
         if extra:
             E(f"place {pid}: unknown keys {sorted(extra)}")
+        if "label" in pl and (not isinstance(pl["label"], str) or not pl["label"].strip()):
+            E(f"place {pid}: label must be a non-empty string")
         for k in ("name", "note"):
             if not isinstance(pl.get(k), str) or not pl[k].strip():
                 E(f"place {pid}: {k} required")
