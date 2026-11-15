@@ -21,16 +21,22 @@ namespace Fable.Editor
         enum Role { Color, ColorAlpha, Linear, Normal }
         static readonly string[] No4K = { Root + "FieldsToNetherfield/" };
 
+        /// Book maps copied by FableBuild.SyncData from content/maps (scroll images and the shared Earth texture).
+        public const string MapsRoot = "Assets/Fable/Resources/Maps/";
+        const string EdgeMask = Root + "MapProps/textures/scroll_edge_mask.png";
+
         void OnPreprocessTexture()
         {
+            if (assetPath.StartsWith(MapsRoot)) { MapImage((TextureImporter)assetImporter); return; }
             if (!assetPath.StartsWith(Root)) return;
             var ti = (TextureImporter)assetImporter;
-            var role = RoleOf(assetPath);
+            var role = assetPath == EdgeMask ? Role.Linear : RoleOf(assetPath);
             ti.textureShape = TextureImporterShape.Texture2D;   // glTFast requires 2D
             ti.textureType = role == Role.Normal ? TextureImporterType.NormalMap : TextureImporterType.Default;
             ti.sRGBTexture = role == Role.Color || role == Role.ColorAlpha;
             ti.mipmapEnabled = true; ti.isReadable = false;
-            ti.alphaSource = role == Role.ColorAlpha ? TextureImporterAlphaSource.FromInput : TextureImporterAlphaSource.None; ti.alphaIsTransparency = role == Role.ColorAlpha;
+            // the scroll's edge mask: linear multipliers in RGB and the torn edge in A (docs/MAP_PROPS.md), so alpha is kept
+            ti.alphaSource = role == Role.ColorAlpha || assetPath == EdgeMask ? TextureImporterAlphaSource.FromInput : TextureImporterAlphaSource.None; ti.alphaIsTransparency = role == Role.ColorAlpha;
             ti.GetSourceTextureWidthAndHeight(out var w, out var h);
             bool ground = role != Role.Linear && role != Role.Normal && Mathf.Max(w, h) >= 4096 && !System.Array.Exists(No4K, assetPath.StartsWith);
             ti.maxTextureSize = ground ? 4096 : 2048;
@@ -38,6 +44,27 @@ namespace Fable.Editor
             var android = ti.GetPlatformTextureSettings("Android");
             android.overridden = true; android.maxTextureSize = ti.maxTextureSize;
             android.format = role == Role.Normal ? TextureImporterFormat.ASTC_4x4 : TextureImporterFormat.ASTC_6x6;
+            android.compressionQuality = 50;
+            ti.SetPlatformTextureSettings(android);
+        }
+
+        /// Maps are read up close and at an angle: sRGB, mipmaps, trilinear with some anisotropy, kept at their own size
+        /// (4096 for the Earth and the few scans that need it, else 2048). ASTC 6x6 for the globe (a photograph), 5x5
+        /// for scrolls, whose hand lettering smears at 6x6. Not readable: the CPU never touches them.
+        static void MapImage(TextureImporter ti)
+        {
+            ti.textureShape = TextureImporterShape.Texture2D; ti.textureType = TextureImporterType.Default;
+            ti.sRGBTexture = true; ti.mipmapEnabled = true; ti.isReadable = false; ti.alphaSource = TextureImporterAlphaSource.None;
+            // scans are 1186 x 2048 and the like: scaled up to the next power of two, so no detail is lost. Left NPOT, this
+            // Unity imports them uncompressed (RGBA32, 13 MB for one scroll) despite the ASTC override.
+            ti.npotScale = TextureImporterNPOTScale.ToLarger;
+            ti.wrapModeU = ti.assetPath.Contains("/_globe/") ? TextureWrapMode.Repeat : TextureWrapMode.Clamp; ti.wrapModeV = TextureWrapMode.Clamp;
+            ti.filterMode = FilterMode.Trilinear; ti.anisoLevel = 4;
+            ti.GetSourceTextureWidthAndHeight(out var w, out var h);
+            ti.maxTextureSize = Mathf.Max(w, h) > 2048 ? 4096 : 2048;
+            var android = ti.GetPlatformTextureSettings("Android");
+            android.overridden = true; android.maxTextureSize = ti.maxTextureSize;
+            android.format = ti.assetPath.Contains("/_globe/") ? TextureImporterFormat.ASTC_6x6 : TextureImporterFormat.ASTC_5x5;
             android.compressionQuality = 50;
             ti.SetPlatformTextureSettings(android);
         }

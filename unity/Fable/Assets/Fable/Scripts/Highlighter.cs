@@ -9,7 +9,8 @@
 // in the reader's language (TranslateLanguages: 54 of them, chosen with the picker from the card's "to Spanish ▼" or the
 // bar's settings); only the highlighted words and the book's title are sent, so it works for imported books too. Scripts
 // the page's font cannot shape or lay out right to left come back drawn by the service and are shown as a picture. Search lists the sentences already read that contain the highlight.
-// Peek shows a low-fi model beside the page: a library model first (a prop of the loaded room or a shipped clay model),
+// Peek on a place the book's map knows (BookMap, docs/MAPS_HEADSET.md) opens that map beside the page, its pin lit: a
+// globe for real places, a scroll for invented ones. Otherwise Peek shows a low-fi model beside the page: a library model first (a prop of the loaded room or a shipped clay model),
 // else a clay model from the interpreter when it is reachable. Step In stages the passage from the highlight's
 // sentence. Spoiler rule: only text up to the end of the highlight leaves the device, library entries are offered only
 // once the reader has reached them, and Search never looks past the furthest page read.
@@ -60,6 +61,11 @@ namespace Fable
         Material lineMat; Coroutine peekJob, translateJob;
         RectTransform langBtn; TMP_Text langLbl; RawImage cardPicture; Texture2D cardTexture; RectTransform waitTrack, waitFill;
         float waitExpected; string waitKind;
+        // the book's map (Peek on a place): the view the highlight matched, and the one the card's button switches to
+        BookMap maps; MapView mapView; RectTransform viewBtn; TMP_Text viewLbl;
+        (MapDoc.View view, MapDoc.Place place) mapHome, mapAlt; bool mapOnAlt;
+        public BookMap Maps => maps;
+        public MapView Map => mapView;
 
         public static readonly string[] Actions = { "define", "translate", "search", "peek", "chapters" };
         static readonly string[] ActionNames = { "Define", "Translate", "Search", "Peek", "Chapters" };
@@ -68,6 +74,7 @@ namespace Fable
         {
             Flow = flow; Reader = reader; Pointer = pointer; Input = input; Director = director;
             Build();
+            if (!maps && !TryGetComponent(out maps)) maps = gameObject.AddComponent<BookMap>();
             if (!loading) StartCoroutine(LoadData());
             if (Input && !Input.Claimers.Contains(ClaimPeek)) Input.Claimers.Add(ClaimPeek);
         }
@@ -93,6 +100,7 @@ namespace Fable
 
         void Update()
         {
+            if (maps && Reader) maps.Ensure(Reader.Active ? Reader.Book : null);   // the open book's map; released when it closes
             if (!OnText) { if (Current != Mode.Idle) Clear(); wasPinching = Pinching; return; }
             bool p = Pinching, down = p && !wasPinching, up = !p && wasPinching; wasPinching = p;
             switch (Current)
@@ -160,7 +168,7 @@ namespace Fable
         {
             ray = default; dist = 0;
             var model = PeekModel; if (!model || !Pointer.Ray(right, out ray)) return false;
-            var b = ClayBuilder.Bounds(model, peekRoot); b.Expand(0.05f);
+            var b = mapView ? mapView.Bounds : ClayBuilder.Bounds(model, peekRoot); b.Expand(0.05f);
             var local = new Ray(peekRoot.InverseTransformPoint(ray.origin), peekRoot.InverseTransformDirection(ray.direction));
             if (b.IntersectRay(local, out dist) && dist < 3f) return true;
 #if FABLE_META_XR
@@ -187,7 +195,9 @@ namespace Fable
             var p = ray.GetPoint(peekGrabDist); var delta = p - peekLast; peekLast = p;
             var head = Camera.main ? Camera.main.transform : null; if (!head) return;
             var right = Vector3.ProjectOnPlane(head.right, Vector3.up).normalized;
-            var centre = peekRoot.TransformPoint(ClayBuilder.Bounds(model, peekRoot).center);
+            // the globe turns on its axis (0.25 m of hand travel is three quarters of a turn); a scroll turns like a model
+            if (mapView && mapView.Spin(-Vector3.Dot(delta, right) * 1080f)) return;
+            var centre = peekRoot.TransformPoint((mapView ? mapView.Bounds : ClayBuilder.Bounds(model, peekRoot)).center);
             // 0.25 m of hand travel is a full turn round; up and down tips it, at most a quarter turn either way
             model.RotateAround(centre, Vector3.up, -Vector3.Dot(delta, right) * 1440f);
             model.RotateAround(centre, right, Vector3.Dot(delta, Vector3.up) * 720f);
@@ -291,6 +301,7 @@ namespace Fable
             {
                 if (Pointer.Over(right, cardClose)) { Clear(); return true; }
                 if (langBtn && langBtn.gameObject.activeSelf && Pointer.Over(right, langBtn)) { OpenLanguages(); return true; }
+                if (viewBtn && viewBtn.gameObject.activeSelf && Pointer.Over(right, viewBtn)) { SwitchMapView(); return true; }
                 foreach (var r in resultRows) if (r.rt.gameObject.activeSelf && Pointer.Over(right, r.rt)) { var s = r.sentence; Clear(); Reader.GoToSentence(s); return true; }
                 if (Pointer.Over(right, card)) return true;   // a pinch on the card itself does nothing
                 Clear(); return false;                         // elsewhere on the page: close it, and the page turns as usual
@@ -381,6 +392,16 @@ namespace Fable
             var t0 = Time.realtimeSinceStartup;
             ClosePeek();
             int end = Reader.Book.Ordinal(LastSentence);
+            // a place on the book's map, reached by the highlight: the map, not a model
+            var place = maps ? maps.Match(Phrase, end, out _) : null;
+            var placeView = place != null ? maps.Doc.FindView(place.View) : null;
+            if (placeView != null)
+            {
+                mapHome = (placeView, place); mapAlt = MapAlternative(placeView, place); mapOnAlt = false;
+                float tm = (Time.realtimeSinceStartup - t0) * 1000;
+                peekJob = StartCoroutine(PeekMap(placeView, place, t0, tm));
+                return;
+            }
             var e = library?.Match(Reader.Book.Slug, Phrase, end, Reader.Book.Ordinal, out _);
             float tMatch = (Time.realtimeSinceStartup - t0) * 1000;
             if (e != null && e.Kind == "prefab")
@@ -391,6 +412,62 @@ namespace Fable
             }
             if (e != null && e.Kind == "clay") { peekJob = StartCoroutine(PeekClayFile(e, t0, tMatch)); return; }
             peekJob = StartCoroutine(PeekFromInterpreter(t0, tMatch));
+        }
+
+        /// The ordinal up to which places are drawn: the highlight or the furthest the reader has reached, whichever is later.
+        int MapRevealedUpTo => Mathf.Max(Reader.Book.Ordinal(LastSentence), Reader.ReachedOrdinal);
+
+        /// The other view the card's button offers: a scroll's parent globe turned to its anchor pin (if the reader has
+        /// reached the anchor), or from a lit globe pin, the scroll that comes out of it.
+        (MapDoc.View, MapDoc.Place) MapAlternative(MapDoc.View view, MapDoc.Place lit)
+        {
+            var doc = maps.Doc; int upTo = MapRevealedUpTo;
+            if (!view.Globe && !string.IsNullOrEmpty(view.Parent) && !string.IsNullOrEmpty(view.Anchor))
+            {
+                var pv = doc.FindView(view.Parent); var anchor = doc.FindPlace(view.Anchor);
+                if (pv != null && pv.Globe && anchor != null && anchor.View == pv.Id && maps.Revealed(anchor, upTo)) return (pv, anchor);
+            }
+            if (view.Globe && lit != null)
+                foreach (var v in doc.Views) if (!v.Globe && v.Parent == view.Id && v.Anchor == lit.Id) return (v, null);
+            return (null, null);
+        }
+
+        IEnumerator PeekMap(MapDoc.View view, MapDoc.Place lit, float t0, float tMatch)
+        {
+            ShowCard("Peek", "Opening the map…");
+            PeekStatus = "map-loading";
+            Texture2D tex = null;
+            yield return maps.LoadTexture(view, t => tex = t);
+            if (Current != Mode.Card) yield break;   // closed meanwhile
+            peekJob = null;   // ClosePeek below must not stop this coroutine
+            ClosePeek();
+            if (!tex) { ShowCard("Peek", $"The map of “{view.Title}” is missing from this build."); PeekStatus = "map-missing"; yield break; }
+            var root = NewPeekRoot(map: true);
+            mapView = MapView.Build(root, maps.Doc, view, lit, MapRevealedUpTo, tex, Pointer, Reader.Panel.Body.font);
+            if (!mapView) { ClosePeek(); ShowCard("Peek", "The map props are missing from this build."); PeekStatus = "map-missing"; yield break; }
+            PeekTriangles = mapView.Triangles; PeekStatus = view.Globe ? "map-globe" : "map-scroll";
+            var hint = view.Globe ? "Pinch and hold the globe and move your hand to turn it" : "Pinch and hold the map to turn it";
+            var head = lit != null ? $"<b>{lit.Display}</b>  ·  <i>{view.Title}</i>\n{lit.Note}" : $"<b>{view.Title}</b>";
+            var credit = string.IsNullOrEmpty(view.Attribution) ? "" : $" {view.Attribution}.";
+            ShowCard("Peek", $"{head}\n<size=80%><i>{hint}; point at a pin for its name. Only places you have reached are shown.{credit}</i></size>");
+            var alt = mapOnAlt ? mapHome : mapAlt;
+            if (alt.view != null && viewBtn)
+            {
+                viewLbl.text = $"{(alt.view.Globe ? "on the globe" : alt.view.Title)}  <size=80%>›</size>";
+                viewBtn.sizeDelta = new Vector2(Mathf.Clamp(viewLbl.GetPreferredValues(viewLbl.text).x + 30f, 150f, 300f), viewBtn.sizeDelta.y);
+                viewBtn.gameObject.SetActive(true);
+                ((RectTransform)cardBody.transform.parent).offsetMin = new Vector2(22, 62);   // the text stops above the button
+            }
+            LastTimings = $"match {tMatch:F1} ms, map {(Time.realtimeSinceStartup - t0) * 1000 - tMatch:F0} ms ({view.Id}, {mapView.PinCount} pins)";
+        }
+
+        /// The card's view button (and test hook): switch between the matched view and the other one. Returns Describe().
+        public string SwitchMapView()
+        {
+            if (!mapView || mapAlt.view == null) return "no other map view";
+            mapOnAlt = !mapOnAlt; var (v, p) = mapOnAlt ? mapAlt : mapHome;
+            peekJob = StartCoroutine(PeekMap(v, p, Time.realtimeSinceStartup, 0));
+            return Describe();
         }
 
         IEnumerator PeekClayFile(PeekLibrary.Entry e, float t0, float tMatch)
@@ -569,15 +646,32 @@ namespace Fable
 
         /// Shown no taller than this, so the model sits under the card's caption (the card is 42 cm tall).
         const float PeekMaxHeight = 0.2f;
+        /// Where a map stands (metres): its centre this far left of the page's left edge, this much nearer the reader
+        /// than the page, its foot this far below the page's middle.
+        public static float MapBesidePage = 0.26f, MapNearer = 0.30f, MapBelow = 0.30f;
 
-        Transform NewPeekRoot()
+        Transform NewPeekRoot(bool map = false)
         {
             var page = Pointer.Page;
             peekRoot = new GameObject("Peek").transform;
-            // in front of the card, on its left, standing on its lower edge: the model and its labels read with the card
-            var bottom = card.TransformPoint(new Vector3(card.rect.center.x, card.rect.yMin, 0));
-            peekRoot.position = bottom + page.up * 0.05f - page.right * 0.13f - page.forward * 0.12f;
-            peekRoot.rotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(page.forward, Vector3.up).normalized, Vector3.up);
+            if (map)
+            {
+                // a map is wider than a model: beside the page on the reader's left, a little nearer than the page and
+                // below the eyes, turned to face them, so neither the page nor the card is covered
+                var r = page.rect; var left = page.TransformPoint(new Vector3(r.xMin, r.center.y, 0));
+                var at = left - page.right * MapBesidePage - Vector3.ProjectOnPlane(page.forward, Vector3.up).normalized * MapNearer;
+                at.y = left.y - MapBelow;
+                var eye = Camera.main ? Camera.main.transform.position : at - page.forward;
+                var look = Vector3.ProjectOnPlane(at - eye, Vector3.up); if (look.sqrMagnitude < 1e-4f) look = page.forward;
+                peekRoot.SetPositionAndRotation(at, Quaternion.LookRotation(look.normalized, Vector3.up));
+            }
+            else
+            {
+                // in front of the card, on its left, standing on its lower edge: the model and its labels read with the card
+                var bottom = card.TransformPoint(new Vector3(card.rect.center.x, card.rect.yMin, 0));
+                peekRoot.position = bottom + page.up * 0.05f - page.right * 0.13f - page.forward * 0.12f;
+                peekRoot.rotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(page.forward, Vector3.up).normalized, Vector3.up);
+            }
             // the room's lights are off while reading: the model brings a small one of its own
             var lamp = new GameObject("PeekLight").AddComponent<Light>(); lamp.transform.SetParent(peekRoot, false);
             lamp.type = LightType.Point; lamp.range = 1.6f; lamp.intensity = 3.2f; lamp.color = new Color(1f, 0.93f, 0.82f); lamp.shadows = LightShadows.None;
@@ -670,7 +764,7 @@ namespace Fable
             peekHover = !peekHeld && (PeekHit(true, out _, out _) || PeekHit(false, out _, out _));
             var lamp = peekRoot.GetComponentInChildren<Light>();
             if (lamp) lamp.intensity = peekHeld ? 5.2f : peekHover ? 4.3f : 3.2f;
-            if (model && !peekTouched) model.Rotate(Vector3.up, 14f * Time.deltaTime, Space.World);
+            if (model && !peekTouched && !mapView) model.Rotate(Vector3.up, 14f * Time.deltaTime, Space.World);   // a map stays turned to its pin
             foreach (var (text, line, target) in peekLabels)
             {
                 if (!target) continue;
@@ -695,7 +789,8 @@ namespace Fable
                 if (model) { model.SetParent(null); ClayBuilder.DestroyModel(model); }   // clay or a prefab copy: its materials go too
                 Destroy(peekRoot.gameObject);
             }
-            peekRoot = null; peekParts.Clear(); peekLabels.Clear(); PeekTriangles = 0;
+            peekRoot = null; peekParts.Clear(); peekLabels.Clear(); PeekTriangles = 0; mapView = null;
+            if (viewBtn) viewBtn.gameObject.SetActive(false);
             peekHeld = peekHover = peekTouched = grabScaled = false;
         }
 
@@ -713,6 +808,7 @@ namespace Fable
             cardTitle.text = title + "  ·  <i>" + Shorten(Phrase.Trim(), 48) + "</i>";
             cardBody.text = text;
             if (langBtn) { langBtn.gameObject.SetActive(false); ((RectTransform)cardBody.transform.parent).offsetMin = new Vector2(22, 16); }
+            if (viewBtn) viewBtn.gameObject.SetActive(false);
             if (title != "Translate") ClearPicture();
             ShowWaitBar(-1);
             foreach (var r in resultRows) r.rt.gameObject.SetActive(false);
@@ -742,7 +838,7 @@ namespace Fable
                 if (img.color != c) img.color = c;
             }
             if (Current == Mode.Menu) foreach (var p in petals) H(p.rt, new Color(0.99f, 0.86f, 0.52f, 1f));
-            if (Current == Mode.Card) { H(cardClose, new Color(0.45f, 0.36f, 0.24f, 0.25f)); H(langBtn, new Color(0.99f, 0.86f, 0.52f, 1f)); foreach (var r in resultRows) H(r.rt, new Color(0.45f, 0.36f, 0.24f, 0.16f)); }
+            if (Current == Mode.Card) { H(cardClose, new Color(0.45f, 0.36f, 0.24f, 0.25f)); H(langBtn, new Color(0.99f, 0.86f, 0.52f, 1f)); H(viewBtn, new Color(0.99f, 0.86f, 0.52f, 1f)); foreach (var r in resultRows) H(r.rt, new Color(0.45f, 0.36f, 0.24f, 0.16f)); }
         }
         readonly Dictionary<RectTransform, Color> baseColor = new();
 
@@ -798,6 +894,11 @@ namespace Fable
             var lo = langBtn.gameObject.AddComponent<Outline>(); lo.effectColor = new Color(0.45f, 0.33f, 0.18f, 0.9f); lo.effectDistance = new Vector2(1.5f, -1.5f);
             langLbl = Text(langBtn, 17, TextAlignmentOptions.Center, new Vector2(6, 0)); langLbl.fontStyle = FontStyles.SmallCaps; langLbl.textWrappingMode = TextWrappingModes.NoWrap;
             langBtn.gameObject.SetActive(false);
+            // Peek on a map: "on the globe ▸" / "Treasure Island ▸" switches between a scroll and its globe
+            viewBtn = Box("MapView", card, new Vector2(200, 42), new Color(0.99f, 0.96f, 0.89f, 1f)); viewBtn.anchorMin = viewBtn.anchorMax = viewBtn.pivot = new Vector2(1, 0); viewBtn.anchoredPosition = new Vector2(-14, 12);
+            var vo = viewBtn.gameObject.AddComponent<Outline>(); vo.effectColor = new Color(0.45f, 0.33f, 0.18f, 0.9f); vo.effectDistance = new Vector2(1.5f, -1.5f);
+            viewLbl = Text(viewBtn, 17, TextAlignmentOptions.Center, new Vector2(6, 0)); viewLbl.fontStyle = FontStyles.SmallCaps; viewLbl.textWrappingMode = TextWrappingModes.NoWrap;
+            viewBtn.gameObject.SetActive(false);
             // the wait bar: elapsed against the expected time (WaitEstimate)
             waitTrack = Box("WaitBar", card, new Vector2(516, 5), new Color(0.45f, 0.36f, 0.24f, 0.18f)); waitTrack.anchorMin = waitTrack.anchorMax = waitTrack.pivot = new Vector2(0.5f, 1); waitTrack.anchoredPosition = new Vector2(0, -150);
             waitFill = Box("Fill", waitTrack, new Vector2(0, 5), new Color(0.55f, 0.36f, 0.08f, 0.85f)); waitFill.anchorMin = waitFill.anchorMax = waitFill.pivot = new Vector2(0, 0.5f); waitFill.anchoredPosition = Vector2.zero;
@@ -812,6 +913,6 @@ namespace Fable
             card.gameObject.SetActive(false);
         }
 
-        public string Describe() => $"highlight={Current} phrase=\"{Phrase.Trim()}\" from={FirstSentence ?? "-"} to={LastSentence ?? "-"} peek={PeekStatus} tris={PeekTriangles} translate={TranslateStatus} timings=[{LastTimings}] dict={(dict != null)} library={(library != null)}";
+        public string Describe() => $"highlight={Current} phrase=\"{Phrase.Trim()}\" from={FirstSentence ?? "-"} to={LastSentence ?? "-"} peek={PeekStatus} tris={PeekTriangles} translate={TranslateStatus} timings=[{LastTimings}] dict={(dict != null)} library={(library != null)} {(maps ? maps.Describe() : "map=none")}{(mapView ? " " + mapView.Describe() : "")}";
     }
 }

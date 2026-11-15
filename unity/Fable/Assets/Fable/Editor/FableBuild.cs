@@ -6,6 +6,7 @@
 //   Unity -batchmode -quit -projectPath unity/Fable -executeMethod Fable.Editor.FableBuild.BakeLighting
 //   Unity -batchmode -quit -projectPath unity/Fable -executeMethod Fable.Editor.FableBuild.BuildApk
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using TMPro;
@@ -575,9 +576,70 @@ namespace Fable.Editor
                     var rel = Path.GetRelativePath(lib, f); var to = Path.Combine(dst, "library", rel);
                     Directory.CreateDirectory(Path.GetDirectoryName(to)); File.Copy(f, to, true); n++;
                 }
+            n += SyncMaps(repo, dst);
             n += SyncBundledRooms(repo, dst);
             AssetDatabase.Refresh();
+            MakeMapAssets();
             Debug.Log($"[FableBuild] synced {n} data files into StreamingAssets");
+        }
+
+        /// Book maps (docs/MAPS.md, docs/MAPS_HEADSET.md): each content/maps/<slug>/map.json goes to
+        /// StreamingAssets/maps/<slug>/map.json (read like book.json), and the images it uses (scroll images, the shared
+        /// Earth) to Resources/Maps/<same path>, so Unity compresses them to ASTC (FableTextureImport.MapImage) instead of
+        /// the app decoding JPEGs into uncompressed RGB at run time. Height maps, layouts and SOURCE.md stay behind (the
+        /// headset does not use them). Files no longer in content/maps are removed from both places.
+        static int SyncMaps(string repo, string dst)
+        {
+            var maps = Path.Combine(repo, "content", "maps");
+            var jsonRoot = Path.Combine(dst, "maps"); var imgRoot = Path.Combine(Application.dataPath, "Fable", "Resources", "Maps");
+            if (!Directory.Exists(maps)) return 0;
+            var keepJson = new HashSet<string>(); var keepImg = new HashSet<string>(); int n = 0;
+            foreach (var dir in Directory.GetDirectories(maps))
+            {
+                var src = Path.Combine(dir, "map.json"); if (!File.Exists(src)) continue;
+                var slug = Path.GetFileName(dir);
+                Newtonsoft.Json.Linq.JObject doc;
+                try { doc = Newtonsoft.Json.Linq.JObject.Parse(File.ReadAllText(src)); }
+                catch (Exception e) { Debug.LogWarning($"[FableBuild] maps/{slug}/map.json does not parse, skipped: {e.Message}"); continue; }
+                var to = Path.Combine(jsonRoot, slug, "map.json"); Directory.CreateDirectory(Path.GetDirectoryName(to));
+                File.Copy(src, to, true); keepJson.Add(Path.GetFullPath(to)); n++;
+                foreach (var v in doc["views"] ?? new Newtonsoft.Json.Linq.JArray())
+                    foreach (var key in new[] { "texture", "image" })
+                    {
+                        var rel = (string)v[key]; if (string.IsNullOrEmpty(rel) || !rel.StartsWith("maps/")) continue;
+                        var from = Path.Combine(repo, "content", rel); if (!File.Exists(from)) { Debug.LogWarning($"[FableBuild] maps/{slug}: {rel} is missing"); continue; }
+                        var img = Path.GetFullPath(Path.Combine(imgRoot, rel.Substring(5)));
+                        if (keepImg.Add(img))
+                        {
+                            Directory.CreateDirectory(Path.GetDirectoryName(img));
+                            if (!File.Exists(img) || new FileInfo(img).Length != new FileInfo(from).Length || File.GetLastWriteTimeUtc(img) < File.GetLastWriteTimeUtc(from)) File.Copy(from, img, true);
+                            n++;
+                        }
+                    }
+            }
+            void Prune(string root, HashSet<string> keep)
+            {
+                if (!Directory.Exists(root)) return;
+                foreach (var f in Directory.GetFiles(root, "*", SearchOption.AllDirectories))
+                    if (!f.EndsWith(".meta") && !keep.Contains(Path.GetFullPath(f))) { File.Delete(f); if (File.Exists(f + ".meta")) File.Delete(f + ".meta"); }
+            }
+            Prune(jsonRoot, keepJson); Prune(imgRoot, keepImg);
+            return n;
+        }
+
+        /// Resources/MapAssets.asset: what the map Peek needs at run time (the glTF props, the map shader, the edge mask).
+        /// Rewired on every SyncData, so it follows a re-imported props file.
+        public static void MakeMapAssets()
+        {
+            const string path = "Assets/Fable/Resources/MapAssets.asset";
+            var a = AssetDatabase.LoadAssetAtPath<MapAssets>(path);
+            bool created = !a; if (created) a = ScriptableObject.CreateInstance<MapAssets>();
+            a.Props = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Fable/Models/MapProps/map_props.gltf");
+            a.EdgeMask = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Fable/Models/MapProps/textures/scroll_edge_mask.png");
+            a.MapShader = Shader.Find("Fable/Map");
+            if (!a.Props || !a.EdgeMask || !a.MapShader) Debug.LogWarning($"[FableBuild] MapAssets incomplete: props={(bool)a.Props} mask={(bool)a.EdgeMask} shader={(bool)a.MapShader}");
+            if (created) AssetDatabase.CreateAsset(a, path); else EditorUtility.SetDirty(a);
+            AssetDatabase.SaveAssets();
         }
 
         /// Generated reading rooms bundled for Fable's own books that have no hand-built rooms: content/rooms/<slug>/r<N>
