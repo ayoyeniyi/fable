@@ -678,7 +678,7 @@ def bake_and_export(scene, gltf_name, size_for, keep_names=None, cams=(), blend_
         # the diffuse colour pass of a metal or glass is black: bake their albedo as if dielectric and opaque
         metallic = bsdf.inputs["Metallic"].default_value
         transm = bsdf.inputs["Transmission Weight"].default_value
-        for sock in ("Metallic", "Transmission Weight"):
+        for sock in ("Metallic", "Transmission Weight", "Sheen Weight", "Coat Weight"):
             for l in list(bsdf.inputs[sock].links): nt.links.remove(l)
             bsdf.inputs[sock].default_value = 0.0
         passes = [("BaseColor", 'DIFFUSE', {"pass_filter": {'COLOR'}}, False)]
