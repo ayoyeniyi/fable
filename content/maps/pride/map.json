@@ -1,0 +1,470 @@
+{
+  "version": 1,
+  "book": "pride",
+  "views": [
+    {
+      "id": "world",
+      "kind": "globe",
+      "title": "England in Pride and Prejudice",
+      "texture": "maps/_globe/earth.jpg",
+      "focus": {
+        "lat": 52.4,
+        "lon": -1.2
+      }
+    }
+  ],
+  "places": [
+    {
+      "id": "netherfield",
+      "name": "Netherfield",
+      "aliases": [
+        "Netherfield Park"
+      ],
+      "kind": "house",
+      "view": "world",
+      "lat": 51.818,
+      "lon": -0.135,
+      "located": "approximate",
+      "firstSentence": "pride:c01.p003.s01",
+      "note": "A large house in Hertfordshire, let at last. Austen invented it; placed here near Hertford, about three miles from Longbourn."
+    },
+    {
+      "id": "longbourn",
+      "name": "Longbourn",
+      "aliases": [],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.787,
+      "lon": -0.098,
+      "located": "approximate",
+      "firstSentence": "pride:c03.p015.s07",
+      "note": "The Bennets' home village in Hertfordshire, a mile from Meryton. Invented by Austen; placed near Hertford."
+    },
+    {
+      "id": "meryton",
+      "name": "Meryton",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.7957,
+      "lon": -0.0785,
+      "located": "approximate",
+      "firstSentence": "pride:c04.p015.s01",
+      "note": "The market town near Longbourn. Austen invented it; it is often taken to be modelled on Hertford, so it sits there."
+    },
+    {
+      "id": "lucas-lodge",
+      "name": "Lucas Lodge",
+      "aliases": [],
+      "kind": "house",
+      "view": "world",
+      "lat": 51.806,
+      "lon": -0.092,
+      "located": "approximate",
+      "firstSentence": "pride:c05.p001.s04",
+      "note": "Sir William Lucas's house, about a mile from Meryton (invented; placed near Hertford)."
+    },
+    {
+      "id": "hertfordshire",
+      "name": "Hertfordshire",
+      "aliases": [],
+      "kind": "region",
+      "view": "world",
+      "lat": 51.8401,
+      "lon": -0.0979,
+      "located": "geocoded",
+      "firstSentence": "pride:c03.p004.s03",
+      "note": "The county north of London where the Bennets live."
+    },
+    {
+      "id": "london",
+      "name": "London",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 51.5074,
+      "lon": -0.1278,
+      "located": "geocoded",
+      "firstSentence": "pride:c03.p004.s04",
+      "note": "Town: half a day's drive south of Meryton."
+    },
+    {
+      "id": "st-jamess",
+      "name": "St. James's",
+      "aliases": [
+        "St James's"
+      ],
+      "kind": "building",
+      "view": "world",
+      "lat": 51.5045,
+      "lon": -0.1378,
+      "located": "geocoded",
+      "firstSentence": "pride:c05.p001.s06",
+      "note": "The royal court at St James's Palace, London, where gentlemen were presented to the King."
+    },
+    {
+      "id": "cheapside",
+      "name": "Cheapside",
+      "aliases": [],
+      "kind": "street",
+      "view": "world",
+      "lat": 51.5143,
+      "lon": -0.0946,
+      "located": "geocoded",
+      "firstSentence": "pride:c08.p016.s01",
+      "note": "A busy trading street in the City of London: a merchant's address, not a fashionable one."
+    },
+    {
+      "id": "grosvenor-street",
+      "name": "Grosvenor Street",
+      "aliases": [],
+      "kind": "street",
+      "view": "world",
+      "lat": 51.5117,
+      "lon": -0.1472,
+      "located": "geocoded",
+      "firstSentence": "pride:c21.p007.s01",
+      "note": "A fashionable street in Mayfair, London, where Mr Hurst has a house."
+    },
+    {
+      "id": "gracechurch-street",
+      "name": "Gracechurch Street",
+      "aliases": [],
+      "kind": "street",
+      "view": "world",
+      "lat": 51.5115,
+      "lon": -0.0854,
+      "located": "geocoded",
+      "firstSentence": "pride:c25.p013.s03",
+      "note": "A street in the City of London, near the merchants' quarter, where the Gardiners live."
+    },
+    {
+      "id": "derbyshire",
+      "name": "Derbyshire",
+      "aliases": [],
+      "kind": "region",
+      "view": "world",
+      "lat": 53.1667,
+      "lon": -1.5833,
+      "located": "geocoded",
+      "firstSentence": "pride:c03.p005.s04",
+      "note": "A county of hills and dales in the north Midlands."
+    },
+    {
+      "id": "pemberley",
+      "name": "Pemberley",
+      "aliases": [],
+      "kind": "house",
+      "view": "world",
+      "lat": 53.2276,
+      "lon": -1.6114,
+      "located": "approximate",
+      "firstSentence": "pride:c06.p053.s02",
+      "note": "A great estate in Derbyshire. Austen invented it; it is often linked with Chatsworth, so it is placed there."
+    },
+    {
+      "id": "lambton",
+      "name": "Lambton",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 53.2148,
+      "lon": -1.6759,
+      "located": "approximate",
+      "firstSentence": "pride:c42.p012.s03",
+      "note": "A small Derbyshire market town near Pemberley. Invented; placed at Bakewell, its usual identification."
+    },
+    {
+      "id": "kent",
+      "name": "Kent",
+      "aliases": [],
+      "kind": "region",
+      "view": "world",
+      "lat": 51.2071,
+      "lon": 0.721,
+      "located": "geocoded",
+      "firstSentence": "pride:c26.p016.s01",
+      "note": "The county south-east of London."
+    },
+    {
+      "id": "hunsford",
+      "name": "Hunsford",
+      "aliases": [],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.2671,
+      "lon": 0.0706,
+      "located": "approximate",
+      "firstSentence": "pride:c15.p001.s03",
+      "note": "A parish in Kent near Westerham, where Mr Collins has his living. Invented; placed at Westerham."
+    },
+    {
+      "id": "rosings",
+      "name": "Rosings",
+      "aliases": [
+        "Rosings Park"
+      ],
+      "kind": "house",
+      "view": "world",
+      "lat": 51.2989,
+      "lon": 0.1315,
+      "located": "approximate",
+      "firstSentence": "pride:c14.p001.s07",
+      "note": "Lady Catherine de Bourgh's great house in Kent, near Hunsford. Invented; placed near Chevening."
+    },
+    {
+      "id": "bromley",
+      "name": "Bromley",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.4028,
+      "lon": 0.0148,
+      "located": "geocoded",
+      "firstSentence": "pride:c37.p015.s03",
+      "note": "A posting town on the road between London and Kent, where travellers change horses."
+    },
+    {
+      "id": "brighton",
+      "name": "Brighton",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 50.8215,
+      "lon": -0.1401,
+      "located": "geocoded",
+      "firstSentence": "pride:c39.p006.s01",
+      "note": "The fashionable seaside resort on the Sussex coast."
+    },
+    {
+      "id": "bath",
+      "name": "Bath",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 51.3814,
+      "lon": -2.3597,
+      "located": "geocoded",
+      "firstSentence": "pride:c61.p011.s02",
+      "note": "The spa city in Somerset, a resort of fashionable society."
+    },
+    {
+      "id": "ramsgate",
+      "name": "Ramsgate",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.3335,
+      "lon": 1.4196,
+      "located": "geocoded",
+      "firstSentence": "pride:c35.p005.s79",
+      "note": "A seaside town on the Kent coast."
+    },
+    {
+      "id": "cambridge",
+      "name": "Cambridge",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 52.2055,
+      "lon": 0.1187,
+      "located": "geocoded",
+      "firstSentence": "pride:c35.p005.s50",
+      "note": "The university town."
+    },
+    {
+      "id": "the-lakes",
+      "name": "the Lakes",
+      "aliases": [],
+      "kind": "region",
+      "view": "world",
+      "lat": 54.4785,
+      "lon": -3.0655,
+      "located": "geocoded",
+      "firstSentence": "pride:c27.p022.s01",
+      "note": "The Lake District in the north-west of England, a favourite tour for its mountains and lakes."
+    },
+    {
+      "id": "oxford",
+      "name": "Oxford",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 51.752,
+      "lon": -1.2578,
+      "located": "geocoded",
+      "firstSentence": "pride:c42.p012.s01",
+      "note": "The university city, on the road north from London."
+    },
+    {
+      "id": "blenheim",
+      "name": "Blenheim",
+      "aliases": [],
+      "kind": "house",
+      "view": "world",
+      "lat": 51.8419,
+      "lon": -1.3626,
+      "located": "geocoded",
+      "firstSentence": "pride:c42.p012.s01",
+      "note": "Blenheim Palace near Woodstock, the Duke of Marlborough's seat, a sight for travellers."
+    },
+    {
+      "id": "warwick",
+      "name": "Warwick",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 52.2821,
+      "lon": -1.5906,
+      "located": "geocoded",
+      "firstSentence": "pride:c42.p012.s01",
+      "note": "A county town with a famous castle, on the tourists' road north."
+    },
+    {
+      "id": "kenilworth",
+      "name": "Kenelworth",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 52.3451,
+      "lon": -1.5816,
+      "located": "geocoded",
+      "firstSentence": "pride:c42.p012.s01",
+      "note": "Kenilworth, Warwickshire, with its ruined castle."
+    },
+    {
+      "id": "birmingham",
+      "name": "Birmingham",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 52.4797,
+      "lon": -1.9027,
+      "located": "geocoded",
+      "firstSentence": "pride:c42.p012.s01",
+      "note": "The busy manufacturing town in the Midlands."
+    },
+    {
+      "id": "matlock",
+      "name": "Matlock",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 53.1375,
+      "lon": -1.5545,
+      "located": "geocoded",
+      "firstSentence": "pride:c42.p007.s04",
+      "note": "A Derbyshire spa among celebrated scenery."
+    },
+    {
+      "id": "chatsworth",
+      "name": "Chatsworth",
+      "aliases": [],
+      "kind": "house",
+      "view": "world",
+      "lat": 53.2276,
+      "lon": -1.6114,
+      "located": "geocoded",
+      "firstSentence": "pride:c42.p007.s04",
+      "note": "Chatsworth House, the Duke of Devonshire's seat in Derbyshire."
+    },
+    {
+      "id": "dovedale",
+      "name": "Dovedale",
+      "aliases": [
+        "Dove Dale"
+      ],
+      "kind": "region",
+      "view": "world",
+      "lat": 53.0558,
+      "lon": -1.7827,
+      "located": "geocoded",
+      "firstSentence": "pride:c42.p007.s04",
+      "note": "A limestone valley in the Peak, famous for its scenery."
+    },
+    {
+      "id": "newcastle",
+      "name": "Newcastle",
+      "aliases": [],
+      "kind": "city",
+      "view": "world",
+      "lat": 54.9738,
+      "lon": -1.6132,
+      "located": "geocoded",
+      "firstSentence": "pride:c51.p013.s04",
+      "note": "Newcastle upon Tyne, far in the North of England."
+    },
+    {
+      "id": "scotland",
+      "name": "Scotland",
+      "aliases": [],
+      "kind": "country",
+      "view": "world",
+      "lat": 56.7861,
+      "lon": -4.1141,
+      "located": "geocoded",
+      "firstSentence": "pride:c46.p003.s03",
+      "note": "North of the border, where marriage laws were looser than England's."
+    },
+    {
+      "id": "gretna-green",
+      "name": "Gretna Green",
+      "aliases": [],
+      "kind": "village",
+      "view": "world",
+      "lat": 55.0049,
+      "lon": -3.0627,
+      "located": "geocoded",
+      "firstSentence": "pride:c46.p005.s05",
+      "note": "The first village over the Scottish border, where couples could marry without banns or consent."
+    },
+    {
+      "id": "epsom",
+      "name": "Epsom",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.3326,
+      "lon": -0.2678,
+      "located": "geocoded",
+      "firstSentence": "pride:c46.p005.s06",
+      "note": "A Surrey town on the road between Brighton and London."
+    },
+    {
+      "id": "clapham",
+      "name": "Clapham",
+      "aliases": [],
+      "kind": "village",
+      "view": "world",
+      "lat": 51.4614,
+      "lon": -0.1386,
+      "located": "geocoded",
+      "firstSentence": "pride:c46.p005.s06",
+      "note": "Then a village just south of London, on the Brighton road."
+    },
+    {
+      "id": "barnet",
+      "name": "Barnet",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.6531,
+      "lon": -0.2002,
+      "located": "geocoded",
+      "firstSentence": "pride:c46.p005.s09",
+      "note": "A coaching town on the Great North Road out of London."
+    },
+    {
+      "id": "hatfield",
+      "name": "Hatfield",
+      "aliases": [],
+      "kind": "town",
+      "view": "world",
+      "lat": 51.7635,
+      "lon": -0.2259,
+      "located": "geocoded",
+      "firstSentence": "pride:c46.p005.s09",
+      "note": "A Hertfordshire coaching town on the Great North Road."
+    }
+  ]
+}
