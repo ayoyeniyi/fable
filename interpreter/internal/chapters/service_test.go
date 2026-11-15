@@ -203,19 +203,28 @@ func TestNoFittingPlaceIsUnavailableNotSubstituted(t *testing.T) {
 func TestBookWithNoPlacesIsUnavailableWithoutAsking(t *testing.T) {
 	fp := &fakePlanner{env: "kansas-farmhouse"}
 	s, _ := newTestService(t, fp)
+	// every one of Fable's books has places now, so this test takes one book's places out of the loaded catalogue
+	// (a book whose rooms are not built yet looks like this): the real books and catalogue stay as they are
+	const placeless = "eighty"
+	var kept []Env
+	for _, e := range s.Catalog.Environments {
+		if !containsString(e.Books, placeless) {
+			kept = append(kept, e)
+		}
+	}
+	if len(kept) == len(s.Catalog.Environments) {
+		t.Fatalf("%s has no places in schema/environments.json to take out", placeless)
+	}
+	s.Catalog.Environments = kept
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	go s.Run(ctx)
-	// the two newest classics have no places until their rooms are integrated (The War of the Worlds, the old
-	// example here, has its own rooms in schema/environments.json now)
-	for _, b := range []string{"eighty", "frankenstein"} {
-		if _, err := s.Prepare(b, b+":c01", true); err != nil {
-			t.Fatal(err)
-		}
-		j := waitFor(t, s, b+":c01", Unavailable, Done, Failed)
-		if j.State != Unavailable || !strings.Contains(j.Error, "no place") {
-			t.Fatalf("%s: state %s (%s), want unavailable: no place", b, j.State, j.Error)
-		}
+	if _, err := s.Prepare(placeless, placeless+":c01", true); err != nil {
+		t.Fatal(err)
+	}
+	j := waitFor(t, s, placeless+":c01", Unavailable, Done, Failed)
+	if j.State != Unavailable || !strings.Contains(j.Error, "no place") {
+		t.Fatalf("%s: state %s (%s), want unavailable: no place", placeless, j.State, j.Error)
 	}
 	fp.mu.Lock()
 	defer fp.mu.Unlock()
@@ -280,4 +289,13 @@ func TestStatusEstimatesTheWait(t *testing.T) {
 	if st := s.statusFor(s.Status("oz:c10")); st.ETA != 0 {
 		t.Fatalf("a built experience has no estimate, got %v", st.ETA)
 	}
+}
+
+func containsString(xs []string, x string) bool {
+	for _, y := range xs {
+		if y == x {
+			return true
+		}
+	}
+	return false
 }
