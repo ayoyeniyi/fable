@@ -3,8 +3,10 @@
 Every book has three reading rooms (plus the library).
 
 - Fable's first four books (Alice, Oz, the Odyssey, Gulliver) have hand-built rooms: Blender scripts, baked in Unity.
-- Fable's later four (Pride and Prejudice, Moby-Dick, The War of the Worlds, Treasure Island) have generated rooms made
-  by the same service ahead of time and **bundled in the app** (below, "Bundled rooms").
+- Fable's later four (Pride and Prejudice, Moby-Dick, The War of the Worlds, Treasure Island) had generated rooms made
+  by the same service ahead of time and **bundled in the app** (below, "Bundled rooms"). Since 2026-11-15 they have
+  hand-built rooms instead (`ReadingRooms.Bundled`), and `FableBuild.SyncData` skips any book that has them: the
+  generated rooms stay in `content/rooms` for the record and the bundling code path stays, but nothing is shipped.
 - A book the reader uploads gets three generated rooms: places chosen from that book and built automatically on
   the preparation service.
 
@@ -63,6 +65,8 @@ This document covers the generated ones.
    - The reading position comes along.
 
 ## Bundled rooms (Fable's later books)
+
+**No longer shipped (2026-11-15):** the four books now open in hand-built scenes; `BundledRooms.json` is `{}`.
 
 The four later books have no hand-built rooms. Their rooms were made with the service exactly as an upload's are
 (their text posted to `/rooms/prepare` on a private instance, planned from the opening, scripted, built, reviewed

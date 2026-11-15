@@ -2,6 +2,30 @@
 
 Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs/TOOLING.md`. Everything below was true at the commit that last touched this file. "Verified" always says where: **editor** (Unity play mode on a Mac, desktop camera, no HMD) or **headset**. Nothing has been verified on a headset yet.
 
+## Hand-built rooms for the four later books (2026-11-15)
+
+- **Rooms:** twelve Blender rooms (`blender/build_*.py`, renders in `captures/blender/<room>/`) built and baked in
+  Unity, three per book, first room first: Moby-Dick `BatteryWaterfront`, `SpouterInn`, `PequodDeck`; The War of the
+  Worlds `OgilvysObservatory`, `HorsellSandpits`, `MayburyDiningRoom`; Treasure Island `BenbowCove`,
+  `SquiresLibrary`, `SpyglassTavern`; Pride and Prejudice `LongbournLibrary`, `FieldsToNetherfield`,
+  `NetherfieldDrawingRoom`. They replace the bundled generated rooms (`ReadingRooms.Bundled`,
+  `LobbyController.ReadingScene`); `SyncData` skips `content/rooms` for books with built rooms, so nothing generated
+  is shipped now (the code path for uploads is unchanged). Triangle counts: `docs/ARCHITECTURE.md`.
+- **FableBuild:** `SceneDef.Lights` (per-light intensity, range, colour: cool starlight, dusk and moon; each
+  interior's lamp and fire balance), `Ambient`, `Fog`. Blender sky domes are drawn double-sided, and the far plane
+  now reaches the scene's farthest point (Battery 999 m, Pequod 799 m; was 150 m, which cut the domes to black).
+  Texture import keeps alpha for MASK/BLEND base colours (Horsell's and the fields' foliage cards were opaque
+  squares); the fields' 4K ground is held to 2K. The Hall of Doors also has MASK materials but was not reimported.
+- **Chapter experiences:** the twelve rooms are `place` environments in `schema/environments.json` (the hosted
+  service needs a redeploy to offer them).
+- **Verified in the editor:** all twelve scenes build and bake (0 console errors); from the lobby each book opens in
+  its first room with its three rooms listed; the APK builds (704.7 MB, 26 scenes). Desktop previews:
+  `captures/unity/<room>/desktop-preview_<Scene>_reader.png`, plus a play-mode page in Mr Bennet's library.
+- **Not verified:** anything on the headset: frame rate (the Pequod is 64k triangles with its water, the fields
+  51k with dense alpha-tested grass; Horsell's heather is alpha-tested overdraw too), texture memory, how the
+  ambience and positional sounds sound. The Spouter-Inn and the Spy-glass drop sources over the 6-source budget
+  (the inn's crowd, fire and door wind; the tavern's rigging), covered by their ambience beds.
+
 ## Living scenes: moving water, wind, fire and real ambient sound (2026-11-14)
 
 - **Sound library:** 17 real field-recording loops (`Resources/Audio/amb.<kind>.ogg`: surf, harbour, sea-open, river,
