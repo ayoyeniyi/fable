@@ -206,12 +206,16 @@ func TestBookWithNoPlacesIsUnavailableWithoutAsking(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	go s.Run(ctx)
-	if _, err := s.Prepare("worlds", "worlds:c01", true); err != nil {
-		t.Fatal(err)
-	}
-	j := waitFor(t, s, "worlds:c01", Unavailable, Done, Failed)
-	if j.State != Unavailable || !strings.Contains(j.Error, "no place") {
-		t.Fatalf("state %s (%s), want unavailable: no place", j.State, j.Error)
+	// the two newest classics have no places until their rooms are integrated (The War of the Worlds, the old
+	// example here, has its own rooms in schema/environments.json now)
+	for _, b := range []string{"eighty", "frankenstein"} {
+		if _, err := s.Prepare(b, b+":c01", true); err != nil {
+			t.Fatal(err)
+		}
+		j := waitFor(t, s, b+":c01", Unavailable, Done, Failed)
+		if j.State != Unavailable || !strings.Contains(j.Error, "no place") {
+			t.Fatalf("%s: state %s (%s), want unavailable: no place", b, j.State, j.Error)
+		}
 	}
 	fp.mu.Lock()
 	defer fp.mu.Unlock()

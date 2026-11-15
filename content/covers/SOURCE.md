@@ -1,6 +1,6 @@
 # Book covers: sources and licences
 
-The eight covers stand face out on the lobby shelf. They are made by `blender -b -P tools/make_covers.py` and are
+The ten covers stand face out on the lobby shelf. They are made by `blender -b -P tools/make_covers.py` and are
 1400 x 2100 JPEGs, the Standard Ebooks (SE) cover size.
 
 | Cover | Made from | Painting | Licence |
@@ -12,9 +12,11 @@ The eight covers stand face out on the lobby shelf. They are made by `blender -b
 | `mobydick.jpg` | `epub/images/cover.jpg` from the SE edition (`content/books/mobydick/SOURCE.md`), unchanged | *The Flying Dutchman*, Albert Pinkham Ryder, 1887 | SE cover design CC0 1.0; painting public domain |
 | `worlds.jpg` | `epub/images/cover.jpg` from the SE edition (`content/books/worlds/SOURCE.md`), unchanged | *The Great Fire of London*, an unknown artist, 17th century | SE cover design CC0 1.0; painting public domain |
 | `treasure.jpg` | `epub/images/cover.jpg` from the SE edition (`content/books/treasure/SOURCE.md`), unchanged | *One More Step, Mr. Hands*, N. C. Wyeth, 1911 | SE cover design CC0 1.0; painting public domain |
+| `frankenstein.jpg` | `epub/images/cover.jpg` from the SE edition (`content/books/frankenstein/SOURCE.md`), unchanged | *Portrait of Adam*, Giuseppe Arcimboldo, 1578 | SE cover design CC0 1.0; painting public domain |
+| `eighty.jpg` | `epub/images/cover.jpg` from the SE edition (`content/books/eighty/SOURCE.md`), unchanged | *Train on the Way*, Isaac Levitan, c. 1895 | SE cover design CC0 1.0; painting public domain |
 | `odyssey.jpg` | composed by `tools/make_covers.py` in the SE layout | *Ulysses and Calypso* (*Odysseus und Kalypso*), Arnold Böcklin, 1882 | painting public domain; composition CC0 like the rest of Fable's content |
 
-The painting credits for the seven SE covers are the ones in each SE edition's colophon (quoted in the book's
+The painting credits for the nine SE covers are the ones in each SE edition's colophon (quoted in the book's
 `SOURCE.md`). SE covers carry League Spartan and Sorts Mill Goudy (The League of Moveable Type, SIL OFL 1.1) rendered
 into the image by SE.
 
@@ -52,4 +54,6 @@ d4639c4caa35def9ffa64980829787476a0508ac91658ff0288f11637b31314a  oz.jpg
 dc75172a6960d9c09b978ee7bceb533518fea6bcfef80146a2c8f0bb06e32729  mobydick.jpg
 56e82fc743f25d2f776276e985aa37ac27c7b3658417f6439afd23711b4f8211  worlds.jpg
 0bb2e5bda17f6d7362ffa85c46ced43e8151d3c17b65dec7456ce2ed27189b85  treasure.jpg
+571bff5edc602085acfb00cb248a36cd5fa2bbb13695da7d373bc53936253a7f  frankenstein.jpg
+d9a318e90f810be64de18a489dc21aa9837a27e13ac210576fdb1ea0a63813ca  eighty.jpg
 ```

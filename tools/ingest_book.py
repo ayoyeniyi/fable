@@ -135,10 +135,25 @@ def verse_text(p):
         return clean(inline_text(p))
     return "\n".join(l for l in lines if l)
 
+def own_elements(section):
+    """The section and everything inside it except nested sections (Frankenstein's "Walton, in Continuation" sits
+    inside Chapter XXIV and must not lend it its title)."""
+    yield section
+    for c in section:
+        if tag(c) != "section":
+            yield from own_elements(c)
+
+def label_word(section):
+    """The word of a heading's se:label span ("Letter" in Frankenstein's "Letter I"), or None."""
+    for h in own_elements(section):
+        if "se:label" in etype(h) and h.text:
+            return clean(h.text)
+    return None
+
 def header_info(section):
     """Label (I, II...), title and subtitle from a section's <header>/<hgroup>/<h*>."""
     label = title = subtitle = None
-    for h in section.iter():
+    for h in own_elements(section):
         t = tag(h)
         types = etype(h)
         if t in ("h1", "h2", "h3", "h4", "h5", "h6"):
@@ -245,6 +260,9 @@ def read_epub(path):
             if "backmatter" in btypes:
                 continue
             label, title, subtitle = header_info(section)
+            word = label_word(section)
+            if title is None and label and word and word.lower() != "chapter":
+                title = word + " " + label      # "Letter I", not "Chapter I"
             paras = []
             blocks(section, paras)
             if not paras:

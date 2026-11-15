@@ -72,5 +72,26 @@
     "page": "https://standardebooks.org/ebooks/robert-louis-stevenson/treasure-island",
     "url": "https://standardebooks.org/ebooks/robert-louis-stevenson/treasure-island/downloads/robert-louis-stevenson_treasure-island.epub?source=download",
     "gutenberg": 120
+  },
+  "frankenstein": {
+    "title": "Frankenstein",
+    "author": "Mary Shelley",
+    "year": 1818,
+    "format": "se-epub",
+    "page": "https://standardebooks.org/ebooks/mary-shelley/frankenstein",
+    "url": "https://standardebooks.org/ebooks/mary-shelley/frankenstein/downloads/mary-shelley_frankenstein.epub?source=download",
+    "gutenberg": 84,
+    "note": "Standard Ebooks publishes the 1831 revised text (with Mary Shelley's 1831 Introduction); that is the text used. The year is the first publication, 1818."
+  },
+  "eighty": {
+    "title": "Around the World in Eighty Days",
+    "author": "Jules Verne",
+    "translator": "George Makepeace Towle",
+    "year": 1873,
+    "format": "se-epub",
+    "page": "https://standardebooks.org/ebooks/jules-verne/around-the-world-in-eighty-days/george-makepeace-towle",
+    "url": "https://standardebooks.org/ebooks/jules-verne/around-the-world-in-eighty-days/george-makepeace-towle/downloads/jules-verne_around-the-world-in-eighty-days_george-makepeace-towle.epub?source=download",
+    "gutenberg": 103,
+    "note": "Standard Ebooks' edition of George Makepeace Towle's English translation (1874); no other translation may be used."
   }
 }
