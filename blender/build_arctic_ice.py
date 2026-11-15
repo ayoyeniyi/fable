@@ -9,13 +9,13 @@ half a mile ... We watched the rapid progress of the traveller with our telescop
 distant inequalities of the ice."
 "We are still surrounded by mountains of ice, still in imminent danger of being crushed in their conflict."
 
-The reader stands on the snow-covered floe a few metres off the ship's starboard side, late on a summer night when
+The reader stands on the snow-covered floe fifty-five metres off the ship's starboard beam, late on a summer night when
 the sun hangs a few degrees above the northern horizon. The ship, a three-masted vessel of some 300 tons, lies frozen
 in with a slight list, her sails furled and snow-laden on the yards, her rigging rimed, ice rafted up against her
-side; a gangway and an ice anchor's hawser run down to the floe. A dog-sledge's track starts by her side, passes at
-the reader's right and runs away across the floe toward the north-east, between hummocks and pressure ridges,
-until it is lost among the distant inequalities of the ice, under a far tabular berg. On the left ahead a dark lead
-of open water cuts the floe. The low sun on the right throws long blue shadows across the snow; a faint halo and
+side; a gangway and an ice anchor's hawser run down to the floe. A dog-sledge's track runs from her gangway past
+the reader's right and away across the floe behind the reader toward the north-east, between hummocks and pressure ridges,
+until it is lost among the distant inequalities of the ice. A far tabular berg stands on the horizon; ahead a dark lead
+of open water cuts the floe. The low sun stands behind the ship, rimming her masts and throwing long blue shadows; a faint halo and
 sun dogs ring it. No people.
 
 Everything is procedural (no downloaded models, textures or HDRIs). The floe is a height function in numpy: two
@@ -25,7 +25,7 @@ on the sky dome. Ice blocks of the ridges are bevelled boxes with a baked ice-an
 and rig follow the Pequod's (build_pequod_deck.py), rebuilt for a ship seen from the ice.
 
 Node names Unity relies on:
-  anchor.reader.entrance  the reader's feet on the floe (z = 0), facing north-north-east, the ship on the left
+  anchor.reader.entrance  the reader's feet on the floe (z = 0), facing west-north-west, the ship broadside on the left of the page
   anchor.reader.look      eye height (1.55 m), 2 m ahead
   anchor.scene.centre     the reader's feet
   anchor.ship.mainmast, anchor.ship.gangway, anchor.track.far (the sledge track's vanishing point), anchor.lead
@@ -61,14 +61,14 @@ T0 = time.time()
 def log(*a): print(f"[{time.time() - T0:6.1f}s]", *a, flush=True)
 
 EYE = 1.55
-LOOK_AZ = 28.0
-SUN_AZ, SUN_EL = 92.0, 8.5
+LOOK_AZ = -71.0
+SUN_AZ, SUN_EL = -112.0, 8.5
 def az_dir(az): a = math.radians(az); return Vector((math.sin(a), math.cos(a), 0.0))
 SUN_DIR = (az_dir(SUN_AZ) * math.cos(math.radians(SUN_EL)) + Vector((0, 0, math.sin(math.radians(SUN_EL))))).normalized()
 S_ = np.array(SUN_DIR)
 WL = -0.35
 R_NEAR, R_GEO, R_SKY = 40.0, 1000.0, 1150.0
-SX = -9.5                                   # the ship's centreline
+SX, SY = -54.2, -9.6                        # the ship's centreline x and its midships y (55 m off, her bow 22 degrees left of the page)
 
 # ============================================================================= the floe
 def seg_dist(x, y, pts):
@@ -82,18 +82,18 @@ def seg_dist(x, y, pts):
     return best, s_at
 
 RIDGES = [  # (polyline, crest height, half width)
-    ([(13, -24), (15, -6), (17, 8), (23, 26), (36, 48), (52, 64)], 1.7, 3.2),
+    ([(25, -30), (28, -12), (34, 0), (44, 10)], 1.7, 3.2),
     ([(-70, 58), (-35, 86), (0, 104), (34, 116), (70, 128)], 1.5, 3.5),
-    ([(-48, -58), (-5, -72), (40, -64), (95, -40)], 1.9, 4.0),
+    ([(-6, -10), (-18, -15), (-32, -20), (-45, -25.5)], 1.6, 2.6),          # the ridge that leads the eye to the ship's stern
     ([(95, 250), (180, 290), (290, 300), (420, 290)], 2.4, 6.0),
     ([(-420, 160), (-300, 240), (-200, 320), (-80, 380)], 2.2, 6.0),
     ([(250, -60), (330, 40), (400, 140)], 2.0, 6.0),
     ([(-300, -180), (-180, -260), (-60, -330), (80, -380)], 2.2, 6.0),
     ([(520, 520), (640, 600), (760, 700)], 2.6, 7.0),
 ]
-TRACK = [(-4.4, -6.0), (-1.0, -2.0), (1.5, 1.0), (4.0, 6.5), (9.0, 16.0), (20.0, 34.0), (40.0, 62.0), (70.0, 96.0),
-         (120.0, 150.0), (190.0, 214.0), (250.0, 245.0), (340.0, 340.0), (470.0, 460.0), (640.0, 610.0), (900.0, 840.0)]
-LEAD = [(-330.0, 150.0), (-200.0, 168.0), (-90.0, 186.0), (0.0, 200.0), (55.0, 222.0), (80.0, 246.0)]
+TRACK = [(-46.5, -13.6), (-36.0, -12.0), (-24.0, -8.5), (-13.0, -4.0), (-6.0, -0.8), (-0.4, 1.5), (6.0, 6.0), (20.0, 16.0), (50.0, 40.0),
+         (100.0, 80.0), (180.0, 140.0), (300.0, 230.0), (480.0, 360.0), (700.0, 520.0), (900.0, 660.0)]   # from the gangway, past the reader's right, away
+LEAD = [(-260.0, 180.0), (-170.0, 150.0), (-90.0, 140.0), (-20.0, 170.0), (40.0, 230.0), (70.0, 260.0)]
 LEAD_W = 9.0
 
 def lead_half(s):
@@ -109,8 +109,8 @@ def floe(x, y):
         hh = h * (0.55 + 0.7 * fbm(s / 14.0, h * 3.0, 3, seed=4))
         z = z + hh * np.exp(-(d / hw) ** 2) + 0.25 * hh * np.exp(-(d / (hw * 2.5)) ** 2)
     # the snow banked against the ship, the trodden track (a little sunk)
-    dsh = np.abs(x - SX) - shiphalf(y)
-    z = z + 0.7 * np.exp(-np.maximum(dsh, 0) / 1.6) * (np.abs(y) < 16)
+    dsh = np.abs(x - SX) - shiphalf(y - SY)
+    z = z + 0.7 * np.exp(-np.maximum(dsh, 0) / 1.6) * (np.abs(y - SY) < 16)
     dt, st = seg_dist(x, y, TRACK)
     z = z - 0.04 * sstep(0.7, 0.2, dt)
     dl, sl = seg_dist(x, y, LEAD)
@@ -158,7 +158,7 @@ def snow_albedo(x, y, fp):
     far_tr = sstep(0.9, 0.3, d) * sstep(0.05, 0.3, fp) * 0.12
     col = col * (1 - far_tr[..., None])
     # trodden snow by the ship's gangway, a little soot and spilt tar
-    tro = sstep(9.0, 3.0, np.hypot(x - (SX + 6.0), y + 3.5)) * sstep(0.55, 0.62, fbm(x / 0.6, y / 0.6, 3, seed=16))
+    tro = sstep(9.0, 3.0, np.hypot(x - (SX + 6.0), y - SY + 3.5)) * sstep(0.55, 0.62, fbm(x / 0.6, y / 0.6, 3, seed=16))
     col = col * (1 - 0.12 * tro[..., None])
     # the lead's thin new ice (grey nilas) at its margins
     dl, sl = seg_dist(x, y, LEAD); lw = lead_half(sl)
@@ -286,7 +286,9 @@ def ice_mat():
     m, nt, b = new_mat("M_IceBlock")
     xyz, X, Y, Z = obj_xyz(nt)
     n = noise_tex(nt, xyz, 1.6, 5.0, 0.6); n2 = noise_tex(nt, xyz, 7.0, 4.0, 0.6)
-    col = tone_ramp(nt, n.outputs["Fac"], [(0.20, 0.44, 0.50), (0.32, 0.54, 0.60), (0.50, 0.62, 0.67), (0.26, 0.48, 0.55)])
+    col = tone_ramp(nt, n.outputs["Fac"], [(0.12, 0.38, 0.44), (0.24, 0.50, 0.56), (0.46, 0.60, 0.65), (0.16, 0.42, 0.48)])
+    big = noise_tex(nt, xyz, 0.35, 2.0, 0.5)
+    col = mix_rgb(nt, 'MIX', maprange(nt, big.outputs["Fac"], 0.35, 0.65, 0.0, 0.7), col, (0.52, 0.62, 0.66, 1))       # milky old ice / clear blue new ice
     wv = node(nt, "ShaderNodeTexWave", wave_type='BANDS', bands_direction='Z'); wv.inputs["Scale"].default_value = 3.0
     wv.inputs["Distortion"].default_value = 6.0; nt.links.new(xyz, wv.inputs["Vector"])
     col = mix_rgb(nt, 'MULTIPLY', math_(nt, 'MULTIPLY', wv.outputs["Fac"], 0.12), col, (0.8, 0.85, 0.9, 1))
@@ -331,12 +333,12 @@ for ri, (pts, h, hw) in enumerate(RIDGES):
         s += step * rs.uniform(0.6, 1.4)
 # rafted floe edges against the ship's side, and a few broken blocks about the floe
 for k in range(26):
-    y = rs.uniform(-13, 14); x = SX + float(shiphalf(y)) + rs.uniform(0.2, 1.4)
+    yl = rs.uniform(-13, 14); x = SX + float(shiphalf(yl)) + rs.uniform(0.2, 1.4); y = yl + SY
     sz = rs.uniform(0.6, 1.3)
     ice_block(f"Raft{k}", (x, y, float(gz(x, y)) + 0.1), (sz * 1.6, sz, sz * 0.3), rs); nblk += 1
 for k in range(30):
     a = rs.uniform(0, TWO_PI); r = rs.uniform(8, 90); x, y = r * math.sin(a), r * math.cos(a)
-    if abs(x - SX) < 6 and abs(y) < 17: continue
+    if abs(x - SX) < 6 and abs(y - SY) < 17: continue
     if seg_dist(np.array(x), np.array(y), TRACK)[0] < 2.5: continue
     sz = rs.uniform(0.3, 0.9)
     ice_block(f"Loose{k}", (x, y, float(gz(x, y)) + sz * 0.05), (sz * 1.3, sz, sz * 0.35), rs); nblk += 1
@@ -355,7 +357,7 @@ def hb(y, z):
     top = rail_z(y); s = (z - KEEL) / (top - KEEL)
     tum = 1.0 - 0.06 * sstep(0.78, 1.0, s)
     return max(0.02, float(shiphalf(y)) / 1.02 * sect(s / 0.86) * tum)
-SHIP_M = Matrix.Translation((SX, 0, 0)) @ Matrix.Rotation(-LIST, 4, 'Y')
+SHIP_M = Matrix.Translation((SX, SY, 0)) @ Matrix.Rotation(-LIST, 4, 'Y')
 def W(p): return tuple(SHIP_M @ Vector(p))
 
 M_HULL = planks("M_Hull", 0.20, 6.5, [(0.050, 0.040, 0.032), (0.062, 0.050, 0.040), (0.045, 0.036, 0.029), (0.07, 0.056, 0.044)],
@@ -523,7 +525,7 @@ for nm, (lh, th, tgh), y, L, br in (("Main", MAIN, 0.6, 16.5, 8), ("Fore", FORE,
 
 # --- the gangway and a Jacob's ladder down to the floe, the ice anchor's hawser, things on the ice
 GY = -3.2
-g_top = Vector(W((hb(GY, rail_z(GY)) - 0.05, GY, rail_z(GY) + 0.02))); g_bot = Vector((SX + 6.9, GY - 0.3, float(gz(SX + 6.9, GY - 0.3)) + 0.05))
+g_top = Vector(W((hb(GY, rail_z(GY)) - 0.05, GY, rail_z(GY) + 0.02))); g_bot = Vector((SX + 6.9, SY + GY - 0.3, float(gz(SX + 6.9, SY + GY - 0.3)) + 0.05))
 gd = (g_bot - g_top); gl = gd.length
 G = box("Gangway", (0.75, gl, 0.06), tuple((g_top + g_bot) / 2), M_CASK, rot=(0, 0, 0))
 G.rotation_euler = (gd.normalized().to_track_quat('Y', 'Z')).to_euler()
@@ -537,14 +539,19 @@ for s_ in (-1, 1):
 LY = 6.0
 for k in range(2):
     y = LY + k * 0.42; zt = rail_z(y)
-    rope(f"Ladder{k}", W((hb(y, zt) + 0.06, y, zt)), (SX + hb(y, 0.5) + 0.25, y, float(gz(SX + hb(y, 0.5) + 0.25, y)) + 0.05), 0.012, sides=3)
+    rope(f"Ladder{k}", W((hb(y, zt) + 0.06, y, zt)), (SX + hb(y, 0.5) + 0.25, y + SY, float(gz(SX + hb(y, 0.5) + 0.25, y + SY)) + 0.05), 0.012, sides=3)
 for k in range(9):
     z = 0.4 + k * 0.42; y = LY + 0.21
     box(f"LadderRung{k}", (0.05, 0.5, 0.035), W((hb(y, z) + 0.06 + 0.012 * (8 - k), y, z)), M_CASK)
 HAWSE = Vector(W((0.9, 14.6, rail_z(14.6) - 0.6)))
-ANCHOR = Vector((-1.5, 31.0, float(gz(-1.5, 31.0))))
-rope("IceHawser", HAWSE, ANCHOR + Vector((0, 0, 0.2)), 0.04, sag=1.4, sides=5)
-tube("IceAnchor", [tuple(ANCHOR + Vector((0, -0.2, 0.25))), tuple(ANCHOR + Vector((0, 0.4, 0.05))), tuple(ANCHOR + Vector((0, 0.65, -0.3)))], 0.05, M_IRON, sides=6)
+# the ice anchor: a hawser from the bow's hawse-hole to an iron anchor bedded in a hole cut in the floe 12 m ahead, a
+# mound of the chipped ice beside it
+ANCHOR = Vector((SX + 2.5, SY + 27.5, float(gz(SX + 2.5, SY + 27.5))))
+rope("IceHawser", HAWSE, ANCHOR + Vector((0, -0.25, 0.35)), 0.05, sag=0.9, sides=6)
+tube("IceAnchorShank", [tuple(ANCHOR + Vector((0, -0.3, 0.4))), tuple(ANCHOR + Vector((0, 0.2, 0.15))), tuple(ANCHOR + Vector((0, 0.55, -0.25)))], 0.06, M_IRON, sides=6)
+tube("IceAnchorFluke", [tuple(ANCHOR + Vector((-0.35, 0.5, -0.1))), tuple(ANCHOR + Vector((0, 0.6, -0.2))), tuple(ANCHOR + Vector((0.35, 0.5, -0.1)))], 0.05, M_IRON, sides=5)
+torus("IceAnchorRing", 0.12, 0.025, tuple(ANCHOR + Vector((0, -0.38, 0.45))), M_IRON, rot=(math.pi / 2, 0, 0), seg=10, rseg=4)
+sphere("IceAnchorMound", 0.6, tuple(ANCHOR + Vector((0.7, 0.4, -0.15))), M_SNOWCAP, seg=10, scale=(1.2, 0.9, 0.4))
 def cask(name, p, s=1.0, lying=False, rot=0.0):
     prof = [(0.0, 0.0), (0.24 * s, 0.0), (0.28 * s, 0.15 * s), (0.30 * s, 0.35 * s), (0.28 * s, 0.55 * s), (0.24 * s, 0.70 * s), (0.0, 0.70 * s)]
     o = lathe(name, prof, p, M_CASK, steps=14)
@@ -553,17 +560,17 @@ def cask(name, p, s=1.0, lying=False, rot=0.0):
         t = torus(name + f"Hoop{zz}", 0.27 * s, 0.012, (p[0], p[1], p[2] + zz * s), M_IRON, seg=14, rseg=3)
         if lying: t.location = o.location; t.rotation_euler = o.rotation_euler; t.data.transform(Matrix.Translation((0, 0, zz * s))); t.location = (p[0], p[1], p[2])
     return o
-for k, (x, y) in enumerate(((SX + 7.6, -5.0), (SX + 8.3, -4.3), (SX + 7.4, -1.9))):
+for k, (x, y) in enumerate(((SX + 7.6, SY - 5.0), (SX + 8.3, SY - 4.3), (SX + 7.4, SY - 1.9))):
     cask(f"Cask{k}", (x, y, float(gz(x, y)) - 0.05), 0.95)
     sphere(f"CaskCap{k}", 0.25, (x, y, float(gz(x, y)) + 0.625), M_SNOWCAP, seg=10, scale=(1.0, 1.0, 0.22))
-box("Crate", (0.8, 0.55, 0.5), (SX + 8.9, -6.2, float(gz(SX + 8.9, -6.2)) + 0.2), M_CASK, bevel=0.01, rot=(0, 0, 0.3))
-box("CrateSnow", (0.75, 0.5, 0.06), (SX + 8.9, -6.2, float(gz(SX + 8.9, -6.2)) + 0.47), M_SNOWCAP, bevel=0.025, rot=(0, 0, 0.3))
+box("Crate", (0.8, 0.55, 0.5), (SX + 8.9, SY - 6.2, float(gz(SX + 8.9, SY - 6.2)) + 0.2), M_CASK, bevel=0.01, rot=(0, 0, 0.3))
+box("CrateSnow", (0.75, 0.5, 0.06), (SX + 8.9, SY - 6.2, float(gz(SX + 8.9, SY - 6.2)) + 0.47), M_SNOWCAP, bevel=0.025, rot=(0, 0, 0.3))
 
 # ============================================================================= the sky dome: midnight sun, halo, the far pack, a berg
 SKY_EL0 = -12.0
 def sky_v_of(el): return ((el - SKY_EL0) / (90.0 - SKY_EL0)) ** 0.55
 def sky_el_of_v(v): return SKY_EL0 + (90.0 - SKY_EL0) * v ** (1 / 0.55)
-BERGS = [(40.0, 0.9, 5.0), (-118.0, 0.45, 6.5), (205.0, 0.3, 3.0)]       # (az, height deg, width deg)
+BERGS = [(-38.0, 0.9, 5.0), (-165.0, 0.45, 6.5), (95.0, 0.3, 3.0)]       # (az, height deg, width deg)
 def paint_sky(W_=4096, Hh=1024):
     az = (np.arange(W_) + 0.5) / W_ * 360.0; v = (np.arange(Hh) + 0.5) / Hh; el = sky_el_of_v(v)
     AZ, EL = np.meshgrid(az, el)
@@ -692,7 +699,7 @@ cams = [
     camera("Cam_Right", tuple(E), ahead(-65, -3), clip_end=1500),
     camera("Cam_Behind", tuple(E), ahead(180, 2), clip_end=1500),
     camera("Cam_Up", tuple(E), ahead(75, 45), clip_end=1500),
-    camera("Cam_Ship", (5.0, -24.0, 1.7), (SX, 0.0, 7.0), lens=18, clip_end=1500),
+    camera("Cam_Ship", (-28.0, -36.0, 1.7), (SX, SY, 7.0), lens=18, clip_end=1500),
 ]
 EXPOSURE = {}
 
