@@ -62,6 +62,40 @@ cam.rotation_euler = d.to_track_quat("-Z", "Y").to_euler()
 cam.rotation_euler.x = max(cam.rotation_euler.x, math.radians(80))
 
 scale, world_col, world_strength = mood
+
+# Sky domes (Unity draws them unlit): here they must glow with their own painted sky and must not shadow the sun, or
+# the closed shell keeps every outdoor room in its shadow (black under Cycles)
+def glow(mat, strength):
+    if not mat or not mat.use_nodes: return
+    nt = mat.node_tree
+    out = next((n for n in nt.nodes if n.type == "OUTPUT_MATERIAL"), None)
+    bsdf = next((n for n in nt.nodes if n.type == "BSDF_PRINCIPLED"), None)
+    if not out or not bsdf: return
+    em = nt.nodes.new("ShaderNodeEmission"); em.inputs["Strength"].default_value = strength
+    base = bsdf.inputs["Base Color"]
+    if base.links: nt.links.new(base.links[0].from_socket, em.inputs["Color"])
+    else: em.inputs["Color"].default_value = base.default_value
+    nt.links.new(em.outputs[0], out.inputs["Surface"])
+
+def untint(mat):
+    # living-scene meshes keep data in their vertex colours (foam in G, sway weight in R: docs/LIVING_SCENES.md),
+    # which the glTF importer multiplies into the colour; Unity never shows it as a tint, so neither does the tile
+    if not mat or not mat.use_nodes: return
+    nt = mat.node_tree
+    for link in list(nt.links):
+        if link.from_node.type in ("VERTEX_COLOR", "ATTRIBUTE"):
+            sock = link.to_socket; nt.links.remove(link)
+            if hasattr(sock, "default_value") and getattr(sock, "type", "") == "RGBA": sock.default_value = (1, 1, 1, 1)
+
+for o in bpy.data.objects:
+    if o.type == "MESH" and o.name.split(".")[0] in ("water", "veg", "cloth"):
+        for slot in o.material_slots: untint(slot.material)
+
+for o in bpy.data.objects:
+    if o.type == "MESH" and ("sky" in o.name.lower() or o.name.lower().startswith("far.")):
+        o.visible_shadow = False
+        for slot in o.material_slots: glow(slot.material, max(0.15, scale))
+
 for o in bpy.data.objects:
     if o.type == "LIGHT":
         # glTF light units arrive tiny (lux / 683): bring suns to daylight and lamps to a room lamp, then apply the mood
@@ -76,8 +110,17 @@ world = bpy.data.worlds.new("w"); scene.world = world; world.use_nodes = True
 bg = world.node_tree.nodes["Background"]; bg.inputs[0].default_value = (*world_col, 1); bg.inputs[1].default_value = world_strength
 fog = float(opts["--fog"])
 if fog > 0.01:
-    vol = world.node_tree.nodes.new("ShaderNodeVolumePrincipled"); vol.inputs["Density"].default_value = 0.004 + 0.04 * fog
-    world.node_tree.links.new(vol.outputs[0], world.node_tree.nodes["World Output"].inputs["Volume"])
+    # haze in a box around the reader, not in the world: Cycles carries a world volume to infinity, so it swallows the
+    # sun entirely and an outdoor room renders black (EEVEE was forgiving about this)
+    bpy.ops.mesh.primitive_cube_add(size=240, location=p)
+    box = bpy.context.active_object; box.name = "thumb.haze"
+    hm = bpy.data.materials.new("thumb.haze"); hm.use_nodes = True; nt = hm.node_tree
+    for n in list(nt.nodes):
+        if n.type != "OUTPUT_MATERIAL": nt.nodes.remove(n)
+    vol = nt.nodes.new("ShaderNodeVolumePrincipled"); vol.inputs["Density"].default_value = 0.004 + 0.04 * fog
+    nt.links.new(vol.outputs[0], nt.nodes["Material Output"].inputs["Volume"])
+    box.data.materials.append(hm)
+    box.visible_shadow = False   # the haze scatters light but must not shadow the sun as a solid box would
 
 w, h = (int(x) for x in opts["--size"].split("x"))
 if os.environ.get("FABLE_THUMB_ENGINE", "").upper() == "CYCLES":
