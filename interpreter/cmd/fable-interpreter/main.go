@@ -7,6 +7,7 @@
 //	    POST /peek {"book","sentenceId","phrase","noCache","waitSeconds"} -> 200 mock model (X-Fable-Cache hit|miss) or 202
 //	    POST /translate {"text","language","bookId"?,"bookTitle"?,"sentenceId"?} -> 200 {"translation","language","model"} (X-Fable-Cache hit|miss) or 202
 //	    GET /health, GET /jobs, GET /passages
+//	    GET /maps/<slug> -> content/maps/<slug>/map.json; GET /maps/<path> -> that file under content/maps (docs/MAPS.md)
 //	    POST /chapters/prepare {"book","chapter","completed"}; GET /chapters/status|package|thumb?chapter=; GET /chapters/jobs
 //	    (chapter experiences, prepared in a persistent background queue: internal/chapters)
 //	fable-interpreter mock      --book alice --passage alice:c01.p013.s01 --phrase "golden key" [--out f.json] [--model id]
