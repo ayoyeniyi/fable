@@ -140,7 +140,7 @@ def ground_mat(name="M_Bank"):
 
 def hall_mat(name="M_Hall"):
     """the hall's earthen roof and walls far off: packed dark earth with stony bands, root-hairs, darker up high."""
-    return S.stone_mat(name, (0.17, 0.13, 0.10), (0.06, 0.05, 0.04), (0.24, 0.19, 0.14), scale=0.25, strata=0.6, moss=0.0, lichen=0.0, rough=0.95, bump=0.5)
+    return S.stone_mat(name, (0.30, 0.24, 0.18), (0.14, 0.11, 0.08), (0.38, 0.31, 0.23), scale=0.25, strata=0.6, moss=0.0, lichen=0.0, rough=0.95, bump=0.5, cracks=0.12)
 
 print("materials ...", flush=True)
 M_GROUND = ground_mat()
@@ -366,13 +366,13 @@ RO = RMB.build("Reeds", M_REEDS); set_card_normals(RO, lambda p: Vector((0, 0, 1
 # ----------------------------------------------------------------------------- lights and world
 K.apply_transforms()
 KEY_DIR = (az_dir(8.0) * math.cos(math.radians(22)) + Vector((0, 0, math.sin(math.radians(22))))).normalized()   # from across the pool
-light_obj("light.key", 'SUN', 2.2, (1.0, 0.70, 0.42), tuple(KEY_DIR * 30), direction=-KEY_DIR, angle=math.radians(18.0))
-skl = light_obj("light.sky", 'SUN', 0.7, (0.55, 0.62, 0.80), (0, 0, 20), direction=(0.2, -0.3, -1.0), angle=math.radians(80))
+light_obj("light.key", 'SUN', 3.2, (1.0, 0.70, 0.42), tuple(KEY_DIR * 30), direction=-KEY_DIR, angle=math.radians(18.0))
+skl = light_obj("light.sky", 'SUN', 1.8, (0.55, 0.62, 0.80), (0, 0, 20), direction=(0.2, -0.3, -1.0), angle=math.radians(80))
 skl.data.use_shadow = False
 for k, p in enumerate(LAMP_PTS):
-    light_obj(f"Lamp.hall.{k}", 'POINT', 600.0, (1.0, 0.66, 0.32), tuple(p), shadow_soft_size=0.25)
+    light_obj(f"Lamp.hall.{k}", 'POINT', 5000.0, (1.0, 0.66, 0.32), tuple(p), shadow_soft_size=0.25)
 world = bpy.data.worlds.new("Hall"); scene.world = world; world.use_nodes = True
-bg = world.node_tree.nodes["Background"]; bg.inputs["Color"].default_value = (0.08, 0.085, 0.10, 1); bg.inputs["Strength"].default_value = 1.0
+bg = world.node_tree.nodes["Background"]; bg.inputs["Color"].default_value = (0.20, 0.21, 0.24, 1); bg.inputs["Strength"].default_value = 1.0
 
 # ----------------------------------------------------------------------------- markers and anchors
 for k, p in enumerate(LAMP_PTS): E8.fx(f"fx.lantern.{k}", tuple(p + Vector((0, 0, 0.05))), 0.12)

@@ -474,7 +474,7 @@ def rocks(name, specs, mat, sub=2):
 
 
 # ----------------------------------------------------------------------------- materials
-def stone_mat(name, base, dark, light, scale=2.0, wet_z=None, wet_k=0.5, moss=0.0, moss_col=(0.20, 0.24, 0.12), lichen=0.0, rough=0.82, bump=0.35, strata=0.0):
+def stone_mat(name, base, dark, light, scale=2.0, wet_z=None, wet_k=0.5, moss=0.0, moss_col=(0.20, 0.24, 0.12), lichen=0.0, rough=0.82, bump=0.35, strata=0.0, cracks=0.6):
     """Weathered stone: tonal mottling, darker cracks (voronoi edges), optional strata, lichen spots, moss on tops,
     wet darkening and gloss below z = wet_z (world)."""
     m, nt, b = new_mat(name)
@@ -483,7 +483,7 @@ def stone_mat(name, base, dark, light, scale=2.0, wet_z=None, wet_k=0.5, moss=0.
     col = mix_rgb(nt, 'MIX', maprange(nt, n.outputs["Fac"], 0.3, 0.7, 0, 1, (-1300, 200)), c4(K.srgb(base)), c4(K.srgb(light)), (-1100, 200))
     v = voronoi_(nt, co, scale * 1.4, 'DISTANCE_TO_EDGE', (-1500, -100))
     crack = maprange(nt, v.outputs["Distance"], 0.0, 0.05, 1, 0, (-1300, -100))
-    col = mix_rgb(nt, 'MIX', math_(nt, 'MULTIPLY', crack, 0.6, (-1100, -100)), col, c4(K.srgb(dark)), (-900, 200))
+    col = mix_rgb(nt, 'MIX', math_(nt, 'MULTIPLY', crack, cracks, (-1100, -100)), col, c4(K.srgb(dark)), (-900, 200))
     if strata:
         mp = node(nt, "ShaderNodeMapping", (-1500, -300)); mp.inputs["Scale"].default_value = (0.4, 0.4, 6.0); nt.links.new(co, mp.inputs["Vector"])
         st = noise_(nt, mp.outputs["Vector"], 2.0, 3, 0.5, loc=(-1300, -300))
