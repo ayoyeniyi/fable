@@ -475,6 +475,42 @@ namespace Fable.Editor
 
         // ---------------------------------------------------------------- generated shared assets
 
+        /// The assets a downloaded scene room needs at runtime (SceneRoomView.cs), kept in the build through Resources:
+        /// the Fable/SceneRoom materials (opaque and cut-out), one Fable/Water material per kind, a fire (flames, embers)
+        /// and the Fable/ScreenFade material.
+        [MenuItem("Fable/Scene Room Resources")]
+        public static void MakeSceneRoomResources()
+        {
+            EnsureShared();
+            const string dir = "Assets/Fable/Resources/SceneRooms"; Directory.CreateDirectory(dir);
+            Material Mat(string name, string shader, Action<Material> setup)
+            {
+                var path = $"{dir}/{name}.mat"; var m = AssetDatabase.LoadAssetAtPath<Material>(path);
+                if (!m) { m = new Material(Shader.Find(shader)); AssetDatabase.CreateAsset(m, path); }
+                m.shader = Shader.Find(shader); setup(m); m.enableInstancing = true; EditorUtility.SetDirty(m); return m;
+            }
+            Mat("SceneRoomLit", "Fable/SceneRoom", m => { m.DisableKeyword("_ALPHATEST_ON"); m.renderQueue = 2000; });
+            Mat("SceneRoomCutout", "Fable/SceneRoom", m => { m.EnableKeyword("_ALPHATEST_ON"); m.renderQueue = 2450; m.SetFloat("_Cull", 0); });
+            Mat("Fade", "Fable/ScreenFade", m => m.SetColor("_Color", new Color(0, 0, 0, 0)));
+            foreach (var kind in new[] { "ocean", "river", "pond" })
+                Mat("Water_" + kind, "Fable/Water", w =>
+                {
+                    w.SetTexture("_DetailNormal", AssetDatabase.LoadAssetAtPath<Texture2D>($"{Shared}/WaterNormals.asset"));
+                    w.SetTexture("_FoamNoise", AssetDatabase.LoadAssetAtPath<Texture2D>($"{Shared}/FoamNoise.asset"));
+                    w.DisableKeyword("_WATER_OCEAN"); w.DisableKeyword("_WATER_RIVER"); w.DisableKeyword("_WATER_POND");
+                    w.EnableKeyword(kind == "ocean" ? "_WATER_OCEAN" : kind == "river" ? "_WATER_RIVER" : "_WATER_POND"); w.SetFloat("_Water", kind == "ocean" ? 0 : kind == "river" ? 1 : 2);
+                    w.SetColor("_SkyHorizon", new Color(0.70f, 0.76f, 0.80f)); w.SetColor("_SkyZenith", new Color(0.46f, 0.55f, 0.66f) * 1.25f);
+                    if (kind == "ocean") { w.SetFloat("_WaveHeight", 0.12f); w.SetFloat("_WaveLength", 12f); w.SetFloat("_DetailTiling", 0.3f); w.SetFloat("_DetailStrength", 0.55f); w.SetFloat("_DetailSpeed", 0.35f); }
+                    else if (kind == "river") { w.SetFloat("_DetailTiling", 0.8f); w.SetFloat("_DetailStrength", 0.45f); w.SetFloat("_FlowSpeed", 0.5f); w.SetFloat("_Reflectivity", 0.7f); w.SetFloat("_GlintPower", 120); }
+                    else { w.SetFloat("_DetailTiling", 1.2f); w.SetFloat("_DetailStrength", 0.2f); w.SetFloat("_DetailSpeed", 0.06f); w.SetFloat("_Reflectivity", 0.8f); }
+                });
+            var fire = new GameObject("Fire");
+            try { Flames(fire.transform, 0.25f); Embers(fire.transform, 0.25f); PrefabUtility.SaveAsPrefabAsset(fire, $"{dir}/Fire.prefab"); }
+            finally { Object.DestroyImmediate(fire); }
+            AssetDatabase.SaveAssets();
+            Debug.Log("[FableLiving] scene room resources in " + dir);
+        }
+
         static void EnsureShared()
         {
             Directory.CreateDirectory(Shared);

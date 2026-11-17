@@ -81,7 +81,6 @@ namespace Fable
         /// A "place" experience (a room with mood, no script): the reader is in the room with the chapter's moment on the page.
         public bool InPlace { get; private set; }
         public BookMenu Menu { get; private set; }
-        Passage.Scene placeScene; List<Passage.Sentence> placeSentences; int placeAt;
 
         /// The whole book on the page while reading; the passage view takes over in the miniature and the scene.
         public BookReader Reader { get; private set; }
@@ -311,8 +310,8 @@ namespace Fable
                     View.Tip("scene", "Point at the floor and pinch to go there. \u201creturn to reading\u201d closes the scene.");
                     break;
                 case "Place":
-                    View.SetActions(("\u2039 return to reading", () => OnReturn()));
-                    View.Tip("place", "This is the chapter\u2019s place. Look around, turn with the bar; \u201creturn to reading\u201d takes you back to your page.");
+                    View.SetActions(("\u2039 return to the book", () => OnReturn()));
+                    if (placeCaption != null) View.Tip(null, placeCaption, 4.5f);   // the chapter and its place, then it fades
                     break;
                 case "Reading":
                     View.SetActions(("chapters", () => Menu.Open("chapters")), ("rooms", () => Menu.Open("rooms")), ("settings", () => Menu.Open("sound")));
@@ -346,7 +345,11 @@ namespace Fable
         void AfterStart()
         {
             if (PendingExperience != null) { var ch = PendingExperience; PendingExperience = null; EnterExperience(ch); }
-            else if (PendingMenu != null) { var m = PendingMenu; PendingMenu = null; Menu.Open(m); }
+            else
+            {
+                if (arriveDark) { arriveDark = false; FadeInIfDark(); }
+                if (PendingMenu != null) { var m = PendingMenu; PendingMenu = null; Menu.Open(m); }
+            }
         }
 
         /// The end-of-chapter card's line about this chapter's experience. Entry is offered there only when it is ready
@@ -376,24 +379,52 @@ namespace Fable
             else if (r.Job == "failed") View.Tip(null, "A chapter’s experience could not be prepared: see “chapters” to retry.", 7f);
         }
 
-        /// Step into a finished chapter's prepared experience: in this room, or after loading the experience's room.
+        /// Step into a finished chapter's prepared experience: in this room, or after loading the experience's room (a
+        /// room in the app, or a downloaded scene room shown in the library-room scene; downloaded first if it is not
+        /// on the headset, with the progress on the bar).
         public void EnterExperience(string chapter)
         {
             var pkg = ChapterExperiences.Instance.OpenPackage(chapter);   // refuses a chapter that is not completed
-            if (pkg == null) { if (View) View.Tip(null, "That chapter’s experience is not ready yet.", 5f); return; }
-            if (busy || Current != State.Reading) return;
+            if (pkg == null) { if (View) View.Tip(null, "That chapter’s experience is not ready yet.", 5f); FadeInIfDark(); return; }
+            if (busy || Current != State.Reading) { FadeInIfDark(); return; }
             var here = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-            if (pkg.UnityScene != here)
-            {
-                Debug.Log($"[Fable] experience {chapter}: loading {pkg.UnityScene}");
-                busy = true; if (Highlight) Highlight.Clear(); Reader.Deactivate();
-                PendingBook = Slug; PendingExperience = chapter;
-                Director.Audio.StopAmbience();
-                UnityEngine.SceneManagement.SceneManager.LoadScene(pkg.UnityScene);
-                return;
-            }
+            bool roomHere = pkg.UnityScene == here && (pkg.SceneRoom == null ? SceneRoomView.ShownId == null : SceneRoomView.ShownId == pkg.SceneRoom.Id);
+            if (!roomHere) { StartCoroutine(GoToExperience(chapter, pkg, here)); return; }
             StartCoroutine(pkg.Staging == "scripted" ? ScriptedExperience(pkg) : PlaceExperience(pkg));
         }
+
+        /// set when a place experience loaded another scene: the reading room to go back to when it ends
+        static string returnScene;
+        /// the next scene opens black and fades in (a step into a place, or back out of one)
+        static bool arriveDark;
+        void FadeInIfDark() { if (StepInFade.Alpha > 0.001f && Head) StartCoroutine(StepInFade.To(Head, 0, StepInFade.InSeconds)); }
+
+        IEnumerator GoToExperience(string chapter, ChapterPackage pkg, string here)
+        {
+            busy = true; if (Highlight) Highlight.Clear();
+            if (pkg.SceneRoom != null && !SceneRooms.Instance.IsReady(pkg.SceneRoom))
+            {
+                // not on the headset (never fetched, or evicted from the cache): fetch it now, the progress on the bar
+                string why = null; bool done = false;
+                StartCoroutine(Run(SceneRooms.Instance.Fetch(pkg.SceneRoom, w => { why = w; done = true; })));
+                while (!done)
+                {
+                    var dl = SceneRooms.Instance.ProgressOf(pkg.SceneRoom.Id);
+                    if (View) View.Tip(null, dl == null ? "Getting the chapter’s place ready…" : $"Downloading the chapter’s place: {dl.Amount}" + (dl.EtaSeconds > 0 ? $", {WaitEstimate.About(dl.EtaSeconds)} left" : ""), 2f);
+                    yield return new WaitForSecondsRealtime(0.4f);
+                }
+                if (why != null) { busy = false; if (View) View.Tip(null, $"The chapter’s place could not be downloaded ({why}). Try again in a moment; your reading is not affected.", 7f); yield break; }
+            }
+            Debug.Log($"[Fable] experience {chapter}: loading {pkg.UnityScene}" + (pkg.SceneRoom != null ? $" with the scene room {pkg.SceneRoom.Id}" : ""));
+            yield return StepInFade.To(Head, 1, StepInFade.OutSeconds);
+            Reader.Deactivate();
+            PendingBook = Slug; PendingExperience = chapter; arriveDark = true;
+            if (pkg.Staging != "scripted") returnScene = here;
+            SceneRoomView.Pending = pkg.SceneRoom;
+            Director.Audio.StopAmbience();
+            UnityEngine.SceneManagement.SceneManager.LoadScene(pkg.UnityScene);
+        }
+        static IEnumerator Run(IEnumerator e) { yield return e; }
 
         IEnumerator ScriptedExperience(ChapterPackage pkg)
         {
@@ -423,41 +454,126 @@ namespace Fable
             yield return Grow(0);
         }
 
+        /// A place experience: no page, no sentences. The reader stands in the chapter's place and looks around; the bar
+        /// keeps turning and "return to the book". Entered with a short fade; in the reader's own reading room it also
+        /// moves them to another viewpoint (FindViewpoint) and gives the room the chapter's mood, so something visibly
+        /// happens. A small caption (chapter and title) is shown on the bar for a few seconds.
         IEnumerator PlaceExperience(ChapterPackage pkg)
         {
-            busy = true; if (Highlight) Highlight.Clear(); Reader.Deactivate();
+            busy = true; if (Highlight) Highlight.Clear();
+            bool arrived = arriveDark; arriveDark = false;
+            if (!arrived) yield return StepInFade.To(Head, 1, StepInFade.OutSeconds);
+            Reader.Deactivate();
             Experience = pkg; InPlace = true;
-            // the chapter's moment, from the book, as a passage the page can show a sentence at a time
-            placeSentences = new List<Passage.Sentence>(); var paras = new List<List<Passage.Sentence>>();
-            int a = Reader.Book.Ordinal(pkg.Moment.From), b = Reader.Book.Ordinal(pkg.Moment.To);
-            foreach (var c in Reader.Book.Chapters) foreach (var p in c.Paragraphs)
-            {
-                List<Passage.Sentence> para = null;
-                foreach (var se in p.Sentences) { int o = Reader.Book.Ordinal(se.Id); if (o < a || o > b) continue; para ??= new List<Passage.Sentence>(); var ps = new Passage.Sentence { Id = se.Id, Text = se.Text, BookSentence = se.Id }; para.Add(ps); placeSentences.Add(ps); }
-                if (para != null) paras.Add(para);
-            }
+            var rig = RigRoot();
+            savedRig = rig ? (rig.position, rig.rotation) : default; hasSavedRig = rig;
+            bool moved = false;
+            if (!arrived && rig && FindViewpoint(out var feet, out var face)) { MoveRigTo(rig, feet, face); moved = true; if (View) View.Snap(); }
+            ExperienceMood.Apply(pkg.Mood, pkg.Fog, distinct: true);
+            if (Panel) Panel.gameObject.SetActive(false);
             var chap = Reader.Book.Chapters.Find(c => c.Id == pkg.Chapter);
-            placeScene = new Passage.Scene { Id = pkg.Chapter, Title = pkg.Title, Chapter = chap?.Label ?? pkg.ChapterName, Paragraphs = paras, Book = pkg.Book };
-            ExperienceMood.Apply(pkg.Mood, pkg.Fog);
-            Current = State.Scene; placeAt = 0;
-            PanelInRoom(); Panel.Scale = 0.8f;
+            placeCaption = $"{chap?.Heading ?? pkg.ChapterName} · {pkg.Title}";
+            Current = State.Scene;
             busy = false;
-            ShowPlace();
-            Debug.Log($"[Fable] experience {pkg.Chapter}: “{pkg.Title}” in {pkg.Environment} (a place, {placeSentences.Count} sentences)");
-            yield break;
+            Debug.Log($"[Fable] experience {pkg.Chapter}: “{pkg.Title}” in {pkg.Environment} (a place{(pkg.SceneRoom != null ? ", downloaded room " + pkg.SceneRoom.Id : "")}{(moved ? ", moved to another viewpoint" : arrived ? ", arrived from another room" : ", no other viewpoint with clear floor")}, mood {ExperienceMood.Current})");
+            yield return StepInFade.To(Head, 0, StepInFade.InSeconds);
+        }
+        string placeCaption; (Vector3 pos, Quaternion rot) savedRig; bool hasSavedRig;
+
+        void EndPlace() { if (!busy) StartCoroutine(LeavePlace()); }
+
+        IEnumerator LeavePlace()
+        {
+            busy = true;
+            yield return StepInFade.To(Head, 1, StepInFade.OutSeconds);
+            InPlace = false; Experience = null; placeCaption = null; ExperienceMood.Restore();
+            var here = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            if (returnScene != null)
+            {
+                // back to the reading room the reader stepped in from, at their saved place in the book
+                var to = returnScene; returnScene = null;
+                if (Application.CanStreamedLevelBeLoaded(to))
+                {
+                    PendingBook = Slug; arriveDark = true; SceneRoomView.Pending = null;
+                    Director.Audio.StopAmbience();
+                    UnityEngine.SceneManagement.SceneManager.LoadScene(to);
+                    yield break;
+                }
+            }
+            var rig = RigRoot();
+            if (hasSavedRig && rig) { rig.SetPositionAndRotation(savedRig.pos, savedRig.rot); hasSavedRig = false; if (View) View.Snap(); }
+            if (Panel) Panel.gameObject.SetActive(true);
+            Current = State.Reading; busy = false;
+            ShowBook();   // the saved reading position, not the moment
+            yield return StepInFade.To(Head, 0, StepInFade.InSeconds);
         }
 
-        void ShowPlace()
+        // ---------------------------------------------------------------- another viewpoint in the same room
+
+        /// A spot with clear floor a few metres from where the reader reads, facing the room's focus (anchor.scene.centre,
+        /// else another anchor, else the reading view): candidates around each focus, then around the reading start,
+        /// each checked with a floor ray and a body-sized capsule against the room's meshes (temporary colliders, the
+        /// runtime version of Editor/FableReaderStart.cs).
+        bool FindViewpoint(out Vector3 feet, out Vector3 face)
         {
-            if (placeSentences == null || placeSentences.Count == 0) return;
-            placeAt = Mathf.Clamp(placeAt, 0, placeSentences.Count - 1);
-            Panel.Show(placeScene, placeSentences[placeAt].Id, $"{placeAt + 1} / {placeSentences.Count}   {Experience.Place}   · {Pinch}: next sentence · the bar below: turn, return to reading");
+            feet = face = default;
+            if (!env || !Head) return false;
+            var rig = RigRoot(); float floorY = rig ? rig.position.y : Head.position.y - 1.55f;
+            var start = new Vector3(Head.position.x, floorY, Head.position.z);
+            var fwd = Vector3.ProjectOnPlane(Head.forward, Vector3.up); if (fwd.sqrMagnitude < 1e-4f) fwd = Vector3.forward; fwd.Normalize();
+            var temp = new List<MeshCollider>();
+            try
+            {
+                foreach (var r in env.GetComponentsInChildren<MeshRenderer>())
+                {
+                    if (IsBackdrop(r.name) || r.name.Contains("Sky") || r.GetComponent<Collider>()) continue;
+                    var mf = r.GetComponent<MeshFilter>(); if (!mf || !mf.sharedMesh || !mf.sharedMesh.isReadable) continue;
+                    var mc = r.gameObject.AddComponent<MeshCollider>(); mc.sharedMesh = mf.sharedMesh; temp.Add(mc);
+                }
+                Physics.SyncTransforms();
+                var foci = new List<Vector3>();
+                foreach (var t in env.GetComponentsInChildren<Transform>())
+                {
+                    if (!t.name.StartsWith("anchor.") || t.name.StartsWith("anchor.reader.")) continue;
+                    var flat = new Vector3(t.position.x, floorY, t.position.z);
+                    if ((flat - start).magnitude > 30f) continue;
+                    if (t.name == "anchor.scene.centre") foci.Insert(0, t.position); else foci.Add(t.position);
+                }
+                var cands = new List<(Vector3 at, Vector3 look)>();
+                foreach (var f in foci)
+                {
+                    var ff = new Vector3(f.x, floorY, f.z); var back = start - ff; back.y = 0;
+                    var b = back.sqrMagnitude > 0.01f ? back.normalized : -fwd;
+                    foreach (var d in new[] { 2.5f, 3.5f, 5f })
+                        foreach (var a in new[] { 0f, 40f, -40f, 80f, -80f, 130f, -130f })
+                            cands.Add((ff + Quaternion.Euler(0, a, 0) * b * d, f));
+                }
+                foreach (var d in new[] { 2.5f, 3.5f })
+                    foreach (var a in new[] { 0f, 45f, -45f, 90f, -90f, 135f, -135f, 180f })
+                    { var at = start + Quaternion.Euler(0, a, 0) * fwd * d; cands.Add((at, start + fwd * 8f + Vector3.up * 1.5f)); }
+                foreach (var (at, look) in cands)
+                {
+                    if ((at - start).magnitude < 1.5f) continue;
+                    if (!Physics.Raycast(new Vector3(at.x, floorY + 1.9f, at.z), Vector3.down, out var hit, 3.2f)) continue;
+                    if (Mathf.Abs(hit.point.y - floorY) > 0.6f || Vector3.Angle(hit.normal, Vector3.up) > 25f) continue;
+                    var p = hit.point;
+                    if (Physics.CheckCapsule(p + Vector3.up * 0.4f, p + Vector3.up * 1.8f, 0.3f)) continue;
+                    var eye = p + Vector3.up * 1.55f; var to = look - eye;
+                    if (Vector3.ProjectOnPlane(to, Vector3.up).sqrMagnitude < 0.25f) continue;
+                    if (Physics.Raycast(eye, to.normalized, Mathf.Min(1.0f, to.magnitude))) continue;   // a wall right in front
+                    feet = p; face = look; return true;
+                }
+                return false;
+            }
+            finally { foreach (var mc in temp) if (mc) Destroy(mc); }
         }
 
-        void EndPlace()
+        void MoveRigTo(Transform rig, Vector3 feet, Vector3 face)
         {
-            InPlace = false; Experience = null; placeSentences = null; ExperienceMood.Restore();
-            Current = State.Reading; ShowBook();   // the saved reading position, not the moment
+            var hf = Vector3.ProjectOnPlane(Head.forward, Vector3.up); var want = Vector3.ProjectOnPlane(face - feet, Vector3.up);
+            if (hf.sqrMagnitude > 1e-4f && want.sqrMagnitude > 1e-4f) rig.RotateAround(Head.position, Vector3.up, Vector3.SignedAngle(hf, want, Vector3.up));
+            var headFloor = new Vector3(Head.position.x, rig.position.y, Head.position.z);
+            rig.position += feet - headFloor;
         }
 
         /// Read on in another room: the place in the book is saved with every page, so it comes along.
@@ -491,8 +607,19 @@ namespace Fable
             Director.Flow = this; Director.Panel = Panel; Director.Reader = Input; Director.LoadInterpreterUrl();
             if (ReadingRoom) ReadingRoom.SetActive(false);
             env.gameObject.SetActive(true);
+            if (arriveDark && Head) StepInFade.Black(Head);
+            // a chapter's downloaded scene room, shown in place of the library around the reader
+            SceneRoomView.Forget();
+            if (SceneRoomView.Pending != null)
+            {
+                var sr = SceneRoomView.Pending; SceneRoomView.Pending = null;
+                GameObject made = null; string why = null;
+                yield return SceneRoomView.Load(sr, RigRoot(), (g, w) => { made = g; why = w; });
+                if (made) env.gameObject.SetActive(false);
+                else { Debug.LogWarning($"[Fable] scene rooms: {sr.Id} not shown: {why}"); PendingExperience = null; if (returnScene != null) { /* stay here; the bar can take the reader back */ } }
+            }
             // an uploaded book's generated room, shown in place of the library around the reader
-            if (GeneratedRoomView.PendingBook != null)
+            else if (GeneratedRoomView.PendingBook != null)
             {
                 var gb = GeneratedRoomView.PendingBook; int gn = GeneratedRoomView.PendingRoom; GeneratedRoomView.PendingBook = null;
                 GameObject made = null; string why = null;
@@ -612,7 +739,7 @@ namespace Fable
         void OnNext()
         {
             if (busy) return;
-            if (InPlace) { if (placeAt + 1 < placeSentences.Count) { placeAt++; ShowPlace(); } return; }
+            if (InPlace) return;   // nothing to page through: the reader looks around
             if (Current == State.Reading)
             {
                 if (Highlight && Highlight.HandleTap(true)) return;   // the menu or card took the pinch
@@ -625,7 +752,7 @@ namespace Fable
         void OnPrev()
         {
             if (busy) return;
-            if (InPlace) { if (placeAt > 0) { placeAt--; ShowPlace(); } return; }
+            if (InPlace) return;
             if (Current == State.Scene || Current == State.Miniature) Director.Previous();
             else if (Current == State.Reading)
             {
@@ -687,7 +814,7 @@ namespace Fable
         public void StepReturn() => OnReturn();
         public void StepChoose(int dir) => OnScrub(dir);
         public string ChosenId => Chosen?.Id;
-        public string Describe() => (Experience != null ? $"experience={Experience.Chapter}({Experience.Staging},{ExperienceMood.Current}) " : "") + (InPlace ? $"place={placeAt + 1}/{placeSentences.Count} " : "") + (Current == State.Reading && Reader != null && Reader.Active ? Reader.Describe() + " " + (Highlight ? Highlight.Describe() + " " : "") : "") + $"state={Current} beat={Director.BeatIndex + 1}/{(Director.Script != null ? Director.Script.Beats.Count : 0)} envScale={(env != null ? env.localScale.x.ToString("F2") : "n/a")} active={(env != null && env.gameObject.activeSelf)} playing={Application.isPlaying} source={Director.ScriptSource}";
+        public string Describe() => (Experience != null ? $"experience={Experience.Chapter}({Experience.Staging},{ExperienceMood.Current}) " : "") + (InPlace ? $"place=\"{placeCaption}\" " : "") + (Current == State.Reading && Reader != null && Reader.Active ? Reader.Describe() + " " + (Highlight ? Highlight.Describe() + " " : "") : "") + $"state={Current} beat={Director.BeatIndex + 1}/{(Director.Script != null ? Director.Script.Beats.Count : 0)} envScale={(env != null ? env.localScale.x.ToString("F2") : "n/a")} active={(env != null && env.gameObject.activeSelf)} playing={Application.isPlaying} source={Director.ScriptSource}";
 
         /// The diorama grows out of the table in front of the reader; its hall centre sits at chest height, a little below the page.
         IEnumerator Grow(int startBeat = -1)

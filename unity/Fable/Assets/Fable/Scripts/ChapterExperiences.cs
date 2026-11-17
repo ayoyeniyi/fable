@@ -69,6 +69,9 @@ namespace Fable
         [JsonProperty("fog")] public float Fog;
         [JsonProperty("script")] public SceneScript Script;
         [JsonProperty("thumbnail")] public Thumb Thumbnail;
+        /// A downloadable scene room (docs/SCENE_ROOMS_PIPELINE.md): fetched by SceneRooms before the experience is ready,
+        /// shown in UnityScene (the library room) by SceneRoomView. Null for a room built into the app.
+        [JsonProperty("sceneRoom")] public SceneRoomRef SceneRoom;
         [JsonProperty("triangles")] public int Triangles;
         [JsonProperty("timings")] public Dictionary<string, float> Timings;
         [UnityEngine.Scripting.Preserve] public ChapterPackage() { }
@@ -139,6 +142,9 @@ namespace Fable
         public ChapterRecord Record(string chapter) => state.Chapters.Find(x => x.Chapter == chapter);
         public IEnumerable<ChapterRecord> Records(string book) => state.Chapters.Where(r => r.Book == book).ToList();
 
+        readonly Dictionary<string, string> downloading = new();   // chapter -> scene room being fetched for it
+        string DownloadingRoom(ChapterRecord r) => downloading.TryGetValue(r.Chapter, out var id) ? id : null;
+
         string Dir(ChapterRecord r) => Path.Combine(Root, r.Chapter.Replace(':', '_'));
         string PackagePath(ChapterRecord r) => Path.Combine(Dir(r), "package.json");
 
@@ -149,6 +155,7 @@ namespace Fable
         {
             if (!Supported.Contains(book) || chapter == null) return;
             var r = Rec(book, chapter, true);
+            if (r.Job == "unavailable") { r.Job = "requested"; r.Stage = "asked again"; Save(); return; }   // its place may have been built since (cheap: no Claude call)
             if (r.Job != "none") return;
             r.Job = "queued"; r.RequestedUtc = DateTime.UtcNow.ToString("o"); r.Stage = "waiting its turn";
             Debug.Log($"[Fable] experiences: {chapter} entered, preparation queued");
@@ -207,6 +214,11 @@ namespace Fable
         {
             var r = Record(chapter);
             if (r == null || !(r.Job is "queued" or "requested" or "building")) return "";
+            if (r.Stage != null && r.Stage.StartsWith("downloading the place"))
+            {
+                var dl = SceneRooms.Instance.ProgressOf(DownloadingRoom(r));
+                return dl != null && dl.EtaSeconds > 0 ? WaitEstimate.About(dl.EtaSeconds) + " left" : "";
+            }
             if (r.Stage == "fetching to the headset" || r.ServerState == "done") return "a few seconds left";
             if (r.EtaSeconds > 0 && !string.IsNullOrEmpty(r.EtaAtUtc))
             {
@@ -343,6 +355,17 @@ namespace Fable
             try { p = JsonConvert.DeserializeObject<ChapterPackage>(pkgJson); } catch (Exception e) { problem = "the package is not readable: " + e.Message; }
             if (problem == null) problem = Check(p, thumb, r);
             if (problem != null) { Directory.Delete(stage, true); Fail(r, "the headset rejected the package: " + problem); yield break; }
+            // a downloadable scene room comes down with it, so a ready experience can be entered at once
+            if (p.SceneRoom != null && !SceneRooms.Instance.IsReady(p.SceneRoom))
+            {
+                string why = null; downloading[r.Chapter] = p.SceneRoom.Id;
+                void Moved(string id) { if (id != p.SceneRoom.Id) return; var dl = SceneRooms.Instance.ProgressOf(id); r.Stage = dl != null ? $"downloading the place ({dl.Amount})" : "downloading the place"; Changed?.Invoke(); }
+                SceneRooms.Instance.Changed += Moved;
+                r.Stage = $"downloading the place ({p.SceneRoom.Bytes / 1e6:F1} MB)"; Save();
+                try { yield return SceneRooms.Instance.Fetch(p.SceneRoom, w => why = w); }
+                finally { SceneRooms.Instance.Changed -= Moved; downloading.Remove(r.Chapter); }
+                if (why != null) { Directory.Delete(stage, true); r.Job = "waiting"; r.Stage = "the place’s download was interrupted; it will resume"; Save(); yield break; }
+            }
             File.WriteAllText(Path.Combine(stage, "package.json"), pkgJson); File.WriteAllBytes(Path.Combine(stage, "thumb.jpg"), thumb);
             if (Directory.Exists(Dir(r))) Directory.Delete(Dir(r), true);
             Directory.Move(stage, Dir(r));
@@ -364,6 +387,7 @@ namespace Fable
             if (p == null || p.Version != 1) return "unknown package version";
             if (p.Chapter != r.Chapter || p.Book != r.Book) return "it is for another chapter";
             if (string.IsNullOrEmpty(p.UnityScene) || !Application.CanStreamedLevelBeLoaded(p.UnityScene)) return $"its environment ({p.UnityScene}) is not in this build";
+            if (p.SceneRoom != null && !p.SceneRoom.Valid) return "its room's download reference is not valid";
             if (p.Moment == null || !(p.Moment.From ?? "").StartsWith(r.Chapter + ".") || !(p.Moment.To ?? "").StartsWith(r.Chapter + ".")) return "its moment is not inside the chapter";
             using (var h = SHA256.Create()) { var sb = new StringBuilder(); foreach (var x in h.ComputeHash(thumb)) sb.Append(x.ToString("x2")); if (p.Thumbnail == null || sb.ToString() != p.Thumbnail.Sha256) return "the image does not match its checksum"; }
             if (p.Staging == "scripted")

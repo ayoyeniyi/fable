@@ -97,6 +97,9 @@ namespace Fable
             Turned?.Invoke(deg);
         }
 
+        /// The reader was moved (a step into a chapter's place): the floating bar goes in front of them at once.
+        public void Snap() { floatInit = false; }
+
         public void Recentre()
         {
             Debug.Log("[Fable] view: recentre");

@@ -8,10 +8,10 @@ namespace Fable.Editor
     public static class MapPreview
     {
         /// Optional: look from `from` toward `at` for this shot (the camera is put back afterwards).
-        public static string Capture(string name, Vector3? from = null, Vector3? at = null, int width = 1600, int height = 1000)
+        public static string Capture(string name, Vector3? from = null, Vector3? at = null, int width = 1600, int height = 1000, string folder = "maps")
         {
             var cam = Camera.main; if (!cam) return "no camera";
-            var dir = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "..", "..", "captures", "unity", "maps"));
+            var dir = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "..", "..", "captures", "unity", folder));
             Directory.CreateDirectory(dir);
             var t = cam.transform; var p0 = t.position; var r0 = t.rotation; var tt0 = cam.targetTexture;
             if (from.HasValue) { t.position = from.Value; if (at.HasValue) t.LookAt(at.Value); }

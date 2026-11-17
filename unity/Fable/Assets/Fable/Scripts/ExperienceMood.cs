@@ -23,6 +23,37 @@ namespace Fable
         static readonly Dictionary<Light, float> lights = new();
         public static string Current { get; private set; }
 
+        /// A gentle colour per mood for downloaded scene rooms (Fable/SceneRoom multiplies it in; their light is baked).
+        static readonly Dictionary<string, Color> Grades = new()
+        {
+            ["as-built"] = new Color(1.04f, 0.99f, 0.93f), ["dawn"] = new Color(1.05f, 0.93f, 0.90f), ["day"] = new Color(1.03f, 1.02f, 0.97f),
+            ["dusk"] = new Color(1.06f, 0.88f, 0.76f), ["night"] = new Color(0.55f, 0.62f, 0.85f), ["storm"] = new Color(0.80f, 0.85f, 0.90f),
+        };
+        static readonly int GradeId = Shader.PropertyToID("_FableSceneGrade");
+        static readonly Dictionary<RoomSound, float> beds = new();
+
+        /// distinct: the step into a chapter's place must look and sound different from reading there even when the
+        /// mood is the room's own (as-built, day): a light haze in the mood's tint, the scene-room grade, and the
+        /// room's ambience a little forward. Nothing garish; Restore undoes all of it.
+        public static void Apply(string mood, float haze, bool distinct)
+        {
+            Apply(mood, haze);
+            if (!distinct) return;
+            if (!Moods.TryGetValue(mood ?? "as-built", out var m)) m = Moods["as-built"];
+            var g = Grades.TryGetValue(mood ?? "as-built", out var gc) ? gc : Grades["as-built"];
+            Shader.SetGlobalVector(GradeId, new Vector4(g.r, g.g, g.b, 1));
+            if (haze <= 0.01f)
+            {
+                RenderSettings.fog = true; RenderSettings.fogMode = FogMode.Exponential;
+                RenderSettings.fogDensity = Mathf.Clamp(Mathf.Max(density * 1.6f, 0.006f), 0.006f, 0.05f);
+                RenderSettings.fogColor = Color.Lerp(fog ? fogColor : m.fog, m.fog * new Color(g.r, g.g, g.b), 0.5f);
+            }
+            beds.Clear();
+            foreach (var rs in Object.FindObjectsByType<RoomSound>(FindObjectsSortMode.None)) { beds[rs] = rs.AmbienceVolume; rs.AmbienceVolume *= mood is "night" or "storm" ? 1.45f : 1.3f; }
+            RoomSound.NotifySettings();
+            Current += " (distinct)";
+        }
+
         public static void Apply(string mood, float haze)
         {
             Restore();
@@ -44,6 +75,8 @@ namespace Fable
             RenderSettings.ambientLight = ambient; RenderSettings.ambientSkyColor = sky; RenderSettings.ambientEquatorColor = equator; RenderSettings.ambientGroundColor = ground;
             foreach (var kv in lights) if (kv.Key) kv.Key.intensity = kv.Value;
             lights.Clear(); applied = false; Current = null;
+            Shader.SetGlobalVector(GradeId, Vector4.zero);
+            if (beds.Count > 0) { foreach (var kv in beds) if (kv.Key) kv.Key.AmbienceVolume = kv.Value; beds.Clear(); RoomSound.NotifySettings(); }
         }
     }
 }
