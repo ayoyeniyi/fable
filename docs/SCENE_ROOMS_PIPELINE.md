@@ -90,7 +90,17 @@ package whose environment is a scene room names the zip (`sceneRoom`: id, file, 
 it with progress on the chapter card, checks the SHA-256, unpacks it into `persistentDataPath/scene-rooms/<id>/`
 (an LRU cache with a size cap), and only then calls the experience ready. The next chapter's room is prefetched.
 Stepping in loads the room with glTFast in the `LibraryRoom` scene, puts the reader at `anchor.reader.entrance`
-facing `anchor.reader.look`, shows the chapter's passage, and returns to the reading room at the end.
+facing `anchor.reader.look` with no page (a caption on the bar), and returns to the reading room at the end.
+
+## Notes from the first rooms
+
+- Cut-out atlases (alpha cards) stay PNG in the runtime export so they keep their alpha; everything else is JPEG.
+- `arctic-ice` is published as a **stand-in** (`--as sr-arctic-ice --no-chapters`): an environment that names no
+  chapters is never planned, so it only serves for testing the download path. Re-run
+  `python3 tools/publish_scene_room.py out/arctic-ice --as sr-arctic-ice --book frankenstein --no-chapters` after a
+  rebuild of the arctic room.
+- `publish_scene_room.py` edits one line of `schema/environments.json`. If two builders publish at once, re-run the
+  publish of whichever lost its line (it is idempotent).
 
 ## Chapters whose new room is not published yet
 

@@ -62,8 +62,53 @@ preparation service can't be reached" and resume by themselves. Reading never wa
 
   Nothing moves the reader on its own: not the end of a chapter, and not a job finishing (a job finishing only
   shows a short note on the bar).
-- **Inside an experience** the stationary bar stays (turn, recentre) with **‹ return to reading**. Returning restores
-  the saved reading position, not the scene's sentence, and undoes the mood.
+- **Inside a place experience** there is no page (owner, 2026-11-17): the reader stands in the chapter's place and
+  looks around. The stationary bar stays (turn, recentre) with **‹ return to the book**, and a caption
+  ("Chapter III · The Wager at Whist") shows on the bar for 4.5 s. Stepping in fades to black and back (0.6 s out,
+  0.8 s in, `StepInFade.cs`).
+  - **Another room** (a room in the app, or a downloaded scene room): it loads in the dark and fades in; at the end
+    the reader goes back to the reading room they stepped in from.
+  - **The reader's own room**: so that something visibly happens, the reader is moved to another viewpoint with clear
+    floor, facing `anchor.scene.centre` (or another `anchor.*`, else the reading view): candidates 2.5-5 m around each
+    focus and around the reading start, checked with a floor ray and a body capsule against temporary colliders
+    (`FlowController.FindViewpoint`, the runtime version of `Editor/FableReaderStart.cs`). The mood is made
+    perceptible even when it is the room's own (`ExperienceMood.Apply(.., distinct: true)`): a light haze in the
+    mood's tint, the scene-room colour grade, the ambience a little forward. Nothing garish.
+  - Returning reverses it all: fade, the saved rig pose and reading position (not the moment), mood restored.
+
+## Downloadable scene rooms (2026-11-17)
+
+Chapter rooms that are not in the APK (`docs/SCENE_ROOMS.md`, `docs/SCENE_ROOMS_PIPELINE.md`).
+
+- **Which place:** for the first ten chapters of each book `schema/scene_rooms.json` decides
+  (`Catalog.Planned`): its existing room, or the download environment published for its new room. Until that room is
+  published the chapter is **unavailable** ("its place (…) is still being built"), answered without Claude; it is
+  never staged in a merely similar room. Asking again (re-entering the chapter, or Retry) re-plans it once the room is
+  published (`Service.plannedPlaceReady`). Later chapters keep the `chapters` lists in `schema/environments.json`.
+- **The package** of a download environment carries `sceneRoom` {id, version, file, bytes, sha256}; its thumbnail is
+  the room's own Blender view (`content/scene-rooms/<id>/view.jpg`), so the server renders nothing for it.
+  `unityScene` is `LibraryRoom`, which hosts the room.
+- **Delivery:** the experience is "ready" only once its room is on the headset too. `ChapterExperiences.Fetch`
+  downloads the zip through `SceneRooms` with the stage "downloading the place (4.2 of 12.6 MB)" and a time estimate
+  from the download rate on the chapter tile, checks the SHA-256, unpacks into `persistentDataPath/scene-rooms/<id>/`
+  (entries confined to the folder, swapped in whole). The cache is capped at 600 MB, least recently used first, never
+  the room in use. Entering a chapter also prefetches the published rooms of that chapter and the next
+  (`GET /scene-rooms/index.json`). A room evicted since is fetched again at step-in, with the progress on the bar.
+- **Showing it:** `SceneRoomView` loads `room.gltf` with glTFast in the library-room scene, hides the library, and
+  puts `anchor.reader.entrance` under the reader facing `anchor.reader.look`. Materials are `Fable/SceneRoom`:
+  base colour × the Blender-baked light texture (UV 1), alpha cut-out cards in the AlphaTest queue, `veg.*` sway and
+  `cloth.*` billow in the room's wind (`LivingScene`), `water.*` gets `Fable/Water`, `fx.*` a fire (flames, embers,
+  crackle), `sound.*` a positional loop (6 at most), and the room's ambience replaces the library's.
+  `Resources/SceneRooms/` keeps the shaders and their variants in the build (`Fable/Scene Room Resources`).
+- **Not done at runtime:** an ocean's swell subdivision and a river's flow directions (the water moves by its detail
+  normals only), `flame.*` meshes and flickering lights; fog does not apply to scene-room surfaces (the mood works
+  through the colour grade there).
+- **Verified in editor play mode** (2026-11-17, local service): frankenstein:c28 pointed at the arctic stand-in
+  (`sr-arctic-ice`) was planned in 9 s, the 2.9 MB zip downloaded, checked and unpacked, the room loaded in 962 ms
+  (42k triangles, 1 billow, 1 water, 3 sounds) with the storm grade, and "return to the book" went back to the
+  garret at the saved page. Same-room step-ins: frankenstein:c08 in the garret (moved 2.3 m, night haze) and
+  eighty:c03 in the Reform Club (dusk haze, caption), both restored exactly. Desktop previews:
+  `captures/unity/step-in/desktop-preview_*.png`. Not verified on a headset.
 
 ## The pipeline
 

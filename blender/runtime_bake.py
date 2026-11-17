@@ -248,7 +248,7 @@ bpy.ops.export_scene.gltf(filepath=gl, export_format='GLTF_SEPARATE', export_tex
                           export_materials='EXPORT', export_image_format='JPEG', export_jpeg_quality=86, export_lights=False, export_cameras=False,
                           export_vertex_color='ACTIVE', export_all_vertex_colors=False, export_extras=True)
 timings["export"] = round(time.time() - t, 1)
-for f in glob.glob(os.path.join(out, "textures", "*.png")): os.remove(f)
+# (PNGs the glTF does not reference -- the light intermediates -- are removed below; cut-out atlases stay PNG for alpha)
 with open(gl) as f: g = json.load(f)
 used = [im.get("uri") for im in g.get("images", []) if im.get("uri")]
 for f in os.listdir(os.path.join(out, "textures")):

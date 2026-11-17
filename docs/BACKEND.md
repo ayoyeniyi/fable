@@ -86,6 +86,19 @@ The editor ignores the built-in address and uses the local service.
   - a Peek through HTTPS from the Mac: 18 s, including the Claude call
   - requests without the access key get 404
 
+## Downloadable scene rooms (2026-11-17)
+
+- `GET /scene-rooms/index.json`: every complete published room's manifest (id, version, chapters, zip size, SHA-256).
+- `GET /scene-rooms/<id>/manifest.json`, `/scene-rooms/<id>/room-<version>.zip` (the download; Range requests work,
+  cached as immutable because the name carries the version), `/scene-rooms/<id>/view.jpg`. Nothing else under
+  `content/scene-rooms` is served. Read-only, behind the access key, the ordinary rate limit (240 a minute), like `/maps`.
+- The packages are **not in git** (`content/scene-rooms/` is ignored; 56 rooms at up to 15 MB would add ~0.8 GB).
+  `tools/publish_scene_room.py` writes them on the Mac; `deploy/deploy.sh` copies `content/scene-rooms/` with rsync
+  **without --delete** (and excludes it from the `content/` copy), so a deploy from a checkout without some packages
+  never removes them from the VM. Publish, then deploy. A new room's chapters become available on the next ask.
+- Checked over HTTPS on the VM (2026-11-17): the arctic stand-in's 2.9 MB zip in 1.8 s, SHA-256 matching the
+  manifest, a Range request answered 206, the index 404 without the key.
+
 ## Not done yet
 
 - A headset build that uses the hosted address, run on the Quest.
