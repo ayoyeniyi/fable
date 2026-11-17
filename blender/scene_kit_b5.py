@@ -126,6 +126,16 @@ def export(scene_id, cams, page=None, keep_names=None, size_for=None, default_si
     sf = {k: (v if isinstance(v, tuple) else (v, 64, max(64, v // 2))) for k, v in (size_for or {}).items()}
     gl = K.bake_and_export(scene_id.replace("-", "_") + ".gltf", cams, page=page, keep_names=keep_names, size_for=sf,
                            default_size=default_size, unlit_emit=tuple(unlit_emit))
+    # the headset draws base x light without specular: make the baked .blend (from which runtime_bake renders the
+    # chapter card's view.jpg) matt too, so the card does not show reflections the room will not have
+    for m in bpy.data.materials:
+        if not m.use_nodes: continue
+        for n in m.node_tree.nodes:
+            if n.type == 'BSDF_PRINCIPLED':
+                for l in list(n.inputs["Roughness"].links): m.node_tree.links.remove(l)
+                n.inputs["Roughness"].default_value = max(0.75, n.inputs["Roughness"].default_value)
+                if "Specular IOR Level" in n.inputs: n.inputs["Specular IOR Level"].default_value = 0.25
+    bpy.ops.wm.save_as_mainfile(filepath=gl.replace(".gltf", "_baked.blend"))
     print("EXPORTED", gl, flush=True)
     return gl
 
