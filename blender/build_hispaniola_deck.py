@@ -280,7 +280,7 @@ for side in (-1, 1):
     rope(f"TopsailBrace{side}", YD_C + yd * side * 5.0, Vector((side * (beam(MAIN_Y) - 0.15), MAIN_Y - 0.5, dz(0, MAIN_Y) + RAIL)), 0.01, 0.6, M_MANILA)
     rope(f"YardBrace{side}", YD2 + yd * side * 6.2, Vector((side * (beam(MAIN_Y + 1) - 0.15), MAIN_Y + 1.0, dz(0, MAIN_Y) + RAIL)), 0.012, 0.5, M_MANILA)
 # "Long John's earrings": lines rigged across the deck, a little slack, between the bulwarks
-for k, y in enumerate((0.8, 3.2, -5.5)):
+for k, y in enumerate((4.6, -5.5)):
     rope(f"Earring{k}", Vector((-(beam(y) - 0.08), y, dz(0, y) + RAIL + 0.05)), Vector((beam(y) - 0.08, y + 0.2, dz(0, y) + RAIL + 0.05)), 0.013, 0.35, M_MANILA)
 
 # ----------------------------------------------------------------------------- deck furniture: the apple barrel, the long brass nine, hatch, boat, windlass, companion, tiller
@@ -315,7 +315,7 @@ bo = mesh_from("JollyBoat", bv, bf, plain("M_BoatPaint", K.srgb((0.30, 0.36, 0.3
 for k in range(3): box(f"BoatThwart{k}", (1.0, 0.18, 0.04), (BT.x, BT.y - 1.0 + k, BT.z + 0.35), M_BULW)
 for k in (-1.2, 1.2): box(f"Chock{k}", (1.2, 0.2, 0.25), (BT.x, BT.y + k, BT.z - 0.25 + (0.25) / 2), M_BULW)
 # the long brass nine on its pivot carriage amidships, to port
-GN = Frame((-1.0, MAIN_Y + 4.3), math.radians(-90 + 15), z=dz(0, MAIN_Y + 4.3))
+GN = Frame((-1.5, MAIN_Y + 5.2), math.radians(90), z=dz(0, MAIN_Y + 5.2))
 GN.box("GunSlide", (0.5, 2.0, 0.18), (0, 0, 0.05 + (0.18) / 2), M_BULW, bevel=0.02)
 GN.box("GunCarriage", (0.5, 0.8, 0.35), (0, 0.1, 0.23 + (0.35) / 2), M_BULW, bevel=0.02)
 cyl("GunPivot", 0.1, 0.1, GN.p(0, -0.6, 0.0), M_IRON, verts=10)
