@@ -255,7 +255,7 @@ lathe("GasTap", [(0.0, 0.0), (0.018, 0.0), (0.018, 0.06), (0.03, 0.07), (0.0, 0.
 FIRE_BASE = Vector(FP(0, 0.21, 0.16))
 SHELF_Z = OH + 0.29
 # overmantel mirror in a gilt frame, a pair of plain vases and a bronze mantel clock (no souvenirs)
-M_MIRROR = plain("M_Mirror", (0.70, 0.70, 0.68), rough=0.05, metallic=1.0)
+M_MIRROR = plain("M_Mirror", (0.20, 0.21, 0.22), rough=0.05, metallic=1.0)
 M_MIRROR["runtime_albedo"] = 1
 F.box("MirrorGlass", (1.3, 0.02, 1.25), (0, 0.03, SHELF_Z + 0.75), M_MIRROR)
 for (fx_, fz, sw, sh) in ((0, SHELF_Z + 0.75 + 0.67, 1.48, 0.09), (0, SHELF_Z + 0.75 - 0.67, 1.48, 0.09), (-0.695, SHELF_Z + 0.75, 0.09, 1.25), (0.695, SHELF_Z + 0.75, 0.09, 1.25)):
