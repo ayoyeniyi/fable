@@ -104,9 +104,9 @@ def chalked_floor_mat(name="M_ChalkFloor"):
     r4 = maprange(nt, scl, 0.012, 0.005, 0, 1, (-400, -820))
     chalk = math_(nt, 'MAXIMUM', math_(nt, 'MAXIMUM', r1, r2, (-700, -950)), math_(nt, 'MAXIMUM', r3, r4, (-600, -1100)), (-450, -1000))
     wearn = noise_(nt, co, 3.5, 4, 0.6, loc=(-900, -1350))
-    trod = maprange(nt, wearn.outputs["Fac"], 0.35, 0.65, 0.15, 0.8, (-700, -1350))
+    trod = maprange(nt, wearn.outputs["Fac"], 0.4, 0.62, 0.0, 0.85, (-700, -1350))
     chalk = math_(nt, 'MULTIPLY', chalk, trod, (-300, -1050))
-    col = mix_rgb(nt, 'MIX', math_(nt, 'MULTIPLY', chalk, 0.85, (-200, -900)), col, (0.70, 0.68, 0.62, 1), (-100, 200))
+    col = mix_rgb(nt, 'MIX', math_(nt, 'MULTIPLY', chalk, 0.5, (-200, -900)), col, (0.62, 0.60, 0.55, 1), (-100, 200))
     # a dull traffic band down the middle where the sets go up and down
     traffic = math_(nt, 'MULTIPLY', maprange(nt, math_(nt, 'ABSOLUTE', x, None, (-1300, -1500)), 2.6, 1.2, 0, 1, (-1150, -1500)), 0.25, (-1000, -1500))
     col = mix_rgb(nt, 'MIX', traffic, col, (0.30, 0.24, 0.17, 1), (50, 200))
