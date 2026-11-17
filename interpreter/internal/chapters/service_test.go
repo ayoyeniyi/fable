@@ -8,6 +8,8 @@ import (
 	"image"
 	"image/color"
 	"image/png"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"strings"
@@ -308,10 +310,11 @@ func TestNamedChaptersLimitThePlaces(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	go s.Run(ctx)
-	s.Prepare("eighty", "eighty:c01", true)
-	j := waitFor(t, s, "eighty:c01", Unavailable, Done, Failed)
+	// (a chapter after the tenth: the scene-room plan covers the first ten)
+	s.Prepare("eighty", "eighty:c20", true)
+	j := waitFor(t, s, "eighty:c20", Unavailable, Done, Failed)
 	if j.State != Unavailable || !strings.Contains(j.Error, "no place") {
-		t.Fatalf("eighty:c01: state %s (%s), want unavailable: no place", j.State, j.Error)
+		t.Fatalf("eighty:c20: state %s (%s), want unavailable: no place", j.State, j.Error)
 	}
 	fp.mu.Lock()
 	asked := len(fp.prompts)
@@ -396,5 +399,17 @@ func TestPlannedSceneRoomIsDownloadedOncePublished(t *testing.T) {
 	json.Unmarshal(b, &p)
 	if p.SceneRoom == nil || p.SceneRoom.SHA256 != sha || p.SceneRoom.File != "room-cdcdcdcd.zip" || p.UnityScene != "LibraryRoom" {
 		t.Fatalf("package scene room: %+v (%s)", p.SceneRoom, p.UnityScene)
+	}
+	// republished: the package served points at the new zip
+	sha2 := strings.Repeat("ef", 32)
+	os.WriteFile(filepath.Join(dir, "room-efefefef.zip"), []byte("PK.."), 0o644)
+	os.WriteFile(filepath.Join(dir, "manifest.json"), []byte(`{"id":"`+pl.ID+`","version":"efefefef","zip":"room-efefefef.zip","bytes":4,"sha256":"`+sha2+`","view":"view.jpg"}`), 0o644)
+	mux := http.NewServeMux()
+	s.Register(mux)
+	rec := httptest.NewRecorder()
+	mux.ServeHTTP(rec, httptest.NewRequest("GET", "/chapters/package?chapter=treasure:c01", nil))
+	var served Package
+	if json.Unmarshal(rec.Body.Bytes(), &served) != nil || served.SceneRoom == nil || served.SceneRoom.SHA256 != sha2 {
+		t.Fatalf("republished room not served: %d %s", rec.Code, rec.Body.String())
 	}
 }

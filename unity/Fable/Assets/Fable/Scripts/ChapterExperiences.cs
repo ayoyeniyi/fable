@@ -181,6 +181,13 @@ namespace Fable
             r.Job = "requested"; r.Error = null; r.Stage = "asked again"; Save();
         }
 
+        /// The package names a room the service no longer has (republished since): fetch the package again.
+        public void Refetch(string chapter)
+        {
+            var r = Record(chapter); if (r == null || r.Job != "ready") return;
+            r.Job = "requested"; r.Stage = "getting the place's new version"; Save();
+        }
+
         public bool IsCompleted(string chapter) => Record(chapter)?.Completed == true;
 
         public State StateOf(string chapter)

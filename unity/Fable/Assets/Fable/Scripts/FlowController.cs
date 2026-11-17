@@ -422,7 +422,13 @@ namespace Fable
                     if (View) View.Tip(null, dl == null ? "Getting the chapter’s place ready…" : $"Downloading the chapter’s place: {dl.Amount}" + (dl.EtaSeconds > 0 ? $", {WaitEstimate.About(dl.EtaSeconds)} left" : ""), 2f);
                     yield return new WaitForSecondsRealtime(0.4f);
                 }
-                if (why != null) { busy = false; if (View) View.Tip(null, $"The chapter’s place could not be downloaded ({why}). Try again in a moment; your reading is not affected.", 7f); yield break; }
+                if (why != null)
+                {
+                    busy = false;
+                    if (why.Contains("404")) ChapterExperiences.Instance.Refetch(chapter);   // the room was republished: its package is fetched again
+                    if (View) View.Tip(null, $"The chapter’s place could not be downloaded ({why}). Try again in a moment; your reading is not affected.", 7f);
+                    yield break;
+                }
             }
             Debug.Log($"[Fable] experience {chapter}: loading {pkg.UnityScene}" + (pkg.SceneRoom != null ? $" with the scene room {pkg.SceneRoom.Id}" : ""));
             yield return StepInFade.To(Head, 1, StepInFade.OutSeconds);

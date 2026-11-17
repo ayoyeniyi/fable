@@ -850,7 +850,23 @@ func (s *Service) Register(mux *http.ServeMux) {
 			writeJSON(w, 409, map[string]string{"error": "not built"})
 			return
 		}
-		http.ServeFile(w, r, filepath.Join(s.pkgDir(ch), "package.json"))
+		data, err := os.ReadFile(filepath.Join(s.pkgDir(ch), "package.json"))
+		if err != nil {
+			writeJSON(w, 404, map[string]string{"error": "no package"})
+			return
+		}
+		// a scene room republished since the package was built: point at the zip the server has now
+		var p Package
+		if json.Unmarshal(data, &p) == nil && p.SceneRoom != nil {
+			if m, err := LoadSceneRoom(s.Root, p.SceneRoom.ID); err == nil && m.SHA256 != p.SceneRoom.SHA256 {
+				p.SceneRoom = m.Ref()
+				if b, err := json.MarshalIndent(p, "", "  "); err == nil {
+					data = b
+				}
+			}
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(data)
 	})
 	mux.HandleFunc("GET /chapters/thumb", func(w http.ResponseWriter, r *http.Request) {
 		ch := r.URL.Query().Get("chapter")
