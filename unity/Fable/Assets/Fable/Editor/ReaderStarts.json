@@ -24,11 +24,11 @@
     "Manual": false
   },
   "horsell-sandpits": {
-    "X": -0.75,
-    "Y": 0.45,
-    "Z": 1.5,
-    "Yaw": 180.0,
-    "Note": "moved 1.68 m, yaw 180 (turned 0), open 3.8 m",
+    "X": 0.0,
+    "Y": -0.01,
+    "Z": 1.0,
+    "Yaw": 190.0,
+    "Note": "moved 1.00 m, yaw 190 (turned 10), open 3.6 m",
     "Manual": false
   },
   "ingolstadt-garret": {
@@ -40,19 +40,19 @@
     "Manual": false
   },
   "ithaca-hall": {
-    "X": -4.05,
-    "Y": 0.72,
-    "Z": 3.7,
-    "Yaw": 167.0,
-    "Note": "moved 0.75 m, yaw 167 (turned -10), open 6.0 m",
+    "X": -3.3,
+    "Y": 0.0,
+    "Z": 5.2,
+    "Yaw": 158.0,
+    "Note": "moved 1.50 m, yaw 158 (turned -20), open 3.6 m",
     "Manual": false
   },
   "kansas-farmhouse": {
-    "X": 1.25,
-    "Y": 0.63,
-    "Z": -1.35,
-    "Yaw": 310.0,
-    "Note": "moved 1.27 m, yaw 310 (turned -41), open 3.7 m",
+    "X": 0.0,
+    "Y": 0.0,
+    "Z": -1.1,
+    "Yaw": 1.0,
+    "Note": "yaw 1 (turned 10), open 2.8 m",
     "Manual": false
   },
   "laputa": {
@@ -65,7 +65,7 @@
   },
   "longbourn-library": {
     "X": -0.05,
-    "Y": 0.01,
+    "Y": 0.0,
     "Z": 1.05,
     "Yaw": 180.0,
     "Note": "moved 0.50 m, yaw 180 (turned 0), open 2.6 m",
@@ -124,12 +124,12 @@
     "Y": 0.03,
     "Z": 0.0,
     "Yaw": 190.0,
-    "Note": "moved 0.25 m, yaw 190 (turned 10), open 9.0 m",
+    "Note": "moved 0.25 m, yaw 190 (turned 10), open 4.4 m",
     "Manual": false
   },
   "queens-croquet-ground": {
     "X": -0.25,
-    "Y": 0.02,
+    "Y": 0.0,
     "Z": 7.3,
     "Yaw": 207.0,
     "Note": "moved 1.03 m, yaw 207 (turned -10), open 3.6 m",

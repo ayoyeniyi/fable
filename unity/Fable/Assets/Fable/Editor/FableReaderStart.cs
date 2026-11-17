@@ -201,11 +201,12 @@ namespace Fable.Editor
             return (cs.Select(c => c.name).Distinct().ToList(), true);
         }
 
+        /// The walkable surface nearest the start's floor level (not a table or bench top within reach of it).
         static float? Floor(Vector3 p, float floorY, bool indoor)
         {
             float tol = indoor ? 0.2f : 0.8f;
             var hits = Physics.RaycastAll(new Vector3(p.x, floorY + 1.6f, p.z), Vector3.down, 3.2f, FloorMask, QueryTriggerInteraction.Ignore);
-            var best = hits.Where(h => Mathf.Abs(h.normal.y) > 0.7f && Mathf.Abs(h.point.y - floorY) <= tol).OrderByDescending(h => h.point.y).Select(h => (RaycastHit?)h).FirstOrDefault();
+            var best = hits.Where(h => Mathf.Abs(h.normal.y) > 0.7f && Mathf.Abs(h.point.y - floorY) <= tol).OrderBy(h => Mathf.Abs(h.point.y - floorY)).Select(h => (RaycastHit?)h).FirstOrDefault();
             if (!best.HasValue || best.Value.collider.name.StartsWith("water:")) return null;
             return best.Value.point.y;
         }
