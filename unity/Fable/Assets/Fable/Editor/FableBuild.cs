@@ -47,11 +47,14 @@ namespace Fable.Editor
             /// Performance (Quest 2): NoFlameLights bakes the fires' glow instead of flickering realtime lights;
             /// ThinFoliage keeps that share of the foliage cards beyond ThinNear metres of the reader (FableLiving.Thin).
             public bool NoFlameLights; public float ThinFoliage = 1f, ThinNear = 7f;
+            /// The room whose reader start this one shares (a trial variant of it); null: its own.
+            public string ReaderOf;
+            public SceneDef Clone() => (SceneDef)MemberwiseClone();
             /// Where the reader starts (feet, world) and the compass yaw they face, when the room's anchor.reader.* does
             /// not leave clear floor and an open view: FableReaderStart finds these and keeps them in ReaderStarts.json;
             /// BuildScene (and FableReaderStart.Apply for built scenes) puts the rig there.
-            public Vector3? ReaderAt => FableReaderStart.Override(Id)?.At;
-            public float? ReaderYaw => FableReaderStart.Override(Id)?.Yaw; }
+            public Vector3? ReaderAt => FableReaderStart.Override(ReaderOf ?? Id)?.At;
+            public float? ReaderYaw => FableReaderStart.Override(ReaderOf ?? Id)?.Yaw; }
         public class LightLook { public string Name; public float Intensity = -1f, Range = -1f; public Color? Color; }
         static LightLook L(string name, float intensity, float range = -1f, Color? color = null) => new LightLook { Name = name, Intensity = intensity, Range = range, Color = color };
         static readonly Color Cool = new(0.62f, 0.70f, 1f), FireGlow = new(1f, 0.62f, 0.30f), CandleGlow = new(1f, 0.78f, 0.52f), Dawn = new(1f, 0.78f, 0.56f);
@@ -59,7 +62,7 @@ namespace Fable.Editor
         public static string MusicId(SceneDef d) => d.Music ?? d.Id;
         public static float WindOf(SceneDef d) => d.Wind >= 0 ? d.Wind : d.Outdoor ? 0.35f : 0f;
         public static string AmbienceOf(SceneDef d) => d.Sound ?? (d.Outdoor ? "birds:0.6+wind-grass:0.7" : "room-tone");
-        public static readonly SceneDef[] Scenes =
+        public static readonly SceneDef[] Scenes = WithDense(new[]
         {
             // first in the build: the app opens in the lobby (blender/build_lobby.py)
             new SceneDef { Id = "lobby", Scene = "Assets/Fable/Scenes/Lobby.unity", Glb = "Assets/Fable/Models/Lobby/lobby.gltf", Lobby = true, Sound = "room-tone:0.8+clock:0.3" },
@@ -118,7 +121,22 @@ namespace Fable.Editor
                 Lights = new[] { L("light.sun", 1.5f, -1f, new Color(1f, 0.97f, 0.92f)) } },
             new SceneDef { Id = "arctic-ice", Scene = "Assets/Fable/Scenes/ArcticIce.unity", Glb = "Assets/Fable/Models/ArcticIce/arctic_ice.gltf", Outdoor = true, Room = true, Book = "frankenstein", Sound = "wind-high:0.75+rigging:0.35", Wind = 0.75f, WindToward = 40f, Fog = 0.0006f,
                 Lights = new[] { L("light.sun", 1.6f, -1f, new Color(1f, 0.76f, 0.52f)), L("light.sky", 0.55f, -1f, new Color(0.62f, 0.72f, 1f)) }, WaterOverride = new WaterLook { SwellHeight = 0f, FlowSpeed = 0f } },
+        });
+
+        /// Frame-rate trial (2026-11-17): the three outdoor rooms as exported before their foliage diet (Pillaji without
+        /// Kiouni), as extra scenes <Scene>Dense beside the thinned ones, so one APK measures both with DevOpen
+        /// ("worlds HorsellSandpitsDense"). Same settings and reader start as the thinned room. Remove once decided.
+        static (string id, string folder, string file)[] DenseTrial => new[]   // a property: Scenes is initialised before any field below it
+        {
+            ("horsell-sandpits", "HorsellSandpitsDense", "horsell_sandpits"), ("fields-to-netherfield", "FieldsToNetherfieldDense", "fields_to_netherfield"),
+            ("pillaji-forest", "PillajiForestDense", "pillaji_forest"),
         };
+        static SceneDef[] WithDense(SceneDef[] defs) => defs.Concat(DenseTrial.Select(t =>
+        {
+            var b = defs.First(d => d.Id == t.id);
+            var c = (SceneDef)b.Clone(); c.Id = t.id + "-dense"; c.Scene = $"Assets/Fable/Scenes/{t.folder}.unity"; c.Glb = $"Assets/Fable/Models/{t.folder}/{t.file}.gltf";
+            c.Music = b.Music ?? b.Id; c.ReaderOf = b.Id; return c;
+        })).ToArray();
         const string ScenePath = "Assets/Fable/Scenes/HallOfDoors.unity";   // the hall: desktop previews
         static SceneDef Def(string id) => Scenes.First(d => d.Id == id);
         /// Scenes whose environment GLB has been exported and imported.

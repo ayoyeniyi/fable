@@ -101,6 +101,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Fable/Scenes/ArcticIce.unity
     guid: bc2f6804635974319bf438de5644469f
+  - enabled: 1
+    path: Assets/Fable/Scenes/HorsellSandpitsDense.unity
+    guid: 2885e024621f641a2ac62f42bf602b73
+  - enabled: 1
+    path: Assets/Fable/Scenes/FieldsToNetherfieldDense.unity
+    guid: bd450c100e27a45eb9bace2f55f1e998
+  - enabled: 1
+    path: Assets/Fable/Scenes/PillajiForestDense.unity
+    guid: 42bbcb6c0d6a34fee9a4344dc81cb94a
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 26154d77f6c974987ae91a02379cdc30, type: 2}

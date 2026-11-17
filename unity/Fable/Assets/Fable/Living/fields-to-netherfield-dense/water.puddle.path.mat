@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: water.puddle.path
+  m_Shader: {fileID: 4800000, guid: 5dcd950fda35245dda37389179ef0fb1, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _WATER_POND
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 2800000, guid: bf345d9922d434c58ab21e0bee70c9fb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormal:
+        m_Texture: {fileID: 2800000, guid: 075770ae057cd4ad389676e06bcd3b58, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FoamNoise:
+        m_Texture: {fileID: 2800000, guid: f4c03f65d6eda41109fd94443215e0b8, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _CrestFoam: 0.35
+    - _DetailSpeed: 0.06
+    - _DetailStrength: 0.2
+    - _DetailTiling: 1.2
+    - _FlowSpeed: 0.6
+    - _Glint: 1.2
+    - _GlintPower: 180
+    - _Reflectivity: 0.8
+    - _Water: 2
+    - _WaveHeight: 0.35
+    - _WaveLength: 18
+    - _WaveSpeed: 1
+    m_Colors:
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FoamColor: {r: 0.92, g: 0.94, b: 0.95, a: 1}
+    - _SkyHorizon: {r: 0.7, g: 0.76, b: 0.8, a: 1}
+    - _SkyZenith: {r: 0.575, g: 0.6875, b: 0.82500005, a: 1.25}
+    - _WaveDir: {r: 1, g: 0, b: -0.00000004371139, a: 0}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

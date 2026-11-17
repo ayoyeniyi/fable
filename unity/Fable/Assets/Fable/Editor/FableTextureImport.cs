@@ -19,7 +19,7 @@ namespace Fable.Editor
     {
         const string Root = "Assets/Fable/Models/";
         enum Role { Color, ColorAlpha, Linear, Normal }
-        static readonly string[] No4K = { Root + "FieldsToNetherfield/" };
+        static readonly string[] No4K = { Root + "FieldsToNetherfield/", Root + "FieldsToNetherfieldDense/" };
 
         /// Book maps copied by FableBuild.SyncData from content/maps (scroll images and the shared Earth texture).
         public const string MapsRoot = "Assets/Fable/Resources/Maps/";
