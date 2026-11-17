@@ -46,7 +46,12 @@ echo "== copying code and content"
 R="rsync -az --delete -e 'ssh -o StrictHostKeyChecking=accept-new'"
 eval $R out/deploy/fable-interpreter "$SSH_USER@$VM:/opt/fable/bin/"
 eval $R --include='*.py' --exclude='*' blender/ "$SSH_USER@$VM:/opt/fable/blender/"
-for d in content schema book; do eval $R "$d/" "$SSH_USER@$VM:/opt/fable/$d/"; done
+for d in content schema book; do eval $R --exclude=scene-rooms/ "$d/" "$SSH_USER@$VM:/opt/fable/$d/"; done
+# downloadable scene rooms (docs/SCENE_ROOMS_PIPELINE.md): not in git, published on the Mac by tools/publish_scene_room.py.
+# Copied without --delete, so a deploy from a checkout that lacks some packages never removes them from the VM.
+if [ -d content/scene-rooms ]; then
+  eval rsync -az -e "'ssh -o StrictHostKeyChecking=accept-new'" content/scene-rooms/ "$SSH_USER@$VM:/opt/fable/content/scene-rooms/"
+fi
 # the built places' models, for chapter thumbnails (glTF, buffers and textures only)
 $SSH "mkdir -p /opt/fable/unity/Fable/Assets/Fable/Models"
 eval $R --include='*/' --include='*.gltf' --include='*.bin' --include='*.png' --include='*.jpg' --exclude='*' --prune-empty-dirs \
