@@ -221,7 +221,7 @@ def _plant_cell(cv, kind, x0, y0, x1, y1, R, greens, straw):
         for i in range(3):
             bx = cx + R.gauss(0, W * 0.08); top = y0 + R.uniform(20, 60)
             cv.line((bx, y1 - 2), (bx, top), 2.2, 1.6, (0.36, 0.38, 0.20, 1.0))
-            cv.ellipse(bx, top + 34, 7, 30, math.pi / 2, (0.28, 0.17, 0.09, 1.0))
+            cv.ellipse(bx, top + 34, 7, 30, 0.0, (0.28, 0.17, 0.09, 1.0))
             cv.line((bx, top + 4), (bx, top - 18), 1.2, 0.6, (0.40, 0.36, 0.22, 1.0))
     elif kind == "sedge":
         for i in range(60):
@@ -409,9 +409,10 @@ def tree(name, x, y, height, spread, kind, seed, bark, leaves_key, nlimbs=6, det
     if roots and detail >= 1:
         for k in range(5):
             az = TWO_PI * k / 5 + R.uniform(-0.3, 0.3); d = Vector((math.cos(az), math.sin(az), 0))
-            p0 = base + Vector((0, 0, r0 * 3.5)); p1 = base + d * r0 * 3.5 + Vector((0, 0, 0.15)); p2 = base + d * r0 * 6.5
-            p2.z = GZ(p2.x, p2.y) - 0.08
-            tube(f"{name}_root{k}", [p0, p1, p2], [r0 * 0.7, r0 * 0.45, r0 * 0.12], bark, sides=5)
+            p0 = base + Vector((0, 0, r0 * 3.0)); p1 = base + d * r0 * 2.0 + Vector((0, 0, 0.12)); p2 = base + d * r0 * 3.8
+            p1.z = max(p1.z, GZ(p1.x, p1.y) + 0.05)
+            p2.z = GZ(p2.x, p2.y) - 0.1
+            tube(f"{name}_root{k}", [p0, p1, p2], [r0 * 0.6, r0 * 0.4, r0 * 0.1], bark, sides=5)
     return C
 
 
