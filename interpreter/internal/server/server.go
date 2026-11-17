@@ -305,6 +305,7 @@ func (s *Server) Handler() http.Handler {
 	}
 	mux.HandleFunc("POST /translate", s.handleTranslate)
 	mux.HandleFunc("GET /maps/{path...}", s.handleMaps)
+	mux.HandleFunc("GET /scene-rooms/{path...}", s.handleSceneRooms)
 	if s.Chapters != nil {
 		s.Chapters.Register(mux)
 	}

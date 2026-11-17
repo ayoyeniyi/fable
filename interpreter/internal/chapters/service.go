@@ -203,7 +203,7 @@ func (s *Service) Prepare(slug, chapter string, completed bool) (*Job, error) {
 		if completed && !j.Completed {
 			j.Completed, changed = true, true
 		}
-		if j.State == Failed {
+		if j.State == Failed || j.State == Unavailable && s.plannedPlaceReady(chapter) {
 			j.State, j.Error, j.Queued, changed = Queued, "", time.Now(), true
 		}
 		if changed {
@@ -227,6 +227,24 @@ func (s *Service) Prepare(slug, chapter string, completed bool) (*Job, error) {
 	s.poke()
 	log.Printf("chapters %s: queued (completed=%v)", chapter, completed)
 	return j, nil
+}
+
+// plannedPlaceReady: the chapter's planned place (schema/scene_rooms.json) can be staged now: an existing room, or a
+// scene room that has been published since the chapter was answered "still being built".
+func (s *Service) plannedPlaceReady(chapter string) bool {
+	p, ok := s.Catalog.Planned(chapter)
+	if !ok {
+		return false
+	}
+	e, ok := s.Catalog.PlannedEnv(p)
+	if !ok {
+		return false
+	}
+	if e.Delivery == "download" {
+		_, err := LoadSceneRoom(s.Root, e.SceneRoom)
+		return err == nil
+	}
+	return true
 }
 
 func (s *Service) poke() {
@@ -357,6 +375,7 @@ type Package struct {
 	Mood        string              `json:"mood"`
 	Fog         float64             `json:"fog"`
 	Script      *script.SceneScript `json:"script,omitempty"`
+	SceneRoom   *SceneRoomRef       `json:"sceneRoom,omitempty"` // a downloadable scene room to fetch before entering
 	Thumbnail   Thumb               `json:"thumbnail"`
 	Triangles   int                 `json:"triangles"`
 	Meshes      int                 `json:"meshes"`
@@ -428,8 +447,29 @@ func (s *Service) pipeline(ctx context.Context, j *Job, timed func(string, func(
 	if len(s.Catalog.ForBook(j.Book)) == 0 && s.passageFor(j.Chapter) == nil {
 		return &unavailableErr{why: "no place has been built for this book's chapters yet"}
 	}
+	// the scene-room plan (schema/scene_rooms.json) decides the place of the first ten chapters: the existing room it
+	// names, or the downloadable room built for it once that is published. Until then the chapter waits for its own
+	// place ("still being built"); it is never staged in a merely similar room.
+	var plannedEnvs []Env
+	var sceneRoom *SceneRoomManifest
+	planned, isPlanned := s.Catalog.Planned(j.Chapter)
+	isPlanned = isPlanned && s.passageFor(j.Chapter) == nil
+	if isPlanned {
+		e, ok := s.Catalog.PlannedEnv(planned)
+		if !ok {
+			return &unavailableErr{why: fmt.Sprintf("no place has been built for this chapter yet: its place (%s) is still being built", planned.Name)}
+		}
+		if e.Delivery == "download" {
+			m, err := LoadSceneRoom(s.Root, e.SceneRoom)
+			if err != nil {
+				return &unavailableErr{why: fmt.Sprintf("no place has been built for this chapter yet: its place (%s) is still being built (%v)", planned.Name, err)}
+			}
+			sceneRoom = m
+		}
+		plannedEnvs = []Env{e}
+	}
 	// a book whose places name their chapters: a chapter none of them names has no place, again without asking Claude
-	if envs, named := s.Catalog.ForChapter(j.Book, j.Chapter); named && len(envs) == 0 && s.passageFor(j.Chapter) == nil {
+	if envs, named := s.Catalog.ForChapter(j.Book, j.Chapter); !isPlanned && named && len(envs) == 0 && s.passageFor(j.Chapter) == nil {
 		return &unavailableErr{why: "no place has been built for this chapter yet"}
 	}
 	dir := s.pkgDir(j.Chapter)
@@ -446,6 +486,9 @@ func (s *Service) pipeline(ctx context.Context, j *Job, timed func(string, func(
 	allowed := s.Catalog.ForBook(j.Book)
 	if envs, named := s.Catalog.ForChapter(j.Book, j.Chapter); named && passage == nil {
 		allowed = envs
+	}
+	if isPlanned {
+		allowed = plannedEnvs
 	}
 	if passage != nil {
 		fixed = passage.Room
@@ -513,6 +556,19 @@ func (s *Service) pipeline(ctx context.Context, j *Job, timed func(string, func(
 	var rr RenderResult
 	png := filepath.Join(work, "thumb.png")
 	if err := timed(Rendering, func() error {
+		if env.Delivery == "download" {
+			// a downloadable scene room carries its own Blender render of the reader's view
+			if sceneRoom == nil {
+				m, err := LoadSceneRoom(s.Root, env.SceneRoom)
+				if err != nil {
+					return err
+				}
+				sceneRoom = m
+			}
+			r, err := viewOf(filepath.Join(SceneRoomsDir(s.Root), sceneRoom.ID, sceneRoom.View), png)
+			rr = r
+			return err
+		}
 		r, err := s.Render(ctx, s.Root, env, plan.Mood, plan.Fog, png)
 		rr = r
 		return err
@@ -571,6 +627,9 @@ func (s *Service) pipeline(ctx context.Context, j *Job, timed func(string, func(
 		if passage != nil && env.Staging == "scripted" {
 			p.Passage = passage.ID
 		}
+		if env.Delivery == "download" && sceneRoom != nil {
+			p.SceneRoom = sceneRoom.Ref()
+		}
 		s.mu.Lock()
 		for k, v := range j.Timings {
 			p.Timings[k] = v
@@ -588,6 +647,38 @@ func (s *Service) pipeline(ctx context.Context, j *Job, timed func(string, func(
 		os.RemoveAll(dir)
 		return os.Rename(work, dir)
 	})
+}
+
+// viewOf copies a scene room's prerendered view as the thumbnail render and measures its brightness.
+func viewOf(src, dst string) (RenderResult, error) {
+	f, err := os.Open(src)
+	if err != nil {
+		return RenderResult{}, err
+	}
+	defer f.Close()
+	img, _, err := image.Decode(bufio.NewReader(f))
+	if err != nil {
+		return RenderResult{}, fmt.Errorf("the room's view is not a readable image: %w", err)
+	}
+	b := img.Bounds()
+	var sum float64
+	n := 0
+	for y := b.Min.Y; y < b.Max.Y; y += 4 {
+		for x := b.Min.X; x < b.Max.X; x += 4 {
+			r, g, bl, _ := img.At(x, y).RGBA()
+			sum += (0.2126*float64(r) + 0.7152*float64(g) + 0.0722*float64(bl)) / 65535
+			n++
+		}
+	}
+	out, err := os.Create(dst)
+	if err != nil {
+		return RenderResult{}, err
+	}
+	defer out.Close()
+	if err := png.Encode(out, img); err != nil {
+		return RenderResult{}, err
+	}
+	return RenderResult{OK: true, MeanLuma: sum / math.Max(1, float64(n))}, nil
 }
 
 // BlenderRenderer runs blender/render_experience_thumb.py headless.

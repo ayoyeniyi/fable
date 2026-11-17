@@ -330,3 +330,71 @@ func TestNamedChaptersLimitThePlaces(t *testing.T) {
 		t.Fatal("the plan for chapter 3 was not limited to the Reform Club")
 	}
 }
+
+// The scene-room plan decides the first ten chapters: a chapter whose new room is not published waits for it
+// without asking Claude; once the room is published as a download environment, the package names its zip and
+// the thumbnail is the room's own view.
+func TestPlannedSceneRoomIsDownloadedOncePublished(t *testing.T) {
+	root := repoRoot(t)
+	tmp := t.TempDir()
+	os.Symlink(filepath.Join(root, "blender"), filepath.Join(tmp, "blender"))
+	os.MkdirAll(filepath.Join(tmp, "content"), 0o755)
+	ents, _ := os.ReadDir(filepath.Join(root, "content"))
+	for _, e := range ents {
+		if e.Name() != "scene-rooms" {
+			os.Symlink(filepath.Join(root, "content", e.Name()), filepath.Join(tmp, "content", e.Name()))
+		}
+	}
+	os.MkdirAll(filepath.Join(tmp, "schema"), 0o755)
+	for _, f := range []string{"scene_rooms.json", "environments.json"} {
+		b, _ := os.ReadFile(filepath.Join(root, "schema", f))
+		os.WriteFile(filepath.Join(tmp, "schema", f), b, 0o644)
+	}
+	cat, err := LoadCatalog(tmp)
+	if err != nil {
+		t.Fatal(err)
+	}
+	pl, ok := cat.Planned("treasure:c01")
+	if !ok || pl.Existing != "" {
+		t.Fatalf("treasure:c01 should be planned for a new room, got %+v", pl)
+	}
+	fp := &fakePlanner{env: "sr-" + pl.ID}
+	s := NewService(tmp, cat, nil, fp, nil, func(ctx context.Context, root string, e Env, mood string, fog float64, out string) (RenderResult, error) {
+		t.Errorf("a scene room was rendered in Blender (%s)", e.ID)
+		return fakeRender(ctx, root, e, mood, fog, out)
+	})
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go s.Run(ctx)
+	s.Prepare("treasure", "treasure:c01", true)
+	j := waitFor(t, s, "treasure:c01", Unavailable, Done, Failed)
+	if j.State != Unavailable || !strings.Contains(j.Error, "still being built") || len(fp.prompts) != 0 {
+		t.Fatalf("unpublished: %s (%s), %d prompts", j.State, j.Error, len(fp.prompts))
+	}
+	// publish it
+	dir := filepath.Join(tmp, "content", "scene-rooms", pl.ID)
+	os.MkdirAll(dir, 0o755)
+	sha := strings.Repeat("cd", 32)
+	os.WriteFile(filepath.Join(dir, "manifest.json"), []byte(`{"id":"`+pl.ID+`","version":"cdcdcdcd","zip":"room-cdcdcdcd.zip","bytes":4,"sha256":"`+sha+`","view":"view.jpg"}`), 0o644)
+	os.WriteFile(filepath.Join(dir, "room-cdcdcdcd.zip"), []byte("PK.."), 0o644)
+	vf, _ := os.Create(filepath.Join(dir, "view.jpg"))
+	img := image.NewRGBA(image.Rect(0, 0, 640, 360))
+	for i := range img.Pix {
+		img.Pix[i] = 110
+	}
+	png.Encode(vf, img)
+	vf.Close()
+	cat.Environments = append(cat.Environments, Env{ID: "sr-" + pl.ID, UnityScene: "LibraryRoom", Staging: "place", Books: []string{"treasure"}, Place: pl.Name,
+		Triangles: 30000, Meshes: 20, Chapters: pl.Chapters, Delivery: "download", SceneRoom: pl.ID})
+	s.Prepare("treasure", "treasure:c01", true)
+	j = waitFor(t, s, "treasure:c01", Done, Failed)
+	if j.State != Done {
+		t.Fatalf("published: %s (%s)", j.State, j.Error)
+	}
+	var p Package
+	b, _ := os.ReadFile(filepath.Join(s.pkgDir("treasure:c01"), "package.json"))
+	json.Unmarshal(b, &p)
+	if p.SceneRoom == nil || p.SceneRoom.SHA256 != sha || p.SceneRoom.File != "room-cdcdcdcd.zip" || p.UnityScene != "LibraryRoom" {
+		t.Fatalf("package scene room: %+v (%s)", p.SceneRoom, p.UnityScene)
+	}
+}

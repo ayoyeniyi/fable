@@ -35,6 +35,10 @@ type Env struct {
 	// Chapters: the chapter ids a place stands for ("eighty:c03"). When a book's places name their chapters, only
 	// those chapters are planned, each among the places that name it; the book's other chapters have no place.
 	Chapters []string `json:"chapters,omitempty"`
+	// Delivery "download": a scene room that is not in the APK (docs/SCENE_ROOMS_PIPELINE.md). SceneRoom names its
+	// package in content/scene-rooms; UnityScene is the scene that hosts it on the headset (LibraryRoom).
+	Delivery  string `json:"delivery,omitempty"`
+	SceneRoom string `json:"sceneRoom,omitempty"`
 }
 
 type Budget struct {
@@ -47,6 +51,8 @@ type Catalog struct {
 	Budget       Budget   `json:"budget"`
 	Moods        []string `json:"moods"`
 	Environments []Env    `json:"environments"`
+	// Plan: schema/scene_rooms.json, the planned place of the first ten chapters of each book (nil if absent)
+	Plan *ScenePlan `json:"-"`
 }
 
 func LoadCatalog(root string) (*Catalog, error) {
@@ -57,6 +63,9 @@ func LoadCatalog(root string) (*Catalog, error) {
 	var c Catalog
 	if err := json.Unmarshal(data, &c); err != nil {
 		return nil, fmt.Errorf("environments.json: %w", err)
+	}
+	if c.Plan, err = loadScenePlan(root); err != nil {
+		return nil, err
 	}
 	return &c, nil
 }
