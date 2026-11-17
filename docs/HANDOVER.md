@@ -2,6 +2,36 @@
 
 Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs/TOOLING.md`. Everything below was true at the commit that last touched this file. "Verified" always says where: **editor** (Unity play mode on a Mac, desktop camera, no HMD) or **headset**. Nothing has been verified on a headset yet.
 
+## Downloadable chapter rooms, the new step-in, and the dense-foliage trial (2026-11-17)
+
+- **Scene rooms** (`docs/SCENE_ROOMS_PIPELINE.md`, `docs/CHAPTER_EXPERIENCES.md` "Downloadable scene rooms"): rooms for
+  the chapters' predominant scenes are not in the APK. Pipeline: kit export -> `blender/runtime_bake.py` (Blender bakes
+  the light into a texture per mesh on UV 1) -> `tools/publish_scene_room.py` (zip + manifest in the git-ignored
+  `content/scene-rooms/<id>/`, a one-line download environment in `schema/environments.json`) -> `deploy/deploy.sh`
+  (rsync without delete) -> `GET /scene-rooms/...` -> the headset downloads, checks, caches (600 MB LRU) and shows it
+  in the library-room scene (`SceneRooms.cs`, `SceneRoomView.cs`, `Fable/SceneRoom`).
+- **Chapter places:** `schema/scene_rooms.json` decides the first ten chapters of each book; a chapter whose new room
+  is not published is "still being built" (no fallback to a similar room). Jobs built before the plan somewhere else
+  are planned again when the service starts. Alice's chapters with cut, scripted passages keep their staged scene
+  until their planned room is published as a download, then the planned room wins (alice:c03 -> pool-bank, seen
+  locally). Download environments are never offered to the planner except through the plan.
+- **Alice foliage rebuilds** imported, rebuilt and baked (croquet ground, tea party); the rose tree's leaf cards inside
+  `prop.rose-tree` sway with the cheap cut-out path. Both have ~1.2-1.4 screens of cut-out cards from the reader
+  view (Fields: 0.92): measure them in the morning too.
+- **Step-in (owner):** no page while stepped in; the bar ("‹ return to the book", turn, recentre) and a 4.5 s caption;
+  fade out/in; in the reader's own room a move to another clear viewpoint and a perceptible mood; all reversed on
+  return. Editor previews: `captures/unity/step-in/`.
+- **Dense foliage trial:** the pre-diet Horsell, Fields and Pillaji (Pillaji without Kiouni) are extra scenes
+  `HorsellSandpitsDense`, `FieldsToNetherfieldDense`, `PillajiForestDense` (`FableBuild.DenseTrial`), so one APK
+  measures both: push `worlds HorsellSandpitsDense` (or the thinned scene name) to
+  `/sdcard/Android/data/com.fable.alice/files/dev-open.txt` and relaunch. Measured so far (headset on the desk, fixed
+  view at the reader start, 30 s): Horsell thinned 72.0 mean / p10 72 (App 10.3 ms, GPU 83%), dense 72.0 / 72 (App
+  9.4 ms, GPU 78%). The headset went to sleep before the others; Fields, Pillaji and the six unmeasured rooms are for
+  the morning session. Decision rule: keep dense where it averages about 70+ with p10 68+, else try the dense trees
+  over the thinned ground cover, else thinned. Then delete the losing variant's scene and `DenseTrial` entry.
+- **Not verified:** anything about scene rooms on a headset (download over Wi-Fi, glTFast load time and frame rate of
+  a runtime room, the fade shell in stereo); no new room has been stepped into yet (only the arctic stand-in).
+
 ## Hand-built rooms for Around the World in Eighty Days and Frankenstein; chapter experiences for all ten (2026-11-15)
 
 - **Rooms:** six Blender rooms (`blender/build_*.py`, renders in `captures/blender/<room>/`) built and baked in Unity,
