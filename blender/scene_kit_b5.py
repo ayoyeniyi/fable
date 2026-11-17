@@ -114,6 +114,8 @@ def export(scene_id, cams, page=None, keep_names=None, size_for=None, default_si
         for n in m.node_tree.nodes:
             if n.type == 'BSDF_PRINCIPLED' and not n.inputs["Metallic"].is_linked and n.inputs["Metallic"].default_value > 0.3:
                 n.inputs["Metallic"].default_value = 0.0
+                if not n.inputs["Base Color"].is_linked:      # a polished metal reads darker than its tint as a matt colour
+                    c = n.inputs["Base Color"].default_value; n.inputs["Base Color"].default_value = (c[0] * 0.6, c[1] * 0.6, c[2] * 0.6, 1)
     # emissive display-colour materials (sky, painted backdrops, glowing panes) bake as EMIT, and the sky keeps the name
     # runtime_bake and the headset treat as unlit
     keep_names = dict(keep_names or {}); unlit_emit = set(unlit_emit)
