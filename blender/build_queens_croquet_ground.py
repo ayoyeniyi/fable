@@ -20,9 +20,16 @@ Each asset group's origin sits exactly on the anchor it is placed at in the base
 Run headless:
   blender -b -P blender/build_queens_croquet_ground.py -- --out out/queens-croquet-ground --quick --render
   blender -b -P blender/build_queens_croquet_ground.py -- --out out/queens-croquet-ground --render --bake --export --samples 96 --res 1280
+  foliage        (alice_foliage.py, 2026-11-17: real trees instead of the old icosphere blobs) static merged meshes
+                 veg.shrub.roses (bed roses and the four standards), veg.shrub.hedges (yew sprigs on the clipped hedges and
+                 topiary), veg.crown.TreeLine (the limes beyond the hedges): alpha-tested leaf-spray cards, sway weight in
+                 COLOR_0.R; MESH_YewHedge: the clipped hedge blocks (painted, tileable yew texture); the rose tree's
+                 head is RoseTree_RoseSprays + RoseTree_Bark inside prop.rose-tree (no colour attribute: an asset).
 """
 import bpy, bmesh, math, random, sys, os, argparse
 from mathutils import Vector, Matrix, noise
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import alice_foliage as AF
 
 # ----------------------------------------------------------------------------- args
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
@@ -35,6 +42,8 @@ ap.add_argument("--samples", type=int, default=160)
 ap.add_argument("--res", type=int, default=1600)
 ap.add_argument("--tex", type=int, default=2048)
 ap.add_argument("--quick", action="store_true", help="low samples for iteration")
+ap.add_argument("--cams", default="", help="comma list of camera names to render (default: reader, rosetree, gardeners, ground)")
+ap.add_argument("--captures", default="", help="also copy the stills here (e.g. captures/blender/queens-croquet-ground)")
 args = ap.parse_args(argv)
 OUT = os.path.abspath(args.out)
 os.makedirs(OUT, exist_ok=True)
@@ -82,6 +91,7 @@ scene.collection.children.link(COLL)
 def link(obj):
     COLL.objects.link(obj)
     return obj
+AF.init(OUT, link)
 
 # ----------------------------------------------------------------------------- material helpers (from build_hall_of_doors.py)
 MATS = {}
@@ -385,9 +395,6 @@ def peg(name="M_Peg"):
 M_LAWN = lawn("M_Lawn", stripes=False, base=(0.07, 0.16, 0.035))
 M_CROQUET = lawn("M_CroquetLawn", stripes=True, base=(0.09, 0.21, 0.04))
 M_GRAVEL = gravel()
-M_HEDGE = foliage("M_Hedge", base=(0.035, 0.11, 0.03), dark=(0.008, 0.03, 0.01), light=(0.09, 0.2, 0.05), leaf_scale=26)
-M_ROSELEAF = foliage("M_RoseLeaves", base=(0.05, 0.15, 0.035), dark=(0.012, 0.045, 0.012), light=(0.14, 0.28, 0.06), leaf_scale=34, bump_strength=1.0)
-M_TREELEAF = foliage("M_TreeLeaves", base=(0.07, 0.17, 0.05), dark=(0.02, 0.06, 0.02), light=(0.2, 0.32, 0.09), leaf_scale=9, bump_strength=0.7)
 M_BRICK = brick()
 M_STONE = stone("M_Stone", color=(0.5, 0.47, 0.41))
 M_DOORGREEN = wood("M_DoorGreen", base=(0.05, 0.12, 0.07), dark=(0.02, 0.05, 0.03), light=(0.09, 0.17, 0.1), scale=1.5, grain_dir=(14, 1, 1), bands='X')
@@ -417,6 +424,15 @@ def vcol_mat(name="M_PaintArm"):
     nt.links.new(col.outputs["Color"], b.inputs["Base Color"]); nt.links.new(rgh.outputs["Fac"], b.inputs["Roughness"])
     return m
 M_PAINTARM = vcol_mat()
+
+# painted foliage (alice_foliage.py): rose-leaf sprays, yew sprigs and a broadleaf (lime) spray atlas for the cards;
+# a tileable clipped-yew texture for the hedge faces and the topiary. Exported as painted, not baked.
+print("painting foliage atlases ...", flush=True)
+M_ROSESPRAY = AF.image_mat("M_RoseSprays", AF.spray_atlas("A_RoseSprays", "rose", 21, S=1024, per_cell=3), rough=0.45, spec=0.3)
+M_YEWSPRIG = AF.image_mat("M_YewSprigs", AF.spray_atlas("A_YewSprigs", "yew", 22, S=512, per_cell=3), rough=0.55)
+M_TREESPRAY = AF.image_mat("M_TreeSprays", AF.spray_atlas("A_LimeSprays", "lime", 23, S=1024, per_cell=4), rough=0.55)
+M_YEWHEDGE = AF.image_mat("M_YewHedge", AF.leaf_tile("A_YewClipped", "yew", 24, S=1024), rough=0.7, alpha=False)
+YEW_TILE = 0.9      # metres one tile of the clipped-yew texture spans
 PART = {"ink": ((0.018, 0.016, 0.016), 0.5), "skin": ((0.78, 0.55, 0.42), 0.55), "wood": ((0.45, 0.3, 0.16), 0.5),
         "tin": ((0.5, 0.51, 0.53), 0.3), "paint": ((0.52, 0.012, 0.018), 0.15)}
 
@@ -662,21 +678,33 @@ for side in (-1, 1):
     parts.append(tube(f"Gate_{side}_Arch", arch, 0.016, M_IRON, sides=6))
 
 # ----------------------------------------------------------------------------- hedges: tall clipped yew on the west, east and north
-def hedge(name, x0, y0, x1, y1, h=HEDGE_H, t=HEDGE_T):
+# Each hedge is a clipped block (rounded edges, a slight batter, the gentle unevenness of shears) in the painted
+# clipped-yew texture, with short yew-sprig cards standing out of its garden face and along its top so the line is
+# broken against the sky. The sprigs are veg.shrub.hedges (a little sway); the blocks are still.
+HEDGE_RND = random.Random(31)
+SPRIGS = AF.MB()
+def _door(p):      # keep the sprigs off the garden door in the north hedge
+    return abs(p.x) < 0.95 and p.y > GY1 - 0.6 and p.z < 2.3
+def hedge(name, x0, y0, x1, y1, h=HEDGE_H, t=HEDGE_T, faces=(), seed=0, top=4.0, dens=1.3):
     cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
     sx, sy = (abs(x1 - x0) or t), (abs(y1 - y0) or t)
-    box(name, (sx, sy, h), (cx, cy, h / 2), M_HEDGE, bevel=0.12, segments=3)
-hedge("Hedge_W", GX0 - HEDGE_T / 2, GY0 - 0.2, GX0 - HEDGE_T / 2, GY1 + HEDGE_T)
-hedge("Hedge_E", GX1 + HEDGE_T / 2, GY0 - 0.2, GX1 + HEDGE_T / 2, GY1 + HEDGE_T)
-hedge("Hedge_N", GX0 - HEDGE_T, GY1 + HEDGE_T / 2, GX1 + HEDGE_T, GY1 + HEDGE_T / 2)
+    mb = AF.MB()
+    c, hh = AF.clipped_block(mb, (sx, sy, h), (cx, cy, 0.0), seed, tile=YEW_TILE, round_r=0.13, step=0.6 if max(sx, sy) > 3 else 0.55, amp=0.035, batter=0.05, bottom=0.03)
+    AF.build_hedge_mesh(name, mb, M_YEWHEDGE)
+    AF.hedge_sprigs(SPRIGS, HEDGE_RND, c, hh, dens, top, size=(0.24, 0.4), faces=faces, skip=_door)
+hedge("Hedge_W", GX0 - HEDGE_T / 2, GY0 - 0.2, GX0 - HEDGE_T / 2, GY1 + HEDGE_T, faces=("+x",), seed=1)
+hedge("Hedge_E", GX1 + HEDGE_T / 2, GY0 - 0.2, GX1 + HEDGE_T / 2, GY1 + HEDGE_T, faces=("-x",), seed=2)
+hedge("Hedge_N", GX0 - HEDGE_T, GY1 + HEDGE_T / 2, GX1 + HEDGE_T, GY1 + HEDGE_T / 2, faces=("-y",), seed=3)
 # buttresses for rhythm along the long hedges
 for i in range(6):
     y = -3.5 + i * 3.6
     for side in (-1, 1):
-        box(f"HedgeButtress_{side}_{i}", (0.5, 0.9, HEDGE_H + 0.25), (side * (GX1 - 0.15), y, (HEDGE_H + 0.25) / 2), M_HEDGE, bevel=0.14, segments=1)
+        x = side * (GX1 - 0.15)
+        hedge(f"HedgeButtress_{side}_{i}", x - 0.25, y - 0.45, x + 0.25, y + 0.45, h=HEDGE_H + 0.25, faces=("-x" if side > 0 else "+x", "+y", "-y"), seed=10 + i * 2 + side, top=5.0)
 for i in range(4):
     x = -6.75 + i * 4.5
-    box(f"HedgeButtressN_{i}", (0.9, 0.5, HEDGE_H + 0.25), (x, GY1 - 0.15, (HEDGE_H + 0.25) / 2), M_HEDGE, bevel=0.14, segments=1)
+    hedge(f"HedgeButtressN_{i}", x - 0.45, GY1 - 0.4, x + 0.45, GY1 + 0.1, h=HEDGE_H + 0.25, faces=("-y", "+x", "-x"), seed=30 + i, top=5.0)
+SPRIGS.build("HedgeSprigs", M_YEWSPRIG, sway=True, normals=lambda p: Vector((0, 0, 1)))
 # an arch in the north hedge: the way on to the Queen's procession
 box("Hedge_N_DoorRecess", (1.5, 0.2, 2.1), (0, GY1 + 0.04, 1.05), M_SOIL)
 for k in range(5):     # a boarded garden door, ledged, standing in the hedge
@@ -689,14 +717,16 @@ sphere("Hedge_N_Ring", 0.035, (0.45, GY1 - 0.14, 1.0), M_IRON, seg=8)
 box("Bed_W", (6.4, 0.9, 0.12), (-5.3, GY0 + 0.68, 0.06), M_SOIL, bevel=0.03)
 box("Bed_E", (3.6, 0.9, 0.12), (6.8, GY0 + 0.68, 0.06), M_SOIL, bevel=0.03)
 def rose_bush(name, loc, r, n_roses, mat_rose, seed):
-    o, surf = blob(f"{name}_Leaves", r, (loc[0], loc[1], loc[2] + r * 0.8), M_ROSELEAF, subdiv=3, amp=0.22, freq=2.2, scale=(1.15, 1.0, 0.85), seed=seed, flat_bottom=-r * 0.75)
-    for k in range(n_roses):
-        a = random.uniform(0, 2 * math.pi); el = random.uniform(-0.1, 1.2)
-        d = Vector((math.cos(a) * math.cos(el), math.sin(a) * math.cos(el), math.sin(el)))
-        c = Vector((loc[0], loc[1], loc[2] + r * 0.8))
-        p = c + (surf(d) - c) * 0.95
+    """A bed rose: a few woody stems from the crown at the soil, canes arching out to an uneven dome of rose-leaf sprays."""
+    R = random.Random(seed)
+    c = Vector((loc[0], loc[1], loc[2] + r * 0.75))
+    cr = AF.Crown([(c, (r * 1.15, r, r * 0.8)), (c + Vector((R.uniform(-0.2, 0.2) * r, R.uniform(-0.2, 0.2) * r, r * 0.35)), (r * 0.7, r * 0.7, r * 0.55))])
+    grafts = [Vector((loc[0] + R.gauss(0, 0.05), loc[1] + R.gauss(0, 0.05), loc[2] + 0.02)) for k in range(3)]
+    canes, sprays, sites = AF.rose_head(name, R, grafts, cr, M_BARK, M_ROSESPRAY, ncanes=8, card_size=0.27, cards_per_cane=3, fill=16,
+                                        cane_r=0.011, sway0=0.1, bloom_sites=n_roses, shoots=1, cane_sides=3)
+    for k, (p, d) in enumerate(sites[:n_roses]):
         rose(f"{name}_Rose{k}", p, d, mat_rose, size=0.042, steps=5)
-    return o
+    return sprays
 
 # ----------------------------------------------------------------------------- roses
 def rose_mesh(name, size, steps=7, seed=0.0):
@@ -744,37 +774,37 @@ for k in range(5):
     p2 = TREE + Vector((math.cos(a) * 0.55, math.sin(a) * 0.55, 1.75 + 0.2 * (k % 3)))
     tree_parts.append(tube(f"RoseTree_Limb{k}", [p0, p1, p2], [0.05, 0.035, 0.02], M_BARK, sides=6))
 CROWN = Vector((TREE.x, TREE.y, CROWN_Z))
-crown_blobs = [(Vector((0, 0, 0.12)), 0.72, 3)]
-# a loose dome of smaller masses: Fibonacci points on an ellipsoid, jittered
-NB = 30
-for k in range(NB):
-    zf = 1 - (k + 0.5) / NB * 1.75            # stop short of the underside
-    if zf < -0.75: continue
-    rr_ = math.sqrt(max(0.0, 1 - zf * zf)); th = k * 2.39996 + 0.3
-    off = Vector((math.cos(th) * rr_ * 0.88, math.sin(th) * rr_ * 0.88, zf * 0.62 + 0.1)) + Vector((random.uniform(-0.06, 0.06), random.uniform(-0.06, 0.06), random.uniform(-0.05, 0.05)))
-    crown_blobs.append((off, random.uniform(0.27, 0.36), 2))
-crown_surf = []
-for k, (off, r, sd) in enumerate(crown_blobs):
-    o, surf = blob(f"RoseTree_Crown{k}", r, CROWN + off, M_ROSELEAF, subdiv=sd, amp=0.2 if sd == 2 else 0.12, freq=2.4, seed=k + 0.5)
-    tree_parts.append(o); crown_surf.append((CROWN + off, r, surf))
+# the head: canes springing from the limb ends and arching out to a lobed dome, clothed in rose-leaf sprays
+ROSE_R = random.Random(1865)
+_lobes = [(CROWN + Vector((0, 0, 0.12)), (0.98, 0.98, 0.66))]
+for k in range(6):
+    a_ = 2 * math.pi * (k + ROSE_R.uniform(-0.25, 0.25)) / 6
+    _lobes.append((CROWN + Vector((math.cos(a_) * 0.55, math.sin(a_) * 0.55, ROSE_R.uniform(0.05, 0.35))), (0.5, 0.5, 0.42)))
+_lobes.append((CROWN + Vector((0.05, -0.05, 0.5)), (0.55, 0.55, 0.38)))
+ROSE_CROWN = AF.Crown(_lobes)
+_limb_ends = [TREE + Vector((math.cos(2 * math.pi * k / 5 + 0.4) * 0.3, math.sin(2 * math.pi * k / 5 + 0.4) * 0.3, 1.55 + 0.1 * (k % 2))) for k in range(5)]
+_canes, _sprays, rose_sites = AF.rose_head("RoseTree", ROSE_R, _limb_ends, ROSE_CROWN, M_BARK, M_ROSESPRAY, ncanes=20, card_size=0.42,
+                                           cards_per_cane=7, fill=125, cane_r=0.016, bloom_sites=140, sway=False)
+tree_parts += [_canes, _sprays]
 
-def crown_points(n, bias_dir=None, bias=0.0, min_el=-0.5):
-    """Random visible points on the crown surface (not buried inside a neighbouring blob)."""
+def crown_points(n, min_el=-0.5):
+    """Bloom sites on the outside of the head: the cane and shoot ends first, then the shell, spaced apart."""
     pts = []
+    for (p, nrm) in rose_sites:
+        if len(pts) >= n: break
+        if (p - CROWN).normalized().z < min_el: continue
+        if any((p - q[0]).length < 0.13 for q in pts): continue
+        pts.append((p, nrm))
     tries = 0
-    while len(pts) < n and tries < n * 60:
+    def seat(p):          # sit each bloom into the outer leaves, not on the envelope beyond them
+        k, c, r = ROSE_CROWN.nearest(p)
+        return c + (p - c) * (0.86 / max(k, 0.86))
+    while len(pts) < n and tries < n * 80:
         tries += 1
-        c, r, surf = random.choices(crown_surf[1:], weights=[r * r for (_, r, _) in crown_surf[1:]])[0]
-        d = Vector((random.gauss(0, 1), random.gauss(0, 1), random.gauss(0, 1))).normalized()
-        if d.z < min_el: continue
-        p = surf(d)
-        if any((p - c2).length < r2 * 0.92 for (c2, r2, _) in crown_surf if c2 is not c): continue
-        if bias_dir is not None and bias > 0:
-            out = Vector((p.x - CROWN.x, p.y - CROWN.y, 0))
-            if out.length > 1e-4 and random.random() < bias and out.normalized().dot(bias_dir) < 0.2: continue
-        if any((p - q[0]).length < 0.11 for q in pts): continue
-        pts.append((c + (p - c) * 0.94, (p - c).normalized()))     # seat the bloom into the leaves
-    return pts
+        p = ROSE_CROWN.shell_point(ROSE_R, 0.95, 1.04, min_el)
+        if any((p - q[0]).length < 0.13 for q in pts): continue
+        pts.append((p, ROSE_CROWN.normal(p)))
+    return [(seat(p), n) for (p, n) in pts]
 
 # the side facing the gate (where the reader stands) is where the painting has got to
 to_reader = Vector((READER.x - TREE.x, READER.y - TREE.y, 0)).normalized()
@@ -815,23 +845,55 @@ DYNAMIC.append(group("fx.red-roses", fx_roses, CROWN_ANCHOR)); CHILD_PREFIX["fx.
 for k, x in enumerate([-7.0, -4.2, 4.2, 7.0]):
     base = Vector((x, -0.45, 0.0))
     tube(f"Standard{k}_Stem", [base, base + Vector((0.02, 0, 0.7)), base + Vector((0, 0.01, 1.3))], [0.045, 0.035, 0.03], M_BARK, sides=6)
-    o, surf = blob(f"Standard{k}_Head", 0.42, base + Vector((0, 0, 1.55)), M_ROSELEAF, subdiv=3, amp=0.2, freq=2.0, seed=20 + k)
+    R = random.Random(20 + k); hc = base + Vector((0, 0, 1.55))
+    cr = AF.Crown([(hc, (0.46, 0.46, 0.36)), (hc + Vector((R.uniform(-0.1, 0.1), R.uniform(-0.1, 0.1), 0.16)), (0.3, 0.3, 0.26))])
+    _c, _s, sites = AF.rose_head(f"Standard{k}", R, [base + Vector((0, 0.01, 1.3))], cr, M_BARK, M_ROSESPRAY, ncanes=10, card_size=0.3,
+                                 cards_per_cane=3, fill=22, cane_r=0.012, sway0=0.2, bloom_sites=6, cane_sides=3)
     lathe(f"Standard{k}_Bed", [(0.0, 0.03), (0.35, 0.03), (0.37, 0.0)], base, M_SOIL, steps=12)
-    for j in range(6):
-        a = random.uniform(0, 2 * math.pi); el = random.uniform(-0.3, 1.1)
-        d = Vector((math.cos(a) * math.cos(el), math.sin(a) * math.cos(el), math.sin(el)))
-        rose(f"Standard{k}_Rose{j}", surf(d), d, M_ROSE_WHITE if (k + j) % 3 else M_ROSE_RED, size=0.045, steps=5)
+    for j, (p, d) in enumerate(sites[:6]):
+        rose(f"Standard{k}_Rose{j}", p, d, M_ROSE_WHITE if (k + j) % 3 else M_ROSE_RED, size=0.045, steps=5)
 for k in range(4):
     rose_bush(f"BedW{k}", (-7.6 + k * 1.6, GY0 + 0.7, 0.1), 0.45, 6, M_ROSE_PINKWHITE if k % 2 else M_ROSE_WHITE, seed=40 + k)
 for k in range(2):
     rose_bush(f"BedE{k}", (5.9 + k * 1.7, GY0 + 0.7, 0.1), 0.45, 6, M_ROSE_WHITE if k % 2 else M_ROSE_PINKWHITE, seed=50 + k)
 
-# topiary: clipped cones in terracotta pots inside the gate
+# topiary: clipped yew cones in terracotta pots inside the gate
+TOPI_R = random.Random(77)
+def topiary_cone(name, base, profile, seed=0, steps=20):
+    """A clipped cone in the clipped-yew texture (cylindrical UVs, the shears' unevenness), a few sprigs standing out."""
+    mb = AF.MB(); rings = []; o = Vector((seed * 1.3, seed * 0.7, 3.0))
+    zs = []; prof = []
+    for (r0, z0), (r1, z1) in zip(profile, profile[1:]):           # resample the profile every ~8 cm
+        n = max(1, int(math.hypot(r1 - r0, z1 - z0) / 0.08))
+        for k in range(n): prof.append((r0 + (r1 - r0) * k / n, z0 + (z1 - z0) * k / n))
+    prof.append(profile[-1])
+    for j, (r, z) in enumerate(prof):
+        ring = []
+        for i in range(steps + 1):
+            a = 2 * math.pi * i / steps
+            d = Vector((math.cos(a), math.sin(a), 0))
+            p = Vector(base) + d * r + Vector((0, 0, z))
+            if 0 < j < len(prof) - 1: p += d * 0.025 * (noise.noise(p * 4.0 + o) + 0.5 * noise.noise(p * 9.0 + o))
+            ring.append(mb.vert(p, (a * 0.3 / YEW_TILE, z / YEW_TILE)))
+        rings.append(ring)
+    for a_, b_ in zip(rings, rings[1:]):
+        for i in range(steps):
+            mb.face(a_[i], a_[i + 1], b_[i + 1], b_[i])
+    obj = mb.build(name, M_YEWHEDGE, sway=False)
+    for i in range(22):
+        k = TOPI_R.uniform(0.15, 0.95); j = int(k * (len(prof) - 1)); r, z = prof[j]
+        a = TOPI_R.uniform(0, 2 * math.pi); d = Vector((math.cos(a), math.sin(a), 0))
+        p = Vector(base) + d * r + Vector((0, 0, z))
+        AF.put_card(SPRIGS2, TOPI_R, p + d * 0.02, (d + Vector((0, 0, 0.6))).normalized(), TOPI_R.uniform(0.1, 0.16), 0.1, 0.4, lift=(0.3, 0.6))
+    return obj
+SPRIGS2 = AF.MB()
 for side in (-1, 1):
     base = Vector((side * 2.35, GY0 + 0.75, 0.0))
     lathe(f"TopiaryPot_{side}", [(0.18, 0.0), (0.24, 0.05), (0.27, 0.45), (0.31, 0.48), (0.31, 0.53), (0.25, 0.53)], base, M_TERRACOTTA, steps=16)
     lathe(f"TopiarySoil_{side}", [(0.0, 0.5), (0.25, 0.5)], base, M_SOIL, steps=12)
-    lathe(f"Topiary_{side}", [(0.04, 0.48), (0.3, 0.6), (0.22, 1.1), (0.12, 1.45), (0.0, 1.62)], base, M_HEDGE, steps=14)
+    topiary_cone(f"Topiary_{side}", base, [(0.04, 0.48), (0.3, 0.6), (0.29, 0.75), (0.22, 1.1), (0.12, 1.45), (0.0, 1.62)], seed=7 + side)
+
+SPRIGS2.build("TopiarySprigs", M_YEWSPRIG, sway=True, normals=lambda p: Vector((0, 0, 1)))
 
 # ----------------------------------------------------------------------------- the croquet ground: hoops and the peg
 def hoop(name, loc, yaw):
@@ -848,12 +910,15 @@ for k, (x, y) in enumerate([(-4.0, 4.0), (4.0, 4.0), (-4.0, 13.4), (4.0, 13.4), 
 cyl("Peg", 0.025, 0.6, (0, 8.8, 0.3), M_PEG, verts=10)
 
 # ----------------------------------------------------------------------------- treeline beyond the hedges and the wall
+# limes and beeches grown as trees: a trunk forking into limbs and branches, leaf-spray cards over a clumpy crown
 for k, (x, y, r) in enumerate([(-12.5, -3.0, 2.2), (-13.0, 5.0, 2.6), (-12.0, 13.0, 2.4), (12.5, -2.0, 2.3), (13.0, 6.5, 2.7), (12.2, 14.0, 2.3),
                                (0.0, 20.5, 2.9), (-7.0, -11.5, 2.4)]):
-    h = r * 1.5
-    tube(f"Tree{k}_Trunk", [(x, y, 0), (x + 0.1, y, h)], [0.3, 0.2], M_BARK, sides=6)
-    blob(f"Tree{k}_CanopyA", r, (x, y, h + r * 0.6), M_TREELEAF, subdiv=3, amp=0.25, freq=1.2, scale=(1, 1, 0.9), seed=60 + k)
-    blob(f"Tree{k}_CanopyB", r * 0.7, (x + r * 0.5, y + r * 0.3, h + r * 1.3), M_TREELEAF, subdiv=2, amp=0.2, freq=1.2, seed=70 + k)
+    R = random.Random(60 + k)
+    h = r * 1.5 + R.uniform(-0.3, 0.4)
+    base = Vector((x, y, 0.0)); top = base + Vector((R.gauss(0, 0.2), R.gauss(0, 0.2), h))
+    crown = AF.auto_crown(R, top, r * 2.6, r * 1.15, nlobes=5, flat=0.8)
+    AF.grow_tree(f"Tree{k}", R, base, crown, M_BARK, M_TREESPRAY, top, 0.24 + r * 0.03, nlimbs=6, detail=0.8, card_size=1.5,
+                 cards_per_tip=1, fill=110, branch_per_limb=4, sag=0.0, wob=0.15, sway0=0.35, facing=((0.0, 4.0, 0.0), -0.35))
 
 # ----------------------------------------------------------------------------- the gardeners: playing cards with hands and feet
 #   "...three gardeners... they were all ornamented with hearts? No: these were the gardeners, spades."
@@ -985,7 +1050,7 @@ def crown_point_towards(pos, z):
     for k in range(80):
         rr = 1.6 - k * 0.02
         p = Vector((TREE.x + d.x * rr, TREE.y + d.y * rr, z))
-        if any((p - c).length < r * 1.05 for (c, r, _) in crown_surf):
+        if ROSE_CROWN.f(p) < 1.0:
             return p
     return Vector((TREE.x + d.x * 0.9, TREE.y + d.y * 0.9, z))
 
@@ -1101,6 +1166,9 @@ def camera(name, loc, look_at, lens=24):
     return co
 EYE = 1.62
 cams = [
+    # the reading position Unity starts the reader at (ReaderStarts.json: x -0.25, z 7.3, yaw 207 -> Blender (0.25, -7.3), facing (0.45, 0.89))
+    camera("Cam_Reader", (0.25, -7.3, EYE), (0.25 + 0.454 * 5, -7.3 + 0.891 * 5, 1.3), lens=18),
+    camera("Cam_Hedge", (-4.0, 2.0, EYE), (-9.0, 6.0, 2.2), lens=24),
     camera("Cam_Gate", (READER.x, READER.y, EYE), (TREE.x - 0.4, TREE.y + 1.0, 1.25), lens=20),
     camera("Cam_RoseTree", (READER_TREE.x, READER_TREE.y, EYE), (TREE.x - 0.2, TREE.y, 1.7), lens=22),
     camera("Cam_Gardeners", (TREE.x + 1.9, TREE.y - 3.6, 1.45), (TREE.x - 0.5, TREE.y - 0.2, 1.15), lens=26),
@@ -1132,18 +1200,11 @@ def report_budget():
     print("BUDGET by prefix:", sorted(by.items(), key=lambda kv: -kv[1])[:14])
 report_budget()
 if args.render:
-    scene.render.resolution_x = args.res; scene.render.resolution_y = int(args.res * 9 / 16)
-    scene.render.image_settings.file_format = 'PNG'
-    for c in cams:
-        painted = c.name == "Cam_Painted"
-        if painted:
-            for nm in ("fx.red-roses", "fx.paint-splash"): set_hidden(bpy.data.objects[nm], False)
-        scene.camera = c
-        scene.render.filepath = os.path.join(OUT, f"render_{c.name[4:].lower()}.png")
-        bpy.ops.render.render(write_still=True)
-        print("rendered", scene.render.filepath)
-        if painted:
-            for nm in ("fx.red-roses", "fx.paint-splash"): set_hidden(bpy.data.objects[nm], True)
+    want = set(c.strip().lower() for c in (args.cams or "reader,rosetree,gardeners,ground,hedge").split(",") if c.strip())
+    def _fx(c, on):
+        if c.name == "Cam_Painted":
+            for nm in ("fx.red-roses", "fx.paint-splash"): set_hidden(bpy.data.objects[nm], not on)
+    AF.render_stills(scene, cams, "queens-croquet-ground", OUT, args.res, args.captures, want, before=lambda c: _fx(c, True), after=lambda c: _fx(c, False))
 
 # ----------------------------------------------------------------------------- bake + merge + export for Unity
 def tri_count(o):
@@ -1181,6 +1242,9 @@ def patch_sun_intensities(glb):
     with open(glb, "wb") as f: f.write(out)
     print("patched sun intensities (lux)", want)
 
+# merged static meshes that keep a living-scene name (docs/LIVING_SCENES.md): the foliage cards sway (vertex colour R)
+KEEP_NAMES = {"M_RoseSprays": "veg.shrub.roses", "M_YewSprigs": "veg.shrub.hedges", "M_TreeSprays": "veg.crown.TreeLine"}
+
 def bake_and_export():
     # assets are exported visible; Unity's SceneDirector hides what the script has not placed yet
     for o in COLL.objects:
@@ -1197,7 +1261,7 @@ def bake_and_export():
     for o in meshes:
         if o.parent is not None or not o.data.materials: continue
         groups.setdefault(o.data.materials[0].name, []).append(o)
-    merged = [join_objs(objs, "MESH_" + mname[2:]) for mname, objs in groups.items()]
+    merged = [join_objs(objs, KEEP_NAMES.get(mname, "MESH_" + mname[2:])) for mname, objs in groups.items()]
     # dynamic groups: inside every empty (asset group or a pivot inside one), one mesh per material
     dynamic_members = []
     empties = [o for o in COLL.objects if o.type == 'EMPTY' and o.name in CHILD_PREFIX]
@@ -1218,12 +1282,16 @@ def bake_and_export():
                 "M_Stone": args.tex // 2, "M_TreeLeaves": args.tex // 2, "M_RoseLeaves": args.tex // 2, "M_Bark": args.tex // 4}
     dyn_size = {"RoseTree_RoseLeaves": args.tex // 2, "RoseTree_RoseWhite": args.tex // 4, "RoseTree_RoseRed": args.tex // 4, "RoseTree_Bark": args.tex // 4,
                 "RedRoses_RoseRed": args.tex // 4}
+    # colour attributes: only the living-scene foliage keeps its sway weights (glTF COLOR_0 would tint anything else)
+    AF.strip_colours(merged + dynamic_members, keep=lambda o: o.name.startswith("veg."))
     for o in dynamic_members:
         m = o.data.materials[0]
+        if AF.is_image_mat(m): continue
         if m.users > 1:
             m2 = m.copy(); m2.name = m.name + "__" + o.name; o.data.materials[0] = m2
     for o in merged + dynamic_members:
         m = o.data.materials[0]; nt = m.node_tree
+        if AF.is_image_mat(m): continue          # painted foliage: exported as painted, with its own UVs
         bsdf = next(n for n in nt.nodes if n.type == 'BSDF_PRINCIPLED')
         base = m.name.split("__")[0]
         if o.parent is None:
@@ -1258,7 +1326,8 @@ def bake_and_export():
     for c in cams: bpy.data.objects.remove(c)
     glb = os.path.join(OUT, "queens_croquet_ground.gltf")   # .gltf + textures/: Unity imports the images as compressed (ASTC) textures; embedded GLB images import uncompressed
     bpy.ops.export_scene.gltf(filepath=glb, export_format='GLTF_SEPARATE', export_texture_dir='textures', export_apply=True, export_yup=True,
-                              export_materials='EXPORT', export_image_format='JPEG', export_jpeg_quality=90, export_lights=True, export_cameras=False)  # JPEG: keeps the GLB under GitHub's 100 MB file limit; Unity recompresses to ASTC anyway
+                              export_materials='EXPORT', export_image_format='JPEG', export_jpeg_quality=90, export_lights=True, export_cameras=False,
+                              export_vertex_color='ACTIVE', export_all_vertex_colors=False, export_extras=True)  # JPEG: keeps the GLB under GitHub's 100 MB file limit; Unity recompresses to ASTC anyway; painted cut-out atlases stay PNG
     patch_sun_intensities(glb)
     allm = merged + dynamic_members
     tris = sum(tri_count(o) for o in allm)
