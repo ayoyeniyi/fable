@@ -20,7 +20,11 @@ heather smoulders and a thin blue thread of smoke rises against the dawn. Behind
 across the common past an old pine and a few gorse bushes. No people (Ogilvy, the crowd and the carts are left out).
 
 Everything is procedural (no downloaded models, textures or HDRIs). Foliage is alpha-clipped cards painted in numpy
-(pine-needle sprays, ling heather in bloom, heath grass, gorse, bracken) with soft custom normals; the ground and sky
+(pine-needle sprays, ling heather in bloom, heath grass, gorse, bracken) with soft custom normals, kept lean for the
+Quest's tile GPU (alpha-tested overdraw is the cost): heather and grass cards only within ~10 m of the reader (and
+nothing tall in the first metres ahead), rising out of an opaque lumpy heather canopy that carries the heath out to
+36 m; pine crowns are opaque lumpy needle masses with fewer, larger cards round them (far pines: masses only, a few
+cards); gorse bushes have opaque cores; the ground and sky
 are painted in numpy into their own UV layouts (the ground in log-polar UVs, texel density highest at the reader's
 feet); the cylinder, bark and splintered wood are node materials baked to textures. Static meshes merge by material;
 glTF export with lights for Unity (helpers in wotw_kit.py).
@@ -35,6 +39,8 @@ Node names Unity relies on:
   Living scenes (docs/LIVING_SCENES.md), vertex colour R = sway weight (0 at roots/trunk, 1 at tips):
     veg.crown.pines (the pine crowns), veg.shrub.heather, veg.shrub.gorse, veg.grass.heath, veg.leaves.bracken
     sound.birds.0 / sound.birds.1 (in the pines ahead and behind), sound.wind-trees.0 (the pine group on the right)
+  veg.crown.pinemass: the opaque crown masses (sway weights like the crown cards)
+  MESH_HeathMound (the opaque heather canopy), MESH_GorseMound (gorse cores): static, opaque
   MESH_Mist: two soft alpha-blended mist sheets (in the pit and the hollow); no shadows, not lightmapped.
 
 Axes: metres, Blender +Z up, +Y north, +X east. Reader at the origin.
@@ -168,6 +174,8 @@ def ground_colour(x, y, fp):
     sand_new = sand_new * (1 - 0.35 * grit[..., None])
     gl = sstep(0.55, 0.8, fbm(x / 6 + 4, y / 6 + 1, 3, seed=26)) * (1 - hd)
     hv = sstep(0.1, 0.45, hd)
+    farh = sstep(8.0, 12.0, np.hypot(x, y))[..., None]                    # beyond the cards: the paint carries the heath
+    heath = heath * (1 - 0.3 * farh) + farh * 0.3 * np.stack([0.045 + 0.06 * bloom, 0.035 + 0.0 * bloom, 0.03 + 0.05 * bloom], -1) * (0.6 + 0.8 * n2[..., None])
     col = litter * (1 - hv[..., None]) + heath * hv[..., None]
     col = col * (1 - gl[..., None] * 0.7) + grass * (gl[..., None] * 0.7)
     bare = sstep(0.66, 0.78, fbm(x / 5 + 2, y / 5 + 8, 3, seed=27)) * (1 - hd) * 0.6
@@ -356,6 +364,75 @@ def bracken_atlas(N=512, seed=11):
 def atlas_uv(vi, inset=0.004):
     u0, v0 = (vi % 2) * 0.5, (vi // 2) * 0.5
     return (u0 + inset, v0 + inset, u0 + 0.5 - inset, v0 + 0.5 - inset)
+
+# ----------------------------------------------------------------------------- opaque foliage-mass textures (tileable, numpy)
+def _wrap_dot(img, p, r, col, alpha=1.0):
+    N = img.shape[0]
+    for ox in (-N, 0, N):
+        for oy in (-N, 0, N):
+            x, y = p[0] + ox, p[1] + oy
+            if -r - 2 < x < N + r + 2 and -r - 2 < y < N + r + 2: paint_dot(img, (x, y), r, col, alpha)
+
+def heath_mound_tex(N=512, seed=15):
+    """Ling seen from above and at a slant, as the low heather mounds beyond the cards read: dark shoots, brown wood,
+    and drifts of purple bloom; tiles (dots wrap round the edges)."""
+    rs = random.Random(seed); img = np.zeros((N, N, 4), np.float32); img[...] = (0.030, 0.034, 0.020, 1.0)
+    for k in range(2600):
+        g = rs.random(); o = rs.random()
+        _wrap_dot(img, (rs.uniform(0, N), rs.uniform(0, N)), rs.uniform(1.6, 3.6),
+                  (0.05 + 0.04 * o + 0.02 * g, 0.07 + 0.04 * g - 0.02 * o, 0.03 + 0.012 * g))
+    for k in range(900):
+        _wrap_dot(img, (rs.uniform(0, N), rs.uniform(0, N)), rs.uniform(1.0, 1.8), (0.10, 0.065, 0.042))
+    for k in range(700):                                                  # holes into the canopy's shade
+        _wrap_dot(img, (rs.uniform(0, N), rs.uniform(0, N)), rs.uniform(1.5, 3.5), (0.01, 0.01, 0.008))
+    img[..., :3] *= 0.3                                                   # a canopy full of its own shadow
+    for k in range(30):                                                   # drifts of bloom, readable from 10-30 m
+        cx, cy = rs.uniform(0, N), rs.uniform(0, N)
+        for i in range(8):
+            _wrap_dot(img, (cx + rs.gauss(0, 30), cy + rs.gauss(0, 30)), rs.uniform(18, 34), (0.05, 0.026, 0.045), 0.16)
+    for k in range(240):
+        cx, cy = rs.uniform(0, N), rs.uniform(0, N); b = rs.uniform(0.5, 0.9)
+        for i in range(rs.randint(6, 16)):
+            c = (0.11 * b + rs.uniform(-0.02, 0.02), 0.05 * b + rs.uniform(-0.01, 0.01), 0.10 * b + rs.uniform(-0.02, 0.02))
+            _wrap_dot(img, (cx + rs.gauss(0, 8), cy + rs.gauss(0, 8)), rs.uniform(1.4, 2.6), c)
+    img[..., 3] = 1.0
+    return img
+
+def gorse_mound_tex(N=256, seed=17):
+    """The dark inside of a gorse bush: spines in shade, a few flowers."""
+    rs = random.Random(seed); img = np.zeros((N, N, 4), np.float32); img[...] = (0.016, 0.026, 0.010, 1.0)
+    for k in range(2200):
+        g = rs.random()
+        _wrap_dot(img, (rs.uniform(0, N), rs.uniform(0, N)), rs.uniform(0.8, 1.8), (0.03 + 0.03 * g, 0.06 + 0.05 * g, 0.02 + 0.015 * g))
+    for k in range(110):
+        _wrap_dot(img, (rs.uniform(0, N), rs.uniform(0, N)), rs.uniform(1.0, 1.8), (0.62, 0.42, 0.02))
+    img[..., :3] *= 0.4
+    img[..., 3] = 1.0
+    return img
+
+def pinemass_tex(atlas, N=512, seed=19):
+    """The inside of a Scots-pine crown as the opaque masses carry it: a dense mat of blue-green needle tufts (stars of
+    short strokes in the needle cards' own colours) over deep shadow; tiles (strokes wrap round the edges)."""
+    rs = random.Random(seed); img = np.zeros((N, N, 4), np.float32)
+    solid = atlas[..., 3] > 0.6
+    cols = atlas[solid][:, :3]; lum = cols.sum(1)
+    greens = cols[(cols[:, 1] >= cols[:, 0]) & (lum > np.percentile(lum, 30))]          # needles, not the orange twigs
+    base = greens.mean(0) * 0.30
+    img[...] = (base[0], base[1], base[2], 1.0)
+    def stroke(p0, p1, w0, w1, c):
+        for ox in (-N, 0, N):
+            for oy in (-N, 0, N):
+                if -20 < p0[0] + ox < N + 20 and -20 < p0[1] + oy < N + 20:
+                    paint_stroke(img, (p0[0] + ox, p0[1] + oy), (p1[0] + ox, p1[1] + oy), w0, w1, c)
+    for k in range(1500):
+        cx, cy = rs.uniform(0, N), rs.uniform(0, N)
+        c = greens[rs.randrange(len(greens))] * rs.uniform(0.45, 1.0)
+        for i in range(rs.randint(6, 11)):
+            a = rs.uniform(0, TWO_PI); L = rs.uniform(5, 11)
+            stroke((cx, cy), (cx + math.cos(a) * L, cy + math.sin(a) * L), 1.6, 0.8, c)
+    img[..., :3] *= 0.6                                                   # the crown's inside is in its own shade
+    img[..., 3] = 1.0
+    return img
 
 def treeline_strip(W=4096, Hh=256, seed=13):
     """Distant woods all round the common (one band, wrapping once round the horizon, so it is seamless): a hazed
@@ -649,8 +726,17 @@ M_SPLIT = splinter_mat()
 
 # ----------------------------------------------------------------------------- foliage materials (numpy atlases)
 print("painting foliage ...")
-M_NEEDLES = K.card_material("M_PineNeedles", K.image_from("T_PineNeedles", needle_atlas()), rough=0.8)
+NEEDLE_RGBA = needle_atlas()
+M_NEEDLES = K.card_material("M_PineNeedles", K.image_from("T_PineNeedles", NEEDLE_RGBA), rough=0.8)
 M_HEATHER = K.card_material("M_Heather", K.image_from("T_Heather", heather_atlas()), rough=0.85)
+# opaque stand-ins (the foliage diet for the Quest: alpha-tested overdraw is what costs on its tile GPU):
+# lumpy pine-crown masses inside thinner card crowns, and low heather / gorse mounds where the cards stop
+M_PINEMASS = K.card_material("M_PineMass", K.image_from("T_PineMass", pinemass_tex(NEEDLE_RGBA)), rough=0.85, clip=False, double=False, repeat=True)
+M_HEATHMOUND = K.card_material("M_HeathMound", K.image_from("T_HeathMound", heath_mound_tex()), rough=0.9, clip=False, double=False, repeat=True)
+M_GORSEMOUND = K.card_material("M_GorseMound", K.image_from("T_GorseMound", gorse_mound_tex()), rough=0.85, clip=False, double=False, repeat=True)
+for _m in (M_PINEMASS, M_HEATHMOUND, M_GORSEMOUND):        # a mat of needles or shoots has no glossy skin (no grazing sheen
+    _b = next(n for n in _m.node_tree.nodes if n.type == 'BSDF_PRINCIPLED')   # toward the low sun)
+    _b.inputs["Specular IOR Level"].default_value = 0.0; _b.inputs["Roughness"].default_value = 1.0
 M_GRASS = K.card_material("M_HeathGrass", K.image_from("T_HeathGrass", grass_atlas()), rough=0.85)
 M_GORSE = K.card_material("M_Gorse", K.image_from("T_Gorse", gorse_atlas()), rough=0.8)
 M_BRACKEN = K.card_material("M_Bracken", K.image_from("T_Bracken", bracken_atlas()), rough=0.8)
@@ -690,6 +776,54 @@ class BarkMesh:
         return o
 BARK = BarkMesh()
 CROWNS = CardMesh("veg.crown.pines")
+
+class MassMesh(CardMesh):
+    """Opaque lumpy masses with shared vertices, custom (soft) normals, sway weights and tiled UVs: the crown masses
+    inside the pines' card crowns and the low heather / gorse mounds."""
+    def vert(self, p, n, w):
+        self.normals.append(Vector(n).normalized()); self.weights.append(w)
+        return self.bm.verts.new(p)
+    def face(self, vs, uvs):
+        try: f = self.bm.faces.new(vs)
+        except ValueError: return None
+        for lp, uv in zip(f.loops, uvs): lp[self.uvl].uv = uv
+        f.smooth = True
+        return f
+
+PINEMASS = MassMesh("veg.crown.pinemass")
+HEATHMOUND = MassMesh("HeathMound"); GORSEMOUND = MassMesh("GorseMound")
+
+def crown_nw(q, crown_c, crown_r):
+    """The soft card normal and sway weight of a crown point (as pad() gives its cards)."""
+    nn = (q - crown_c); nn.z *= 0.6
+    nn = (nn.normalized() * 0.75 + Vector((0, 0, 0.45))).normalized()
+    hd = Vector((q.x - crown_c.x, q.y - crown_c.y, 0)).length
+    return nn, max(0.15, min(1.0, 0.25 + 0.75 * hd / max(crown_r, 0.5)))
+
+def crown_mass(c, rx, ry, rz, yaw, crown_c, crown_r, rs, seg=8, lump=0.22, tile=1.1):
+    """A lumpy, flat-bottomed ellipsoid of needles (a branch's foliage plate seen from 10-80 m): 2 rings + 2 poles."""
+    ca, sa = math.cos(yaw), math.sin(yaw)
+    def P(lx, ly, lz): return c + Vector((lx * ca - ly * sa, lx * sa + ly * ca, lz))
+    rings = []; rows = (math.radians(-28), math.radians(32))
+    for e in rows:
+        ring = []
+        for i in range(seg):
+            a = TWO_PI * (i + 0.5 * (e > 0)) / seg
+            k = (1 + lump * rs.gauss(0, 1)) * (1.0 if i % 2 else 0.74)      # a star of tufts, not a smooth plate
+            q = P(math.cos(e) * math.cos(a) * rx * k, math.cos(e) * math.sin(a) * ry * k, math.sin(e) * rz * (0.6 if e < 0 else 1.0) * k)
+            nn, w = crown_nw(q, crown_c, crown_r)
+            ring.append(PINEMASS.vert(q, nn, w))
+        rings.append(ring)
+    bot = P(0, 0, -rz * 0.5); top = P(rs.gauss(0, rx * 0.15), rs.gauss(0, ry * 0.15), rz * (1 + lump * abs(rs.gauss(0, 1))))
+    vb = PINEMASS.vert(bot, *crown_nw(bot, crown_c, crown_r)); vt = PINEMASS.vert(top, *crown_nw(top, crown_c, crown_r))
+    ku = max(1, round(TWO_PI * max(rx, ry) / tile)); kv = 1.0 / tile; v0 = rs.random()
+    def uv(i, row): return (ku * i / seg + v0, v0 + [0.0, rz * 1.1 * kv][row])
+    for i in range(seg):
+        j = (i + 1) % seg
+        PINEMASS.face([vb, rings[0][j], rings[0][i]], [(ku * (i + 0.5) / seg + v0, v0 - 0.4 * rz * kv), uv(i + 1, 0), uv(i, 0)])
+        PINEMASS.face([rings[0][i], rings[0][j], rings[1][i]], [uv(i, 0), uv(i + 1, 0), uv(i + 0.5, 1)])
+        PINEMASS.face([rings[0][j], rings[1][j], rings[1][i]], [uv(i + 1, 0), uv(i + 1.5, 1), uv(i + 0.5, 1)])
+        PINEMASS.face([rings[1][i], rings[1][j], vt], [uv(i + 0.5, 1), uv(i + 1.5, 1), (ku * (i + 1) / seg + v0, v0 + 1.9 * rz * kv)])
 
 def pad(cm, centre, radius, crown_c, crown_r, rs, ncards, flat=0.55, lean=None):
     """A clump of needle sprays: cards facing outward and up from the pad centre, normals from the crown's centre."""
@@ -757,24 +891,36 @@ def pine(x, y, H, CRr, lod, seed):
         b2 = b0 + d * reach + Vector((0, 0, reach * rise + rs.uniform(-0.3, 0.4)))
         if lod >= 1:
             BARK.tube([tuple(b0), tuple(b1), tuple(b2)], [0.07 + 0.03 * (1 - t), 0.045, 0.018], 5 if lod == 2 else 4, [t, t, t])
-        # pads along the outer part of the branch, the biggest at the tip
-        npads = {2: 4, 1: 4, 0: 2}[lod]
+        # each branch's foliage plate: an opaque lumpy mass (the dense inside), ragged at the edge with a few large
+        # needle cards (near pines more, mid pines fewer, far pines none: their outline against the sky is the mass's)
+        mc = b0 + (b2 - b0) * (0.92 if lod else 0.8) + Vector((0, 0, 0.3))
+        mr = CRr * rs.uniform(0.30, 0.38) * {2: 0.3, 1: 0.36, 0: 0.95}[lod]
+        crown_mass(mc, mr * 1.2, mr * 0.95, mr * (0.6 if lod == 0 else 0.8), a, crown_c, CRr, rs)
+        npads = {2: 3, 1: 2, 0: 1}[lod]
         for j in range(npads):
-            u = 1.0 - j * 0.24
+            u = 1.0 - j * 0.3
             pc = b0 + (b2 - b0) * u + Vector((rs.gauss(0, 0.25), rs.gauss(0, 0.25), 0.3 + rs.uniform(-0.35, 0.5)))
-            pr = CRr * rs.uniform(0.30, 0.40) * (1.0 - 0.15 * j)
-            pad(CROWNS, pc, pr, crown_c, CRr, rs, {2: 12, 1: 10, 0: 8}[lod], flat=0.5, lean=d * 0.3)
+            pr = CRr * rs.uniform(0.30, 0.40) * (1.0 - 0.15 * j) * {2: 1.25, 1: 1.35, 0: 1.1}[lod]
+            pad(CROWNS, pc, pr, crown_c, CRr, rs, {2: 7, 1: 6, 0: 3}[lod], flat=0.5, lean=d * 0.3)
     # foliage through the crown's volume, so it reads as one irregular mass with holes rather than separate tufts
-    nfill = {2: 12, 1: 10, 0: 6}[lod]
     zc0, zc1 = z0 + H * (crown_base + 0.12), z0 + H * 0.93
+    for k in range({2: 0, 1: 2, 0: 4}[lod]):
+        a = rs.uniform(0, TWO_PI); rr = CRr * 0.4 * math.sqrt(rs.random())
+        zz = zc0 + (zc1 - zc0) * rs.random() ** 0.8
+        taper = 1.0 - 0.5 * ((zz - zc0) / max(zc1 - zc0, 0.1)) ** 2
+        pc = Vector((x + math.cos(a) * rr * taper, y + math.sin(a) * rr * taper, zz)) + lean * (zz - z0)
+        r_ = CRr * rs.uniform(0.28, 0.36) * (0.45 if lod else 1.0)
+        crown_mass(pc, r_ * (1.1 if lod == 0 else 0.8), r_ * (1.0 if lod == 0 else 0.75), r_ * 0.6, rs.uniform(0, TWO_PI), crown_c, CRr, rs)
+    nfill = {2: 7, 1: 3, 0: 0}[lod]
     for k in range(nfill):
         a = rs.uniform(0, TWO_PI); rr = CRr * 0.62 * math.sqrt(rs.random())
         zz = zc0 + (zc1 - zc0) * rs.random() ** 0.8
         taper = 1.0 - 0.5 * ((zz - zc0) / max(zc1 - zc0, 0.1)) ** 2
         pc = Vector((x + math.cos(a) * rr * taper, y + math.sin(a) * rr * taper, zz)) + lean * (zz - z0)
-        pad(CROWNS, pc, CRr * rs.uniform(0.26, 0.34), crown_c, CRr, rs, {2: 9, 1: 8, 0: 6}[lod], flat=0.55)
+        pad(CROWNS, pc, CRr * rs.uniform(0.30, 0.40), crown_c, CRr, rs, {2: 6, 1: 5}[lod], flat=0.55)
     # the leader and the topmost cloud
-    pad(CROWNS, ctop + Vector((0, 0, 0.1)), CRr * 0.33, crown_c, CRr, rs, {2: 12, 1: 9, 0: 7}[lod], flat=0.6)
+    crown_mass(ctop + Vector((0, 0, -0.1)), CRr * 0.28, CRr * 0.24, CRr * 0.2, rs.uniform(0, TWO_PI), crown_c, CRr, rs)
+    pad(CROWNS, ctop + Vector((0, 0, 0.1)), CRr * 0.36, crown_c, CRr, rs, {2: 8, 1: 6, 0: 4}[lod], flat=0.6)
 
 for k, (x, y, H, CRr, lod) in enumerate(PINES):
     pine(x, y, H, CRr * 1.2, lod, 100 + k)
@@ -828,6 +974,7 @@ splinters()
 
 BARK.finish("Bark", M_BARK)
 CROWN_OBJ = CROWNS.finish(M_NEEDLES)
+PINEMASS.finish(M_PINEMASS)
 # the fallen crown pieces must not sway: zero their weight (they lie on the ground)
 cw = CROWN_OBJ.data.color_attributes["Col"].data
 for i, v in enumerate(CROWN_OBJ.data.vertices):
@@ -875,42 +1022,124 @@ def look_weight(x, y):
     a = (a + 180) % 360 - 180
     return 1.0 if abs(a) < 110 else 0.55
 
-# poisson-ish scatter: jittered grid, density from the masks, bigger and sparser with distance
-counts = {"heather": 0, "grass": 0}
-for ring_r0, ring_r1, cell, wmin, wmax, ncards in ((0.7, 9.0, 0.55, 0.55, 0.95, 4), (9.0, 22.0, 1.12, 0.8, 1.3, 3), (22.0, 32.0, 1.9, 1.0, 1.6, 3)):
+def mound(mm, x, y, rx, ry, h, rs, seg=8, lump=0.2, tile=1.4):
+    """A low opaque lumpy dome sitting in the ground (its foot ring sunk 8 cm): a heather or gorse bush's mass."""
+    yaw = rs.uniform(0, TWO_PI); ca, sa = math.cos(yaw), math.sin(yaw)
+    ox, oy = rs.uniform(0, 50), rs.uniform(0, 50)
+    def uv(q): return ((q.x + 0.35 * q.z) / tile + ox, (q.y + 0.35 * q.z) / tile + oy)
+    z0 = float(gz(x, y)); rings = []
+    for (rf, hf, off) in ((1.0, 0.0, 0.0), (0.66, 0.62, 0.5)):
+        ring = []
+        for i in range(seg):
+            a = TWO_PI * (i + off) / seg; k = (1 + lump * rs.gauss(0, 1)) * (1.0 if (i % 2 or hf) else 0.8)
+            lx, ly = math.cos(a) * rx * rf * k, math.sin(a) * ry * rf * k
+            px, py = x + lx * ca - ly * sa, y + lx * sa + ly * ca
+            pz = (float(gz(px, py)) - 0.08) if hf == 0 else z0 + h * (0.42 + 0.5 * (i % 2)) * (1 + lump * rs.gauss(0, 1))
+            nn = Vector((lx * ca - ly * sa, lx * sa + ly * ca, 0)).normalized() * (0.75 if hf == 0 else 0.55) + Vector((0, 0, 0.6 if hf == 0 else 0.9))
+            ring.append((mm.vert(Vector((px, py, pz)), nn, 0.0), Vector((px, py, pz))))
+        rings.append(ring)
+    tq = Vector((x + rs.gauss(0, rx * 0.2), y + rs.gauss(0, ry * 0.2), z0 + h * (0.8 + lump * abs(rs.gauss(0, 0.8)))))
+    vt = mm.vert(tq, (0, 0, 1), 0.0)
+    for i in range(seg):
+        j = (i + 1) % seg
+        (a0, qa0), (a1, qa1) = rings[0][i], rings[0][j]
+        (c0, qc0), (c1, qc1) = rings[1][i], rings[1][j]
+        mm.face([a0, a1, c0], [uv(qa0), uv(qa1), uv(qc0)])
+        mm.face([a1, c1, c0], [uv(qa1), uv(qc1), uv(qc0)])
+        mm.face([c0, c1, vt], [uv(qc0), uv(qc1), uv(tq)])
+
+# poisson-ish scatter: jittered grid, density from the masks. Cards only out to ~10 m (the reader's near field, where
+# the heather's wiry outline matters), each clump with an opaque lumpy core so three cards read as a full bush; beyond
+# that low opaque heather mounds over the heath-painted ground, bigger and sparser with distance. Nothing tall right
+# in front of the reader's feet.
+counts = {"heather": 0, "grass": 0, "mounds": 0}
+NEAR_CARDS = 10.0
+for ring_r0, ring_r1, cell in ((0.7, NEAR_CARDS + 1.5, 0.8), (NEAR_CARDS - 0.5, 22.0, 1.8), (22.0, 34.0, 2.6)):
     n = int(2 * ring_r1 / cell)
     for i in range(n):
         for j in range(n):
             x = -ring_r1 + (i + rs.random()) * cell; y = -ring_r1 + (j + rs.random()) * cell
             r = math.hypot(x, y)
             if r < ring_r0 or r >= ring_r1: continue
+            near = ring_r0 < 1.0
+            # the card / mound hand-over: dithered over 9-11.5 m
+            if near and r > NEAR_CARDS - 1.0 and rs.random() < (r - NEAR_CARDS + 1.0) / 2.5: continue
+            if not near and ring_r0 < NEAR_CARDS and r < NEAR_CARDS + 1.5 and rs.random() > (r - NEAR_CARDS + 1.0) / 2.5: continue
             if rs.random() > look_weight(x, y): continue
             hd = float(heather_density(x, y))
             if math.hypot(x - CR[0], y - CR[1]) < RC + 1.5: continue
             if any(math.hypot(x - px, y - py) < 0.8 for px, py, _ in PINES_XYR): continue
-            if rs.random() < hd * 0.95:
-                w = rs.uniform(wmin, wmax) * (0.7 + 0.5 * hd)
-                clump(HEATHER, x, y, w, w * rs.uniform(0.55, 0.8), ncards, rs, [0, 1, 2, 3] if hd > 0.5 else [1, 3], top=(r < 9))
-                counts["heather"] += 1
-            elif rs.random() < 0.35 * (1 - float(sand_cover(x, y))) * (1 - float(track_mask(x, y)) * 0.8):
-                g = rs.uniform(0.35, 0.6) * (1 + r / 40)
+            ahead_ = abs((math.degrees(math.atan2(x, y)) - LOOK_AZ + 180) % 360 - 180) < 75
+            if rs.random() < (hd * 0.95 if near else min(1.0, hd * 1.25)):
+                if near:
+                    w = rs.uniform(0.52, 0.85) * (0.7 + 0.5 * hd)
+                    hh = w * rs.uniform(0.5, 0.72)
+                    if r < 2.4 and ahead_: hh *= 0.45 + 0.2 * (r / 2.4)     # low right at the feet, ahead
+                    elif r < 1.5: hh *= 0.6
+                    if not (r < 1.6 and ahead_):
+                        clump(HEATHER, x, y, w, hh, 3, rs, [0, 1, 2, 3] if hd > 0.5 else [1, 3], tilt=0.45)
+                    counts["heather"] += 1
+                else:
+                    continue                                       # the canopy carries the heath out here
+                    w = cell * rs.uniform(0.45, 0.65) * (0.7 + 0.4 * hd)
+                    mound(HEATHMOUND, x, y, w * rs.uniform(0.95, 1.3), w * rs.uniform(0.75, 1.0), min(0.8, w * rs.uniform(0.45, 0.6)), rs,
+                          seg=8 if r < 24 else 6)
+                    counts["mounds"] += 1
+            elif near and r > 1.2 and rs.random() < 0.35 * (1 - float(sand_cover(x, y))) * (1 - float(track_mask(x, y)) * 0.8):
+                g = rs.uniform(0.35, 0.6) * (1 + r / 40) * (0.6 if (r < 2.4 and ahead_) else 1.0)
                 clump(GRASS, x, y, g * 0.9, g, 2, rs, [0, 1, 2, 3], sink=0.02, tilt=0.5)
                 counts["grass"] += 1
 print("heather clumps", counts)
-# gorse: a few bushes by the tracks and on the knoll behind
+
+def heath_canopy(mm, r0=1.0, r1=36.0, NS=144, tile=1.4):
+    """The heather as one continuous opaque canopy (the bed the near cards rise out of; beyond them, the heath itself): a sheet 0.15-0.5 m over the ground where the
+    heather grows (lumpy with fine noise, so its far edge is ragged against the sand), dipping under the ground where
+    it doesn't (tracks, sand, the pit) and at its inner and outer edges."""
+    rs_ = [r0]
+    while rs_[-1] < r1: rs_.append(rs_[-1] + 0.35 + rs_[-1] * 0.03)
+    th = np.arange(NS) / NS * TWO_PI
+    grid = []
+    for k, r in enumerate(rs_):
+        jit = np.array([math.sin(i * 2.7 + k * 1.3) for i in range(NS)]) * (TWO_PI * r / NS) * 0.25
+        x = r * np.cos(th) + jit * np.sin(th); y = r * np.sin(th) - jit * np.cos(th)
+        hd = heather_density(x, y)
+        fine = fbm(x / 0.9 + 3, y / 0.9 + 1, 2, seed=31); coarse = fbm(x / 3.0, y / 3.0, 2, seed=32)
+        h = (0.14 + 0.24 * coarse + 0.16 * fine) * sstep(0.12, 0.6, hd) * (1 - 0.85 * sand_cover(x, y))
+        h = h * (0.45 + 0.55 * sstep(6.0, 10.0, r)) + 0.10 * (fine - 0.5) * sstep(0.12, 0.6, hd)
+        h = h * sstep(r0, r0 + 1.2, r) * sstep(r1, r1 - 3.0, r) - 0.10
+        z = gz(x, y) + h
+        grid.append([mm.vert(Vector((float(a), float(b), float(c))), (0, 0, 1), 0.0) for a, b, c in zip(x, y, z)])
+    verts = [v for row in grid for v in row]
+    for k in range(len(rs_) - 1):
+        for i in range(NS):
+            j = (i + 1) % NS
+            q = [grid[k][i], grid[k + 1][i], grid[k + 1][j], grid[k][j]]
+            mm.face(q, [((v.co.x + 0.35 * v.co.z) / tile, (v.co.y + 0.35 * v.co.z) / tile) for v in q])
+    # soft normals from the sheet itself, bent up (a canopy lit from above, not a hard surface)
+    mm.bm.normal_update()
+    base = len(mm.normals) - len(verts)
+    for n_, v in enumerate(verts):
+        mm.normals[base + n_] = (v.normal * 0.6 + Vector((0, 0, 0.5))).normalized()
+heath_canopy(HEATHMOUND)
+# gorse: a few bushes by the tracks and on the knoll behind; an opaque dark core, cards for the spiny outline (the far
+# bushes: two cards over a bigger core)
 GORSE_AT = [(-3.2, -4.5, 1.5), (2.6, -6.5, 1.2), (5.0, 3.2, 1.0), (-4.5, 3.0, 0.9), (8.0, -12.0, 1.6), (-10.0, -14.0, 1.4),
             (12.5, 9.0, 1.3), (-14.0, -2.0, 1.1), (6.5, 18.0, 1.2), (-2.0, 24.0, 1.0)]
 for (x, y, s) in GORSE_AT:
+    far_ = math.hypot(x, y) > NEAR_CARDS
     for k in range(3):
         cx, cy = x + rs.gauss(0, s * 0.35), y + rs.gauss(0, s * 0.35)
-        clump(GORSE, cx, cy, s * rs.uniform(0.9, 1.3), s * rs.uniform(0.8, 1.1), 5, rs, [0, 1, 2, 3], sink=0.1, tilt=0.45, top=True)
-# bracken: drifts in the damp hollow ahead and under the pines on the right
-for k in range(260):
-    if k < 180: x, y = 6 + rs.gauss(0, 9), 50 + rs.gauss(0, 6)
+        w, hh = s * rs.uniform(0.9, 1.3), s * rs.uniform(0.8, 1.1)
+        mound(GORSEMOUND, cx, cy, w * (0.42 if far_ else 0.32), w * (0.36 if far_ else 0.28), hh * (0.7 if far_ else 0.55), rs, seg=7, tile=0.9, lump=0.3)
+        clump(GORSE, cx, cy, w, hh, 2 if far_ else 4, rs, [0, 1, 2, 3], sink=0.1, tilt=0.45)
+# bracken: drifts in the damp hollow ahead and under the pines on the right (40-55 m off: fewer, larger clumps)
+for k in range(150):
+    if k < 100: x, y = 6 + rs.gauss(0, 9), 50 + rs.gauss(0, 6)
     else: x, y = 28 + rs.gauss(0, 6), 8 + rs.gauss(0, 7)
     if math.hypot(x, y) > NEAR_R - 2: continue
-    clump(BRACKEN, x, y, rs.uniform(0.7, 1.1), rs.uniform(0.6, 0.95), 2, rs, [0, 1, 2, 3], sink=0.05, tilt=0.8)
+    clump(BRACKEN, x, y, rs.uniform(0.85, 1.3), rs.uniform(0.7, 1.05), 2, rs, [0, 1, 2, 3], sink=0.05, tilt=0.8)
 HEATHER.finish(M_HEATHER); GRASS.finish(M_GRASS); GORSE.finish(M_GORSE); BRACKEN.finish(M_BRACKEN)
+HEATHMOUND.finish(M_HEATHMOUND, weighted=False); GORSEMOUND.finish(M_GORSEMOUND, weighted=False)
 
 # ----------------------------------------------------------------------------- distant treeline (backdrop cards)
 def treeline():
@@ -1040,6 +1269,7 @@ if args.bake or args.export:
     K.bake_and_export(scene, "horsell_sandpits.gltf", size_for,
                       keep_names={"M_SkyDome": "SkyDome", "M_FarLand": "far.land", "M_DistantTrees": "far.treeline", "M_Ground": "MESH_Ground",
                                   "M_PineNeedles": "veg.crown.pines", "M_Heather": "veg.shrub.heather", "M_HeathGrass": "veg.grass.heath",
-                                  "M_Gorse": "veg.shrub.gorse", "M_Bracken": "veg.leaves.bracken", "M_Mist": "MESH_Mist"},
+                                  "M_Gorse": "veg.shrub.gorse", "M_Bracken": "veg.leaves.bracken", "M_Mist": "MESH_Mist",
+                                  "M_PineMass": "veg.crown.pinemass", "M_HeathMound": "MESH_HeathMound", "M_GorseMound": "MESH_GorseMound"},
                       cams=cams, blend_name="horsell_sandpits_baked.blend")
 print("DONE")
