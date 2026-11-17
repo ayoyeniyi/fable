@@ -157,8 +157,13 @@ func (s *Service) load() {
 // offPlan: a built package whose environment is not the one the scene-room plan now gives its chapter.
 func (s *Service) offPlan(chapter string) bool {
 	p, ok := s.Catalog.Planned(chapter)
-	if !ok || s.passageFor(chapter) != nil {
+	if !ok {
 		return false
+	}
+	if s.passageFor(chapter) != nil {
+		if e, ok := s.Catalog.PlannedEnv(p); !ok || e.Delivery != "download" || !s.plannedPlaceReady(chapter) {
+			return false
+		}
 	}
 	var pkg struct {
 		Environment string `json:"environment"`
@@ -474,7 +479,11 @@ func (s *Service) pipeline(ctx context.Context, j *Job, timed func(string, func(
 	var plannedEnvs []Env
 	var sceneRoom *SceneRoomManifest
 	planned, isPlanned := s.Catalog.Planned(j.Chapter)
-	isPlanned = isPlanned && s.passageFor(j.Chapter) == nil
+	// a chapter with a cut, scripted passage (Alice) keeps its staged scene until its planned room is a published
+	// download: then the chapter's own place wins
+	if isPlanned && s.passageFor(j.Chapter) != nil {
+		isPlanned = s.plannedPlaceReady(j.Chapter) && func() bool { e, _ := s.Catalog.PlannedEnv(planned); return e.Delivery == "download" }()
+	}
 	if isPlanned {
 		e, ok := s.Catalog.PlannedEnv(planned)
 		if !ok {
@@ -501,8 +510,11 @@ func (s *Service) pipeline(ctx context.Context, j *Job, timed func(string, func(
 	}
 	defer os.RemoveAll(work)
 
-	// scripted environments: the chapter's cut passage fixes the room
+	// scripted environments: the chapter's cut passage fixes the room (unless its planned scene room has taken over)
 	passage := s.passageFor(j.Chapter)
+	if isPlanned {
+		passage = nil
+	}
 	fixed := ""
 	allowed := s.Catalog.ForBook(j.Book)
 	if envs, named := s.Catalog.ForChapter(j.Book, j.Chapter); named && passage == nil {
