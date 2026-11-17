@@ -549,6 +549,11 @@ def export(default_size=256):
         passes = [("BaseColor", 'EMIT' if emit_only else 'DIFFUSE', {} if emit_only else {"pass_filter": {'COLOR'}}, False),
                   ("Roughness", 'ROUGHNESS', {}, True)][:len(sizes)]
         baked = {}
+        metal0 = 0.0
+        if bsdf is not None:
+            # the diffuse-colour pass of a metallic surface is black: bake the albedo as a dielectric
+            for l in list(bsdf.inputs["Metallic"].links): nt.links.remove(l)
+            metal0 = bsdf.inputs["Metallic"].default_value; bsdf.inputs["Metallic"].default_value = 0.0
         for (pn, bt, extra, noncolor), sz in zip(passes, sizes):
             img = bpy.data.images.new(f"T_{m.name[2:]}_{pn}", sz, sz, alpha=False)
             if noncolor: img.colorspace_settings.name = 'Non-Color'
@@ -558,7 +563,7 @@ def export(default_size=256):
             bpy.ops.object.bake(type=bt, margin=6, use_clear=True, **extra)
             img.filepath_raw = os.path.join(tdir, img.name + ".png"); img.file_format = 'PNG'; img.save(); img.pack()
             baked[pn] = tex
-        metallic = bsdf.inputs["Metallic"].default_value if bsdf else 0.0
+        metallic = metal0 if bsdf else 0.0
         rough_v = bsdf.inputs["Roughness"].default_value if bsdf else 0.9
         emis = bsdf.inputs["Emission Strength"].default_value if bsdf else 0.0
         ecol = tuple(bsdf.inputs["Emission Color"].default_value) if bsdf else (1, 1, 1, 1)
