@@ -8,22 +8,30 @@ the pagoda of Pillaji ... the torches ... 'a suttee'."
 
 The reader stands at the edge of a small clearing in dry deciduous forest - tall sal and teak, a great banyan with
 its aerial roots, clumps of bamboo, a tangle of lantana, ferns and grass in the understorey - in the last of the
-sun. Kiouni, the Parsee's elephant, stands at rest a few metres ahead-left, the saddle-cloth on his back and a
-howdah hung on each flank. Ahead-right, through a gap in the trees about fifty metres off, the stone tower of the
+sun. The clearing ahead-left, where the guide halted Kiouni, is open ground (the elephant was taken out on
+2026-11-17: the procedural one did not hold up close in VR). Ahead-right, through a gap in the trees about fifty metres off, the stone tower of the
 pagoda of Pillaji catches the low sun; torches burn on poles before its porch, where the procession has gathered
 (no people are modelled; their murmur is a sound source), and the wood of the funeral pile is stacked. The sun is
 setting behind the reader's left shoulder, raking long light through the trunks; overhead the sky is deepening blue.
 
 Everything procedural (no downloaded models, textures or HDRIs): foliage is alpha-clipped cards painted in numpy;
-Kiouni is in blender/eighty_elephant.py; helpers in blender/eighty_kit.py (pride_kit.py).
+helpers in blender/eighty_kit.py (pride_kit.py).
+
+Quest 2 foliage budget (2026-11-17): alpha-tested cards are the GPU cost on the Quest's tile renderer, so the near
+trees carry fewer, larger cards and the far trees fewer, much larger ones (opaque crown cores and clumps were tried
+and read as balls on sticks, so the far canopy is cards plus the two remaining tree-line bands); floor grass stops at
+~8 m and the rest of the understorey at ~14 m, with opaque thicket mounds (veg.shrub.thicket, one flowering card
+each) further out; nothing tall stands within 2 m of the reader.
+blender/measure_alpha_cards.py measures the alpha-card area from the reading position.
 
 Node names Unity relies on:
-  anchor.reader.entrance (feet, ground z=0, facing +Y), anchor.reader.look, anchor.scene.centre (Kiouni),
-  anchor.forest.elephant, anchor.forest.pagoda, anchor.forest.banyan
+  anchor.reader.entrance (feet, ground z=0, facing +Y), anchor.reader.look, anchor.scene.centre (the clearing),
+  anchor.forest.elephant (kept: the head-height point in the clearing where Kiouni stood), anchor.forest.pagoda, anchor.forest.banyan
   light.sun (SUN, the low setting sun), light.sky (SUN, cool fill), Lamp.torchFire (POINT at the torches: outdoor
   "Fire" lights are warm and baked)
   fx.torch.0-2 (the torches before the porch; custom property radius)
-  veg.crown.sal, veg.crown.teak, veg.crown.banyan, veg.leaves.bamboo, veg.shrub.under, veg.grass.floor (COLOR_0.R sway)
+  veg.crown.sal, veg.crown.teak, veg.crown.banyan, veg.leaves.bamboo, veg.shrub.under, veg.grass.floor,
+  veg.shrub.thicket (COLOR_0.R sway)
   cloth.flag.pennant (the saffron pennant on the tower's finial)
   sound.birds.dusk, sound.wind-trees.banyan, sound.crowd.procession, sound.fire.torches
   SkyDome, far.Land, far.TreeLine (backdrop)
@@ -46,7 +54,6 @@ from eighty_kit import (new_mat, node, ramp, math_, mix_rgb, mix_f, maprange, no
 
 ARGS = K.setup("pillaji-forest", "out/pillaji-forest", 1872, "PillajiForest", default_samples=48)
 OUT = K.OUT; scene = K.scene
-import eighty_elephant as EL
 R0 = random.Random(1872)
 
 EYE = 1.55
@@ -378,29 +385,30 @@ M_FLAG = plain("M_Pennant", K.srgb((0.85, 0.42, 0.08)), rough=0.8)
 M_FARLAND = noisy("M_FarLand", [K.srgb((0.05, 0.045, 0.04)), K.srgb((0.07, 0.06, 0.05))], scale=0.1, rough=1.0, bump=0.0)
 next(n for n in M_FARLAND.node_tree.nodes if n.type == 'BSDF_PRINCIPLED').inputs["Specular IOR Level"].default_value = 0.0
 M_SKY = sky_mat()
-M_SKIN = EL.skin_mat(); M_JHOOL = EL.jhool_mat()
-def howdah_mat(name="M_HowdahWood"):
-    """the howdahs: dark-stained shisham slats lashed with cane, the uprights and rails painted with a faded red and a
-    thin line of yellow ochre."""
-    m, nt, b = K.new_mat(name)
-    co = obj_coords(nt); s_ = sep_xyz(nt, co, (-1600, 0))
-    sl = math_(nt, 'FRACT', math_(nt, 'DIVIDE', math_(nt, 'ADD', s_.outputs["X"], s_.outputs["Y"], (-1450, 100)), 0.06, (-1350, 100)), None, (-1250, 100))
-    gap = maprange(nt, sl, 0.0, 0.12, 1, 0, (-1150, 100))
-    n = noise_(nt, co, 14.0, 5, 0.6, loc=(-1300, -150))
-    wood_ = mix_rgb(nt, 'MIX', maprange(nt, n.outputs["Fac"], 0.3, 0.7, 0, 1, (-1100, -150)), c4(K.srgb((0.12, 0.065, 0.035))), c4(K.srgb((0.19, 0.11, 0.06))), (-950, -100))
-    col = mix_rgb(nt, 'MULTIPLY', math_(nt, 'MULTIPLY', gap, 0.6, (-900, 100)), wood_, (0.25, 0.25, 0.25, 1), (-750, 0))
-    band = maprange(nt, math_(nt, 'FRACT', math_(nt, 'DIVIDE', s_.outputs["Z"], 0.21, (-1300, -400)), None, (-1200, -400)), 0.85, 0.88, 0, 1, (-1050, -400))
-    col = mix_rgb(nt, 'MIX', math_(nt, 'MULTIPLY', band, 0.8, (-900, -400)), col, c4(K.srgb((0.45, 0.10, 0.06))), (-600, 0))
-    col = K.ao_mul(nt, col, 0.1, 0.5, (-400, -600))
-    nt.links.new(col, b.inputs["Base Color"]); b.inputs["Roughness"].default_value = 0.8; b.inputs["Specular IOR Level"].default_value = 0.25
-    bump_from(nt, b, gap, 0.3, 0.004)
-    return m
-M_HOWDAH = howdah_mat()
-M_ROPE = noisy("M_Rope", [K.srgb((0.45, 0.36, 0.22)), K.srgb((0.52, 0.42, 0.27))], scale=50, rough=0.9, bump=0.3)
 M_BRASS = plain("M_Brass", (0.70, 0.50, 0.24), rough=0.3, metallic=1.0)
-M_IVORY = plain("M_Ivory", K.srgb((0.78, 0.72, 0.58)), rough=0.4)
-M_NAIL = plain("M_ToeNail", K.srgb((0.40, 0.36, 0.30)), rough=0.6)
-M_EYE = plain("M_ElephantEye", (0.02, 0.014, 0.01), rough=0.15)
+def crown_mass_mat(name, dark, mid, light, scale=1.6):
+    """opaque foliage mass for the thickets: leaf clumps as voronoi cells (lit on their upper faces,
+    dark in the gaps between them), a slow tonal drift, darker underneath; a strong clump bump."""
+    m, nt, b = new_mat(name)
+    co = obj_coords(nt)
+    warp = noise_(nt, co, 2.0, 2, 0.5, loc=(-1700, 200))
+    wv = node(nt, "ShaderNodeVectorMath", (-1550, 200), operation='MULTIPLY_ADD'); wv.inputs[1].default_value = (0.25, 0.25, 0.25)
+    nt.links.new(warp.outputs["Color"], wv.inputs[0]); nt.links.new(co, wv.inputs[2])
+    v = voronoi_(nt, wv.outputs[0], scale, 'F1', (-1400, 200))
+    gap = maprange(nt, v.outputs["Distance"], 0.25, 0.6, 0, 1, (-1200, 200))
+    n = noise_(nt, co, 0.15, 3, 0.5, loc=(-1400, -100))
+    col = mix_rgb(nt, 'MIX', maprange(nt, n.outputs["Fac"], 0.35, 0.65, 0, 1, (-1200, -100)), c4(mid), c4(light), (-1000, 0))
+    col = mix_rgb(nt, 'MIX', math_(nt, 'MULTIPLY', gap, 0.75, (-1000, 200)), col, c4(dark), (-800, 0))
+    geo = node(nt, "ShaderNodeNewGeometry", (-1400, -400)); gs = sep_xyz(nt, geo.outputs["Normal"], (-1250, -400))
+    under = maprange(nt, gs.outputs["Z"], 0.1, -0.7, 0, 0.55, (-1100, -400))
+    col = mix_rgb(nt, 'MIX', under, col, c4(dark), (-600, 0))
+    fine = noise_(nt, co, 9.0, 3, 0.6, loc=(-1400, -650))
+    col = mix_rgb(nt, 'MULTIPLY', 1.0, col, maprange(nt, fine.outputs["Fac"], 0.3, 0.7, 0.8, 1.12, (-1200, -650)), (-450, 0))
+    nt.links.new(col, b.inputs["Base Color"]); b.inputs["Roughness"].default_value = 0.75
+    b.inputs["Specular IOR Level"].default_value = 0.3
+    bump_from(nt, b, math_(nt, 'ADD', math_(nt, 'MULTIPLY', gap, -1.0, (-700, -800)), math_(nt, 'MULTIPLY', fine.outputs["Fac"], 0.3, (-700, -900)), (-550, -850)), 0.8, 0.15)
+    return m
+M_THICKET = crown_mass_mat("M_Thicket", K.srgb((0.07, 0.08, 0.03)), K.srgb((0.17, 0.20, 0.07)), K.srgb((0.30, 0.28, 0.12)), scale=4.0)
 M_FLAME = plain("M_RenderFlame", (1.0, 0.6, 0.2), emission=(1.0, 0.55, 0.18), strength=40.0)
 
 # ----------------------------------------------------------------------------- the ground mesh (log-polar UVs: densest at the reader's feet)
@@ -468,6 +476,34 @@ UNDER = {k: ((i % 4) * 0.25, 0.5 if i < 4 else 0.0, (i % 4) * 0.25 + 0.25, 1.0 i
 
 # ----------------------------------------------------------------------------- trees (after build_fields_to_netherfield.py's tree(): limbs to a crown envelope, cards at the ends)
 CROWN_MB = {}
+THICKET = MB()
+def lumps(mb, C, a_, c_, n, R, seed, sub=1, sway=(0.15, 0.55), flat_bottom=None):
+    """an opaque foliage mass: n overlapping noise-displaced icospheres filling an ellipsoid (a_, a_, c_) round C,
+    the larger lumps toward the middle; sway weight R rises from sway[0] at the bottom to sway[1] at the top."""
+    bm = bmesh.new()
+    for k in range(n):
+        if k == 0: off = Vector((0, 0, 0)); r = 0.78
+        else:
+            az = R.uniform(0, 2 * math.pi); el = R.uniform(-0.35, 0.9)
+            off = Vector((math.cos(az) * math.cos(el), math.sin(az) * math.cos(el), math.sin(el))) * R.uniform(0.35, 0.62); r = R.uniform(0.42, 0.6)
+        ctr = C + Vector((off.x * a_, off.y * a_, off.z * c_))
+        rr = Vector((r * a_ * R.uniform(0.85, 1.1), r * a_ * R.uniform(0.85, 1.1), r * c_ * R.uniform(0.85, 1.05)))
+        res = bmesh.ops.create_icosphere(bm, subdivisions=sub, radius=1.0)
+        for v in res["verts"]:
+            d = v.co.normalized()
+            w = 1.0 + 0.16 * noise.noise(d * 2.2 + Vector((seed * 0.37 + k, k * 1.3, seed * 0.11)))
+            q = ctr + Vector((d.x * rr.x, d.y * rr.y, d.z * rr.z)) * w
+            if flat_bottom is not None: q.z = max(q.z, flat_bottom)
+            v.co = q
+    zs = [v.co.z for v in bm.verts]; z0, z1 = min(zs), max(zs)
+    b0 = len(mb.v)
+    vmap = {}
+    for v in bm.verts:
+        t = (v.co.z - z0) / max(1e-6, z1 - z0)
+        vmap[v] = mb.vert(v.co.copy(), (0, 0), sway[0] + (sway[1] - sway[0]) * t)
+    for f in bm.faces: mb.face(*[vmap[v] for v in f.verts])
+    bm.free()
+
 def tree(name, x, y, height, spread, kind, seed, bark, leaves_key, nlimbs=6, detail=1.0, cards_per_tip=3, card_size=1.3, lean=(0, 0), fill=0):
     R = random.Random(seed)
     z0 = gz(x, y) - 0.2
@@ -554,8 +590,9 @@ TREES = [  # x, y, height, spread, kind, seed, near?
 ]
 for k, (x, y, h, s, kind, seed, near) in enumerate(TREES):
     leaves = "sal" if kind == "sal" else "teak"
+    # near: fewer, larger cards; far (18 m and more): fewer, much larger cards
     tree(f"Tree{k}", x, y, h, s, kind, seed, M_SALBARK if kind == "sal" else M_TEAKBARK, leaves, nlimbs=5 if near else 4, detail=1.0 if near else 0.5,
-         cards_per_tip=2 if near else 3, card_size=(1.8 if kind == "sal" else 2.0) * (1.0 if near else 1.5), fill=54 if near else 32)
+         cards_per_tip=1 if near else 0, card_size=(2.3 if kind == "sal" else 2.5) * (1.0 if near else 1.75), fill=26 if near else 28)
 
 # a ring of cheap distant trees (trunk, four limbs, cards) between the clearing's trees and the skyline strip
 FR = random.Random(909)
@@ -564,12 +601,12 @@ for k in range(14):
     x, y = r * math.sin(a), r * math.cos(a)
     if math.hypot(x - PAGODA.x, y - PAGODA.y) < 10: continue
     tree(f"FarTree{k}", x, y, FR.uniform(18, 24), FR.uniform(5, 6.5), "far", 600 + k, M_SALBARK, "sal", nlimbs=4, detail=0.3,
-         cards_per_tip=3, card_size=4.0, fill=26)
+         cards_per_tip=0, card_size=5.5, fill=14)
 
 # the banyan: a broad low crown on great limbs, a fluted trunk, aerial roots hanging from the limbs, some grown into props
 def banyan():
     R = random.Random(77)
-    C = tree("Banyan", BANYAN.x, BANYAN.y, 15.0, 10.0, "banyan", 201, M_BANYANBARK, "banyan", nlimbs=8, detail=1.0, cards_per_tip=3, card_size=1.8, fill=290)
+    C = tree("Banyan", BANYAN.x, BANYAN.y, 15.0, 10.0, "banyan", 201, M_BANYANBARK, "banyan", nlimbs=8, detail=1.0, cards_per_tip=1, card_size=2.6, fill=150)
     for k in range(6):   # extra trunk flutes
         a = 2 * math.pi * k / 6 + R.uniform(-0.2, 0.2); d = Vector((math.cos(a), math.sin(a), 0))
         b0 = BANYAN + d * 0.45; b0.z = gz(b0.x, b0.y) - 0.1
@@ -585,7 +622,7 @@ def banyan():
 BANYAN_C = banyan()
 
 # bamboo clumps: tall arching culms with fans of leaves toward their tips
-def bamboo_clump(name, x, y, n, h, seed):
+def bamboo_clump(name, x, y, n, h, seed, cards=4):
     R = random.Random(seed); mb = CROWN_MB.setdefault("bamboo", MB())
     for k in range(n):
         a = R.uniform(0, 2 * math.pi); r = R.uniform(0.0, 0.7)
@@ -594,24 +631,24 @@ def bamboo_clump(name, x, y, n, h, seed):
         hh = h * R.uniform(0.7, 1.05)
         pts = [p0 + out * (hh * t * t) * 0.6 + Vector((0, 0, hh * t)) for t in (0, 0.25, 0.5, 0.75, 1.0)]
         tube(f"{name}Culm{k}", pts, [0.06, 0.055, 0.045, 0.03, 0.012], M_BAMBOO, sides=4, caps=False)
-        for t in np.linspace(0.45, 1.0, 6):
+        for t in np.linspace(0.5, 1.0, cards):
             q = pts[0].lerp(pts[-1], t) + out * (hh * t * t) * 0.0
             q = pts[min(4, int(t * 4))].lerp(pts[min(4, int(t * 4) + 1)], (t * 4) % 1) if t < 1 else pts[-1]
-            for c in range(2):
+            for c in range(1):
                 o2 = (out.normalized() + Vector((R.gauss(0, 0.6), R.gauss(0, 0.6), R.uniform(-0.3, 0.3)))).normalized()
-                sz = R.uniform(1.2, 1.9)
+                sz = R.uniform(1.5, 2.2)
                 right = o2.cross(Vector((0, 0, 1))).normalized() * sz
                 card(mb, q - Vector((0, 0, sz * 0.5)), right, Vector((0, 0, sz)) + o2 * sz * 0.4, R.choice(QUAD), 0.4, 1.0)
-for k, (x, y, n, h, sd) in enumerate(((5.5, 6.5, 13, 10.0, 301), (-13.0, 12.0, 13, 11.0, 302), (11.0, 15.5, 10, 9.5, 303), (-6.0, -3.5, 9, 9.0, 304),
-                                       (19.0, 36.0, 8, 10.0, 305), (1.0, 40.0, 8, 9.0, 306))):
-    bamboo_clump(f"Bamboo{k}", x, y, n, h, sd)
+for k, (x, y, n, h, sd, nc) in enumerate(((5.5, 6.5, 8, 10.0, 301, 3), (-13.0, 12.0, 9, 11.0, 302, 3), (11.0, 15.5, 7, 9.5, 303, 3), (-6.0, -3.5, 7, 9.0, 304, 3),
+                                           (19.0, 36.0, 6, 10.0, 305, 2), (1.0, 40.0, 6, 9.0, 306, 2))):
+    bamboo_clump(f"Bamboo{k}", x, y, n, h, sd, cards=nc)
 
 # ----------------------------------------------------------------------------- understorey, grass, litter, logs, rocks
 def understorey():
     R = random.Random(5); mbu = MB(); mbg = MB()
     placed = 0
     for i in range(40000):
-        r = 34.0 * R.random() ** 1.3; a = R.uniform(0, 2 * math.pi); x, y = r * math.sin(a), r * math.cos(a)
+        r = 14.0 * R.random() ** 1.1; a = R.uniform(0, 2 * math.pi); x, y = r * math.sin(a), r * math.cos(a)
         if r < 1.4: continue
         if path_d(x, y) < 0.9: continue
         if math.hypot(x - ELE.x, y - ELE.y) < 2.6: continue
@@ -623,20 +660,40 @@ def understorey():
         z = gz(x, y)
         to_r = Vector((-x, -y, 0)).normalized()
         kind = R.choices(["tallgrass", "fern", "lantana", "herb", "grass", "seedling", "straw", "shoot"], weights=[3, 3, 2.2, 0.8 if r > 4 else 0.0, 4, 1.2, 2, 0.6])[0]
+        if r > 9.0 and kind in ("tallgrass", "grass", "straw"): continue          # no grass cards beyond ~8 m
         hgt = {"tallgrass": 1.1, "fern": 0.9, "lantana": 1.4, "herb": 0.7, "grass": 0.45, "seedling": 1.1, "straw": 1.0, "shoot": 1.6}[kind] * R.uniform(0.7, 1.3)
+        if r < 2.2: hgt = min(hgt, 0.45)                                          # nothing tall right before the reader
+        elif r < 4.5: hgt = min(hgt, 0.85)
         wid = hgt * 0.5
         mbx = mbg if kind in ("tallgrass", "grass", "straw") else mbu
-        ncard = 1 if kind in ("grass", "tallgrass", "straw") or r > 12 else 2
+        ncard = 2 if kind in ("fern", "lantana") and 3.0 < r < 6.0 else 1
         for c in range(ncard):
             ya = math.atan2(to_r.y, to_r.x) + math.pi / 2 + R.gauss(0, 0.5) + c * 1.3
             right = Vector((math.cos(ya), math.sin(ya), 0)) * wid
             card(mbx, (x, y, z - 0.03), right, Vector((R.gauss(0, 0.06), R.gauss(0, 0.06), hgt)), UNDER[kind], 0.0, 1.0, segs=2 if r < 6 else 1,
                  bend=Vector((R.gauss(0, 0.15), R.gauss(0, 0.15), 0)) * hgt)
         placed += 1
-        if placed > 1250: break
-    o1 = mbu.build("Understorey", M_UNDER); o2 = mbg.build("FloorGrass", M_GRASS)
-    for o in (o1, o2):
-        if o is not None: set_card_normals(o, lambda p: Vector((0, 0, 1)))
+        if placed > 640: break
+    o2 = mbg.build("FloorGrass", M_GRASS)
+    if o2 is not None: set_card_normals(o2, lambda p: Vector((0, 0, 1)))
+    mbu2 = mbu
+    # beyond the cards: low opaque thickets of lantana and young growth, scattered more thickly with distance
+    placed = 0
+    for i in range(4000):
+        r = R.uniform(9.5, 36.0); a = R.uniform(0, 2 * math.pi); x, y = r * math.sin(a), r * math.cos(a)
+        if path_d(x, y) < 2.2 or math.hypot(x - ELE.x, y - ELE.y) < 3.0 or math.hypot(x - PAGODA.x, y - PAGODA.y) < 9.5: continue
+        if R.random() > 0.25 + 0.35 * (0.5 + 0.5 * n2(x, y, 0.12, 4.0)): continue
+        w = R.uniform(1.0, 2.0) * (1 + max(0.0, r - 12) / 40); h = R.uniform(0.55, 1.2)
+        z = gz(x, y)
+        lumps(THICKET, Vector((x, y, z + h * 0.25)), w, h * 0.8, R.randint(3, 4), R, 7000 + i, sub=1, sway=(0.0, 0.35), flat_bottom=z - 0.08)
+        # one flowering lantana or fern card on the thicket's near side breaks its outline
+        to_r = Vector((-x, -y, 0)).normalized(); ya = math.atan2(to_r.y, to_r.x) + math.pi / 2 + R.gauss(0, 0.3)
+        kh = h * R.uniform(1.1, 1.4); kind = R.choice(("lantana", "lantana", "fern", "herb"))
+        card(mbu2, (x + to_r.x * w * 0.6, y + to_r.y * w * 0.6, z - 0.05), Vector((math.cos(ya), math.sin(ya), 0)) * kh * 0.9, Vector((0, 0, kh)), UNDER[kind], 0.0, 1.0)
+        placed += 1
+        if placed >= 62: break
+    o1 = mbu.build("Understorey", M_UNDER)
+    if o1 is not None: set_card_normals(o1, lambda p: Vector((0, 0, 1)))
 understorey()
 # a fallen log and dead branches near the reader, rocks half-buried
 tube("FallenLog", [Vector((2.4, 2.2, gz(2.4, 2.2) + 0.18)), Vector((4.2, 3.6, gz(4.2, 3.6) + 0.2)), Vector((6.3, 4.4, gz(6.3, 4.4) + 0.16))], [0.24, 0.22, 0.17], M_LOG, sides=10)
@@ -738,8 +795,8 @@ for layer in range(6):
         tube(f"Pyre{layer}_{k}", [c0 - d * 1.1, c0 + d * 1.1], 0.12, M_PYRE, sides=6)
 
 # ----------------------------------------------------------------------------- Kiouni
-print("Kiouni ...", flush=True)
-EL_BODY, EL_OBJS, EL_PTS = EL.build("Kiouni", (ELE.x, ELE.y, gz(ELE.x, ELE.y) - 0.04), ELE_YAW, M_SKIN, M_JHOOL, M_HOWDAH, M_ROPE, M_BRASS, M_IVORY, M_NAIL, M_EYE, target_tris=4600)
+# Kiouni is not modelled (removed 2026-11-17); the anchors keep the points where he stood (feet) and his head was
+EL_PTS = {"feet": (ELE.x, ELE.y, gz(ELE.x, ELE.y) - 0.04), "head": (-1.576, 5.97, 2.251)}
 
 # ----------------------------------------------------------------------------- crowns (built once, one swaying mesh per kind), far tree line, sky
 for key, mb in CROWN_MB.items():
@@ -751,11 +808,12 @@ for key, mb in CROWN_MB.items():
         C, a_, c_ = min(cs, key=lambda t: (p - t[0]).length)
         return (((p - C) * Vector((1 / a_, 1 / a_, 1 / c_))) + Vector((0, 0, 0.6))).normalized()
     set_card_normals(o, nfn)
+THICKET.build("Thickets", M_THICKET)
 def far_treeline():
     """four concentric bands carrying the atlas rows: near canopy at 47 m, middle at 57 m, far at 70 m, the hills at
     125 m; each band's foot is below the ground, the atlas repeats four times round."""
     verts = []; faces = []; luv = []; N = 64
-    bands = [(47.0, 8.0, 3), (57.0, 11.0, 2), (70.0, 14.0, 1), (125.0, 22.0, 0)]
+    bands = [(52.0, 7.5, 3), (125.0, 22.0, 0)]     # two of the four bands (overdraw); the ring of far trees stands before them
     for (r0, top_, row) in bands:
         b0 = len(verts)
         for i in range(N + 1):
@@ -808,7 +866,7 @@ anchor("forest.pagoda", tuple(PAGODA + Vector((0, 0, 6.0))))
 anchor("forest.banyan", tuple(BANYAN))
 
 # sway weights
-SWAY_KEYS = {"Crowns_sal": None, "Crowns_teak": None, "Crowns_banyan": None, "Crowns_bamboo": None, "Understorey": None, "FloorGrass": None}
+SWAY_KEYS = {"Thickets": None, "Crowns_sal": None, "Crowns_teak": None, "Crowns_banyan": None, "Crowns_bamboo": None, "Understorey": None, "FloorGrass": None}
 add_sway(PENNANT, lambda p: min(1.0, max(0.0, (p - Vector((PENNANT.data.vertices[0].co))).length / 1.6)))
 for o in K.COLL.objects:
     if o.type == 'MESH' and o.data.materials and o.data.materials[0].name in ("M_SkyDome", "M_TreeLine", "M_FarLand"):
@@ -830,9 +888,7 @@ cams = [
     camera("Cam_Behind", tuple(E), yawed(180, 10, 0.0), lens=17),
     camera("Cam_Down", tuple(E), (0.6, 1.6, gz(0.6, 1.6)), lens=17),
     camera("Cam_Up", tuple(E), (2.0, 8.0, 18.0), lens=17),
-    camera("Cam_Elephant", tuple(E + Vector((0.6, 0.4, -0.15))), tuple(Vector(EL_PTS["feet"]) + Vector((0.2, 0, 1.8))), lens=24),
     camera("Cam_Pagoda", tuple(E), tuple(PAGODA + Vector((0, 0, 6.0))), lens=40),
-    camera("Cam_Kiouni", tuple(Vector(EL_PTS["feet"]) + Vector((2.2, -4.6, 1.7))), tuple(Vector(EL_PTS["feet"]) + Vector((0.2, 0.0, 1.7))), lens=28),
 ]
 for c in cams: c.data.clip_end = 400
 if not ARGS.nosave:
@@ -849,12 +905,13 @@ if ARGS.bake or ARGS.export:
         "pillaji_forest.gltf", cams, page=page,
         keep_names={"M_SalLeaves": "veg.crown.sal", "M_TeakLeaves": "veg.crown.teak", "M_BanyanLeaves": "veg.crown.banyan", "M_BambooLeaves": "veg.leaves.bamboo",
                     "M_Understorey": "veg.shrub.under", "M_FloorGrass": "veg.grass.floor", "M_Pennant": "cloth.flag.pennant",
+                    "M_Thicket": "veg.shrub.thicket",
                     "M_SkyDome": "SkyDome", "M_FarLand": "far.Land", "M_TreeLine": "far.TreeLine", "M_ForestFloor": "GroundNear"},
         keep_uv={"M_ForestFloor", "M_SkyDome"},
         size_for={"M_ForestFloor": (2048, 512, 2048), "M_SkyDome": (2048,), "M_FarLand": (256, 32, 64), "M_SalBark": (1024, 128, 512),
                   "M_TeakBark": (512, 128, 256), "M_BanyanBark": (1024, 128, 512), "M_BambooCulm": (256, 64, 128), "M_TempleStone": (2048, 256, 1024),
-                  "M_ElephantSkin": (2048, 256, 2048), "M_SaddleCloth": (1024, 256, 512), "M_HowdahWood": (512, 128, 256), "M_Rope": (128, 32, 64),
+                  "M_Thicket": (512, 128, 256),
                   "M_DeadWood": (512, 128, 256), "M_PyreWood": (256, 64, 128), "M_Rock": (256, 64, 128), "M_TorchIron": (32, 32), "M_Pennant": (64, 32),
-                  "M_Brass": (64, 32), "M_Ivory": (64, 32), "M_ToeNail": (64, 32), "M_ElephantEye": (32, 32)},
+                  "M_Brass": (64, 32)},
         default_size=(256, 64, 128))
 print("DONE")
