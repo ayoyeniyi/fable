@@ -29,8 +29,9 @@ namespace Fable.Editor
             ["odysseus-ship"] = new() { ["MESH_Sea"] = "water.ocean.near", ["far.Sea"] = "water.ocean.far", ["MESH_Maquis"] = "veg.shrub.maquis" },
             ["lilliput-beach"] = new() { ["far.sea"] = "water.ocean.sea", ["MESH_Hedge"] = "veg.shrub.hedge", ["MESH_Leaves"] = "veg.leaves.trees" },
             ["poppy-field"] = new() { ["MESH_Water"] = "water.river.brook", ["MESH_PoppyPetal"] = "veg.flowers.poppies", ["MESH_MeadowFlowers"] = "veg.flowers.meadow", ["MESH_Herbage"] = "veg.grass.herbage", ["MESH_TreeLeaves"] = "veg.leaves.trees", ["MESH_LeavesShade"] = "veg.leaves.shade" },
-            ["mad-tea-party"] = new() { ["MESH_Hedge"] = "veg.shrub.hedge", ["MESH_Leaves"] = "veg.leaves.tree", ["MESH_FlowerPink"] = "veg.flowers.pink", ["MESH_FlowerYellow"] = "veg.flowers.yellow" },
-            ["queens-croquet-ground"] = new() { ["MESH_Hedge"] = "veg.shrub.hedge", ["MESH_TreeLeaves"] = "veg.leaves.trees", ["MESH_RoseLeaves"] = "veg.shrub.roses", ["MESH_RoseRed"] = "veg.flowers.red", ["MESH_RoseWhite"] = "veg.flowers.white" },
+            ["mad-tea-party"] = new() { ["MESH_Leaves"] = "veg.leaves.tree", ["MESH_FlowerPink"] = "veg.flowers.pink", ["MESH_FlowerYellow"] = "veg.flowers.yellow" },
+            // the 2026-11-17 rebuild names its own foliage (veg.*); the rose tree's leaf cards sit inside its prop
+            ["queens-croquet-ground"] = new() { ["RoseTree_RoseSprays"] = "veg.shrub.rosetree", ["MESH_RoseRed"] = "veg.flowers.red", ["MESH_RoseWhite"] = "veg.flowers.white" },
             ["laputa"] = new() { ["MESH_Grass"] = "veg.grass.lawns", ["MESH_Flowers"] = "veg.flowers.beds", ["MESH_Leaves"] = "veg.leaves.shrubs", ["MESH_TreeFoliage"] = "veg.crown.trees", ["MESH_WallPlants"] = "veg.leaves.wall" },
             ["kansas-farmhouse"] = new() { ["MESH_PrairieGrass"] = "veg.grass.prairie", ["MESH_Flame"] = "flame.lamp" },
             ["ithaca-hall"] = new() { ["MESH_Weeds"] = "veg.grass.weeds", ["MESH_Flame"] = "flame.hearth" },
@@ -93,12 +94,13 @@ namespace Fable.Editor
 
             var legacy = Legacy.TryGetValue(id, out var lm) ? lm : new Dictionary<string, string>();
             var extras = GltfExtras(def.Glb);
-            var renderers = env.GetComponentsInChildren<MeshRenderer>(true).Where(r => !UnderAsset(r.transform, env.transform)).ToArray();
+            // props (SceneRegistry assets) are left alone, except foliage the legacy map names inside one (the rose tree's leaves)
+            var renderers = env.GetComponentsInChildren<MeshRenderer>(true).Where(r => !UnderAsset(r.transform, env.transform) || legacy.ContainsKey(r.name) || r.transform.parent && legacy.ContainsKey(r.transform.parent.name)).ToArray();
             string LivingName(Renderer r)
             {
                 foreach (var t in new[] { r.transform, r.transform.parent })
                     if (t && (t.name.StartsWith("water.") || t.name.StartsWith("veg.") || t.name.StartsWith("cloth."))) return t.name;
-                return legacy.TryGetValue(r.name, out var n) ? n : null;
+                return legacy.TryGetValue(r.name, out var n) ? n : r.transform.parent && legacy.TryGetValue(r.transform.parent.name, out var pn) ? pn : null;
             }
             var classified = renderers.Select(r => (r, n: LivingName(r))).Where(x => x.n != null).ToList();
 
