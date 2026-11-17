@@ -79,10 +79,14 @@ func (c *Catalog) Env(id string) (Env, bool) {
 	return Env{}, false
 }
 
-// ForBook lists the environments built for a book.
+// ForBook lists the environments built for a book. Downloadable scene rooms are left out: they are reached only
+// through the scene-room plan (Catalog.Planned), never offered to the planner as general candidates.
 func (c *Catalog) ForBook(slug string) []Env {
 	var out []Env
 	for _, e := range c.Environments {
+		if e.Delivery == "download" {
+			continue
+		}
 		for _, b := range e.Books {
 			if b == slug {
 				out = append(out, e)
