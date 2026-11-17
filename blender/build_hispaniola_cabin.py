@@ -81,7 +81,7 @@ def harbour_view(name="M_HarbourView"):
     sky = mix_rgb(nt, 'MIX', maprange(nt, z, 0.0, 14.0, 0, 1, (-1400, 400)), (0.86, 0.85, 0.80, 1), (0.52, 0.64, 0.82, 1), (-1200, 400))
     cl = noise_(nt, co, 0.12, 5, 0.6, loc=(-1400, 650)); sky = mix_rgb(nt, 'MIX', maprange(nt, cl.outputs["Fac"], 0.5, 0.68, 0, 0.6, (-1200, 650)), sky, (0.96, 0.95, 0.92, 1), (-1000, 400))
     rn = noise_(nt, co, 0.15, 3, 0.5, loc=(-1500, 100))
-    town_top = math_(nt, 'ADD', 2.0, math_(nt, 'MULTIPLY', rn.outputs["Fac"], 4.0, (-1300, 100)), (-1200, 100))
+    town_top = math_(nt, 'ADD', WL + 0.6, math_(nt, 'MULTIPLY', maprange(nt, rn.outputs["Fac"], 0.3, 0.7, 0, 1, (-1400, 100)), 3.0, (-1300, 100)), (-1200, 100))
     town = maprange(nt, math_(nt, 'SUBTRACT', town_top, z, (-1100, 100)), 0, 0.05, 0, 1, (-1000, 100))
     tn = noise_(nt, co, 1.6, 4, 0.6, loc=(-1300, -100))
     tc = mix_rgb(nt, 'MIX', maprange(nt, tn.outputs["Fac"], 0.3, 0.7, 0, 1, (-1100, -100)), (0.40, 0.34, 0.30, 1), (0.62, 0.52, 0.44, 1), (-950, -100))
@@ -90,8 +90,8 @@ def harbour_view(name="M_HarbourView"):
     # masts of ships at anchor: thin dark verticals with yards
     mx = math_(nt, 'FRACT', math_(nt, 'DIVIDE', x, 1.7, (-1500, -500)), None, (-1400, -500))
     mn = noise_(nt, co, 0.9, 2, 0.5, loc=(-1500, -650))
-    has = maprange(nt, mn.outputs["Fac"], 0.5, 0.55, 0, 1, (-1300, -650))
-    mast = math_(nt, 'MULTIPLY', maprange(nt, math_(nt, 'ABSOLUTE', math_(nt, 'SUBTRACT', mx, 0.5, (-1300, -500)), None, (-1200, -500)), 0.0, 0.02, 1, 0, (-1100, -500)), has, (-1000, -550))
+    has = maprange(nt, mn.outputs["Fac"], 0.6, 0.62, 0, 1, (-1300, -650))
+    mast = math_(nt, 'MULTIPLY', maprange(nt, math_(nt, 'ABSOLUTE', math_(nt, 'SUBTRACT', mx, 0.5, (-1300, -500)), None, (-1200, -500)), 0.0, 0.008, 1, 0, (-1100, -500)), has, (-1000, -550))
     mast = math_(nt, 'MULTIPLY', mast, maprange(nt, z, 8.0, 8.3, 1, 0, (-1100, -800)), (-900, -650))
     col = mix_rgb(nt, 'MIX', math_(nt, 'MULTIPLY', mast, 0.85, (-800, -650)), col, (0.18, 0.16, 0.14, 1), (-500, 300))
     nt.links.new(col, b.inputs["Emission Color"]); b.inputs["Base Color"].default_value = (0, 0, 0, 1); b.inputs["Emission Strength"].default_value = 1.0
@@ -233,7 +233,7 @@ for sx in (-1, 1):
         F.box(f"BerthBoard{sx}{k}", (0.9, 0.06, 0.18), (0, 0.0, 0.45 + (0.18) / 2), M_OAK)
         F.box(f"BerthBlanket{sx}{k}", (0.85, 0.4, 0.08), (0, -0.25, 0.5 + (0.08) / 2), M_BLANKET, bevel=0.03)
         # the berth recess behind (dark) and a curtain drawn half across on a rod
-        F.box(f"BerthBack{sx}{k}", (0.95, 0.04, 1.75), (0, -0.62, 0.0 + (1.75) / 2), M_PANEL)
+        if False: F.box(f"BerthBack{sx}{k}", (0.95, 0.04, 1.75), (0, -0.62, 0.0 + (1.75) / 2), M_PANEL)
         cyl(f"BerthRod{sx}{k}", 0.008, 0.9, F.p(0, 0.04, 1.6), M_BRASS, verts=6, rot=(0, math.pi / 2, F.yaw))
         cv = []; cf = []
         for i in range(9):
@@ -255,11 +255,11 @@ lathe("Barometer", [(0.0, 0.0), (0.04, 0.0), (0.04, 0.7), (0.07, 0.75), (0.07, 0
 # ----------------------------------------------------------------------------- outside the stern: harbour water (water.ocean) and the far quays (backdrop)
 wv = []; wf = []; wc = []
 NA = 24
-for j, r in enumerate((0.3, 4, 12, 30, 70)):
+for j, r in enumerate((0.3, 4, 12, 30, 70, 125)):
     for i in range(NA + 1):
         a = math.radians(-80 + 160 * i / NA)
         wv.append((r * math.sin(a), Y1 + 0.2 + r * math.cos(a), WL))
-for j in range(4):
+for j in range(5):
     for i in range(NA): wf.append((j * (NA + 1) + i, j * (NA + 1) + i + 1, (j + 1) * (NA + 1) + i + 1, (j + 1) * (NA + 1) + i))
 wat = mesh_from("water.ocean.harbour", wv, wf, M_WATER)
 ul = wat.data.uv_layers.new(name="UVMap")
@@ -269,7 +269,7 @@ box("CounterOutside", (sw + 0.3, 0.2, 2.2), (0, Y1 + 0.2, WL - 0.3), M_BEAM)
 vv = []; vf = []
 for j in range(4):
     for i in range(17):
-        a = math.radians(-75 + 150 * i / 16); r = 75
+        a = math.radians(-75 + 150 * i / 16); r = 130
         vv.append((r * math.sin(a), Y1 + r * math.cos(a), WL - 0.5 + 24 * j / 3))
 for j in range(3):
     for i in range(16): vf.append((j * 17 + i, j * 17 + i + 1, (j + 1) * 17 + i + 1, (j + 1) * 17 + i))
