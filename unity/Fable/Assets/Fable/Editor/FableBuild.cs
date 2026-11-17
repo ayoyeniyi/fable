@@ -63,9 +63,9 @@ namespace Fable.Editor
         {
             // first in the build: the app opens in the lobby (blender/build_lobby.py)
             new SceneDef { Id = "lobby", Scene = "Assets/Fable/Scenes/Lobby.unity", Glb = "Assets/Fable/Models/Lobby/lobby.gltf", Lobby = true, Sound = "room-tone:0.8+clock:0.3" },
-            new SceneDef { Id = "hall-of-doors", Scene = "Assets/Fable/Scenes/HallOfDoors.unity", Glb = "Assets/Fable/Models/HallOfDoors/hall_of_doors.gltf" },
-            new SceneDef { Id = "mad-tea-party", Scene = "Assets/Fable/Scenes/MadTeaParty.unity", Glb = "Assets/Fable/Models/MadTeaParty/mad_tea_party.gltf", Outdoor = true, Wind = 0.25f },
-            new SceneDef { Id = "queens-croquet-ground", Scene = "Assets/Fable/Scenes/QueensCroquetGround.unity", Glb = "Assets/Fable/Models/QueensCroquetGround/queens_croquet_ground.gltf", Outdoor = true, Wind = 0.25f },
+            new SceneDef { Id = "hall-of-doors", Scene = "Assets/Fable/Scenes/HallOfDoors.unity", Glb = "Assets/Fable/Models/HallOfDoors/hall_of_doors.gltf", Room = true, Book = "alice" },
+            new SceneDef { Id = "mad-tea-party", Scene = "Assets/Fable/Scenes/MadTeaParty.unity", Glb = "Assets/Fable/Models/MadTeaParty/mad_tea_party.gltf", Room = true, Book = "alice", Outdoor = true, Wind = 0.25f },
+            new SceneDef { Id = "queens-croquet-ground", Scene = "Assets/Fable/Scenes/QueensCroquetGround.unity", Glb = "Assets/Fable/Models/QueensCroquetGround/queens_croquet_ground.gltf", Room = true, Book = "alice", Outdoor = true, Wind = 0.25f },
             // step 7: one room per book for the other three books
             new SceneDef { Id = "kansas-farmhouse", Scene = "Assets/Fable/Scenes/KansasFarmhouse.unity", Glb = "Assets/Fable/Models/KansasFarmhouse/kansas_farmhouse.gltf", Outdoor = true, Room = true, Book = "oz", Sound = "wind-grass:1+wind-high:0.55+room-tone:0.3", Wind = 1.1f, WindToward = 180f },
             new SceneDef { Id = "calypsos-cave", Scene = "Assets/Fable/Scenes/CalypsosCave.unity", Glb = "Assets/Fable/Models/CalypsosCave/calypsos_cave.gltf", Outdoor = true, Room = true, Book = "odyssey", Sound = "surf:0.55+birds:0.4+wind-pines:0.25", Wind = 0.3f, WaterOverride = new WaterLook { SwellHeight = 0.3f, SwellLength = 14f, FlowSpeed = 0.5f } },
@@ -429,7 +429,7 @@ namespace Fable.Editor
             var centreAnchor = FindDeep(env.transform, "anchor.hall.centre") ?? FindDeep(env.transform, "anchor.scene.centre"); probeGo.transform.position = (centreAnchor ? centreAnchor.position : env.transform.position) + Vector3.up * 1.4f;
             var probe = probeGo.AddComponent<ReflectionProbe>(); probe.mode = UnityEngine.Rendering.ReflectionProbeMode.Baked; probe.size = hall ? new Vector3(16, 4, 6) : def.Lobby || def.LobbyLook ? new Vector3(6, 3.2f, 5.4f) : new Vector3(30, 12, 30); probe.resolution = 128; probe.boxProjection = hall || def.Lobby || def.LobbyLook; probe.intensity = 1f;
             if (def.Lobby || def.LobbyLook) probeGo.transform.position = (centreAnchor ? centreAnchor.position : env.transform.position) + Vector3.up * 1.5f;
-            if (def.Room)
+            if (def.Room && !hall)
             {
                 // fit the probe to the room itself (not the sky dome or far scenery)
                 var rs = env.GetComponentsInChildren<Renderer>(true).Where(r => !FlowControllerBackdrop(r.name) && !r.name.Contains("Sky")).ToArray();

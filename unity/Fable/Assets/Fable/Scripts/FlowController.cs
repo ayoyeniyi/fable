@@ -410,6 +410,14 @@ namespace Fable
             env.gameObject.SetActive(false);
             env.gameObject.SetActive(true); PrepareDiorama(); env.gameObject.SetActive(false);
             ExperienceMood.Apply(pkg.Mood, pkg.Fog);
+            if (RoomOnly)
+            {
+                // a reading room staging a scripted chapter: the diorama table and the walk-and-do tasks the passage
+                // scenes set up at start (the room itself comes back as built when the experience ends: see Return)
+                if (ReadingRoom) ReadingRoom.SetActive(true);
+                if (!Tasks) { Tasks = GetComponent<StoryTasks>() ? GetComponent<StoryTasks>() : gameObject.AddComponent<StoryTasks>(); Tasks.Init(Director, this, Input, Head); }
+                if (!Move) { Move = GetComponent<Locomotion>() ? GetComponent<Locomotion>() : gameObject.AddComponent<Locomotion>(); Move.Init(this, Director, Input, Head, RigRoot()); }
+            }
             busy = false;
             Debug.Log($"[Fable] experience {pkg.Chapter}: “{pkg.Title}” in {pkg.Environment} (scripted, {pkg.Script.Beats.Count} beats)");
             yield return Grow(0);
@@ -782,6 +790,14 @@ namespace Fable
             Director.Audio.StopAmbience();
             Current = State.Reading; busy = false;
             chosen = Mathf.Max(0, passages.FindIndex(p => p.Id == CurrentPassageId));
+            // a reading room after a scripted chapter: reload it, so the room is back as built (lit, every prop where the
+            // model has it, no beat state) with the reader's saved place on the page
+            if (RoomOnly && Experience != null)
+            {
+                Experience = null; ExperienceMood.Restore(); busy = true;
+                PendingBook = Slug; UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+                yield break;
+            }
             // from a chapter experience: back to the reader's saved place in the book, not the scene's sentence
             if (Experience != null) { Experience = null; ExperienceMood.Restore(); ShowBook(); }
             else ShowBook(ReachedBookSentence());
