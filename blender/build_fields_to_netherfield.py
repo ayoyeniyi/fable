@@ -26,9 +26,9 @@ textures.
 Quest 2 foliage budget (2026-11-17): alpha-tested cards are what the Quest's tile GPU pays for, layer on layer, so they
 are kept where they matter: grass cards only within ~9 m (opaque blade tufts, MESH_GrassBlades, carry the sward to
 ~16 m, and the baked ground beyond); hedge spray cards only within ~20 m of the reader, over an opaque lumpy leafy hedge
-mass (MESH_HedgeMass), with a sparse fringe further off; near trees have fewer, larger cards round an opaque inner crown
-mass, far trees an opaque lumpy crown (MESH_OakCrownMass, MESH_MapleCrownMass) with a sparse card fringe. Measure with
-blender/measure_alpha_cards.py (reader view 2.31 -> 0.81 screens of alpha cards; 11453 -> 2673 card faces). By flag the script renders Cycles stills, bakes, merges static meshes by material and exports .gltf + .bin +
+mass (MESH_HedgeMass), with a sparse fringe further off; tree crowns are cards only (an opaque mass reads as a ball against
+the sky): fewer, larger cards on near trees; on far trees ~28 big cards and none at the branch tips. Measure with
+blender/measure_alpha_cards.py (reader view 2.31 -> 0.92 screens of alpha cards; 11453 -> 2627 card faces). By flag the script renders Cycles stills, bakes, merges static meshes by material and exports .gltf + .bin +
 textures/ for Unity (helpers in pride_kit.py).
 
 Node names Unity relies on:
@@ -587,8 +587,6 @@ PAL_HAW = [(0.20, 0.26, 0.10), (0.27, 0.35, 0.13), (0.32, 0.40, 0.15), (0.24, 0.
 PAL_OAK = [(0.36, 0.25, 0.11), (0.48, 0.33, 0.15), (0.42, 0.30, 0.13), (0.50, 0.42, 0.20), (0.38, 0.36, 0.16), (0.55, 0.42, 0.19), (0.32, 0.22, 0.10)]
 PAL_MAPLE = [(0.50, 0.38, 0.11), (0.58, 0.45, 0.14), (0.44, 0.40, 0.13), (0.62, 0.50, 0.17), (0.40, 0.30, 0.10)]
 M_HEDGEMASS = leaf_mass_mat("M_HedgeMass", PAL_HAW, leaf=12.0, lump=1.6, dark=0.5)
-M_OAKMASS = leaf_mass_mat("M_OakCrownMass", PAL_OAK, leaf=7.0, lump=0.9, dark=0.5)
-M_MAPLEMASS = leaf_mass_mat("M_MapleCrownMass", PAL_MAPLE, leaf=7.0, lump=1.0, dark=0.5)
 
 def weathered_oak(name="M_StileOak"):
     """Old oak gone silver-grey, split along the grain, green-grey lichen, dark and wet at the foot, the top rail
@@ -1072,18 +1070,19 @@ def tree(name, x, y, height, spread, kind, seed, bark, leaves_mat, nlimbs=6, det
     return tips, C
 
 print("trees ...", flush=True)
-OAK = tree("OakStile", -9.6, 7.0, 15.5, 7.5, "oak", 31, M_OAKBARK, M_OAKL, nlimbs=7, cards_per_tip=1, card_size=1.7, fill=150, mass=M_OAKMASS, mass_k=0.68)
+OAK = tree("OakStile", -9.6, 7.0, 15.5, 7.5, "oak", 31, M_OAKBARK, M_OAKL, nlimbs=7, cards_per_tip=1, card_size=1.9, fill=190)
 ASH = tree("AshRooks", 16.2, 10.0, 17.0, 5.5, "ash", 32, M_ASHBARK, M_TWIG, nlimbs=6, cards_per_tip=1, card_size=1.8, dense=1.0, fill=60)
-MAPLE = tree("MapleB", 9.9, -5.0, 8.5, 3.6, "maple", 33, M_OAKBARK, M_MAPLE, nlimbs=5, cards_per_tip=1, card_size=1.25, fill=45, mass=M_MAPLEMASS, mass_k=0.75)
-# far trees: opaque lumpy crowns, a sparse fringe of cards for a broken outline (bare ashes keep a few twig cards)
-FAR = dict(nlimbs=5, detail=0.6, cards_per_tip=0, mass_k=0.92, mass_sub=2, nblobs=10)
-tree("OakField", -20.0, 43.0, 14.0, 7.0, "oak", 34, M_OAKBARK, M_OAKL, card_size=2.2, fill=65, mass=M_OAKMASS, **dict(FAR, nlimbs=6))
-tree("MapleC", -40.8, -18.0, 12.0, 5.0, "maple", 35, M_OAKBARK, M_MAPLE, card_size=2.2, fill=55, mass=M_MAPLEMASS, **FAR)
-tree("OakD", -16.0, -47.2, 13.0, 6.0, "oak", 36, M_OAKBARK, M_OAKL, card_size=2.2, fill=55, mass=M_OAKMASS, **FAR)
+MAPLE = tree("MapleB", 9.9, -5.0, 8.5, 3.6, "maple", 33, M_OAKBARK, M_MAPLE, nlimbs=5, cards_per_tip=1, card_size=1.4, fill=80)
+# far trees: cards only (an opaque crown mass reads as a smooth ball against the sky), but few and large: ~28 cards at
+# ~1.8x the old size, none at the branch tips (bare ashes keep a few twig cards)
+FAR = dict(nlimbs=5, detail=0.6, cards_per_tip=0)
+tree("OakField", -20.0, 43.0, 14.0, 7.0, "oak", 34, M_OAKBARK, M_OAKL, card_size=3.6, fill=34, **dict(FAR, nlimbs=6))
+tree("MapleC", -40.8, -18.0, 12.0, 5.0, "maple", 35, M_OAKBARK, M_MAPLE, card_size=3.9, fill=34, **FAR)
+tree("OakD", -16.0, -47.2, 13.0, 6.0, "oak", 36, M_OAKBARK, M_OAKL, card_size=3.6, fill=34, **FAR)
 tree("AshD", 24.0, -44.3, 14.0, 4.5, "ash", 37, M_ASHBARK, M_TWIG, nlimbs=5, detail=0.6, cards_per_tip=1, card_size=2.2, fill=40)
-tree("OakE", 52.0, 30.0, 13.0, 6.0, "oak", 38, M_OAKBARK, M_OAKL, card_size=2.4, fill=50, mass=M_OAKMASS, **FAR)
-tree("MapleA", 38.0, 14.2, 11.0, 4.6, "maple", 39, M_OAKBARK, M_MAPLE, card_size=2.4, fill=50, mass=M_MAPLEMASS, **FAR)
-tree("OakF", -44.5, 30.0, 14.0, 6.0, "oak", 40, M_OAKBARK, M_OAKL, card_size=2.4, fill=50, mass=M_OAKMASS, **FAR)
+tree("OakE", 52.0, 30.0, 13.0, 6.0, "oak", 38, M_OAKBARK, M_OAKL, card_size=4.0, fill=34, **FAR)
+tree("MapleA", 38.0, 14.2, 11.0, 4.6, "maple", 39, M_OAKBARK, M_MAPLE, card_size=4.0, fill=34, **FAR)
+tree("OakF", -44.5, 30.0, 14.0, 6.0, "oak", 40, M_OAKBARK, M_OAKL, card_size=4.0, fill=34, **FAR)
 # the park round the house: a cedar on the lawn, beeches and limes behind
 def cedar(name, x, y, h, seed):
     R = random.Random(seed); z = gz(x, y)
@@ -1114,8 +1113,7 @@ for i, (tx, ty, th, kind) in enumerate([(62, 96, 19, "elm"), (55, 103, 17, "oak"
     if math.hypot(tx, ty) > LAND_R - 6: continue
     bare = kind == "ash"
     tree(f"Park{i}", tx, ty, th, th * 0.42, kind, 50 + i, M_ASHBARK if kind != "oak" else M_OAKBARK, M_TWIG if bare else M_OAKL,
-         nlimbs=5, detail=0.5, cards_per_tip=1 if bare else 0, card_size=2.8, fill=40 if bare else 30,
-         mass=None if bare else M_OAKMASS, mass_k=0.92, mass_sub=1, nblobs=8)
+         nlimbs=5, detail=0.5, cards_per_tip=1 if bare else 0, card_size=2.8 if bare else 4.7, fill=40 if bare else 30)
 
 # rooks' nests in the ash: rough twig balls in the upper forks
 for (q, d, depth) in ASH[0]:
@@ -1362,7 +1360,7 @@ if ARGS.bake or ARGS.export:
                     "M_Puddle": "water.puddle.path", "M_SkyDome": "SkyDome", "M_FarLand": "far.land", "M_GroundNear": "GroundNear"},
         keep_uv={"M_GroundNear", "M_FarLand", "M_SkyDome"},
         size_for={"M_GroundNear": (4096, 2048, 2048), "M_FarLand": (1024, 256, 512), "M_SkyDome": (2048,),
-                  "M_HedgeMass": (1024, 256, 512), "M_OakCrownMass": (512, 128, 512), "M_MapleCrownMass": (256, 64, 256), "M_OakBark": (1024, 256, 512), "M_AshBark": (512, 128, 512),
+                  "M_HedgeMass": (1024, 256, 512), "M_OakBark": (1024, 256, 512), "M_AshBark": (512, 128, 512),
                   "M_StileOak": (512, 256, 512), "M_GateOak": (512, 128, 256), "M_HouseStucco": (1024, 128, 256),
                   "M_HouseSlate": (256, 64, 128), "M_Puddle": (128, 64, 128), "M_HouseWindows": (32, 32), "M_HousePaint": (64, 32),
                   "M_FarStone": (128, 32)},
