@@ -30,6 +30,9 @@ def setup(scene_id, seed=1, samples=48):
     args = K.setup(scene_id, os.path.join(REPO, "out", scene_id), seed, scene_id.replace("-", "_"), default_samples=samples)
     if not args.captures and args.render and not args.quick:
         args.captures = os.path.join(REPO, "captures", "blender", scene_id)
+    # many cut-out cards in a row (a cornfield, a canopy) need more transparent bounces than the default 12, or the
+    # far ones render black in the stills (the headset's alpha test has no such limit)
+    K.scene.cycles.transparent_max_bounces = 64
     return args
 
 
@@ -111,8 +114,17 @@ def export(scene_id, cams, page=None, keep_names=None, size_for=None, default_si
         for n in m.node_tree.nodes:
             if n.type == 'BSDF_PRINCIPLED' and not n.inputs["Metallic"].is_linked and n.inputs["Metallic"].default_value > 0.3:
                 n.inputs["Metallic"].default_value = 0.0
+    # emissive display-colour materials (sky, painted backdrops, glowing panes) bake as EMIT, and the sky keeps the name
+    # runtime_bake and the headset treat as unlit
+    keep_names = dict(keep_names or {}); unlit_emit = set(unlit_emit)
+    for m in bpy.data.materials:
+        if not m.use_nodes or m.name in K.IMAGE_MATS: continue
+        b_ = next((n for n in m.node_tree.nodes if n.type == 'BSDF_PRINCIPLED'), None)
+        if b_ is not None and b_.inputs["Emission Strength"].default_value > 0.5 and (b_.inputs["Emission Color"].is_linked or sum(b_.inputs["Emission Color"].default_value[:3]) > 0.5):
+            unlit_emit.add(m.name)
+    if "M_SkyDome" in bpy.data.materials: keep_names.setdefault("M_SkyDome", "SkyDome")
     sf = {k: (v if isinstance(v, tuple) else (v, 64, max(64, v // 2))) for k, v in (size_for or {}).items()}
-    gl = K.bake_and_export(scene_id.replace("-", "_") + ".gltf", cams, page=page, keep_names=keep_names or {}, size_for=sf,
+    gl = K.bake_and_export(scene_id.replace("-", "_") + ".gltf", cams, page=page, keep_names=keep_names, size_for=sf,
                            default_size=default_size, unlit_emit=tuple(unlit_emit))
     print("EXPORTED", gl, flush=True)
     return gl
