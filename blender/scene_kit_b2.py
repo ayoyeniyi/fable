@@ -576,6 +576,7 @@ def view_cams(eye, fwd, extra=(), lens=17, dist=10.0):
             camera("Cam_Behind", tuple(E), yawed(180, -1.0), lens=lens),
             camera("Cam_Down", tuple(E), tuple(E + f * 1.6 + Vector((0, 0, -E.z + 0.0)) * 1.0), lens=lens)]
     for (n, loc, at, ln) in extra: cams.append(camera(n, tuple(loc), tuple(at), lens=ln))
+    for c in cams: c.data.clip_end = 1500.0      # the sky domes reach out to ~1 km
     return cams
 
 
