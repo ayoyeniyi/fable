@@ -134,6 +134,10 @@ func (s *Service) load() {
 		if j.State == Done {
 			if _, err := os.Stat(filepath.Join(s.pkgDir(j.Chapter), "package.json")); err != nil {
 				j.State = Queued // its package is gone: build it again
+			} else if s.offPlan(j.Chapter) {
+				// staged before schema/scene_rooms.json chose this chapter's place, somewhere else: plan it again
+				j.State = Queued
+				log.Printf("chapters %s: its place is now planned elsewhere; planning again", j.Chapter)
 			}
 		}
 		// "no place built yet" was a verdict on the rooms that existed then: when rooms have been added since, plan again
@@ -148,6 +152,23 @@ func (s *Service) load() {
 		}
 		s.jobs[j.Key()] = j
 	}
+}
+
+// offPlan: a built package whose environment is not the one the scene-room plan now gives its chapter.
+func (s *Service) offPlan(chapter string) bool {
+	p, ok := s.Catalog.Planned(chapter)
+	if !ok || s.passageFor(chapter) != nil {
+		return false
+	}
+	var pkg struct {
+		Environment string `json:"environment"`
+	}
+	data, err := os.ReadFile(filepath.Join(s.pkgDir(chapter), "package.json"))
+	if err != nil || json.Unmarshal(data, &pkg) != nil {
+		return false
+	}
+	e, ok := s.Catalog.PlannedEnv(p)
+	return !ok || e.ID != pkg.Environment
 }
 
 func (s *Service) saveLocked() {
