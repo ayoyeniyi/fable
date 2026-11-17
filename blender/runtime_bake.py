@@ -86,7 +86,9 @@ unlit = [o for o in meshes if o not in water and is_unlit(o)]
 lit = [o for o in meshes if o not in water and o not in unlit]
 
 def use_gpu():
-    if os.environ.get("FABLE_CYCLES_DEVICE", "").upper() == "CPU": return "CPU"
+    # CPU unless FABLE_CYCLES_DEVICE=GPU: with several Blender jobs on the Mac at once, Metal bakes were seen to stall
+    # every process in an uninterruptible wait (2026-11-17)
+    if os.environ.get("FABLE_CYCLES_DEVICE", "CPU").upper() != "GPU": return "CPU"
     try:
         prefs = bpy.context.preferences.addons["cycles"].preferences
         for dt in ("METAL", "OPTIX", "CUDA", "HIP"):
@@ -218,7 +220,9 @@ for o in meshes:
             buv = nt.nodes.new("ShaderNodeUVMap"); buv.uv_map = o.data.uv_layers[0].name; nt.links.new(buv.outputs["UV"], base_img.inputs["Vector"])
             nt.links.new(base_img.outputs["Color"], nb.inputs["Base Color"])
         else: nb.inputs["Base Color"].default_value = base_col
-        if alpha_img: nt.links.new(alpha_img.outputs[alpha_from if alpha_from in alpha_img.outputs else "Alpha"], nb.inputs["Alpha"])
+        if alpha_img:   # clipped at 0.5 through a Round node: the glTF exporter writes alphaMode MASK for that
+            rnd = nt.nodes.new("ShaderNodeMath"); rnd.operation = 'ROUND'
+            nt.links.new(alpha_img.outputs["Alpha"], rnd.inputs[0]); nt.links.new(rnd.outputs[0], nb.inputs["Alpha"])
     elif o in water:
         nb = nt.nodes.new("ShaderNodeBsdfPrincipled"); nt.links.new(nb.outputs["BSDF"], mo.inputs["Surface"])
         if base_img: nt.links.new(base_img.outputs["Color"], nb.inputs["Base Color"])
