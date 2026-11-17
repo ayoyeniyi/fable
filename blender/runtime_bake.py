@@ -169,10 +169,10 @@ for o in lit:
     print("baked light", o.name, size, "mean", float(b.mean()), flush=True)
 timings["bake"] = round(time.time() - t, 1)
 
-# one scale for every light texture: 8-bit holds exposed irradiance / lightScale (the 99.5th percentile, 1..8)
+# one scale for every light texture: 8-bit holds exposed irradiance / lightScale (the 99.5th percentile, 1..16)
 allv = np.concatenate([v[3].reshape(-1, 3).max(axis=1)[::7] for v in irr.values()] or [np.array([1.0])])
 allv = allv[allv > 1e-5]
-light_scale = float(np.clip(np.percentile(allv, 99.5) if allv.size else 1.0, 1.0, 8.0))
+light_scale = float(np.clip(np.percentile(allv, 99.5) if allv.size else 1.0, 1.0, 16.0))
 def srgb(x): return np.where(x <= 0.0031308, x * 12.92, 1.055 * np.power(np.maximum(x, 0), 1 / 2.4) - 0.055).astype(np.float32)
 
 def first_image(nt, sock):
