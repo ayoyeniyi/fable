@@ -45,8 +45,9 @@ rng = random.Random(1699)
 EYE = S.EYE
 YAW = 24.0
 SUN_DIR = Vector((0.93, 0.12, 0.34)).normalized()     # toward the sun: east, a little north, ~20 degrees up
-CITY = Vector((26.0, 230.0, 0.0))                     # Mildendo, far off to the north
-ROAD = [(-1.9, 2.6), (-2.6, 9.0), (-1.0, 22.0), (3.0, 45.0), (9.0, 80.0), (16.0, 130.0), (22.0, 185.0), (25.0, 214.0)]
+CITY = Vector((7.0, 44.0, 0.0))                       # Mildendo, its wall about forty metres off to the north
+HAMLET = Vector((9.5, 9.0, 0.0))
+ROAD = [(-1.9, 2.6), (-2.4, 6.5), (-1.7, 12.0), (0.4, 20.0), (3.0, 27.0), (5.2, 31.5)]
 
 # ----------------------------------------------------------------------------- the impression of the body
 # Gulliver lay on his back, head at the reader's feet (south), feet to the north; his right side is east (+X).
@@ -75,8 +76,8 @@ def body_depth(x, y):
 def gz(x, y):
     r = math.hypot(x, y)
     z = 0.012 * noise.noise(Vector((x * 1.9, y * 1.9, 0.4))) + 0.06 * noise.noise(Vector((x * 0.21, y * 0.21, 1.7)))
-    z += 0.9 * noise.noise(Vector((x * 0.018, y * 0.018, 3.1))) * smoothstep(10, 60, r)
-    z += 2.6 * math.exp(-((x - CITY.x) ** 2 + (y - CITY.y) ** 2) / (2 * 55.0 ** 2))      # the rise the city stands on
+    z += 0.5 * noise.noise(Vector((x * 0.03, y * 0.03, 3.1))) * smoothstep(8, 40, r)
+    z += 0.7 * math.exp(-((x - CITY.x) ** 2 + (y - CITY.y) ** 2) / (2 * 16.0 ** 2))      # the low rise the city stands on
     if r < 3.2: z -= body_depth(x, y)
     return z
 
@@ -123,8 +124,10 @@ def ground_mat(name):
     col = base.outputs["Color"]
     col = mix_rgb(nt, 'MULTIPLY', maprange(nt, n3.outputs["Fac"], 0.3, 0.7, 0.0, 0.45, (-1100, -300)), col, (0.45, 0.5, 0.3, 1), (-900, 200))
     # fields beyond the common: snapped coords in a frame turned 18 degrees, 12 m cells
-    mp = node(nt, "ShaderNodeMapping", (-2200, -800)); mp.inputs["Rotation"].default_value = (0, 0, math.radians(18)); mp.inputs["Scale"].default_value = (1 / 12.0, 1 / 12.5, 1)
-    nt.links.new(co, mp.inputs["Vector"])
+    # the hedge grid is world = R(18 deg) (u, v): cells are floor(S R(-18 deg) p), rotating first, then scaling
+    mr = node(nt, "ShaderNodeMapping", (-2350, -800)); mr.inputs["Rotation"].default_value = (0, 0, math.radians(-18)); nt.links.new(co, mr.inputs["Vector"])
+    mp = node(nt, "ShaderNodeMapping", (-2200, -800)); mp.inputs["Scale"].default_value = (1 / 12.0, 1 / 12.5, 1)
+    nt.links.new(mr.outputs["Vector"], mp.inputs["Vector"])
     sn = node(nt, "ShaderNodeVectorMath", (-2000, -800), operation='FLOOR'); nt.links.new(mp.outputs["Vector"], sn.inputs[0])
     wn = node(nt, "ShaderNodeTexWhiteNoise", (-1800, -800)); wn.noise_dimensions = '3D'; nt.links.new(sn.outputs[0], wn.inputs["Vector"])
     fr = ramp(nt, [(0.0, c4(srgb((0.24, 0.36, 0.10)))), (0.3, c4(srgb((0.40, 0.47, 0.16)))), (0.5, c4(srgb((0.70, 0.62, 0.32)))), (0.62, c4(srgb((0.45, 0.33, 0.21)))),
@@ -133,7 +136,7 @@ def ground_mat(name):
     fcol = mix_rgb(nt, 'MULTIPLY', maprange(nt, n2_.outputs["Fac"], 0.3, 0.7, 0.0, 0.3, (-1300, -1000)), fr.outputs["Color"], (0.6, 0.6, 0.6, 1), (-1300, -800))
     rr = node(nt, "ShaderNodeVectorMath", (-2200, -1200), operation='LENGTH')
     xy = node(nt, "ShaderNodeCombineXYZ", (-2350, -1200)); nt.links.new(s.outputs["X"], xy.inputs["X"]); nt.links.new(s.outputs["Y"], xy.inputs["Y"]); nt.links.new(xy.outputs[0], rr.inputs[0])
-    fw = maprange(nt, math_(nt, 'ADD', rr.outputs["Value"], math_(nt, 'MULTIPLY', n1.outputs["Fac"], 10.0)), 20.0, 24.0, 0, 1, (-1000, -1000))
+    fw = maprange(nt, math_(nt, 'ADD', rr.outputs["Value"], math_(nt, 'MULTIPLY', n1.outputs["Fac"], 1.5)), 9.0, 16.0, 0, 1, (-1000, -1000))
     col = mix_rgb(nt, 'MIX', fw, col, fcol, (-700, 0))
     # the body mask (red: flattened, green: rim)
     mm = node(nt, "ShaderNodeMapping", (-2200, 900)); mm.inputs["Location"].default_value = (0.5, 0.6 / MASK_W, 0); mm.inputs["Scale"].default_value = (1 / MASK_W, 1 / MASK_W, 1)
@@ -242,7 +245,7 @@ print("grass ...", flush=True)
 mb = MB(); R = random.Random(5)
 placed = 0
 for i in range(40000):
-    r = 6.0 * R.random() ** 0.9
+    r = 5.0 * R.random() ** 0.85
     a = R.uniform(0, 2 * math.pi); x, y = r * math.sin(a), r * math.cos(a)
     if r < 0.45: continue
     sd = body_sdf(x, y)
@@ -256,12 +259,12 @@ for i in range(40000):
     sc = R.uniform(0.55, 0.9) * (0.75 + 0.4 * clump) * (1.0 + 0.3 * smoothstep(2.5, 6.0, r))
     if sd < 0.08: sc *= 1.25                                              # the rim, pushed up
     to_r = Vector((-x, -y, 0)).normalized(); ya = math.atan2(to_r.y, to_r.x) + math.pi / 2 + R.gauss(0, 0.5)
-    right = Vector((math.cos(ya), math.sin(ya), 0)) * 0.20 * sc
-    up = Vector((0, 0, 0.08 * sc)) - to_r * 0.008 * sc
+    right = Vector((math.cos(ya), math.sin(ya), 0)) * 0.13 * sc
+    up = Vector((0, 0, 0.05 * sc)) - to_r * 0.006 * sc
     cell = R.choice(S.GRASS_SHORT) if R.random() < 0.8 else R.choice(S.GRASS_ROW3[:3])
     card(mb, (x, y, z - 0.01), right, up, cell, 0.0, 1.0)
     placed += 1
-    if placed > 3000: break
+    if placed > 3300: break
 grass = mb.build("veg_grass", M_GRASS)
 set_card_normals(grass, lambda p: Vector((0, 0, 1)))
 print("grass cards", placed, flush=True)
@@ -543,13 +546,13 @@ hm = MB()
 CA, SA = math.cos(math.radians(18)), math.sin(math.radians(18))
 def to_world(u, v): return (u * CA - v * SA, u * SA + v * CA)
 def hedge_run(p0, p1, R2):
-    L = math.dist(p0, p1); n = max(2, int(L / 1.4))
+    L = math.dist(p0, p1); n = max(2, int(L / (0.7 if math.hypot(*p0) < 20 else 1.4)))
     d = Vector((p1[0] - p0[0], p1[1] - p0[1], 0)).normalized(); sd = Vector((-d.y, d.x, 0))
     rows = []
     for i in range(n + 1):
         t = i / n; x = p0[0] + (p1[0] - p0[0]) * t; y = p0[1] + (p1[1] - p0[1]) * t
-        z = h(x, y); hh = 0.24 + 0.06 * noise.noise(Vector((x * 1.3, y * 1.3, 0.5))) + 0.03 * R2.random()
-        w = 0.12 + 0.03 * noise.noise(Vector((x * 2.1, y * 2.1, 1.5)))
+        z = h(x, y); hh = 0.20 + 0.06 * noise.noise(Vector((x * 1.3, y * 1.3, 0.5))) + 0.03 * R2.random()
+        w = 0.10 + 0.03 * noise.noise(Vector((x * 2.1, y * 2.1, 1.5)))
         prof = [(-w, -0.02), (-w * 1.1, hh * 0.6), (0, hh), (w * 1.1, hh * 0.6), (w, -0.02)]
         rows.append([hm.vert(Vector((x, y, z)) + sd * a + Vector((0, 0, b_)), (t * L, k / 4), 0.0) for k, (a, b_) in enumerate(prof)])
     for ra, rb in zip(rows, rows[1:]):
@@ -563,8 +566,9 @@ for gi in range(-8, 9):
             wa, wb = to_world(*a_), to_world(*b_)
             mx, my = (wa[0] + wb[0]) / 2, (wa[1] + wb[1]) / 2
             r = math.hypot(mx, my)
-            if r < 23 or r > 55: continue
-            if R2.random() < 0.18: continue
+            if r < 7.6 or r > 48: continue
+            if math.hypot(mx - CITY.x, my - CITY.y) < 18 or math.hypot(mx - HAMLET.x, my - HAMLET.y) < 1.8: continue
+            if r > 30 and R2.random() < 0.18: continue
             if road_dist(mx, my) < 1.0:   # gap where the road passes
                 continue
             # leave a gate gap
@@ -574,18 +578,18 @@ for gi in range(-8, 9):
 hm.build("veg.shrub.hedges", M_HEDGE, sway=True)
 
 # little woods of seven-foot trees and a few hedgerow trees
-woods = [(-30.0, 38.0, 7.0, 11), (34.0, 52.0, 6.0, 8), (-46.0, -10.0, 8.0, 8), (12.0, -38.0, 6.0, 6), (52.0, 4.0, 5.0, 5), (-18.0, 88.0, 9.0, 9)]
+woods = [(-11.0, 13.0, 2.6, 8), (-15.0, -5.0, 3.0, 7), (17.0, -7.0, 2.5, 5), (-24.0, 26.0, 4.0, 7), (27.0, 26.0, 4.0, 6), (-6.0, -17.0, 3.0, 5), (-30.0, 6.0, 3.5, 5)]
 ti = 0
 for (wx, wy, wr, n) in woods:
     for k in range(n):
         a = rng.uniform(0, 2 * math.pi); d = wr * math.sqrt(rng.random())
         x, y = wx + math.cos(a) * d, wy + math.sin(a) * d
-        H_ = rng.uniform(1.5, 2.15); far_ = math.hypot(x, y) > 45
+        H_ = rng.uniform(0.7, 2.1); far_ = math.hypot(x, y) > 14
         S.tree(f"T{ti}", (x, y, h(x, y)), H_, H_ * 0.32, rng.choice(("oak", "elm", "ash", "lime")), 100 + ti, M_BARK, M_LEAF,
-               nlimbs=4, detail=0.3, cards_per_tip=1, card_size=0.42 if far_ else 0.32, fill=10 if far_ else 16)
+               nlimbs=4 if far_ else 5, detail=0.3 if far_ else 0.6, cards_per_tip=1, card_size=H_ * (0.2 if far_ else 0.16), fill=10 if far_ else 16)
         ti += 1
-for (x, y, H_) in [(-14.0, 19.0, 2.0), (17.0, 26.0, 1.9), (24.0, -12.0, 2.1), (-22.0, 2.0, 1.8)]:
-    S.tree(f"T{ti}", (x, y, h(x, y)), H_, H_ * 0.36, "oak", 200 + ti, M_BARK, M_LEAF, nlimbs=6, detail=0.6, cards_per_tip=2, card_size=0.32, fill=26)
+for (x, y, H_) in [(-8.2, 8.6, 1.3), (6.2, 13.8, 2.0), (9.6, -4.2, 0.9), (-9.0, -1.0, 1.6), (12.5, 4.0, 1.1)]:
+    S.tree(f"T{ti}", (x, y, h(x, y)), H_, H_ * 0.36, "oak", 200 + ti, M_BARK, M_LEAF, nlimbs=6, detail=0.6, cards_per_tip=2, card_size=H_ * 0.15, fill=26)
     ti += 1
 print("trees", ti, flush=True)
 
@@ -599,18 +603,67 @@ def cbox(mb, c, sx, sy, sz, yaw=0.0):
             pts.append(mb.vert(Vector((c.x + u * ca - v * sa, c.y + u * sa + v * ca, c.z + dz))))
     for f in ((0, 1, 2, 3), (4, 7, 6, 5), (0, 4, 5, 1), (1, 5, 6, 2), (2, 6, 7, 3), (3, 7, 4, 0)):
         mb.face(*[pts[i] for i in f])
-side = 45.0
+cr = MB()
+def cottage(p, w, d, wh, yaw, wallmb=None, roofmb=None):
+    """a Lilliputian cottage or town house: plastered walls, a pitched roof with eaves, a chimney (w, d full sizes)."""
+    wallmb = wallmb or cw; roofmb = roofmb or cr
+    p = Vector((p.x, p.y, h(p.x, p.y) - 0.02))
+    cbox(wallmb, p, w / 2, d / 2, wh, yaw)
+    Rm = Matrix.Rotation(yaw, 3, 'Z'); top = p + Vector((0, 0, wh)); rh = d * 0.5
+    q = [top + Rm @ Vector(v) for v in ((-w / 2 - 0.02, -d / 2 - 0.03, -0.01), (w / 2 + 0.02, -d / 2 - 0.03, -0.01), (w / 2 + 0.02, 0, rh), (-w / 2 - 0.02, 0, rh),
+                                         (-w / 2 - 0.02, d / 2 + 0.03, -0.01), (w / 2 + 0.02, d / 2 + 0.03, -0.01))]
+    for f in ((0, 1, 2, 3), (5, 4, 3, 2)): roofmb.face(*[roofmb.vert(q[i]) for i in f])
+    for (i0, i1, i2) in ((0, 3, 4), (1, 5, 2)): wallmb.face(wallmb.vert(q[i0] + Vector((0, 0, 0.01))), wallmb.vert(q[i1]), wallmb.vert(q[i2] + Vector((0, 0, 0.01))))
+    cbox(wallmb, top + Rm @ Vector((w * 0.3, d * 0.15, 0)), 0.025, 0.025, rh * 0.95, yaw)
+    # door and windows (dark) on the long side facing -y local
+    for (u, z0, ww, hh_) in ((0.0, 0.0, 0.05, 0.09), (-w * 0.3, 0.07, 0.045, 0.045), (w * 0.3, 0.07, 0.045, 0.045)):
+        c0 = p + Rm @ Vector((u, -d / 2 - 0.002, z0))
+        a_ = Rm @ Vector((ww / 2, 0, 0))
+        win.face(win.vert(c0 - a_), win.vert(c0 + a_), win.vert(c0 + a_ + Vector((0, 0, hh_))), win.vert(c0 - a_ + Vector((0, 0, hh_))))
+win = MB()
+side = 26.0
 for k in range(4):
     a = k * math.pi / 2 + 0.3
     for j in range(9):
         t = (j - 4) / 4.5
         c = CITY + Vector((math.cos(a) * side / 2 - math.sin(a) * t * side / 2, math.sin(a) * side / 2 + math.cos(a) * t * side / 2, 0))
-        c.z = h(c.x, c.y) - 0.1
-        cbox(cw, c, 0.2 if j % 2 == 0 else 2.6, 0.3 if j % 2 == 0 else 0.2, 1.6 if j % 2 == 0 else 0.85, a)
-for k in range(30):
-    c = CITY + Vector((rng.uniform(-18, 18), rng.uniform(-18, 18), 0)); c.z = h(c.x, c.y)
-    cbox(cw, c, rng.uniform(0.6, 1.2), rng.uniform(0.6, 1.2), rng.uniform(0.6, 1.4), 0.3)
-c = CITY.copy(); c.z = h(c.x, c.y); cbox(cw, c, 2.0, 2.0, 2.4, 0.3)
+        c.z = h(c.x, c.y) - 0.05
+        if j % 3 == 0: cbox(cw, c, 0.22, 0.22, 1.05, a); cbox(cr, c + Vector((0, 0, 1.05)), 0.25, 0.25, 0.06, a)
+    cm_ = CITY + Vector((math.cos(a) * side / 2, math.sin(a) * side / 2, 0)); cm_.z = h(cm_.x, cm_.y) - 0.05
+    cbox(cw, cm_, side / 2 * 1.02, 0.09, 0.76, a + math.pi / 2)
+RC = random.Random(12)
+for k in range(70):          # the town within: streets of houses two or three storeys (0.4-0.7 m), the palace in the middle
+    c = CITY + Vector((RC.uniform(-11.5, 11.5), RC.uniform(-11.5, 11.5), 0))
+    if abs(c.x - CITY.x) < 2.6 and abs(c.y - CITY.y) < 2.6: continue
+    yaw = 0.3 + (math.pi / 2 if RC.random() < 0.5 else 0)
+    cottage(c, RC.uniform(0.5, 0.9), RC.uniform(0.4, 0.55), RC.uniform(0.35, 0.65), yaw)
+c = CITY.copy(); c.z = h(c.x, c.y)
+cbox(cw, c, 2.2, 2.2, 1.1, 0.3); cbox(cr, c + Vector((0, 0, 1.1)), 2.3, 2.3, 0.12, 0.3)
+for k in range(4):
+    a = 0.3 + k * math.pi / 2 + math.pi / 4
+    tc = c + Vector((math.cos(a) * 2.6, math.sin(a) * 2.6, 0)); cbox(cw, tc, 0.3, 0.3, 1.6, 0.3); cbox(cr, tc + Vector((0, 0, 1.6)), 0.36, 0.36, 0.3, 0.3)
+# a hamlet near at hand on the right: cottages, a barn, a church with its spire
+HAMLET_C = HAMLET
+for k, (dx, dy, w, d, wh, yaw) in enumerate(((0.0, 0.0, 0.55, 0.42, 0.24, 0.1), (0.9, 0.5, 0.5, 0.4, 0.22, 0.25), (-0.8, 0.7, 0.6, 0.42, 0.25, -0.1),
+                                             (0.3, 1.4, 0.48, 0.38, 0.22, 1.7), (1.6, -0.4, 0.8, 0.5, 0.3, 0.2), (-1.4, -0.2, 0.5, 0.4, 0.22, 0.05))):
+    cottage(HAMLET + Vector((dx, dy, 0)), w, d, wh, yaw)
+ch = HAMLET + Vector((-0.6, 2.6, 0)); ch.z = h(ch.x, ch.y)
+cottage(ch, 1.1, 0.5, 0.42, 0.15)
+tw_ = ch + Vector((-0.75, -0.1, 0)); cbox(cw, tw_, 0.13, 0.13, 0.95, 0.15)
+sp = tw_ + Vector((0, 0, 0.95))
+for k in range(4):
+    a0, a1 = math.pi / 2 * k + 0.15 + math.pi / 4, math.pi / 2 * (k + 1) + 0.15 + math.pi / 4
+    cr.face(cr.vert(sp + Vector((math.cos(a0) * 0.19, math.sin(a0) * 0.19, 0))), cr.vert(sp + Vector((math.cos(a1) * 0.19, math.sin(a1) * 0.19, 0))), cr.vert(sp + Vector((0, 0, 0.7))))
+# a farm cart on the road and hay stooks in the field by the hamlet
+cc = Vector((-2.3, 8.2, 0)); cc.z = h(cc.x, cc.y)
+cbox(cw, cc + Vector((0, 0, 0.045)), 0.07, 0.13, 0.04, 0.05)
+for sx in (-1, 1):
+    for sy in (-1, 1): K.cyl(f"CartWheel{sx}{sy}", 0.035, 0.012, (cc.x + sx * 0.085, cc.y + sy * 0.08, cc.z + 0.035), M_TIMBER, verts=10, rot=(0, math.pi / 2, 0.05))
+for k in range(14):
+    p = HAMLET + Vector((-3.5 + (k % 5) * 0.55 + rng.uniform(-0.1, 0.1), -3.0 + (k // 5) * 0.6, 0)); p.z = h(p.x, p.y)
+    K.lathe(f"Stook{k}", [(0.0, 0.0), (0.06, 0.0), (0.045, 0.07), (0.0, 0.1)], tuple(p), M_LOAF, steps=6)
+win.build("TownWindows", M_IRON, sway=False)
+cr.build("CityRoofs", M_ROOF, sway=False)
 cw.build("CityWalls", M_STONE, sway=False)
 
 # ----------------------------------------------------------------------------- sky, light, anchors, sounds
