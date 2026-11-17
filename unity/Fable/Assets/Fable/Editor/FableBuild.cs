@@ -110,11 +110,11 @@ namespace Fable.Editor
                 Ambient = new Color(0.16f, 0.13f, 0.11f), Fog = 0.008f, FlipNormals = new[] { "MESH_MarinePainting" } },
             new SceneDef { Id = "mongolia-deck", Scene = "Assets/Fable/Scenes/MongoliaDeck.unity", Glb = "Assets/Fable/Models/MongoliaDeck/mongolia_deck.gltf", Outdoor = true, Room = true, ClearPanes = true, Book = "eighty", Sound = "sea-open:0.7+wind-high:0.25", Wind = 0.6f, WindToward = 0f, Fog = 0.003f,
                 Lights = new[] { L("light.sun", 1.7f, -1f, new Color(1f, 0.94f, 0.84f)), L("light.sky", 0.45f, -1f, new Color(0.65f, 0.76f, 1f)) }, WaterOverride = new WaterLook { SwellHeight = 0.55f, SwellLength = 40f } },
-            new SceneDef { Id = "pillaji-forest", Scene = "Assets/Fable/Scenes/PillajiForest.unity", Glb = "Assets/Fable/Models/PillajiForest/pillaji_forest.gltf", Outdoor = true, Room = true, Book = "eighty", Sound = "night:0.5+birds:0.2+wind-pines:0.12", Wind = 0.15f, Fog = 0.002f,
+            new SceneDef { Id = "pillaji-forest", Scene = "Assets/Fable/Scenes/PillajiForest.unity", Glb = "Assets/Fable/Models/PillajiForest/pillaji_forest.gltf", Outdoor = true, Room = true, Book = "eighty", Sound = "night:0.5+birds:0.2+wind-pines:0.12", Wind = 0.15f, Fog = 0.002f, NoFlameLights = true,
                 Lights = new[] { L("light.sun", 1.1f, -1f, new Color(1f, 0.62f, 0.32f)), L("light.sky", 0.4f, -1f, new Color(0.55f, 0.64f, 0.95f)) } },
             new SceneDef { Id = "ingolstadt-garret", Scene = "Assets/Fable/Scenes/IngolstadtGarret.unity", Glb = "Assets/Fable/Models/IngolstadtGarret/ingolstadt_garret.gltf", Room = true, Book = "frankenstein", Sound = "rain:0.55+room-tone:0.45", Wind = 0f,
                 Lights = new[] { L("Lamp.candle", 0.45f, 4f, CandleGlow), L("Lamp.fire", 0.9f, 6f, new Color(1f, 0.45f, 0.18f)), L("Lamp.window", 0.3f, 6f, new Color(0.55f, 0.65f, 1f)) } },
-            new SceneDef { Id = "mer-de-glace", Scene = "Assets/Fable/Scenes/MerDeGlace.unity", Glb = "Assets/Fable/Models/MerDeGlace/mer_de_glace.gltf", Outdoor = true, Room = true, Book = "frankenstein", Sound = "wind-high:0.55+wind-pines:0.35+river:0.12", Wind = 0.45f, WindToward = 20f, Fog = 0.0006f,
+            new SceneDef { Id = "mer-de-glace", Scene = "Assets/Fable/Scenes/MerDeGlace.unity", Glb = "Assets/Fable/Models/MerDeGlace/mer_de_glace.gltf", Outdoor = true, Room = true, Book = "frankenstein", Sound = "wind-high:0.55+wind-pines:0.35+river:0.12", Wind = 0.45f, WindToward = 20f, Fog = 0.0006f, ThinFoliage = 0.6f, ThinNear = 10f,
                 Lights = new[] { L("light.sun", 1.5f, -1f, new Color(1f, 0.97f, 0.92f)) } },
             new SceneDef { Id = "arctic-ice", Scene = "Assets/Fable/Scenes/ArcticIce.unity", Glb = "Assets/Fable/Models/ArcticIce/arctic_ice.gltf", Outdoor = true, Room = true, Book = "frankenstein", Sound = "wind-high:0.75+rigging:0.35", Wind = 0.75f, WindToward = 40f, Fog = 0.0006f,
                 Lights = new[] { L("light.sun", 1.6f, -1f, new Color(1f, 0.76f, 0.52f)), L("light.sky", 0.55f, -1f, new Color(0.62f, 0.72f, 1f)) }, WaterOverride = new WaterLook { SwellHeight = 0f, FlowSpeed = 0f } },
@@ -288,9 +288,10 @@ namespace Fable.Editor
                 {
                     l.lightmapBakeType = LightmapBakeType.Mixed; l.shadows = LightShadows.Soft;
                     if (l.name.StartsWith("light.sun")) { l.type = LightType.Directional; l.intensity = 1.5f; l.color = new Color(1f, 0.93f, 0.80f); }
-                    else if (l.name.StartsWith("light.sky")) { l.type = LightType.Directional; l.intensity = 0.35f; l.color = new Color(0.62f, 0.74f, 1f); l.shadows = LightShadows.None; }
+                    // the sky fill is baked: as a realtime light it is a second per-pixel light on every surface (Quest 2)
+                    else if (l.name.StartsWith("light.sky")) { l.type = LightType.Directional; l.intensity = 0.35f; l.color = new Color(0.62f, 0.74f, 1f); l.shadows = LightShadows.None; l.lightmapBakeType = LightmapBakeType.Baked; }
                     else if (l.name.Contains("Fire") || l.name.Contains("lamp") || l.name.Contains("stove")) { l.lightmapBakeType = LightmapBakeType.Baked; l.intensity = l.name.Contains("Fire") ? 6f : 2.2f; l.range = l.name.Contains("Fire") ? 9f : 5f; l.color = new Color(1f, 0.62f, 0.30f); l.shadows = LightShadows.Soft; }   // hearth, oil lamp, stove: warm, baked
-                    else { l.intensity = 0.5f; l.range = 12f; l.color = new Color(1f, 0.95f, 0.86f); l.shadows = LightShadows.None; }
+                    else { l.intensity = 0.5f; l.range = 12f; l.color = new Color(1f, 0.95f, 0.86f); l.shadows = LightShadows.None; l.lightmapBakeType = LightmapBakeType.Baked; }   // fills: baked, not per-pixel
                 }
                 if (sceneId == "ithaca-hall")
                 {

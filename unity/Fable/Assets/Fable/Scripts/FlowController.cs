@@ -199,9 +199,7 @@ namespace Fable
             var bookPath = System.IO.Path.Combine(Application.streamingAssetsPath, "book/passages.json");
             string bookJson;
 #if UNITY_ANDROID && !UNITY_EDITOR
-            // Quest: shade the periphery at lower density; the page sits in the centre of view where density stays full.
-            OVRManager.foveatedRenderingLevel = OVRManager.FoveatedRenderingLevel.Medium;
-            OVRManager.useDynamicFoveatedRendering = true;
+            QuestFoveation.Apply();   // the periphery at lower density; the page sits in the centre of view
             using (var req = UnityEngine.Networking.UnityWebRequest.Get(bookPath))
             {
                 yield return req.SendWebRequest();
@@ -479,10 +477,7 @@ namespace Fable
         /// scenes, without the director's passage, the diorama or the tasks.
         IEnumerator RoomStart()
         {
-#if UNITY_ANDROID && !UNITY_EDITOR
-            OVRManager.foveatedRenderingLevel = OVRManager.FoveatedRenderingLevel.Medium;
-            OVRManager.useDynamicFoveatedRendering = true;
-#endif
+            QuestFoveation.Apply();
             env = Director.Registry.EnvironmentRoot;
             if (!UnityEngine.XR.XRSettings.isDeviceActive && Head && Head.localPosition.y < 0.5f) Head.localPosition = new Vector3(0, 1.55f, 0);
             Director.Flow = this; Director.Panel = Panel; Director.Reader = Input; Director.LoadInterpreterUrl();

@@ -64,6 +64,9 @@ Shader "Fable/LivingLit"
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Fog.hlsl"
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ProbeVolumeVariants.hlsl"
             #pragma multi_compile_instancing
+            // foliage: diffuse only (baked light + the main light), no normal map, specular or per-pixel extra lights.
+            // Cut-out cards are drawn many layers deep, so each layer must be cheap on Quest 2.
+            #pragma shader_feature_local_fragment _FABLE_SIMPLE
 
             #include "FableLivingLitInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
@@ -126,6 +129,24 @@ Shader "Fable/LivingLit"
                 UNITY_SETUP_INSTANCE_ID(input);
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
+#if defined(_FABLE_SIMPLE)
+                half4 alb = SAMPLE_TEXTURE2D(baseColorTexture, samplerbaseColorTexture, input.uv) * baseColorFactor;
+    #if defined(_ALPHATEST_ON)
+                clip(alb.a - alphaCutoff);
+    #endif
+                float3 nS = normalize(input.normalWS * IS_FRONT_VFACE(facing, 1.0, -1.0));
+                float4 scS = float4(0, 0, 0, 0);
+    #if defined(MAIN_LIGHT_CALCULATE_SHADOWS)
+                scS = TransformWorldToShadowCoord(input.positionWS);
+    #endif
+                half3 giS = SAMPLE_GI(input.lightmapUV, input.vertexSH, nS);
+                half4 smS = SAMPLE_SHADOWMASK(input.lightmapUV);
+                Light mlS = GetMainLight(scS, input.positionWS, smS);
+                half ndl = saturate(dot(nS, mlS.direction) * 0.75 + 0.25);   // a little wrap: thin leaves pass light through
+                half3 colS = alb.rgb * (giS + mlS.color * (mlS.distanceAttenuation * mlS.shadowAttenuation * ndl) + input.fogAndLight.yzw);
+                colS = MixFog(colS, InitializeInputDataFog(float4(input.positionWS, 1.0), input.fogAndLight.x));
+                return half4(colS, 1);
+#endif
                 SurfaceData s;
                 FableInitSurface(input.uv, s);
 

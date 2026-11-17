@@ -126,6 +126,14 @@ namespace Fable.Editor
             }
             finally { foreach (var mc in temp) Object.DestroyImmediate(mc); }
 
+            // distant tree lines and other cut-out backdrop cards: the same cheap foliage lighting, still (no sway)
+            foreach (var r in renderers.Where(r => FlowController.IsBackdrop(r.name) && classified.All(x => x.r != r)))
+            {
+                var orig = OriginalMaterials(r); if (!orig.Any(FablePerf.IsCutout)) continue;
+                r.sharedMaterials = orig.Select(m => FablePerf.IsCutout(m) ? Converted(m, Shader.Find("Fable/LivingLit"), def.Id, "_far", c => { c.SetFloat("_SwayAmplitude", 0); c.SetFloat("_Billow", 0); c.EnableKeyword("_FABLE_SIMPLE"); }) : m).ToArray();
+                rep.Notes.Add($"{r.name}: cheap cut-out");
+            }
+
             // fires, candles, torches and lanterns at their empties; the older rooms' hearths at their modelled flames
             var living = new GameObject("living.fx"); living.transform.SetParent(env.transform, false);
             var sources = new List<AudioSource>(); var volumes = new List<float>();
@@ -140,7 +148,7 @@ namespace Fable.Editor
                 var go = new GameObject("living.fire." + f.name); go.transform.SetParent(living.transform, false); go.transform.position = f.pos;
                 if (particles < MaxParticleSystems) { Flames(go.transform, f.radius); particles++; }
                 if (particles < MaxParticleSystems) { Embers(go.transform, f.radius); particles++; }
-                if (lights < MaxRealtimeLights) { FlickerLight(go.transform, f.radius, 0.45f, 2.5f + f.radius * 8f); lights++; }
+                if (lights < MaxLights(def)) { FlickerLight(go.transform, f.radius, 0.45f, 2.5f + f.radius * 8f); lights++; }
                 var s = Source(go, "fire", 0.9f, 1f, 14f); if (s && sources.Count < MaxPositionalSounds) { sources.Add(s); volumes.Add(0.75f); }
                 rep.Fires++;
             }
@@ -151,7 +159,7 @@ namespace Fable.Editor
                 Card(go.transform, candle ? 0.014f : 0.05f, candle ? 0.036f : 0.13f);
                 if (!candle)
                 {
-                    if (lights < MaxRealtimeLights) { FlickerLight(go.transform, 0.05f, 0.25f, 2.5f); lights++; }
+                    if (lights < MaxLights(def)) { FlickerLight(go.transform, 0.05f, 0.25f, 2.5f); lights++; }
                     var s = Source(go, "candle", 0.3f, 0.5f, 5f); if (s && sources.Count < MaxPositionalSounds) { sources.Add(s); volumes.Add(0.3f); }
                 }
                 rep.Candles++;
@@ -232,6 +240,10 @@ namespace Fable.Editor
             if (src.HasProperty("_AlphaClip") && src.GetFloat("_AlphaClip") > 0.5f) m.EnableKeyword("_ALPHATEST_ON");
             if (src.HasProperty("_Cull") && m.HasProperty("_Cull")) m.SetFloat("_Cull", src.GetFloat("_Cull"));
             m.renderQueue = -1; m.enableInstancing = true;
+            // cut-out after every opaque surface (AlphaTest queue): on Quest's tiled GPU an alpha-tested draw among the
+            // opaques switches off early depth rejection for what follows, and drawn last it is rejected wherever a
+            // wall, trunk or the ground already stands in front
+            if (m.IsKeywordEnabled("_ALPHATEST_ON")) m.renderQueue = (int)RenderQueue.AlphaTest;
             setup?.Invoke(m);
             return SaveMaterial(m, sceneId, src.name + suffix);
         }
@@ -257,8 +269,44 @@ namespace Fable.Editor
                 mf.sharedMesh = SaveMesh(m, def.Id, r.name + "_sway");
                 if (hits < v.Length / 2) rep.Notes.Add($"{r.name}: ground found under {hits}/{v.Length} vertices");
             }
-            var mats = OriginalMaterials(r).Select(s => Converted(s, Shader.Find("Fable/LivingLit"), def.Id, "_sway", m => { m.SetFloat("_SwayAmplitude", k.amp); m.SetFloat("_SwayFlutter", k.flutter); m.SetFloat("_Billow", 0); })).ToArray();
+            var mats = OriginalMaterials(r).Select(s => Converted(s, Shader.Find("Fable/LivingLit"), def.Id, "_sway", m => { m.SetFloat("_SwayAmplitude", k.amp); m.SetFloat("_SwayFlutter", k.flutter); m.SetFloat("_Billow", 0); m.EnableKeyword("_FABLE_SIMPLE"); })).ToArray();
             r.sharedMaterials = mats;
+            if (def.ThinFoliage < 1f) Thin(r, def, rep);
+        }
+
+        /// Realtime flicker lights a room may have: none where the flames' glow is baked (SceneDef.NoFlameLights).
+        static int MaxLights(FableBuild.SceneDef def) => def.NoFlameLights ? 0 : MaxRealtimeLights;
+
+        /// Fewer foliage cards (SceneDef.ThinFoliage, the share kept): every card within ThinNear metres of where the
+        /// reader stands stays; further out a deterministic share of the cards (mesh islands) is dropped, more of
+        /// them the further away they are, so the near view is unchanged and the distant canopy reads as before.
+        static void Thin(Renderer r, FableBuild.SceneDef def, Report rep)
+        {
+            var mf = r.GetComponent<MeshFilter>(); var src = mf ? mf.sharedMesh : null; if (!src) return;
+            var at = FableBuild.ReaderFeet(def, r.transform.root);
+            var island = Islands(src, out int count); var v = src.vertices; var l2w = r.transform.localToWorldMatrix;
+            var centre = new Vector3[count]; var n = new int[count];
+            for (int i = 0; i < v.Length; i++) { centre[island[i]] += l2w.MultiplyPoint3x4(v[i]); n[island[i]]++; }
+            var keep = new bool[count]; int kept = 0;
+            for (int c = 0; c < count; c++)
+            {
+                var p = centre[c] / Mathf.Max(1, n[c]); float d = at.HasValue ? Vector3.Distance(new Vector3(p.x, 0, p.z), new Vector3(at.Value.x, 0, at.Value.z)) : 99f;
+                if (d < def.ThinNear) { keep[c] = true; kept++; continue; }
+                // keep share falls from 1 at ThinNear to ThinFoliage at twice that distance and beyond
+                float share = Mathf.Lerp(1f, def.ThinFoliage, Mathf.Clamp01((d - def.ThinNear) / def.ThinNear));
+                uint h = (uint)(c * 2654435761u) ^ 0x9e3779b9u; h ^= h >> 15; h *= 2246822519u; h ^= h >> 13;
+                keep[c] = (h % 10000) / 10000f < share; if (keep[c]) kept++;
+            }
+            if (kept == count) return;
+            var m = Object.Instantiate(src); m.name = src.name + "_thin";
+            for (int s = 0; s < m.subMeshCount; s++)
+            {
+                var t = m.GetTriangles(s); var o = new List<int>(t.Length);
+                for (int i = 0; i < t.Length; i += 3) if (keep[island[t[i]]]) { o.Add(t[i]); o.Add(t[i + 1]); o.Add(t[i + 2]); }
+                m.SetTriangles(o, s);
+            }
+            mf.sharedMesh = SaveMesh(m, def.Id, r.name + "_thin");
+            rep.Notes.Add($"{r.name}: kept {kept}/{count} cards");
         }
 
         static void MakeCloth(Renderer r, float amp, FableBuild.SceneDef def)
