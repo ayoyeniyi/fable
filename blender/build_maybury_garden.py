@@ -120,7 +120,7 @@ M_CURTAIN = noisy("M_StudyCurtain", [(0.30, 0.25, 0.14), (0.38, 0.32, 0.18)], sc
 M_POT = noisy("M_ChimneyPot", [(0.38, 0.14, 0.07), (0.48, 0.20, 0.10)], scale=8, rough=0.8, bump=0.3)
 M_HEDGE = noisy("M_HedgeMass", [(0.02, 0.05, 0.015), (0.04, 0.08, 0.025), (0.06, 0.10, 0.03)], scale=6, rough=0.85, bump=0.7, bump_dist=0.04)
 M_FARTREES = noisy("M_FarTrees", [(0.02, 0.025, 0.015), (0.035, 0.04, 0.025)], scale=0.6, rough=0.9, bump=0.0)
-M_FIRE = plain("M_TreeFire", (0.1, 0.03, 0.01), rough=1.0, emission=(1.0, 0.20, 0.03), strength=1.6)
+M_FIRE = plain("M_TreeFire", (0.1, 0.03, 0.01), rough=1.0, emission=(0.85, 0.11, 0.015), strength=1.0)
 M_SMOKE = noisy("M_Smoke", [(0.08, 0.06, 0.05), (0.14, 0.10, 0.08), (0.22, 0.14, 0.10)], scale=0.08, rough=1.0, bump=0.0)
 M_FARSTONE = noisy("M_FarStone", [(0.12, 0.10, 0.09), (0.18, 0.15, 0.13)], scale=0.3, rough=0.9, bump=0.0)
 
@@ -270,7 +270,7 @@ def lawn_ok(x, y):
     if (Vector((x, y)) - SH).length < 2.2: return 0.0
     if math.hypot(x, y) < 0.6: return 0.0
     return 0.7
-B.scatter_cards(mb, None, R, 30000, 0.3, 5.0, lambda x, y: lawn_ok(x, y) * 0.5, B.MEADOW_SHORT, height=0.05, width=0.22, solid_from=99, maxcards=500)
+B.scatter_cards(mb, None, R, 0, 0.3, 5.0, lambda x, y: lawn_ok(x, y) * 0.5, B.MEADOW_SHORT, height=0.05, width=0.22, solid_from=99, maxcards=500)
 fb = MB()
 for i in range(240):            # the flower bed under the study window
     x = HOUSE_X - R.uniform(0.25, 1.4); y = R.uniform(2.3, 6.8)
@@ -284,7 +284,8 @@ for row in range(5):            # the neighbour's strawberry beds beyond the fen
         to_r = Vector((-x, -y, 0)).normalized(); ya = math.atan2(to_r.y, to_r.x) + math.pi / 2
         card(sb, (x, y, gz(x, y) - 0.02), Vector((math.cos(ya), math.sin(ya), 0)) * 0.45, Vector((0, 0, 0.3)), R.choice(B.QUAD), 0.0, 1.0)
 for o_, m_, nm in ((mb, M_LAWN_C, "LawnCards"), (fb, M_LAWN_C, "BedFlowers"), (sb, M_STRAW, "Strawberries")):
-    oo = o_.build(nm, m_); set_card_normals(oo, lambda p: Vector((0, 0, 1)))
+    oo = o_.build(nm, m_)
+    if oo is not None: set_card_normals(oo, lambda p: Vector((0, 0, 1)))
 
 # ----------------------------------------------------------------------------- the view beyond: trees about the Oriental College in smoky red flame, the mosque, the church tower
 print("distance ...", flush=True)
