@@ -39,3 +39,4 @@ unity/Fable/Assets/StreamingAssets/rooms.meta
 # Noto fonts for drawn translations: fetched by tools/fetch_fonts.py (content/fonts/SOURCE.md)
 content/fonts/*.ttf
 content/fonts/*.otf
+content/scene-rooms/
