@@ -357,11 +357,11 @@ for a in (0.0, math.pi / 2):
 FLc.finish(smooth_=False)
 
 # ----------------------------------------------------------------------------- lights, world, living empties, anchors
-light_obj("light.candle", 'POINT', 9.0, (1.0, 0.58, 0.28), tuple(TIP + Vector((0, 0, 0.03))), shadow_soft_size=0.02)
-light_obj("light.moon", 'AREA', 7.0, (0.55, 0.68, 1.0), (WIN_X, Y1 + 0.3, (WIN_Z0 + WIN_Z1) / 2), direction=(0, -1, -0.35), size=WIN_W, shape='RECTANGLE', size_y=WIN_Z1 - WIN_Z0)
-light_obj("light.landing", 'POINT', 3.0, (1.0, 0.6, 0.32), (DOOR_X - 0.3, Y0 - WT - 1.0, 0.4), shadow_soft_size=0.1)
+light_obj("light.candle", 'POINT', 22.0, (1.0, 0.58, 0.28), tuple(TIP + Vector((0, 0, 0.03))), shadow_soft_size=0.02)
+light_obj("light.moon", 'AREA', 26.0, (0.55, 0.68, 1.0), (WIN_X, Y1 + 0.3, (WIN_Z0 + WIN_Z1) / 2), direction=(0, -1, -0.35), size=WIN_W, shape='RECTANGLE', size_y=WIN_Z1 - WIN_Z0)
+light_obj("light.landing", 'POINT', 8.0, (1.0, 0.6, 0.32), (DOOR_X - 0.3, Y0 - WT - 1.0, 0.4), shadow_soft_size=0.1)
 world = bpy.data.worlds.new("Night"); scene.world = world; world.use_nodes = True
-world.node_tree.nodes["Background"].inputs["Color"].default_value = (0.01, 0.012, 0.02, 1)
+world.node_tree.nodes["Background"].inputs["Color"].default_value = (0.03, 0.035, 0.05, 1)
 world.node_tree.nodes["Background"].inputs["Strength"].default_value = 1.0
 living_empty("fx.candle.floor", tuple(TIP), 0.012)
 living_empty("sound.clock.below", (0.0, -0.5, -0.5), 0.3)
@@ -391,7 +391,7 @@ if not args.nosave:
     bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT, "benbow_captains_room_source.blend"))
 K.budget()
 if args.render:
-    B.render_stamped(scene, cams, "benbow-captains-room", OUT, args.res, args.cams, page=page, page_cams={"Cam_Page"}, default_exposure=2.2,
+    B.render_stamped(scene, cams, "benbow-captains-room", OUT, args.res, args.cams, page=page, page_cams={"Cam_Page"}, default_exposure=1.4,
                      captures_dir=CAPTURES)
 if args.bake or args.export:
     T_ = min(args.tex, 2048)
