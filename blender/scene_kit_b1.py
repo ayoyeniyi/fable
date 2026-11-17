@@ -656,6 +656,14 @@ def finish(scene_id, gltf_base, cams, keep_names, size_for, keep_uv=(), default_
     if ARGS.render:
         K.render_stills(cams, page=page, page_cams={"Cam_Page"}, exposure=exposure, default_exposure=default_exposure, captures_dir=ARGS.captures)
     if ARGS.bake or ARGS.export:
+        # the diffuse-colour bake of a metal is black, and the runtime draws base x light without metalness:
+        # bake every material as a dielectric so brass, gold, iron and tin keep their colour
+        for m in bpy.data.materials:
+            if not m.use_nodes: continue
+            for n in m.node_tree.nodes:
+                if n.type == 'BSDF_PRINCIPLED':
+                    for l in list(n.inputs["Metallic"].links): m.node_tree.links.remove(l)
+                    n.inputs["Metallic"].default_value = 0.0
         E8.bake_and_export(f"{gltf_base}.gltf", cams, page=page, keep_names=keep_names, keep_uv=set(keep_uv), size_for=size_for,
                            default_size=default_size, water_colour=water_colour, unlit_emit=unlit_emit)
     print("DONE", flush=True)
