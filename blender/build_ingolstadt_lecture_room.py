@@ -68,7 +68,26 @@ M_SLATE = noisy("M_Blackboard", [K.srgb((0.07, 0.08, 0.08)), K.srgb((0.11, 0.12,
 M_CHALK = plain("M_Chalk", K.srgb((0.80, 0.80, 0.76)), rough=0.9)
 M_TILE = noisy("M_StoveTiles", [K.srgb((0.20, 0.34, 0.24)), K.srgb((0.28, 0.44, 0.32)), K.srgb((0.16, 0.28, 0.20))], scale=6, rough=0.2, bump=0.3, coat=0.4)
 M_PAGES = noisy("M_BookPages", [K.srgb((0.80, 0.76, 0.64)), K.srgb((0.72, 0.68, 0.56))], scale=200, rough=0.85, stretch=(1, 1, 30), bump=0.0)
-M_SPINES = noisy("M_BookSpines", [K.srgb((0.36, 0.20, 0.11)), K.srgb((0.20, 0.12, 0.07)), K.srgb((0.62, 0.52, 0.36)), K.srgb((0.30, 0.10, 0.07))], scale=30, rough=0.6, stretch=(30, 1, 1), bump=0.2)
+def spines_mat(name="M_BookSpines"):
+    """calf, sheep and vellum bindings: each book (a 4-6 cm slice along the shelf) its own leather, darker at the head and
+    tail bands, with a gilt band or two."""
+    m, nt, b = new_mat(name)
+    co = obj_coords(nt); s = sep_xyz(nt, co, (-1500, 0))
+    cell = math_(nt, 'FLOOR', math_(nt, 'DIVIDE', s.outputs["X"], 0.045, (-1300, 100)), None, (-1200, 100))
+    cc = node(nt, "ShaderNodeCombineXYZ", (-1100, 100)); nt.links.new(cell, cc.inputs["X"]); nt.links.new(math_(nt, 'FLOOR', s.outputs["Y"], None, (-1300, 250)), cc.inputs["Y"])
+    wn = node(nt, "ShaderNodeTexWhiteNoise", (-950, 100), noise_dimensions='3D'); nt.links.new(cc.outputs[0], wn.inputs["Vector"])
+    pal = ramp(nt, [(0.0, c4(K.srgb((0.30, 0.15, 0.08)))), (0.2, c4(K.srgb((0.18, 0.10, 0.06)))), (0.4, c4(K.srgb((0.42, 0.26, 0.14)))), (0.55, c4(K.srgb((0.72, 0.64, 0.48)))),
+                    (0.7, c4(K.srgb((0.26, 0.08, 0.06)))), (0.85, c4(K.srgb((0.14, 0.16, 0.12)))), (1.0, c4(K.srgb((0.36, 0.22, 0.12))))], (-750, 100), interp='CONSTANT')
+    nt.links.new(wn.outputs["Value"], pal.inputs["Fac"])
+    fz = math_(nt, 'FRACT', math_(nt, 'DIVIDE', s.outputs["Z"], 0.45, (-1300, -200)), None, (-1200, -200))
+    band = maprange(nt, math_(nt, 'ABSOLUTE', math_(nt, 'SUBTRACT', fz, 0.22, (-1100, -200)), None, (-1000, -200)), 0.0, 0.012, 1, 0, (-900, -200))
+    col = mix_rgb(nt, 'MIX', math_(nt, 'MULTIPLY', band, 0.8, (-800, -200)), pal.outputs["Color"], (0.55, 0.42, 0.18, 1), (-500, 0))
+    n = noise_(nt, co, 40.0, 4, 0.6, loc=(-900, -400))
+    col = mix_rgb(nt, 'MULTIPLY', 1.0, col, maprange(nt, n.outputs["Fac"], 0.3, 0.7, 0.8, 1.1, (-700, -400)), (-350, 0))
+    col = K.ao_mul(nt, col, 0.05, 0.5, (-250, -400))
+    nt.links.new(col, b.inputs["Base Color"]); b.inputs["Roughness"].default_value = 0.6
+    return m
+M_SPINES = spines_mat()
 M_JARS = noisy("M_SpecimenJars", [K.srgb((0.52, 0.56, 0.50)), K.srgb((0.40, 0.46, 0.40)), K.srgb((0.62, 0.58, 0.46))], scale=12, rough=0.1, coat=0.6)
 M_MINERAL = noisy("M_Minerals", [K.srgb((0.52, 0.42, 0.30)), K.srgb((0.30, 0.32, 0.36)), K.srgb((0.62, 0.52, 0.40)), K.srgb((0.20, 0.18, 0.18))], scale=40, rough=0.6, bump=0.5)
 M_CLOTH = noisy("M_GreenBaize", [K.srgb((0.14, 0.24, 0.16)), K.srgb((0.18, 0.28, 0.20))], scale=80, rough=0.95, sheen=0.5)
