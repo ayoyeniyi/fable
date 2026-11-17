@@ -130,11 +130,13 @@ namespace Fable
                 case ChapterExperiences.State.Locked:
                     Img(body, "Dark", pic, picSize, new Color(0.22f, 0.19f, 0.16f));
                     var l = Img(body, "Lock", pic, new Vector2(48, 48), new Color(0.93f, 0.86f, 0.70f)); l.sprite = LockSprite(false);
+                    // any locked chapter can be opened with two pinches: one asks, the second unlocks (a chapter ahead
+                    // of the reader says it may give the story away)
                     bool before = index < Flow.Reader.ChapterIndex;
-                    if (before)
                     {
                         bool asking = confirmKey == key && Time.time < confirmUntil;
-                        line2 = asking ? "pinch again to mark it read" : "read already? pinch to mark it read";
+                        line2 = asking ? (before ? "pinch again to mark it read" : "pinch again to unlock (spoilers ahead)")
+                                       : (before ? "read already? pinch to mark it read" : "pinch twice to unlock now");
                         act = () =>
                         {
                             if (confirmKey == key && Time.time < confirmUntil) { confirmKey = null; ce.Complete(Flow.Reader.Book.Slug, ch.Id, "marked"); }
