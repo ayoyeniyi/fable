@@ -22,9 +22,16 @@ which glTFast imports as Unity +Z (glTF Y-up export, glTFast negates X).
 Run headless:
   blender -b -P blender/build_mad_tea_party.py -- --out out/mad-tea-party --quick --render
   blender -b -P blender/build_mad_tea_party.py -- --out out/mad-tea-party --render --bake --export --samples 96 --res 1280
+  foliage        (alice_foliage.py, 2026-11-17: real trees instead of the old icosphere blobs) MESH_Leaves: the old
+                 tree's oak-leaf spray cards (the name the diorama cut and FableLiving's legacy sway map use; sway weight in
+                 COLOR_0.R); veg.crown.FarTrees (the limes round the garden), veg.shrub.hedge (privet sprays on the hedge
+                 and the bed shrubs), far.treeline (tree-line cards on the distant wooded band), MESH_PrivetHedge (the
+                 clipped hedge blocks, painted tileable privet texture).
 """
 import bpy, bmesh, math, random, sys, os, argparse
 from mathutils import Vector, Matrix, Euler, noise
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import alice_foliage as AF
 
 # ----------------------------------------------------------------------------- args
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
@@ -38,6 +45,7 @@ ap.add_argument("--res", type=int, default=1600)
 ap.add_argument("--tex", type=int, default=2048)
 ap.add_argument("--quick", action="store_true", help="low samples for iteration")
 ap.add_argument("--cams", default="", help="comma list of camera names to render (default all)")
+ap.add_argument("--captures", default="", help="also copy the stills here (e.g. captures/blender/mad-tea-party)")
 args = ap.parse_args(argv)
 OUT = os.path.abspath(args.out)
 os.makedirs(OUT, exist_ok=True)
@@ -89,6 +97,7 @@ scene.collection.children.link(COLL)
 def link(obj):
     COLL.objects.link(obj)
     return obj
+AF.init(OUT, link)
 
 # ----------------------------------------------------------------------------- material helpers (from build_hall_of_doors.py)
 MATS = {}
@@ -390,9 +399,17 @@ def sky_dome_mat(name="M_SkyDome"):
 M_GRASS = grass()
 M_GRAVEL = gravel()
 M_BARK = bark()
-M_LEAVES = leaves()
-M_HEDGE = leaves("M_Hedge", tint=(0.05, 0.12, 0.03), light=(0.14, 0.24, 0.05))
+# painted foliage (alice_foliage.py): the old oak's leaf sprays (M_Leaves: merged as MESH_Leaves, the canopy the
+# diorama lifts off and the living scene sways), lime sprays for the trees round the garden, privet for the hedge
+# and the bed shrubs, and a tileable clipped-privet texture for the hedge faces. Exported as painted, not baked.
+print("painting foliage atlases ...", flush=True)
+M_LEAVES = AF.image_mat("M_Leaves", AF.spray_atlas("A_OakSprays", "oak", 31, S=1024, per_cell=4), rough=0.55)
+M_FARSPRAYS = AF.image_mat("M_FarTreeSprays", AF.spray_atlas("A_LimeSprays", "lime", 32, S=1024, per_cell=4), rough=0.55)
+M_PRIVETSPRAYS = AF.image_mat("M_PrivetSprays", AF.spray_atlas("A_PrivetSprays", "privet", 33, S=512, per_cell=4), rough=0.45)
+M_HEDGE = AF.image_mat("M_PrivetHedge", AF.leaf_tile("A_PrivetClipped", "privet", 34, S=1024), rough=0.6, alpha=False)
 M_FARTREES = leaves("M_FarTrees", tint=(0.07, 0.13, 0.05), light=(0.17, 0.25, 0.09))
+M_TREELINE = AF.image_mat("M_TreelineCards", AF.treeline_atlas("A_TreelineCards", 35, S=1024), rough=0.8, spec=0.1)
+PRIVET_TILE = 0.8
 M_THATCH = fur("M_FurThatch", [(0.10, 0.055, 0.03), (0.25, 0.14, 0.07), (0.40, 0.25, 0.13), (0.55, 0.40, 0.24)], stretch=(9, 9, 1.0), scale=1.0, bumpk=1.0)
 M_EAR_PINK = noisy("M_EarPink", [(0.62, 0.36, 0.34), (0.75, 0.48, 0.44)], scale=6, rough=0.6, sss=0.3)
 M_WHITEWASH = noisy("M_Whitewash", [(0.62, 0.58, 0.50), (0.78, 0.74, 0.66), (0.84, 0.81, 0.74)], scale=3, rough=0.92, bump=0.3, bump_dist=0.004)
@@ -961,19 +978,19 @@ def tree():
              ((tx - 1.4, ty + 0.95, 3.05), (tx - 3.9, ty + 2.4, 3.55), 0.08, 0.035),
              ((tx - 0.6, ty + 1.3, 3.25), (tx - 0.8, ty + 3.6, 3.7), 0.07, 0.03)]
     SH = Vector((-0.3, 1.4, 0.0))                       # the canopy leans out over the table so its shade dapples the cloth
-    for i, (a, b_, r1, r2) in enumerate(limbs):
-        parts.append(limb(f"Tree_Limb{i}", a, Vector(b_) + SH * (0.5 if i in (2, 3) else 1.0), r1, r2, M_BARK, verts=8))
-    canopy = []
-    rnd = random.Random(11)
-    centres = [(tx - 2.7, ty + 1.9, 3.8), (tx - 1.4, ty + 2.6, 4.1), (tx - 0.3, ty + 1.2, 4.6), (tx + 1.0, ty - 0.4, 4.7), (tx - 0.6, ty - 1.2, 5.0),
-               (tx - 3.8, ty + 2.5, 3.7), (tx - 2.0, ty + 0.6, 4.7), (tx + 0.3, ty + 0.3, 5.3)]
-    k = 0
-    for (cx, cy, cz) in centres:
-        for j in range(2):
-            r = rnd.uniform(0.8, 1.15)
-            canopy.append(blob(f"Leaves{k}", (cx + SH.x + rnd.uniform(-0.7, 0.7), cy + SH.y + rnd.uniform(-0.7, 0.7), cz + rnd.uniform(-0.3, 0.45)), r, M_LEAVES,
-                               scale=(1.25, 1.25, 0.8), subdiv=3, amp=0.3, freq=1.9, seed=k * 1.37))
-            k += 1
+    # the limbs above carry branches and twigs out to a crown of lobes over the table, clothed in oak-leaf sprays
+    R = random.Random(11)
+    L = [(Vector(a), Vector(b_) + SH * (0.5 if i in (2, 3) else 1.0), r1, r2) for i, (a, b_, r1, r2) in enumerate(limbs)]
+    L.append((Vector((tx, ty, 3.4)), Vector((tx + 0.2, ty + 0.4, 5.2)) + SH * 0.5, 0.12, 0.04))         # the leader
+    centres = [(tx - 2.7, ty + 1.9, 3.9), (tx - 1.4, ty + 2.6, 4.2), (tx - 0.3, ty + 1.2, 4.7), (tx + 1.0, ty - 0.4, 4.8), (tx - 0.6, ty - 1.2, 5.1),
+               (tx - 3.8, ty + 2.5, 3.8), (tx - 2.0, ty + 0.6, 4.8), (tx + 0.3, ty + 0.3, 5.5), (tx + 0.6, ty - 1.6, 4.4)]
+    lobes = [(Vector(c) + SH * (0.5 if k in (3, 4, 8) else 1.0), (R.uniform(1.25, 1.5), R.uniform(1.25, 1.5), R.uniform(0.85, 1.0))) for k, c in enumerate(centres)]
+    crown = AF.Crown(lobes)
+    bark_o, crown_o, _tips = AF.grow_tree("Tree", R, (tx, ty, 0.0), crown, M_BARK, M_LEAVES, (tx, ty, 3.4), 0.3, limbs=L, detail=1.0,
+                                          card_size=0.85, cards_per_tip=2, fill=150, branch_per_limb=7, sag=0.04, wob=0.12, sway0=0.3,
+                                          twig_k=1.0, trunk=False, limb_sides=8)
+    parts.append(bark_o)
+    canopy = [crown_o]
     return parts, canopy
 tree_parts, canopy = tree()
 
@@ -1062,15 +1079,27 @@ def house():
 house_parts = house()
 
 # hedge behind and beside the house, flower clumps along the front, distant trees ring the garden
+# The hedge: an informally clipped privet hedge either side of the house (a softly rounded block in the painted
+# privet texture, privet sprays standing out of its face and top, so its outline is leafy and broken); the bed
+# shrubs along the front: stems and privet sprays. The sprays are veg.shrub.hedge (a little sway); the blocks are still.
 hedge = []
-for i in range(14):
-    x = HOUSE_X - 8.5 + i * 1.25
-    if HOUSE_X - 3.6 < x < HOUSE_X + 3.6: continue
-    hedge.append(blob(f"Hedge{i}", (x, HOUSE_Y - 0.6 + random.uniform(-0.2, 0.2), 0.55), 0.85, M_HEDGE, scale=(1.0, 0.7, 0.8), subdiv=2, amp=0.25, seed=i * 2.2))
+HEDGE_R = random.Random(41)
+HSPRAYS = AF.MB()
+for k, (x0, x1) in enumerate(((HOUSE_X - 9.3, HOUSE_X - 3.9), (HOUSE_X + 3.6, HOUSE_X + 8.6))):
+    mb = AF.MB()
+    c, hh = AF.clipped_block(mb, (x1 - x0, 1.15, 1.3), ((x0 + x1) / 2, HOUSE_Y - 0.6, 0.0), 50 + k, tile=PRIVET_TILE, round_r=0.32, step=0.4,
+                             amp=0.07, batter=0.08, bottom=0.03)
+    hedge.append(AF.build_hedge_mesh(f"Hedge{k}", mb, M_HEDGE))
+    AF.hedge_sprigs(HSPRAYS, HEDGE_R, c, hh, 2.4, 6.0, size=(0.26, 0.42), faces=("+y", "-x" if k else "+x"), sway=(0.1, 0.5), out_tilt=(0.2, 0.55))
 for i in range(7):
     x = HOUSE_X - 2.6 + i * 0.85
     if abs(x - HOUSE_X) < 0.9: continue
-    hedge.append(blob(f"FrontBed{i}", (x, HOUSE_Y + 0.55, 0.22), 0.32, M_HEDGE, scale=(1.2, 0.8, 0.7), subdiv=2, amp=0.3, seed=i * 4.1 + 1))
+    R = random.Random(60 + i)
+    c = Vector((x, HOUSE_Y + 0.55, 0.24))
+    cr = AF.Crown([(c, (0.4, 0.28, 0.24)), (c + Vector((R.uniform(-0.1, 0.1), 0, 0.12)), (0.26, 0.2, 0.18))])
+    _st, _sp, _sites = AF.rose_head(f"FrontBed{i}", R, [Vector((x + R.gauss(0, 0.04), HOUSE_Y + 0.55, 0.02)) for _ in range(2)], cr, M_BARK, M_PRIVETSPRAYS,
+                                    ncanes=7, card_size=0.24, cards_per_cane=3, fill=14, cane_r=0.008, sway0=0.1, bloom_sites=0, shoots=1, cane_sides=3)
+    hedge += [_st, _sp]
     for k in range(3):
         hedge.append(blob(f"FrontFlower{i}_{k}", (x + random.uniform(-0.25, 0.25), HOUSE_Y + 0.6 + random.uniform(-0.15, 0.15), 0.45), 0.06, M_FLOWER_PINK if (i + k) % 2 else M_FLOWER_YEL, subdiv=1, amp=0.4, seed=i * 7 + k))
 def treeline(name, r0, r1, seg=96):
@@ -1097,11 +1126,33 @@ def treeline(name, r0, r1, seg=96):
     for p in me.polygons: p.use_smooth = True
     return link(o)
 far = [treeline("Treeline", 21.0, 26.0)]
+# the wooded band's top broken into tree crowns: two staggered rows of tree-line cards standing on it, facing the garden
+def _band_top(a, r0=21.0, r1=26.0):
+    d = Vector((math.cos(a), math.sin(a), 0))
+    h = 4.2 + 2.6 * noise.noise(d * 2.2 + Vector((0.3, 0.1, 0))) + 1.4 * abs(noise.noise(d * 7.0))
+    rr = r0 + 2.0 * noise.noise(d * 3.1 + Vector((5, 1, 0)))
+    return d, rr + 0.75 * (r1 - r0), h + 0.6
+TL = AF.MB(); TLR = random.Random(9)
+for row, (n, k_in, sz) in enumerate(((48, -0.6, 0.8),)):
+    for i in range(n):
+        a = 2 * math.pi * (i + 0.5 * row + TLR.uniform(-0.2, 0.2)) / n
+        d, rr, ztop = _band_top(a)
+        w = 2 * math.pi * rr / n * TLR.uniform(1.25, 1.55) * sz; hgt = w * TLR.uniform(0.7, 0.85)
+        base = d * (rr + k_in) + Vector((0, 0, ztop - hgt * 0.55))
+        right = Vector((-d.y, d.x, 0)) * w
+        AF.card(TL, base, right, Vector((0, 0, hgt)), TLR.choice(AF.QUAD), 0.0, 0.0)
+far.append(TL.build("far.treeline", M_TREELINE, sway=False, normals=lambda p: (Vector((-p.x, -p.y, 0)).normalized() + Vector((0, 0, 0.8))).normalized()))
 rnd = random.Random(3)
 for i, (x, y) in enumerate([(-11, -13), (-15, -6), (9, -14), (14, -9), (-13, 7), (12, 8)]):
     h = rnd.uniform(4.5, 6.5)
-    far.append(blob(f"FarTree{i}", (x, y, h * 0.7), h * 0.42, M_FARTREES, scale=(1.0, 1.0, 1.1), subdiv=3, amp=0.25, seed=i * 1.9))
-    far.append(cyl(f"FarTrunk{i}", 0.22, h * 0.5, (x, y, h * 0.2), M_BARK, verts=6, bevel=False))
+    # limes round the garden, grown as trees: trunk, limbs, branches, leaf-spray cards over a clumpy crown
+    R = random.Random(70 + i)
+    base = Vector((x, y, 0.0)); top = base + Vector((R.gauss(0, 0.2), R.gauss(0, 0.2), h * 0.45))
+    crown = AF.auto_crown(R, top, h * 1.15, h * 0.5, nlobes=5, flat=0.8)
+    _b, _c, _t = AF.grow_tree(f"FarTree{i}", R, base, crown, M_BARK, M_FARSPRAYS, top, 0.2 + h * 0.02, nlimbs=6, detail=0.8, card_size=1.45,
+                              cards_per_tip=1, fill=75, branch_per_limb=4, sag=0.0, wob=0.15, sway0=0.35, facing=((0.0, -3.0, 0.0), -0.2))
+    far += [_b, _c]
+SPRAYS_DONE = HSPRAYS.build("HedgeSprays", M_PRIVETSPRAYS, sway=True, normals=lambda p: Vector((0, 0.4, 1)).normalized())
 
 # ----------------------------------------------------------------------------- anchors (names are the manifest's anchor ids)
 anchor("reader.path", (0.0, 0.0, 0.0))                          # the reader stands here facing -Y (Unity +Z)
@@ -1153,7 +1204,10 @@ def camera(name, loc, look_at, lens=24):
     co.rotation_euler = d.to_track_quat('-Z', 'Y').to_euler()
     return co
 cams = [
-    camera("Cam_Reader", (0.0, 0.05, 1.62), (0.2, -3.4, 1.15), lens=18),
+    # the reading position Unity starts the reader at (ReaderStarts.json: x -0.25, z -1.75, yaw 0 -> Blender (0.25, 1.75), facing -Y)
+    camera("Cam_Reader", (0.25, 1.75, 1.62), (0.25, -3.25, 1.3), lens=18),
+    camera("Cam_Tree", (-1.6, 1.2, 1.5), (3.2, -4.2, 3.2), lens=20),
+    camera("Cam_Up", (1.0, -2.0, 1.4), (1.6, -3.0, 4.5), lens=16),
     camera("Cam_Corner", (0.75, -1.35, 1.3), (2.0, -3.25, 1.0), lens=30),
     camera("Cam_Hatter", (1.45, -2.2, 1.22), (1.6, -3.5, 1.3), lens=40),
     camera("Cam_Armchair", (-2.55, -2.6, 1.15), (2.0, -3.1, 1.0), lens=22),
@@ -1165,19 +1219,18 @@ bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT, "mad_tea_party_source.ble
 
 # ----------------------------------------------------------------------------- render
 if args.render:
-    scene.render.resolution_x = args.res; scene.render.resolution_y = int(args.res * 9 / 16)
-    scene.render.image_settings.file_format = 'PNG'
-    want = set(c.strip() for c in args.cams.split(",") if c.strip())
-    for c in cams:
-        if want and c.name[4:].lower() not in want: continue
-        scene.camera = c
-        scene.render.filepath = os.path.join(OUT, f"render_{c.name[4:].lower()}.png")
-        bpy.ops.render.render(write_still=True)
-        print("rendered", scene.render.filepath)
+    want = set(c.strip().lower() for c in (args.cams or "reader,tree,wide,corner,up").split(",") if c.strip())
+    AF.render_stills(scene, cams, "mad-tea-party", OUT, args.res, args.captures, want)
 
 # ----------------------------------------------------------------------------- bake + merge + export for Unity
 def tri_count(o):
     return sum(len(p.vertices) - 2 for p in o.data.polygons)
+
+# merged static meshes that take a living-scene name (docs/LIVING_SCENES.md). The old tree's leaf cards keep the name
+# MESH_Leaves: the diorama lifts that canopy off (FlowController.IsMiniatureCut) and FableLiving sways it as
+# veg.leaves.tree (its 'sway' colour R is the weight). veg.crown.FarTrees: swaying, and hidden in the diorama with the
+# rest of the backdrop (FlowController.IsBackdrop).
+KEEP_NAMES = {"M_FarTreeSprays": "veg.crown.FarTrees", "M_PrivetSprays": "veg.shrub.hedge", "M_TreelineCards": "far.treeline"}
 
 def bake_and_export():
     bpy.ops.object.select_all(action='DESELECT')
@@ -1211,8 +1264,10 @@ def bake_and_export():
         for o in objs: o.select_set(True)
         bpy.context.view_layer.objects.active = objs[0]
         if len(objs) > 1: bpy.ops.object.join()
-        o = bpy.context.view_layer.objects.active; o.name = "MESH_" + mname[2:]
+        o = bpy.context.view_layer.objects.active; o.name = KEEP_NAMES.get(mname, "MESH_" + mname[2:])
         merged.append(o); bpy.ops.object.select_all(action='DESELECT')
+    # colour attributes: only the swaying foliage keeps its weights (glTF COLOR_0 would tint anything else)
+    AF.strip_colours(merged + group_meshes, keep=lambda o: o.name.startswith("veg.") or o.name == "MESH_Leaves")
     scene.cycles.samples = 8
     scene.render.bake.margin = 6
     scene.render.bake.use_selected_to_active = False
@@ -1272,6 +1327,7 @@ def bake_and_export():
             if m.users == 0: bpy.data.materials.remove(m)
 
     for o in merged:
+        if AF.is_image_mat(o.data.materials[0]): continue      # painted foliage: exported as painted, with its own UVs
         base = o.data.materials[0].name
         size = size_for.get(base, T // 4)
         bake_object(o, base[2:], max(64, size))
@@ -1281,7 +1337,8 @@ def bake_and_export():
     for c in cams: bpy.data.objects.remove(c)
     glb = os.path.join(OUT, "mad_tea_party.gltf")   # .gltf + textures/: Unity imports the images as compressed (ASTC) textures; embedded GLB images import uncompressed
     bpy.ops.export_scene.gltf(filepath=glb, export_format='GLTF_SEPARATE', export_texture_dir='textures', export_apply=True, export_yup=True,
-                              export_materials='EXPORT', export_image_format='JPEG', export_jpeg_quality=90, export_lights=True, export_cameras=False)  # JPEG: keeps the GLB under GitHub's 100 MB file limit; Unity recompresses to ASTC anyway
+                              export_materials='EXPORT', export_image_format='JPEG', export_jpeg_quality=90, export_lights=True, export_cameras=False,
+                              export_vertex_color='ACTIVE', export_all_vertex_colors=False, export_extras=True)  # painted cut-out atlases stay PNG; JPEG: keeps the GLB under GitHub's 100 MB file limit; Unity recompresses to ASTC anyway
     allm = merged + group_meshes
     tris = sum(tri_count(o) for o in allm)
     verts = sum(len(o.data.vertices) for o in allm)
@@ -1289,7 +1346,7 @@ def bake_and_export():
     with open(os.path.join(OUT, "export_stats.txt"), "w") as f:
         f.write(f"meshes={len(allm)}\nverts={verts}\ntris={tris}\n")
         for o in sorted(allm, key=lambda o: -tri_count(o)):
-            f.write(f"{o.name} parent={o.parent.name if o.parent else '-'} verts={len(o.data.vertices)} tris={tri_count(o)} tex={o.data.materials[0].node_tree.nodes[2].image.size[0] if o.data.materials else 0}\n")
+            f.write(f"{o.name} parent={o.parent.name if o.parent else '-'} verts={len(o.data.vertices)} tris={tri_count(o)} tex={next((n.image.size[0] for n in o.data.materials[0].node_tree.nodes if n.type == 'TEX_IMAGE' and n.image), 0) if o.data.materials else 0}\n")
     bpy.ops.wm.save_as_mainfile(filepath=os.path.join(OUT, "mad_tea_party_baked.blend"))
 
 # pre-export stats (also printed in quick runs so the budget is visible while iterating)
