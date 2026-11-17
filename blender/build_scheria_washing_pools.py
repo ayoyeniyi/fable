@@ -71,9 +71,9 @@ def spit_mask(x, y):
 def H(x, y):
     # the grassy bank (reader) at ~0.45, falling to the shingle (y 4..8), the storm ridge of shingle (y ~9.5), the shore
     base = 0.45 + 0.25 * fbm2(x, y, 18.0, 3, 2.1) + 0.04 * y * (y < 0) * -1.0
-    beach = lerp(0.45, 0.05, smoothstep(3.5, 8.0, y))
-    ridge = 0.35 * math.exp(-((y - 9.6) ** 2) / 1.6)
-    shore = -0.75 * smoothstep(10.5, 14.5, y)
+    beach = lerp(0.85, 0.05, smoothstep(2.5, 8.0, y))
+    ridge = 0.14 * math.exp(-((y - 9.8) ** 2) / 1.2)
+    shore = -1.6 * smoothstep(10.8, 15.0, y)
     h = beach + (base - 0.45) * (1.0 - smoothstep(3.0, 9.0, y)) + ridge + shore
     h += 0.6 * smoothstep(-10, -35, y) + 2.5 * smoothstep(-20, -40, y)       # rising ground inland behind
     h += 0.5 * spit_mask(x, y)
@@ -168,7 +168,7 @@ def axis_coords(lo, hi, focus, fine, coarse):
         d = min(abs(x - f) for f in focus); x = min(hi, x + lerp(fine, coarse, smoothstep(2.0, 14.0, d))); out.append(x)
     return out
 XS = axis_coords(-NEAR, NEAR, [0.0, -6.5], 0.55, 3.5)
-YS = axis_coords(-NEAR, 26.0, [0.0, 9.5], 0.6, 3.0)
+YS = axis_coords(-NEAR, 20.0, [0.0, 9.5], 0.6, 3.0)
 verts = []; uvs = []
 for y in YS:
     for x in XS:
@@ -178,16 +178,12 @@ faces = [(j * (nx + 1) + i, j * (nx + 1) + i + 1, (j + 1) * (nx + 1) + i + 1, (j
 mesh_from("GroundNear", verts, faces, M_GROUND, smooth=True, uvs=uvs)
 print("ground grid", len(XS), len(YS), flush=True)
 # the sea: a disc of water from the shore out (vertices every ~2.5 m near, coarser far)
-sv = []; sf = []; ring = []
-rs = [0, 6, 14, 26, 45, 80, 140, 260]
-for j, r in enumerate(rs):
-    for i in range(64):
-        a = math.pi * i / 63
-        sv.append((math.cos(a) * (r + 40) * (1 if r else 0) + (0 if r else (i / 63 - 0.5) * 80), SEA_Y - 2 + math.sin(a) * r, SEA_Z - Z0))
-for j in range(len(rs) - 1):
-    for i in range(63):
-        sf.append((j * 64 + i, j * 64 + i + 1, (j + 1) * 64 + i + 1, (j + 1) * 64 + i))
-mesh_from("water.ocean.bay", sv, sf, M_SEA, uvs=[((v[0] + 300) / 600, (v[1] + 300) / 600) for v in sv])
+sv = []; sf = []; ys_ = [SEA_Y - 3, SEA_Y + 3, SEA_Y + 10, SEA_Y + 20, SEA_Y + 36, SEA_Y + 64, SEA_Y + 120, SEA_Y + 230]; NXS = 41
+for yy in ys_:
+    for i in range(NXS): sv.append((-260 + i * 13.0, yy, SEA_Z - Z0))
+for j in range(len(ys_) - 1):
+    for i in range(NXS - 1): sf.append((j * NXS + i, j * NXS + i + 1, (j + 1) * NXS + i + 1, (j + 1) * NXS + i))
+mesh_from("water.ocean.bay", sv, sf, M_SEA, uvs=[((v[0] + 260) / 520, (v[1] - SEA_Y + 3) / 250) for v in sv])
 # the river: a ribbon from upstream to its mouth, V downstream
 pts = []
 for (x0, y0), (x1, y1) in zip(RIVER, RIVER[1:]):
@@ -258,7 +254,8 @@ box("Spout", (0.5, 0.18, 0.08), (-4.4, -0.7, gz(-4.4, -0.7) - 0.05), M_STONE)
 print("washing ...", flush=True)
 WASH = MB()
 tone_cols = []
-PIECES = [((1.8, 7.0), 1.4, 1.0, 0.2, (0.84, 0.82, 0.76)), ((3.6, 7.6), 1.2, 0.8, -0.3, (0.80, 0.78, 0.72)), ((0.2, 8.4), 1.6, 1.1, 0.5, (0.62, 0.42, 0.10)),
+PIECES = [((-2.4, 8.6), 2.0, 1.3, -0.4, (0.80, 0.78, 0.72)), ((5.2, 9.3), 1.9, 1.2, 0.6, (0.22, 0.30, 0.48)), ((7.4, 6.8), 1.5, 1.0, -0.2, (0.84, 0.82, 0.76)),
+          ((1.8, 7.0), 1.4, 1.0, 0.2, (0.84, 0.82, 0.76)), ((3.6, 7.6), 1.2, 0.8, -0.3, (0.80, 0.78, 0.72)), ((0.2, 8.4), 1.6, 1.1, 0.5, (0.62, 0.42, 0.10)),
           ((4.9, 6.2), 0.9, 0.7, 0.1, (0.86, 0.84, 0.78)), ((2.6, 9.1), 1.5, 0.9, -0.15, (0.36, 0.09, 0.14)), ((-1.3, 7.3), 1.0, 0.8, 0.8, (0.82, 0.80, 0.74)),
           ((6.2, 8.4), 1.3, 0.9, 0.35, (0.78, 0.76, 0.70)), ((1.0, 10.2), 1.8, 0.35, 0.1, (0.70, 0.12, 0.08))]
 for (c, L, W, yaw, colr) in PIECES:
@@ -290,10 +287,11 @@ for i in range(420):
 PB.build("Pebbles", M_PEBBLE, sway=False)
 # the rocky spit and rocks along the shore on the right
 RK = MB(); rr = random.Random(12)
-for i in range(46):
-    s = rr.uniform(0, 1); x = lerp(7.5, 20.0, s) + rr.gauss(0, 1.4); y = lerp(10.0, 30.0, s) + rr.gauss(0, 1.2)
-    r_ = rr.uniform(0.4, 1.4) * (1.0 - 0.4 * s)
-    B.blob(RK, (x, y, gz(x, y) + r_ * 0.1), (r_ * 1.3, r_, r_ * 0.6), 100 + i, sub=1, rough=0.3)
+for i in range(90):
+    s = rr.uniform(0, 1); x = lerp(7.5, 20.0, s) + rr.gauss(0, 1.2); y = lerp(10.0, 30.0, s) + rr.gauss(0, 1.0)
+    r_ = rr.uniform(0.25, 0.9) * (1.0 - 0.4 * s)
+    zt = max(gz(x, y), SEA_Z - Z0 - 0.1)
+    B.blob(RK, (x, y, zt - r_ * 0.15), (r_ * 1.5, r_ * rr.uniform(0.8, 1.2), r_ * 0.45), 100 + i, sub=1, rough=0.4)
 RK.build("SpitRocks", M_ROCK, sway=False)
 
 # ----------------------------------------------------------------------------- the mule waggon, unharnessed, pole down; the picnic
