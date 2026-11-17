@@ -73,8 +73,8 @@ IMG_POPLAR = spray_atlas("A_PoplarSprays", "beech", 82, S=512)
 M_LAWN_C = image_mat("M_LawnCards", IMG_LAWN, rough=0.55, alpha=True, spec=0.4)
 M_OAKL = image_mat("M_OakSprays", IMG_OAK, rough=0.5, alpha=True, spec=0.4)
 M_POPL = image_mat("M_PoplarSprays", IMG_POPLAR, rough=0.5, alpha=True, spec=0.4)
-M_OAKBARK = B.bark_mat("M_OakBark", base=(0.12, 0.11, 0.095), dark=(0.04, 0.035, 0.03), light=(0.20, 0.19, 0.17), fissure=True, green=0.45, scale=1.0)
-M_POPBARK = B.bark_mat("M_PoplarBark", base=(0.16, 0.15, 0.13), dark=(0.06, 0.055, 0.05), light=(0.24, 0.23, 0.21), fissure=True, green=0.2, scale=2.0)
+M_OAKBARK = B.bark_mat("M_OakBark", base=(0.09, 0.085, 0.075), dark=(0.03, 0.028, 0.025), light=(0.15, 0.14, 0.12), fissure=True, green=0.15, scale=1.6)
+M_POPBARK = B.bark_mat("M_PoplarBark", base=(0.11, 0.105, 0.095), dark=(0.04, 0.038, 0.035), light=(0.17, 0.16, 0.15), fissure=True, green=0.1, scale=2.6)
 def ground_mat(name="M_Ground"):
     m, nt, b = new_mat(name)
     co = obj_coords(nt, (-2000, 0)); s = sep_xyz(nt, co, (-1800, -600)); x = s.outputs["X"]; y = s.outputs["Y"]
@@ -88,9 +88,17 @@ def ground_mat(name="M_Ground"):
     grc = ramp(nt, [(0.0, c4((0.14, 0.13, 0.11))), (0.5, c4((0.22, 0.21, 0.18))), (1.0, c4((0.30, 0.28, 0.24)))], (-1100, -500))
     nt.links.new(gr.outputs["Distance"], grc.inputs["Fac"])
     sweep = maprange(nt, math_(nt, 'ADD', y, math_(nt, 'MULTIPLY', n1.outputs["Fac"], 0.4, (-1300, -800)), (-1200, -800)), 4.3, 4.7, 1.0, 0.0, (-1000, -800))
-    col = mix_rgb(nt, 'MIX', sweep, g.outputs["Color"], grc.outputs["Color"], (-700, 100))
+    patch = noise_(nt, co, 1.4, 4, 0.7, loc=(-1500, 600))
+    gcol = mix_rgb(nt, 'MULTIPLY', maprange(nt, patch.outputs["Fac"], 0.3, 0.7, 0.0, 0.55, (-1300, 600)), g.outputs["Color"], c4((0.45, 0.55, 0.40)), (-1100, 600))
+    leafv = voronoi_(nt, co, 9.0, 'F1', (-1500, 900))
+    lwn = node(nt, "ShaderNodeTexWhiteNoise", (-1300, 900)); lwn.noise_dimensions = '3D'; nt.links.new(leafv.outputs["Position"], lwn.inputs["Vector"])
+    leaf = math_(nt, 'MULTIPLY', maprange(nt, leafv.outputs["Distance"], 0.12, 0.07, 0.0, 1.0, (-1100, 900)), math_(nt, 'GREATER_THAN', lwn.outputs["Value"], 0.82, (-1100, 1000)), (-950, 950))
+    gcol = mix_rgb(nt, 'MIX', leaf, gcol, c4((0.10, 0.11, 0.03)), (-850, 700))
+    wetp = maprange(nt, noise_(nt, co, 0.6, 3, 0.5, loc=(-1500, 1200)).outputs["Fac"], 0.6, 0.66, 0.0, 1.0, (-1200, 1200))
+    gcol = mix_rgb(nt, 'MIX', math_(nt, 'MULTIPLY', wetp, 0.7, (-1000, 1200)), gcol, c4((0.04, 0.05, 0.05)), (-700, 700))
+    col = mix_rgb(nt, 'MIX', sweep, gcol, grc.outputs["Color"], (-600, 100))
     nt.links.new(col, b.inputs["Base Color"])
-    nt.links.new(maprange(nt, sweep, 0, 1, 0.5, 0.25, (-500, -300)), b.inputs["Roughness"])
+    nt.links.new(math_(nt, 'MINIMUM', maprange(nt, sweep, 0, 1, 0.55, 0.25, (-500, -300)), maprange(nt, wetp, 0, 1, 0.6, 0.05, (-500, -450)), (-350, -350)), b.inputs["Roughness"])
     bump_from(nt, b, fine.outputs["Fac"], 0.2, 0.01, (0, -400))
     return m
 M_GROUND = ground_mat()
@@ -169,12 +177,12 @@ def ridge(name, r_y, x0, x1, h0, h1, mat, n=64, seed=0.0):
     vs = []; fs = []
     for i in range(n + 1):
         x = x0 + (x1 - x0) * i / n
-        h = h0 + (h1 - h0) * (0.55 + 0.45 * noise.noise(Vector((x * 0.004 + seed, seed, 0.0)))) + h1 * 0.08 * noise.noise(Vector((x * 0.03, seed, 1.0)))
+        h = h0 + (h1 - h0) * (0.5 + 0.35 * noise.noise(Vector((x * 0.0025 + seed, seed, 0.0))) + 0.25 * noise.noise(Vector((x * 0.009, seed, 0.5)))) + h1 * 0.06 * noise.noise(Vector((x * 0.04, seed, 1.0)))
         vs.append((x, r_y, LZ - 0.2)); vs.append((x, r_y + 30, LZ + h))
     for i in range(n): fs.append((2 * i, 2 * i + 2, 2 * i + 3, 2 * i + 1))
     return mesh_from(name, vs, fs, mat, smooth=True)
 ridge("FarShore", 360.0, -900, 900, 4, 12, M_SHORE, seed=2.0)
-ridge("Jura", 950.0, -1150, 1150, 45, 85, M_JURA, seed=5.0)
+ridge("Jura", 950.0, -1150, 1150, 40, 95, M_JURA, n=140, seed=5.0)
 B.sky_dome("SkyDome", M_SKY, SKY_R, el_min=-6.0)
 
 # ----------------------------------------------------------------------------- the house front behind the reader: steps, door-case, open door, shutters
