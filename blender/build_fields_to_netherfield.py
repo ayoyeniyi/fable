@@ -21,7 +21,14 @@ puddles reflecting the pale sky, darkened grass. Colour: muted greens, umber mud
 
 Builds everything procedurally (no downloaded models, textures or HDRIs). Foliage cards (grass, rushes, hedge sprays,
 oak leaves, bare twigs) read numpy-painted RGBA atlases with alpha clipping; everything else is node materials baked to
-textures. By flag the script renders Cycles stills, bakes, merges static meshes by material and exports .gltf + .bin +
+textures.
+
+Quest 2 foliage budget (2026-11-17): alpha-tested cards are what the Quest's tile GPU pays for, layer on layer, so they
+are kept where they matter: grass cards only within ~9 m (opaque blade tufts, MESH_GrassBlades, carry the sward to
+~16 m, and the baked ground beyond); hedge spray cards only within ~20 m of the reader, over an opaque lumpy leafy hedge
+mass (MESH_HedgeMass), with a sparse fringe further off; near trees have fewer, larger cards round an opaque inner crown
+mass, far trees an opaque lumpy crown (MESH_OakCrownMass, MESH_MapleCrownMass) with a sparse card fringe. Measure with
+blender/measure_alpha_cards.py (reader view 2.31 -> 0.81 screens of alpha cards; 11453 -> 2673 card faces). By flag the script renders Cycles stills, bakes, merges static meshes by material and exports .gltf + .bin +
 textures/ for Unity (helpers in pride_kit.py).
 
 Node names Unity relies on:
@@ -413,6 +420,22 @@ IMG_MASK = make_masks()
 
 # ----------------------------------------------------------------------------- materials
 M_GRASS = image_mat("M_GrassCards", IMG_GRASS, rough=0.42, alpha=True, spec=0.45)
+def blade_tones():
+    """16 x 64 opaque strip for the solid grass blades: eight tone columns (greens, two straw), root (bottom) dark to
+    tip light. Opaque blades cost no alpha-test overdraw on the Quest's tile GPU."""
+    cols = [(0.29, 0.39, 0.15), (0.34, 0.45, 0.17), (0.26, 0.35, 0.13), (0.39, 0.47, 0.19), (0.31, 0.42, 0.16), (0.36, 0.44, 0.18),
+            (0.57, 0.50, 0.33), (0.64, 0.57, 0.39)]
+    tips = [(0.48, 0.55, 0.27), (0.52, 0.57, 0.30), (0.44, 0.51, 0.24), (0.50, 0.56, 0.28), (0.46, 0.53, 0.25), (0.52, 0.56, 0.30),
+            (0.68, 0.61, 0.43), (0.72, 0.65, 0.47)]
+    a = np.ones((64, 16, 4), np.float32)
+    for i in range(8):
+        for r in range(64):
+            t = 1.0 - r / 63.0                     # row 0 = top = tip
+            g = [c * (0.45 + 0.55 * min(1.0, t * 1.6)) for c in cols[i]]
+            col = [lerp(g[k], tips[i][k], smoothstep(0.55, 1.0, t)) for k in range(3)]
+            a[r, i * 2:i * 2 + 2, :3] = col
+    return K.np_image("A_BladeTones", a)
+M_BLADES = image_mat("M_GrassBlades", blade_tones(), rough=0.5, spec=0.4)
 M_HAW = image_mat("M_HedgeSprays", IMG_HAW, rough=0.5, alpha=True)
 M_OAKL = image_mat("M_OakSprays", IMG_OAK, rough=0.55, alpha=True)
 M_TWIG = image_mat("M_BareTwigs", IMG_TWIG, rough=0.6, alpha=True)
@@ -446,6 +469,15 @@ def ground_mat(name):
     nt.links.new(math_(nt, 'ADD', math_(nt, 'MULTIPLY', n1.outputs["Fac"], 0.6, (-1150, 350)), math_(nt, 'MULTIPLY', n2_.outputs["Fac"], 0.4, (-1150, 250)), (-1100, 300)), sw.inputs["Fac"])
     blades = maprange(nt, n3.outputs["Fac"], 0.3, 0.7, 0.72, 1.18, (-1000, 0))
     col = mix_rgb(nt, 'MULTIPLY', 1.0, sw.outputs["Color"], blades, (-800, 300))
+    # the sward's own tufts (it carries the grass where there are no grass cards): tussock clumps a few decimetres
+    # across, lighter on top and dark between, and a fine mottle of tuft-sized cells with blade tips catching the light
+    tus = voronoi_(nt, co, 3.2, loc=(-1500, 1300)); tuf = voronoi_(nt, co, 16.0, loc=(-1500, 1100))
+    tus_k = maprange(nt, tus.outputs["Distance"], 0.05, 0.6, 1.18, 0.72, (-1300, 1300))
+    tuf_k = math_(nt, 'MULTIPLY', maprange(nt, tuf.outputs["Distance"], 0.0, 0.55, 1.12, 0.78, (-1300, 1150)),
+                  maprange(nt, sep_xyz(nt, tuf.outputs["Color"], (-1450, 950)).outputs[0], 0.0, 1.0, 0.85, 1.15, (-1300, 1000)), (-1150, 1100))
+    col = mix_rgb(nt, 'MULTIPLY', 1.0, col, math_(nt, 'MULTIPLY', tus_k, tuf_k, (-1000, 1150)), (-750, 450))
+    tip = maprange(nt, n3.outputs["Fac"], 0.55, 0.75, 0.0, 0.35, (-1000, 1000))
+    col = mix_rgb(nt, 'MIX', math_(nt, 'MULTIPLY', tip, maprange(nt, tus.outputs["Distance"], 0.1, 0.4, 1.0, 0.0, (-1150, 900)), (-900, 950)), col, (0.20, 0.21, 0.09, 1), (-700, 500))
     # straw-dead patches and moss in the furrows
     dead = maprange(nt, noise_(nt, co, 3.0, 4, 0.6, loc=(-1300, -300)).outputs["Fac"], 0.58, 0.72, 0.0, 0.55, (-1000, -300))
     col = mix_rgb(nt, 'MIX', dead, col, (0.20, 0.17, 0.08, 1), (-650, 300))
@@ -479,6 +511,7 @@ def ground_mat(name):
     # height: grass texture, mud prints, litter leaves
     h = math_(nt, 'ADD', math_(nt, 'MULTIPLY', n3.outputs["Fac"], 0.4, (-300, -1200)), math_(nt, 'MULTIPLY', math_(nt, 'MULTIPLY', pit, edge, (-500, -1300)), 0.8, (-300, -1300)), (-150, -1250))
     h = math_(nt, 'ADD', h, math_(nt, 'MULTIPLY', lv.outputs["Distance"], math_(nt, 'MULTIPLY', lit_n, 0.5, (-500, -1450)), (-300, -1450)), (0, -1300))
+    h = math_(nt, 'ADD', h, math_(nt, 'MULTIPLY', math_(nt, 'SUBTRACT', 1.0, math_(nt, 'ADD', tus.outputs["Distance"], math_(nt, 'MULTIPLY', tuf.outputs["Distance"], 0.5, (-600, -1600)), (-450, -1600)), (-350, -1600)), math_(nt, 'SUBTRACT', 1.0, edge, (-500, -1700)), (-250, -1650)), (100, -1400))
     bump_from(nt, b, h, 0.35, 0.012, (150, -400))
     return m
 
@@ -527,20 +560,35 @@ def bark_mat(name, base=(0.17, 0.16, 0.14), dark=(0.07, 0.065, 0.06), light=(0.3
 M_OAKBARK = bark_mat("M_OakBark")
 M_ASHBARK = bark_mat("M_AshBark", base=(0.26, 0.26, 0.24), dark=(0.11, 0.11, 0.10), light=(0.36, 0.36, 0.33), fissure=True, green=0.5, scale=1.8)
 
-def hedge_core_mat(name="M_HedgeCore"):
-    """The hedge's inside: tangled twigs, dark leaves and shadow (the cards carry the outer leaves)."""
+def leaf_mass_mat(name, pal, leaf=11.0, lump=1.4, dark=0.30):
+    """Opaque foliage mass (hedge bodies, far tree crowns, the inside of near crowns): a mottle of leaf-sized cells
+    in the leaf palette (sRGB picks), darkened in the creases between lumps and in the hollows (AO), with a leafy bump.
+    It replaces layered alpha cards where they cost most on the Quest's tile GPU."""
     m, nt, b = new_mat(name)
     co = obj_coords(nt)
-    v = voronoi_(nt, co, 34.0, loc=(-1200, 0)); v2 = voronoi_(nt, co, 9.0, loc=(-1200, -250))
-    cr = ramp(nt, [(0.0, c4((0.015, 0.018, 0.01))), (0.4, c4((0.035, 0.045, 0.02))), (0.7, c4((0.06, 0.065, 0.03))), (0.95, c4((0.10, 0.08, 0.045)))], (-800, 0))
-    nt.links.new(math_(nt, 'MULTIPLY', v.outputs["Distance"], math_(nt, 'ADD', v2.outputs["Distance"], 0.6, (-1000, -250)), (-950, 0)), cr.inputs["Fac"])
-    s = sep_xyz(nt, co, (-1200, 400))
-    col = K.ao_mul(nt, cr.outputs["Color"], 0.5, 0.6, (-600, -500))
+    v = voronoi_(nt, co, leaf, loc=(-1200, 200)); v2 = voronoi_(nt, co, leaf * 2.7, loc=(-1200, 0))
+    cl = noise_(nt, co, lump, 4, 0.55, loc=(-1200, -250))
+    lin = [K.srgb(c) for c in pal]
+    stops = [(i / (len(lin) - 1) * 0.9 + 0.05, c4(c)) for i, c in enumerate(lin)]
+    cr = ramp(nt, stops, (-850, 300))
+    nt.links.new(v.outputs["Color"], cr.inputs["Fac"])
+    # leaf-edge shadow: dark at the cell borders of the fine cells
+    edge = maprange(nt, v2.outputs["Distance"], 0.0, 0.4, dark, 1.05, (-850, 0))
+    lumpf = maprange(nt, cl.outputs["Fac"], 0.35, 0.68, 0.55, 1.1, (-850, -250))
+    sh = math_(nt, 'MULTIPLY', edge, lumpf, (-650, -100))
+    col = mix_rgb(nt, 'MULTIPLY', 1.0, cr.outputs["Color"], sh, (-450, 200))
+    col = K.ao_mul(nt, col, 0.6, 0.45, (-350, -500))
     nt.links.new(col, b.inputs["Base Color"])
-    b.inputs["Roughness"].default_value = 0.75
-    bump_from(nt, b, v.outputs["Distance"], 0.8, 0.03)
+    b.inputs["Roughness"].default_value = 0.72
+    hgt = math_(nt, 'ADD', math_(nt, 'MULTIPLY', v2.outputs["Distance"], 0.5, (-650, -400)), cl.outputs["Fac"], (-500, -400))
+    bump_from(nt, b, hgt, 0.75, 0.05)
     return m
-M_HEDGECORE = hedge_core_mat()
+PAL_HAW = [(0.20, 0.26, 0.10), (0.27, 0.35, 0.13), (0.32, 0.40, 0.15), (0.24, 0.31, 0.11), (0.38, 0.42, 0.15), (0.45, 0.40, 0.15), (0.30, 0.37, 0.14)]
+PAL_OAK = [(0.36, 0.25, 0.11), (0.48, 0.33, 0.15), (0.42, 0.30, 0.13), (0.50, 0.42, 0.20), (0.38, 0.36, 0.16), (0.55, 0.42, 0.19), (0.32, 0.22, 0.10)]
+PAL_MAPLE = [(0.50, 0.38, 0.11), (0.58, 0.45, 0.14), (0.44, 0.40, 0.13), (0.62, 0.50, 0.17), (0.40, 0.30, 0.10)]
+M_HEDGEMASS = leaf_mass_mat("M_HedgeMass", PAL_HAW, leaf=12.0, lump=1.6, dark=0.5)
+M_OAKMASS = leaf_mass_mat("M_OakCrownMass", PAL_OAK, leaf=7.0, lump=0.9, dark=0.5)
+M_MAPLEMASS = leaf_mass_mat("M_MapleCrownMass", PAL_MAPLE, leaf=7.0, lump=1.0, dark=0.5)
 
 def weathered_oak(name="M_StileOak"):
     """Old oak gone silver-grey, split along the grain, green-grey lichen, dark and wet at the foot, the top rail
@@ -700,16 +748,36 @@ HERB = {k: ((i * 256) / 1024, 0.0, (i * 256 + 256) / 1024, 256 / 1024) for i, k 
 QUAD = [(0.0, 0.5, 0.5, 1.0), (0.5, 0.5, 1.0, 1.0), (0.0, 0.0, 0.5, 0.5), (0.5, 0.0, 1.0, 0.5)]   # 2x2 atlas cells (u0, v0, u1, v1)
 
 # ----------------------------------------------------------------------------- grass, rushes and herbs
+def solid_tuft(mb, R, x, y, z, sc, nbl=5):
+    """an opaque grass tuft: a few thin tapering blade triangles leaning out of one root, UV'd into a tone column."""
+    col = R.randrange(8) if R.random() < 0.85 else R.choice((6, 7))
+    if R.random() < 0.85: col = R.randrange(6)
+    u = (col * 2 + 1) / 16.0
+    for k in range(nbl):
+        a = R.uniform(0, 2 * math.pi); lean = R.uniform(0.15, 0.55)
+        hgt = R.uniform(0.14, 0.30) * sc
+        d = Vector((math.cos(a), math.sin(a), 0))
+        w = Vector((-d.y, d.x, 0)) * R.uniform(0.012, 0.022) * sc
+        root = Vector((x, y, z - 0.01)) + d * R.uniform(0.0, 0.05) * sc
+        tip = root + d * hgt * lean + Vector((0, 0, hgt))
+        i0 = mb.vert(root - w, (u - 0.02, 0.0), 0.0); i1 = mb.vert(root + w, (u + 0.02, 0.0), 0.0); i2 = mb.vert(tip, (u, 1.0), 1.0)
+        # wind each blade to face the reader: renderers flip the shading normal on back faces, which turns them black
+        fnrm = (2 * w).cross(tip - (root - w))
+        if fnrm.dot(Vector((-x, -y, EYE - z))) >= 0: mb.face(i0, i1, i2)
+        else: mb.face(i1, i0, i2)
+
 def build_grass():
-    mb = MB()
-    R = random.Random(5)
-    # short pasture tufts: dense near the reader and clumped (grazed sward, tussocks), thinning out by 14 m; each a
-    # single card turned towards the reading position (the reader does not walk about), leaning back a little
+    mb = MB(); sb = MB()
+    R = random.Random(5); RS = random.Random(55)
+    # short pasture tufts: clumped (grazed sward, tussocks), thinning out by 9 m (beyond, the baked ground carries the
+    # sward); each a single card turned towards the reading position (the reader does not walk about), leaning back a
+    # little. Kept sparse right under the reader, where each card would fill much of the view (alpha overdraw).
     placed = 0
     for i in range(20000):
-        r = 14.0 * R.random() ** 1.5
+        r = 9.0 * R.random() ** 1.25
         a = R.uniform(0, 2 * math.pi); x, y = r * math.sin(a), r * math.cos(a)
-        if r < 0.35: continue
+        if r < 0.6: continue
+        if r < 2.2 and R.random() < 0.55 * (1.0 - smoothstep(0.6, 2.2, r)) + 0.25: continue
         if not in_my_field(x, y) and not (x > 9.9 and y < 8): continue
         d, s_, w = path_info(x, y)
         if d < w * 0.85: continue
@@ -719,19 +787,21 @@ def build_grass():
         if R.random() > clump ** 1.6 * 1.6: continue
         z = gz(x, y)
         sc = R.uniform(0.7, 1.2) * (0.8 + 0.5 * clump)
+        if r > 3.6 and RS.random() < 0.55 * smoothstep(3.6, 6.0, r) + 0.15:
+            solid_tuft(sb, RS, x, y, z, sc * 1.1); placed += 1; continue
         to_r = Vector((-x, -y, 0)).normalized(); ya = math.atan2(to_r.y, to_r.x) + math.pi / 2 + R.gauss(0, 0.45)
         right = Vector((math.cos(ya), math.sin(ya), 0)) * 0.30 * sc
         up = Vector((0, 0, 0.24 * sc)) - to_r * 0.06 * sc
         card(mb, (x, y, z - 0.015), right, up, R.choice(GRASS_SHORT), 0.0, 1.0)
         placed += 1
-        if placed > 3300: break
+        if placed > 1100: break
     # long, lodged margin grass along the hedge feet and round the stile and gate posts
-    for poly, lo, hi, nmax in ((HEDGE_A, -30, 28, 520), (HEDGE_B, -45, 8.5, 300)):
+    for poly, lo, hi, nmax in ((HEDGE_A, -14, 12, 85), (HEDGE_B, -10, 8.5, 45)):
         cnt = 0
         for (x, y, dx, dy) in poly_sample(poly, 0.22):
             if not (lo < (x if poly is HEDGE_A else y) < hi): continue
             dist = math.hypot(x, y)
-            if R.random() > (1.0 - smoothstep(6, 40, dist) * 0.8): continue
+            if dist > 15.0 or R.random() > (0.8 - smoothstep(6, 15, dist) * 0.5): continue
             for side in (-1, 1):
                 if R.random() < 0.45: continue
                 off = R.uniform(0.55, 1.15) if side < 0 else R.uniform(0.55, 0.95)
@@ -742,8 +812,8 @@ def build_grass():
                 cell = R.choice(GRASS_LONG)
                 lean = Vector((R.gauss(0, 0.35), R.gauss(0, 0.35), 0)) + Vector((dy * side, -dx * side, 0)) * 0.25
                 to_r = Vector((-px, -py, 0)).normalized(); ya = math.atan2(to_r.y, to_r.x) + math.pi / 2 + R.gauss(0, 0.5)
-                right = Vector((math.cos(ya), math.sin(ya), 0)) * 0.45 * sc
-                card(mb, (px, py, z - 0.02), right, Vector((0, 0, 0.62 * sc)), cell, 0.0, 1.0, bend=lean * 0.35 * sc, segs=2)
+                right = Vector((math.cos(ya), math.sin(ya), 0)) * 0.36 * sc
+                card(mb, (px, py, z - 0.02), right, Vector((0, 0, 0.52 * sc)), cell, 0.0, 1.0, bend=lean * 0.3 * sc, segs=2)
                 cnt += 1
             if cnt > nmax: break
     # soft rush clumps in the wet furrows and by the gate; docks by the gate and the stile; dead umbels and nettles at hedge feet
@@ -757,12 +827,12 @@ def build_grass():
     herbs += [("dock", GATE.x - 2.8, GATE.y + 1.9, 1.0), ("dock", GATE.x - 3.4, GATE.y - 2.0, 0.85), ("dock", STILE.x + 1.6, STILE.y - 1.25, 0.9),
               ("dock", -2.4, 1.4, 0.75), ("rush", 1.6, 3.1, 1.05), ("rush", -3.0, -1.9, 0.9), ("dock", 2.1, -1.6, 0.7)]
     for (x, y, dx, dy) in poly_sample(HEDGE_A, 1.3):
-        if -22 < x < 16 and R.random() < 0.55:
+        if -15 < x < 13 and R.random() < 0.5:
             off = R.uniform(0.45, 0.85); px, py = x + dy * off, y - dx * off
             if math.hypot(px - STILE.x, py - STILE.y) < 1.0: continue
             herbs.append((R.choice(("umbel", "nettle", "nettle", "umbel", "dock")), px, py, R.uniform(0.8, 1.25)))
     for (x, y, dx, dy) in poly_sample(HEDGE_B, 1.6):
-        if -30 < y < 8 and R.random() < 0.5:
+        if -14 < y < 8 and R.random() < 0.5:
             px, py = x - 0.6, y
             if abs(py - GATE.y) < 2.0: continue
             herbs.append((R.choice(("umbel", "nettle", "dock")), px, py, R.uniform(0.8, 1.2)))
@@ -774,6 +844,20 @@ def build_grass():
             ya = math.atan2(to_r.y, to_r.x) + math.pi / 2 + R.gauss(0, 0.4) + k * 1.2
             right = Vector((math.cos(ya), math.sin(ya), 0)) * wid
             card(mb, (x, y, z - 0.02), right, Vector((R.gauss(0, 0.04), R.gauss(0, 0.04), hgt)) - to_r * hgt * (0.35 if kind == "dock" else 0.0), HERB[kind], 0.0, 0.7 if kind != "umbel" else 1.0)
+    # beyond the cards (to ~16 m): opaque blade tufts on the sward's tussocks, so the field's surface stays rough
+    for i in range(6000):
+        r = RS.uniform(8.0, 16.0); a = RS.uniform(0, 2 * math.pi); x, y = r * math.sin(a), r * math.cos(a)
+        if not in_my_field(x, y) and not (x > 9.9 and y < 8): continue
+        d, s_, w = path_info(x, y)
+        if d < w * 1.1: continue
+        if any(puddle_s(x, y, p) < 1.2 for p in PUDDLES if abs(x - p[0]) < 2.5 and abs(y - p[1]) < 2.5): continue
+        clump = 0.5 + 0.5 * (0.7 * n2(x, y, 1.7, 4.0) + 0.3 * n2(x, y, 0.5, 9.0))
+        if RS.random() > clump ** 2 * 0.9: continue
+        solid_tuft(sb, RS, x, y, gz(x, y), RS.uniform(0.8, 1.3) * (0.8 + 0.5 * clump), nbl=4)
+        if len(sb.f) > 6400: break
+    print("solid grass blades", len(sb.f), flush=True)
+    so = sb.build("GrassBlades", M_BLADES)
+    if so is not None: set_card_normals(so, lambda p: (Vector((0, 0, 1.0)) + Vector((-p.x, -p.y, 0)).normalized() * 0.8).normalized())
     o = mb.build("GrassCards", M_GRASS)
     set_card_normals(o, lambda p: Vector((0, 0, 1)))
     return o
@@ -783,8 +867,10 @@ build_grass()
 # ----------------------------------------------------------------------------- hedges
 def build_hedge(name, poly, seed, h0=1.55, w0=1.2, gaps=(), step=0.7, card_density=1.0, card_size=0.75, near_only=None, cards=True, ring=8):
     """A laid-and-grown-out hawthorn hedge on its low bank: a dark lumpy core (narrow at the foot, where the stems show,
-    widest at two-thirds of its height), set back inside a skin of leaf-spray cards that lie on the surface like scales
-    and tilt outwards, so the cards make both the face and the ragged silhouette. Taller shoots stand above the top."""
+    widest at two-thirds of its height) in an opaque leafy material. Near the reader (to ~20 m) a skin of leaf-spray
+    cards lies on its upper surface like scales, tilting outwards, so the cards make the face and the ragged silhouette;
+    further off the lumpy mass carries the hedge and only a sparse fringe of cards breaks its top line (alpha-tested
+    cards are what costs on the Quest's tile GPU). Taller shoots stand above the top."""
     R = random.Random(seed)
     def hgt(x, y): return h0 * (1.0 + 0.16 * n2(x, y, 6.0, seed) + 0.10 * n2(x, y, 1.2, seed + 3) + 0.25 * max(0.0, n2(x, y, 3.0, seed + 9)))
     def wid(x, y): return w0 * (1.0 + 0.2 * n2(x, y, 5.0, seed + 7))
@@ -797,22 +883,24 @@ def build_hedge(name, poly, seed, h0=1.55, w0=1.2, gaps=(), step=0.7, card_densi
         return f
     prof = [(-0.30, -0.15), (-0.50, 0.55), (-0.40, 0.92), (0.0, 1.0), (0.40, 0.92), (0.50, 0.55), (0.30, -0.15)]
     core_v = []; core_f = []; prev_ring = None
-    for (x, y, dx, dy) in poly_sample(poly, max(step, 1.3)):
+    for (x, y, dx, dy) in poly_sample(poly, max(step, 0.9 if cards and step < 1.0 else 1.3)):
         f = gapf(x, y)
         if f == 0.0:
             if prev_ring is not None: core_f.append(tuple(prev_ring))
             prev_ring = None; continue
-        gz0 = gz(x, y); hh = hgt(x, y) * f * 0.9; ww = wid(x, y) * f * 0.78
+        far_k = smoothstep(12.0, 26.0, math.hypot(x, y)) if cards else 1.0
+        bulge = 1.0 + 0.12 * noise.noise(Vector((x * 0.35, y * 0.35, seed + 0.5)))
+        gz0 = gz(x, y); hh = hgt(x, y) * f * lerp(0.9, 0.98, far_k) * bulge; ww = wid(x, y) * f * lerp(0.8, 0.95, far_k) * bulge
         nx, ny = dy, -dx; ring_pts = []
         for k, (a, hz) in enumerate(prof):
-            jit = 1.0 + 0.15 * noise.noise(Vector((x * 0.9, y * 0.9, k * 1.7 + seed)))
+            jit = 1.0 + 0.16 * noise.noise(Vector((x * 0.9, y * 0.9, k * 1.7 + seed))) + 0.12 * noise.noise(Vector((x * 2.3, y * 2.3, k * 0.9 + seed * 2)))
             ring_pts.append(len(core_v)); core_v.append((x + nx * a * ww * jit, y + ny * a * ww * jit, gz0 + hz * hh))
         if prev_ring is not None:
             for k in range(len(prof) - 1): core_f.append((prev_ring[k], prev_ring[k + 1], ring_pts[k + 1], ring_pts[k]))
         else: core_f.append(tuple(reversed(ring_pts)))
         prev_ring = ring_pts
     if prev_ring is not None: core_f.append(tuple(prev_ring))
-    core = mesh_from(name + "Core", core_v, core_f, M_HEDGECORE, smooth=True)
+    core = mesh_from(name + "Core", core_v, core_f, M_HEDGEMASS, smooth=True)
     if not cards: return core, None
     mb = MB(); cstep = 0.5
     for (x, y, dx, dy) in poly_sample(poly, cstep):
@@ -821,17 +909,20 @@ def build_hedge(name, poly, seed, h0=1.55, w0=1.2, gaps=(), step=0.7, card_densi
         gz0 = gz(x, y); hh = hgt(x, y) * f; ww = wid(x, y) * f
         nx, ny = dy, -dx; tang = Vector((dx, dy, 0)).normalized()
         dist = math.hypot(x, y)
-        dens = card_density * (1.0 - 0.65 * smoothstep(8.0, 45.0, dist))
-        n = int(dens * 9 + R.random())
+        near = 1.0 - smoothstep(12.0, 24.0, dist)
+        n = int(card_density * near * 2.4 + R.random() * near)
+        fringe = R.random() < 0.28 * (1.0 - near) * (1.0 - smoothstep(40.0, 65.0, dist))
+        if fringe: n = 1
         for c in range(n):
-            # an angle round the profile: -1 (foot, one side) .. 0 (top) .. 1 (foot, other side), weighted to the upper half
-            th = R.uniform(-1.0, 1.0); th = math.copysign(abs(th) ** 1.3, th)
+            # an angle round the profile: -1 (foot, one side) .. 0 (top) .. 1 (foot, other side), weighted to the upper
+            # half; the mass shows below, so the cards keep to the upper face and the top (the fringe to the top only)
+            th = R.uniform(-0.75, 0.75) if not fringe else R.uniform(-0.3, 0.3)
             ang = th * math.pi * 0.62
             outward = (Vector((nx, ny, 0)) * math.sin(ang) + Vector((0, 0, 1)) * math.cos(ang)).normalized()
             px = x + nx * math.sin(ang) * ww * 0.5 + dx * R.uniform(-cstep, cstep) * 0.5
             py = y + ny * math.sin(ang) * ww * 0.5 + dy * R.uniform(-cstep, cstep) * 0.5
             pz = gz0 + hh * (0.55 + 0.45 * math.cos(ang) * 1.05) + R.gauss(0, 0.04)
-            sz = card_size * R.uniform(0.7, 1.25) * (1.0 + 0.6 * smoothstep(15, 60, dist))
+            sz = card_size * 1.15 * R.uniform(0.75, 1.25) * (1.0 + 0.6 * smoothstep(15, 60, dist))
             surf_up = outward.cross(tang).normalized()
             if surf_up.z < 0: surf_up = -surf_up
             roll = R.uniform(-1.2, 1.2)
@@ -839,7 +930,7 @@ def build_hedge(name, poly, seed, h0=1.55, w0=1.2, gaps=(), step=0.7, card_densi
             up = (surf_up * math.cos(roll) - tang * math.sin(roll)) * sz * 0.9 + outward * sz * R.uniform(0.15, 0.5)
             base = Vector((px, py, pz)) + outward * R.uniform(0.0, 0.15) - up * 0.45
             card(mb, base, right, up, R.choice(QUAD), 0.12, 0.45)
-        if R.random() < 0.08 * card_density and dist < 50:
+        if R.random() < 0.08 * card_density and dist < 26:
             sz = R.uniform(0.6, 1.0)
             card(mb, (x, y, gz0 + hh * 0.85), Vector((dx, dy, 0)) * sz * 0.9, Vector((R.gauss(0, 0.15), R.gauss(0, 0.15), sz)), R.choice(QUAD), 0.3, 0.8)
     sprays = mb.build(name + "Sprays", M_HAW)
@@ -865,13 +956,33 @@ build_hedge("HedgeE", HEDGE_E, 15, h0=2.0, w0=1.6, step=3.0, card_density=0.2, c
 build_hedge("HedgeF", HEDGE_F, 16, h0=2.0, w0=1.6, step=3.0, card_density=0.2, card_size=1.8, ring=8)
 
 # ----------------------------------------------------------------------------- trees
-def tree(name, x, y, height, spread, kind, seed, bark, leaves_mat, nlimbs=6, detail=1.0, cards_per_tip=3, card_size=1.3, lean=(0, 0), dense=1.0, fill=0):
+_ICO = {}
+def _unit_ico(sub):
+    if sub not in _ICO:
+        bm = bmesh.new(); bmesh.ops.create_icosphere(bm, subdivisions=sub, radius=1.0)
+        _ICO[sub] = ([tuple(v.co) for v in bm.verts], [tuple(v.index for v in f.verts) for f in bm.faces]); bm.free()
+    return _ICO[sub]
+
+def blob(mb, c, r, seed, sub=2, rough=0.22, fine=0.0):
+    """a lumpy opaque foliage blob: an icosphere scaled to radii r and pushed in and out by noise (the leafy lumps)."""
+    vs, fs = _unit_ico(sub); c = Vector(c); base = len(mb.v)
+    for (vx, vy, vz) in vs:
+        d = Vector((vx, vy, vz))
+        k = 1.0 + rough * noise.noise(d * 1.6 + Vector((seed * 3.1, seed * 1.7, 0.0))) + 0.5 * rough * noise.noise(d * 3.7 + Vector((0.0, seed, seed))) + 0.6 * rough * noise.noise(d * 7.5 + Vector((seed, 0.0, seed)))
+        p = c + Vector((d.x * r[0], d.y * r[1], d.z * r[2] * (0.85 if d.z < 0 else 1.0))) * k
+        mb.vert(p, (0, 0), 0.2 + 0.4 * max(0.0, d.z))
+    for f in fs: mb.face(*[base + i for i in f])
+
+def tree(name, x, y, height, spread, kind, seed, bark, leaves_mat, nlimbs=6, detail=1.0, cards_per_tip=3, card_size=1.3, lean=(0, 0), dense=1.0, fill=0,
+         mass=None, mass_k=0.8, mass_sub=2, nblobs=7):
     """A hedgerow or park tree grown to a crown envelope (an ellipsoid set by its kind): a flared trunk; limbs from the
     top of the trunk reaching out to the envelope with a sag (oak) or an upward sweep (ash, elm); branches off each
     limb to nearby points on the envelope; on near trees, twigs. Atlas cards (leaf sprays or bare twigs) sit at the
     branch ends and through the outer shell of the envelope, facing outwards, so the crown reads as a volume with a
     broken edge. kind: 'oak' (broad, low, crooked), 'ash' (taller, open, upturned), 'maple' (small, round), 'elm'
-    (tall, narrow, billowing)."""
+    (tall, narrow, billowing). mass: an opaque leafy material for a lumpy crown mass at mass_k of the envelope: inside
+    the cards on near trees (so fewer, larger cards still read as a full crown), the whole crown on far trees (with at
+    most a sparse fringe of cards for a broken edge)."""
     R = random.Random(seed)
     z0 = gz(x, y) - 0.15
     base = Vector((x, y, z0))
@@ -941,26 +1052,38 @@ def tree(name, x, y, height, spread, kind, seed, bark, leaves_mat, nlimbs=6, det
             put(q, out, card_size * R.uniform(0.75, 1.25))
     for i in range(fill):
         az = R.uniform(0, 2 * math.pi); el = math.asin(R.uniform(-0.45, 1.0))
-        q = env(az, el, R.uniform(0.72, 1.0) ** 0.6)
+        q = env(az, el, R.uniform(0.9, 1.06) if (mass is not None and cards_per_tip == 0) else R.uniform(0.72, 1.0) ** 0.6)
         out = ((q - C) * Vector((1 / a_, 1 / a_, 1 / c_))).normalized()
         out = (out + Vector((R.gauss(0, 0.4), R.gauss(0, 0.4), R.gauss(0, 0.3)))).normalized()
         put(q, out, card_size * R.uniform(0.7, 1.2))
     crown = mb.build(f"{name}_crown", leaves_mat)
+    if mass is not None:
+        mm = MB()
+        blob(mm, C + Vector((0, 0, -c_ * 0.05)), (a_ * mass_k * 0.72, a_ * mass_k * 0.72, c_ * mass_k * 0.75), seed, 2, rough=0.18)
+        for i in range(nblobs):
+            az = 2 * math.pi * (i + R.uniform(-0.3, 0.3)) / nblobs; el = math.asin(R.uniform(-0.25, 0.9))
+            sh = R.uniform(0.55, 0.72)
+            q = C + Vector((math.cos(az) * math.cos(el) * a_, math.sin(az) * math.cos(el) * a_, math.sin(el) * c_)) * mass_k * sh
+            rr = a_ * mass_k * R.uniform(0.3, 0.42)
+            blob(mm, q, (rr, rr, rr * R.uniform(0.75, 0.95)), seed + i + 1, mass_sub, rough=0.28)
+        mm.build(f"{name}_mass", mass, sway=False)
     if crown is not None:
         set_card_normals(crown, lambda p: (((p - C) * Vector((1 / a_, 1 / a_, 1 / c_))) + Vector((0, 0, 0.6))).normalized() if (p - C).length > 0.01 else Vector((0, 0, 1)))
     return tips, C
 
 print("trees ...", flush=True)
-OAK = tree("OakStile", -9.6, 7.0, 15.5, 7.5, "oak", 31, M_OAKBARK, M_OAKL, nlimbs=7, cards_per_tip=2, card_size=1.3, fill=260)
-ASH = tree("AshRooks", 16.2, 10.0, 17.0, 5.5, "ash", 32, M_ASHBARK, M_TWIG, nlimbs=6, cards_per_tip=2, card_size=1.5, dense=1.0, fill=120)
-MAPLE = tree("MapleB", 9.9, -5.0, 8.5, 3.6, "maple", 33, M_OAKBARK, M_MAPLE, nlimbs=5, cards_per_tip=2, card_size=1.0, fill=110)
-tree("OakField", -20.0, 43.0, 14.0, 7.0, "oak", 34, M_OAKBARK, M_OAKL, nlimbs=6, detail=0.6, cards_per_tip=2, card_size=2.0, fill=140)
-tree("MapleC", -40.8, -18.0, 12.0, 5.0, "maple", 35, M_OAKBARK, M_MAPLE, nlimbs=5, detail=0.6, cards_per_tip=2, card_size=2.2, fill=140)
-tree("OakD", -16.0, -47.2, 13.0, 6.0, "oak", 36, M_OAKBARK, M_OAKL, nlimbs=5, detail=0.6, cards_per_tip=2, card_size=2.0, fill=140)
-tree("AshD", 24.0, -44.3, 14.0, 4.5, "ash", 37, M_ASHBARK, M_TWIG, nlimbs=5, detail=0.6, cards_per_tip=2, card_size=2.0, fill=140)
-tree("OakE", 52.0, 30.0, 13.0, 6.0, "oak", 38, M_OAKBARK, M_OAKL, nlimbs=5, detail=0.6, cards_per_tip=2, card_size=2.2, fill=140)
-tree("MapleA", 38.0, 14.2, 11.0, 4.6, "maple", 39, M_OAKBARK, M_MAPLE, nlimbs=5, detail=0.6, cards_per_tip=2, card_size=2.2, fill=140)
-tree("OakF", -44.5, 30.0, 14.0, 6.0, "oak", 40, M_OAKBARK, M_OAKL, nlimbs=5, detail=0.6, cards_per_tip=2, card_size=2.2, fill=140)
+OAK = tree("OakStile", -9.6, 7.0, 15.5, 7.5, "oak", 31, M_OAKBARK, M_OAKL, nlimbs=7, cards_per_tip=1, card_size=1.7, fill=150, mass=M_OAKMASS, mass_k=0.68)
+ASH = tree("AshRooks", 16.2, 10.0, 17.0, 5.5, "ash", 32, M_ASHBARK, M_TWIG, nlimbs=6, cards_per_tip=1, card_size=1.8, dense=1.0, fill=60)
+MAPLE = tree("MapleB", 9.9, -5.0, 8.5, 3.6, "maple", 33, M_OAKBARK, M_MAPLE, nlimbs=5, cards_per_tip=1, card_size=1.25, fill=45, mass=M_MAPLEMASS, mass_k=0.75)
+# far trees: opaque lumpy crowns, a sparse fringe of cards for a broken outline (bare ashes keep a few twig cards)
+FAR = dict(nlimbs=5, detail=0.6, cards_per_tip=0, mass_k=0.92, mass_sub=2, nblobs=10)
+tree("OakField", -20.0, 43.0, 14.0, 7.0, "oak", 34, M_OAKBARK, M_OAKL, card_size=2.2, fill=65, mass=M_OAKMASS, **dict(FAR, nlimbs=6))
+tree("MapleC", -40.8, -18.0, 12.0, 5.0, "maple", 35, M_OAKBARK, M_MAPLE, card_size=2.2, fill=55, mass=M_MAPLEMASS, **FAR)
+tree("OakD", -16.0, -47.2, 13.0, 6.0, "oak", 36, M_OAKBARK, M_OAKL, card_size=2.2, fill=55, mass=M_OAKMASS, **FAR)
+tree("AshD", 24.0, -44.3, 14.0, 4.5, "ash", 37, M_ASHBARK, M_TWIG, nlimbs=5, detail=0.6, cards_per_tip=1, card_size=2.2, fill=40)
+tree("OakE", 52.0, 30.0, 13.0, 6.0, "oak", 38, M_OAKBARK, M_OAKL, card_size=2.4, fill=50, mass=M_OAKMASS, **FAR)
+tree("MapleA", 38.0, 14.2, 11.0, 4.6, "maple", 39, M_OAKBARK, M_MAPLE, card_size=2.4, fill=50, mass=M_MAPLEMASS, **FAR)
+tree("OakF", -44.5, 30.0, 14.0, 6.0, "oak", 40, M_OAKBARK, M_OAKL, card_size=2.4, fill=50, mass=M_OAKMASS, **FAR)
 # the park round the house: a cedar on the lawn, beeches and limes behind
 def cedar(name, x, y, h, seed):
     R = random.Random(seed); z = gz(x, y)
@@ -989,8 +1112,10 @@ cedar("Cedar", 22.0, 84.0, 17.0, 41)
 for i, (tx, ty, th, kind) in enumerate([(62, 96, 19, "elm"), (55, 103, 17, "oak"), (30, 100, 18, "ash"), (16, 92, 15, "oak"), (70, 80, 16, "oak"),
                                          (-5, 88, 16, "elm"), (-25, 75, 14, "oak"), (5, 70, 12, "oak")]):
     if math.hypot(tx, ty) > LAND_R - 6: continue
-    tree(f"Park{i}", tx, ty, th, th * 0.42, kind, 50 + i, M_ASHBARK if kind != "oak" else M_OAKBARK, M_TWIG if kind in ("ash",) else M_OAKL,
-         nlimbs=5, detail=0.5, cards_per_tip=1, card_size=2.6, fill=150)
+    bare = kind == "ash"
+    tree(f"Park{i}", tx, ty, th, th * 0.42, kind, 50 + i, M_ASHBARK if kind != "oak" else M_OAKBARK, M_TWIG if bare else M_OAKL,
+         nlimbs=5, detail=0.5, cards_per_tip=1 if bare else 0, card_size=2.8, fill=40 if bare else 30,
+         mass=None if bare else M_OAKMASS, mass_k=0.92, mass_sub=1, nblobs=8)
 
 # rooks' nests in the ash: rough twig balls in the upper forks
 for (q, d, depth) in ASH[0]:
@@ -1237,7 +1362,7 @@ if ARGS.bake or ARGS.export:
                     "M_Puddle": "water.puddle.path", "M_SkyDome": "SkyDome", "M_FarLand": "far.land", "M_GroundNear": "GroundNear"},
         keep_uv={"M_GroundNear", "M_FarLand", "M_SkyDome"},
         size_for={"M_GroundNear": (4096, 2048, 2048), "M_FarLand": (1024, 256, 512), "M_SkyDome": (2048,),
-                  "M_HedgeCore": (1024, 256, 512), "M_OakBark": (1024, 256, 512), "M_AshBark": (512, 128, 512),
+                  "M_HedgeMass": (1024, 256, 512), "M_OakCrownMass": (512, 128, 512), "M_MapleCrownMass": (256, 64, 256), "M_OakBark": (1024, 256, 512), "M_AshBark": (512, 128, 512),
                   "M_StileOak": (512, 256, 512), "M_GateOak": (512, 128, 256), "M_HouseStucco": (1024, 128, 256),
                   "M_HouseSlate": (256, 64, 128), "M_Puddle": (128, 64, 128), "M_HouseWindows": (32, 32), "M_HousePaint": (64, 32),
                   "M_FarStone": (128, 32)},
