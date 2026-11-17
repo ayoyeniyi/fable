@@ -43,7 +43,15 @@ namespace Fable.Editor
         ///          double-sided they look right, but the lightmap holds one side and bakes them black. Flipped copies.
         ///   ClearPanes: a room's WindowGlass is clear glass (a dusk window onto its backdrop, a deck skylight seen from
         ///          above) instead of the bright unlit daylight pane rooms get by default.
-        public class SceneDef { public string Id, Scene, Glb, Book, Sound, Music; public bool Outdoor, Lobby, Room, LobbyLook, ClearPanes; public float LightScale = 1f, Wind = -1f, WindToward = 60f; public WaterLook WaterOverride; public LightLook[] Lights; public string[] FlipNormals; public Color? Ambient; public float Fog = -1f; }
+        public class SceneDef { public string Id, Scene, Glb, Book, Sound, Music; public bool Outdoor, Lobby, Room, LobbyLook, ClearPanes; public float LightScale = 1f, Wind = -1f, WindToward = 60f; public WaterLook WaterOverride; public LightLook[] Lights; public string[] FlipNormals; public Color? Ambient; public float Fog = -1f;
+            /// Performance (Quest 2): NoFlameLights bakes the fires' glow instead of flickering realtime lights;
+            /// ThinFoliage keeps that share of the foliage cards beyond ThinNear metres of the reader (FableLiving.Thin).
+            public bool NoFlameLights; public float ThinFoliage = 1f, ThinNear = 7f;
+            /// Where the reader starts (feet, world) and the compass yaw they face, when the room's anchor.reader.* does
+            /// not leave clear floor and an open view: FableReaderStart finds these and keeps them in ReaderStarts.json;
+            /// BuildScene (and FableReaderStart.Apply for built scenes) puts the rig there.
+            public Vector3? ReaderAt => FableReaderStart.Override(Id)?.At;
+            public float? ReaderYaw => FableReaderStart.Override(Id)?.Yaw; }
         public class LightLook { public string Name; public float Intensity = -1f, Range = -1f; public Color? Color; }
         static LightLook L(string name, float intensity, float range = -1f, Color? color = null) => new LightLook { Name = name, Intensity = intensity, Range = range, Color = color };
         static readonly Color Cool = new(0.62f, 0.70f, 1f), FireGlow = new(1f, 0.62f, 0.30f), CandleGlow = new(1f, 0.78f, 0.52f), Dawn = new(1f, 0.78f, 0.56f);
@@ -473,9 +481,9 @@ namespace Fable.Editor
             rig = new GameObject("CameraRig"); var camGo = new GameObject("CenterEye"); camGo.transform.SetParent(rig.transform); camGo.transform.localPosition = new Vector3(0, 1.62f, 0);
             var cam = camGo.AddComponent<Camera>(); cam.nearClipPlane = 0.05f; cam.farClipPlane = 60f; camGo.AddComponent<AudioListener>(); head = camGo.transform;
 #endif
-            var entrance = new[] { "anchor.reader.entrance", "anchor.reader.path", "anchor.reader.gate" }.Select(n => FindDeep(env.transform, n)).FirstOrDefault(t => t)
-                           ?? env.GetComponentsInChildren<Transform>(true).FirstOrDefault(t => t.name.StartsWith("anchor.reader."));
+            var entrance = ReaderAnchor(env.transform);
             if (entrance) rig.transform.position = entrance.position;
+            if (def.ReaderAt.HasValue) rig.transform.position = def.ReaderAt.Value;   // clear floor and an open view (ReaderStarts.json)
             var cameras = rig.GetComponentsInChildren<Camera>(true);
             // far plane: 150 m, or further when the scene reaches further (a harbour's far shore, a 600 m sky dome)
             float reach = 150f;
@@ -486,7 +494,8 @@ namespace Fable.Editor
 
             // the reader faces the room's view: anchor.reader.look (rooms) or the lobby's shelf
             var facing = FindDeep(env.transform, "anchor.reader.look") ?? FindDeep(env.transform, "anchor.lobby.shelf");
-            if (facing && entrance) { var look = facing.position - entrance.position; look.y = 0; if (look.sqrMagnitude > 1e-4f) rig.transform.rotation = Quaternion.LookRotation(look.normalized, Vector3.up); }
+            if (facing && entrance) { var look = facing.position - rig.transform.position; look.y = 0; if (look.sqrMagnitude > 1e-4f) rig.transform.rotation = Quaternion.LookRotation(look.normalized, Vector3.up); }
+            if (def.ReaderYaw.HasValue) rig.transform.rotation = Quaternion.Euler(0, def.ReaderYaw.Value, 0);
             if (def.Lobby)
             {
                 var lobbySystems = new GameObject("Fable");
@@ -540,6 +549,18 @@ namespace Fable.Editor
             var so = new SerializedObject(hand); so.FindProperty("HandType").enumValueIndex = (int)type; so.ApplyModifiedPropertiesWithoutUndo();
         }
 #endif
+
+        /// The room's own reader anchor (anchor.reader.entrance, .path, .gate, or any anchor.reader.*).
+        public static Transform ReaderAnchor(Transform env) =>
+            new[] { "anchor.reader.entrance", "anchor.reader.path", "anchor.reader.gate" }.Select(n => FindDeep(env, n)).FirstOrDefault(t => t)
+            ?? env.GetComponentsInChildren<Transform>(true).FirstOrDefault(t => t.name.StartsWith("anchor.reader.") && t.name != "anchor.reader.look");
+
+        /// Where the reader's feet are at the start: the scene's override, else the anchor.
+        public static Vector3? ReaderFeet(SceneDef def, Transform env)
+        {
+            if (def.ReaderAt.HasValue) return def.ReaderAt;
+            var a = ReaderAnchor(env); return a ? a.position : (Vector3?)null;
+        }
 
         static Transform FindDeep(Transform root, string name) => root.GetComponentsInChildren<Transform>(true).FirstOrDefault(t => t.name == name);
 
