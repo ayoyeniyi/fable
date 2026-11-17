@@ -329,7 +329,7 @@ namespace Fable
         {
             if (Reader.Imported) GeneratedRooms.Instance.Request(Slug);   // (again) after a restart or an earlier failure
             var ce = ChapterExperiences.Instance;
-            Reader.ChapterEntered += ch => ce.Enter(Slug, ch);
+            Reader.ChapterEntered += ch => { ce.Enter(Slug, ch); PrefetchRooms(ch); };
             Reader.ChapterFinished += ch => ce.Complete(Slug, ch, "finished");
             Reader.StepIntoChapter += EnterExperience;
             Reader.RetryExperience += ch => ce.Retry(ch);
@@ -339,7 +339,16 @@ namespace Fable
             Menu = Panel.GetComponent<BookMenu>() ? Panel.GetComponent<BookMenu>() : Panel.gameObject.AddComponent<BookMenu>();
             Menu.Init(this);
             // the chapter on the page now is "entered" (the reader opened the book in it)
-            if (Reader.Book != null && !Reader.Book.IsPdf && Reader.Book.Chapters.Count > 0 && Reader.Book.Chapters[Reader.ChapterIndex].Kind == "chapter") ce.Enter(Slug, Reader.Book.Chapters[Reader.ChapterIndex].Id);
+            if (Reader.Book != null && !Reader.Book.IsPdf && Reader.Book.Chapters.Count > 0 && Reader.Book.Chapters[Reader.ChapterIndex].Kind == "chapter") { ce.Enter(Slug, Reader.Book.Chapters[Reader.ChapterIndex].Id); PrefetchRooms(Reader.Book.Chapters[Reader.ChapterIndex].Id); }
+        }
+
+        /// The downloadable rooms of the chapter entered and the next one, fetched quietly (SceneRooms.Prefetch).
+        void PrefetchRooms(string chapter)
+        {
+            if (Reader == null || Reader.Book == null || !ChapterExperiences.Supported.Contains(Slug)) return;
+            int i = Reader.Book.Chapters.FindIndex(c => c.Id == chapter); if (i < 0) return;
+            var next = Reader.Book.Chapters.Skip(i + 1).FirstOrDefault(c => c.Kind == "chapter")?.Id;
+            SceneRooms.Instance.Prefetch(chapter, next);
         }
 
         void AfterStart()
