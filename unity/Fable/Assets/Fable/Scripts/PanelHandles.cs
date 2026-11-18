@@ -33,7 +33,7 @@ namespace Fable
         public bool? TestPinch;
         public string State => held == 1 ? "moving" : held == 2 ? "resizing" : hover == 1 ? "over move" : hover == 2 ? "over resize" : "idle";
 
-        RectTransform page, moveBar, corner, prevArrow, nextArrow, roomsBtn, closeBtn; Image moveImg, cornerImg, prevImg, nextImg, roomsImg, closeImg; TMP_Text roomsLbl; TMP_Text moveLbl;
+        RectTransform page, moveBar, corner, prevArrow, nextArrow, roomsBtn, closeBtn, quitBtn; Image moveImg, cornerImg, prevImg, nextImg, roomsImg, closeImg, quitImg; TMP_Text quitLbl; float quitAsked = -10f; TMP_Text roomsLbl; TMP_Text moveLbl;
         int hover, held; bool heldRight;
         float grabDist; Vector3 grabOffset;                // moving: ray distance and the page's offset from the ray point
         float startScale, startRadius; Plane grabPlane;    // resizing
@@ -78,6 +78,15 @@ namespace Fable
             roomsLbl.rectTransform.anchorMin = Vector2.zero; roomsLbl.rectTransform.anchorMax = Vector2.one; roomsLbl.rectTransform.offsetMin = roomsLbl.rectTransform.offsetMax = Vector2.zero;
             if (font) roomsLbl.font = font; roomsLbl.fontSize = 24; roomsLbl.fontStyle = FontStyles.SmallCaps; roomsLbl.alignment = TextAlignmentOptions.Center;
             roomsLbl.color = new Color(1f, 0.96f, 0.88f, 1f); roomsLbl.raycastTarget = false; roomsLbl.text = "reading rooms";
+            // quit Fable: top right, beside the reading rooms; a second pinch within 4 s confirms
+            quitBtn = new GameObject("QuitButton", typeof(RectTransform), typeof(Image)).GetComponent<RectTransform>();
+            quitBtn.SetParent(page, false); quitBtn.anchorMin = quitBtn.anchorMax = new Vector2(1, 1); quitBtn.pivot = new Vector2(1, 0);
+            quitBtn.anchoredPosition = new Vector2(0, 22); quitBtn.sizeDelta = new Vector2(150, 44);
+            quitImg = quitBtn.GetComponent<Image>(); quitImg.color = QuitIdle; quitImg.raycastTarget = false; quitImg.sprite = Pill(); quitImg.type = Image.Type.Sliced;
+            quitLbl = new GameObject("Label", typeof(RectTransform)).AddComponent<TextMeshProUGUI>(); quitLbl.transform.SetParent(quitBtn, false);
+            quitLbl.rectTransform.anchorMin = Vector2.zero; quitLbl.rectTransform.anchorMax = Vector2.one; quitLbl.rectTransform.offsetMin = quitLbl.rectTransform.offsetMax = Vector2.zero;
+            if (font) quitLbl.font = font; quitLbl.fontSize = 20; quitLbl.fontStyle = FontStyles.SmallCaps; quitLbl.alignment = TextAlignmentOptions.Center;
+            quitLbl.color = new Color(1f, 0.96f, 0.88f, 1f); quitLbl.raycastTarget = false; quitLbl.text = "quit Fable";
             // put the book down: an X just outside the page's top right corner
             closeBtn = new GameObject("CloseButton", typeof(RectTransform), typeof(Image)).GetComponent<RectTransform>();
             closeBtn.SetParent(page, false); closeBtn.anchorMin = closeBtn.anchorMax = new Vector2(1, 1); closeBtn.pivot = new Vector2(0, 0);
@@ -85,6 +94,7 @@ namespace Fable
             closeImg = closeBtn.GetComponent<Image>(); closeImg.color = Idle; closeImg.raycastTarget = false; closeImg.sprite = Cross();
         }
 
+        static readonly Color QuitIdle = new(0.30f, 0.22f, 0.16f, 0.88f), QuitHover = new(0.55f, 0.24f, 0.14f, 0.98f);
         static readonly Color RoomsIdle = new(0.72f, 0.42f, 0.12f, 0.92f), RoomsHover = new(0.90f, 0.56f, 0.18f, 1f);
 
         RectTransform Arrow(string name, float side, int dir, out Image img)
@@ -112,6 +122,7 @@ namespace Fable
             if (In(corner, 14)) return 2;
             if (In(moveBar, 16)) return 1;
             if (ArrowsVisible && In(closeBtn, 14)) return 6;
+            if (ArrowsVisible && In(quitBtn, 8)) return 7;
             if (ArrowsVisible && In(roomsBtn, 10)) return 5;
             if (ArrowsVisible && In(prevArrow, 18)) return 3;
             if (ArrowsVisible && In(nextArrow, 18)) return 4;
@@ -125,6 +136,11 @@ namespace Fable
         {
             if (!OnPlane(right, out var w, out var ray)) return false;
             int h = HandleAt(w); if (h == 0) return false;
+            if (h == 7)
+            {
+                if (Time.time - quitAsked < 4f) { FlowController.QuitFable(); return true; }
+                quitAsked = Time.time; Debug.Log("[Fable] page: quit asked"); return true;
+            }
             if (h == 6) { Debug.Log("[Fable] page: put the book down"); PutDown?.Invoke(); return true; }
             if (h == 5) { Debug.Log("[Fable] page: reading rooms"); OpenRooms?.Invoke(); return true; }
             if (h >= 3) { Debug.Log($"[Fable] page arrow: {(h == 4 ? "next" : "previous")}"); Turn?.Invoke(h == 4); return true; }
@@ -157,8 +173,11 @@ namespace Fable
             foreach (var right in new[] { true, false }) if (OnPlane(right, out var w, out _)) { hover = HandleAt(w); if (hover != 0) break; }
             moveImg.color = held == 1 ? Held : hover == 1 ? Hover : Idle;
             cornerImg.color = held == 2 ? Held : hover == 2 ? Hover : Idle;
-            if (prevArrow.gameObject.activeSelf != ArrowsVisible) { prevArrow.gameObject.SetActive(ArrowsVisible); nextArrow.gameObject.SetActive(ArrowsVisible); roomsBtn.gameObject.SetActive(ArrowsVisible); closeBtn.gameObject.SetActive(ArrowsVisible); }
+            if (prevArrow.gameObject.activeSelf != ArrowsVisible) { prevArrow.gameObject.SetActive(ArrowsVisible); nextArrow.gameObject.SetActive(ArrowsVisible); roomsBtn.gameObject.SetActive(ArrowsVisible); closeBtn.gameObject.SetActive(ArrowsVisible); quitBtn.gameObject.SetActive(ArrowsVisible); }
             closeImg.color = hover == 6 ? Hover : Idle;
+            bool asking = Time.time - quitAsked < 4f;
+            quitImg.color = asking || hover == 7 ? QuitHover : QuitIdle;
+            var ql = asking ? "pinch again to quit" : "quit Fable"; if (quitLbl.text != ql) { quitLbl.text = ql; quitLbl.fontSize = asking ? 15 : 20; quitBtn.sizeDelta = new Vector2(asking ? 170 : 150, 44); }   // never wider than the gap to the rooms button
             roomsImg.color = hover == 5 ? RoomsHover : RoomsIdle; roomsBtn.localScale = Vector3.one * (hover == 5 ? 1.06f : 1f);
             prevImg.color = hover == 3 ? Hover : Idle; nextImg.color = hover == 4 ? Hover : Idle;
             moveBar.sizeDelta = new Vector2(held == 1 || hover == 1 ? 230 : 190, held == 1 || hover == 1 ? 20 : 16);
