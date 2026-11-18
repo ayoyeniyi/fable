@@ -1,5 +1,7 @@
 # Fable
 
+![The Fable library: a shelf of ten classic books under the words "stand inside the classics"](store/fable-cover-landscape-1280x720.jpg)
+
 An e-reader for Meta Quest where every book has a place. Reading on a headset usually means a flat page floating in a dark void; in Fable you read inside the world of the story, and when you finish a chapter you can step into the place where it happened.
 
 Built by two people for the Meta VR Start Developer Competition, from scratch after it opened on 24 September 2026. Hands only (controllers work too); 72 fps in every room we measured on a Quest 2.
