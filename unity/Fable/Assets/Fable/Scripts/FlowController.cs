@@ -91,6 +91,7 @@ namespace Fable
         {
             MenuOpen = false; if (View) View.Summoned = false;
             if (!Application.CanStreamedLevelBeLoaded(LobbyController.SceneName)) return;
+            returnScene = null;   // leaving a chapter's place for the library: a later place must not send the reader back to this room
             if (Current == State.Reading && !InPlace && !BookDown) { GoToLobby(); return; }
             // from a chapter's place or with the book put down: the place in the book is saved with every page
             ExperienceMood.Restore(); if (Highlight) Highlight.Clear();
