@@ -155,7 +155,7 @@ namespace Fable
         {
             if (!Supported.Contains(book) || chapter == null) return;
             var r = Rec(book, chapter, true);
-            if (r.Job == "unavailable") { r.Job = "requested"; r.Stage = "asked again"; Save(); return; }   // its place may have been built since (cheap: no Claude call)
+            if (r.Job == "unavailable") { r.Job = "requested"; r.Stage = "asked again"; r.RequestedUtc = DateTime.UtcNow.ToString("o"); Save(); return; }   // its place may have been built since (cheap: no Claude call)
             if (r.Job != "none") return;
             r.Job = "queued"; r.RequestedUtc = DateTime.UtcNow.ToString("o"); r.Stage = "waiting its turn";
             Debug.Log($"[Fable] experiences: {chapter} entered, preparation queued");
@@ -178,7 +178,7 @@ namespace Fable
         public void Retry(string chapter)
         {
             var r = Record(chapter); if (r == null || r.Job != "failed") return;
-            r.Job = "requested"; r.Error = null; r.Stage = "asked again"; Save();
+            r.Job = "requested"; r.Error = null; r.Stage = "asked again"; r.RequestedUtc = DateTime.UtcNow.ToString("o"); Save();
         }
 
         /// The package names a room the service no longer has (republished since): fetch the package again.
