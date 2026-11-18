@@ -842,6 +842,9 @@ namespace Fable.Editor
             // most (Meta rejects 36), 64-bit only
             PlayerSettings.Android.targetSdkVersion = AndroidSdkVersions.AndroidApiLevel34;
             PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
+            // the app icon: the square store cover (blender/render_store_art.py), the same art as the dashboard listing
+            var icon = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/Fable/Store/fable-icon.png");
+            if (icon) PlayerSettings.SetIconsForTargetGroup(BuildTargetGroup.Unknown, new[] { icon });
             Directory.CreateDirectory("out");
             SetBuildScenes();
             var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions { scenes = Built.Select(d => d.Scene).ToArray(), locationPathName = "out/fable.apk", target = BuildTarget.Android, options = BuildOptions.None });
