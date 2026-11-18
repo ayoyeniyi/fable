@@ -114,6 +114,7 @@ namespace Fable
 
         void Show(bool on) { if (line) line.enabled = on; if (disc) disc.gameObject.SetActive(on); }
 
+        public bool IsActive => Active;
         bool Active => flow && (flow.Current == FlowController.State.Miniature || flow.Current == FlowController.State.Scene) && director && director.Registry && director.Registry.EnvironmentRoot && director.Registry.EnvironmentRoot.gameObject.activeInHierarchy;
 
         /// Where the pointing ray starts and heads. Hands use the SDK's pointer pose (a stable ray from the wrist through the

@@ -56,6 +56,7 @@ namespace Fable
             OpenPassage(next); return true;
         }
         public Locomotion Move { get; private set; }
+        public ArcTeleport Teleport { get; private set; }
 
         static readonly Dictionary<string, string> Places = new()
         {
@@ -289,6 +290,8 @@ namespace Fable
         {
             Handles = Panel.GetComponent<PanelHandles>() ? Panel.GetComponent<PanelHandles>() : Panel.gameObject.AddComponent<PanelHandles>();
             Handles.Init(Panel, Pointer, Input, Head); Pointer.Handles = Handles;
+            Teleport = GetComponent<ArcTeleport>() ? GetComponent<ArcTeleport>() : gameObject.AddComponent<ArcTeleport>();
+            Teleport.Init(this, Input, Head, RigRoot());   // point at the floor, an arc, pinch: go there
             Handles.PutDown += PutBookDown;
             Handles.OpenRooms += () => { if (!busy && !InPlace && Current == State.Reading && Menu) Menu.Open("rooms"); };
             Handles.Turn += next =>
