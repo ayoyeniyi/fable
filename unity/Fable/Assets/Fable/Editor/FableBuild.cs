@@ -22,6 +22,8 @@ namespace Fable.Editor
 {
     public static class FableBuild
     {
+        public const int VersionCode = 2026111701; public const string VersionName = "1.0.0";
+
         // One Unity scene per passage, each with its own lightmaps. Outdoor scenes get daylight, an unlit sky dome and haze.
         /// Room: a book's own room with no staged passage (the page floats in it; FlowController.RoomOnly). LightScale
         /// stretches indoor light ranges for rooms built at giant scale (Glumdalclitch's room is 12x).
@@ -157,10 +159,6 @@ namespace Fable.Editor
             PlayerSettings.SetApplicationIdentifier(target, "com.fable.alice");
             PlayerSettings.productName = "Fable";
             PlayerSettings.companyName = "Fable";
-            // every upload to the Meta dashboard needs a larger version code than the last one (the first upload, from
-            // another machine, was 1): a date, yyyymmddNN; raise it for each new upload
-            PlayerSettings.Android.bundleVersionCode = 2026111701;
-            PlayerSettings.bundleVersion = "1.0.0";
             PlayerSettings.Android.textureCompressionFormats = new[] { TextureCompressionFormat.ASTC };
             PlayerSettings.gpuSkinning = true;
             // one input backend: "Both" is unsupported on Android. Hands and controllers come through OVRInput/OpenXR,
@@ -837,6 +835,9 @@ namespace Fable.Editor
         public static void BuildApk()
         {
             SyncData();
+            // every upload to the Meta dashboard needs a larger version code than the last one (the first upload, from
+            // another machine, was 1): a date, yyyymmddNN; raise it for each new upload
+            PlayerSettings.Android.bundleVersionCode = VersionCode; PlayerSettings.bundleVersion = VersionName;
             Directory.CreateDirectory("out");
             SetBuildScenes();
             var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions { scenes = Built.Select(d => d.Scene).ToArray(), locationPathName = "out/fable.apk", target = BuildTarget.Android, options = BuildOptions.None });

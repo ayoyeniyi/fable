@@ -2,7 +2,7 @@
 
 The first upload to the Meta Horizon Developer Dashboard was signed on another laptop. Meta only accepts updates signed
 with that same key, so a build made anywhere else is re-signed on that laptop before upload. The version code is set in
-`unity/Fable/Assets/Fable/Editor/FableBuild.cs` (`bundleVersionCode`, yyyymmddNN) and must grow with every upload.
+`unity/Fable/Assets/Fable/Editor/FableBuild.cs` (`VersionCode`, yyyymmddNN) and must grow with every upload.
 
 ## On the laptop that holds the key
 
@@ -41,6 +41,6 @@ same folders under `C:\Program Files\Unity\Hub\Editor\<version>\Editor\Data\Play
    build. Keep the same release channel so the existing invite link gives judges the new version.
 
 If the dashboard says the signature does not match, the keystore is not the one used for the first upload. If it says the
-version code must be higher, raise `bundleVersionCode` in FableBuild.cs, rebuild and sign again.
+version code must be higher, raise `VersionCode` in FableBuild.cs, rebuild and sign again.
 
 Never commit the keystore or put its passwords in the repo or in chat.
