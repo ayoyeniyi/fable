@@ -104,6 +104,7 @@ namespace Fable
             View.Init(Input, Head, RigRoot(), Board.Root, Font);
             View.Recentred += () => Board.Recentre();
             View.SetActions(("face the shelf", FaceShelf));
+            if (Input) Input.MenuRequested += LobbyMenu;
             View.Tip("library", "Your books are on the board below the shelf. \u201c+ add a book\u201d sends one from your phone or computer.");
             MakeCueCard();
             string json = null; yield return Streaming.Text("books/index.json", s => json = s);
@@ -120,7 +121,16 @@ namespace Fable
             Board.Recentre(true); Board.Refresh();
         }
 
-        void OnDestroy() { if (Input) Input.PinchBegan -= OnPinch; }
+        void OnDestroy() { if (Input) { Input.PinchBegan -= OnPinch; Input.MenuRequested -= LobbyMenu; } }
+
+        bool menuOpen;
+        /// The left palm pinch in the library: the bar offers "quit Fable" (and closes again on a second pinch).
+        void LobbyMenu()
+        {
+            menuOpen = !menuOpen;
+            if (menuOpen) { View.SetActions(("\u2039 back", LobbyMenu), ("quit Fable", FlowController.QuitFable)); View.Tip(null, "Fable menu: quit, or back to the library.", 5f); }
+            else View.SetActions(("face the shelf", FaceShelf));
+        }
 
         public ViewControls View { get; private set; }
         public LibraryPanel Board { get; private set; }

@@ -17,6 +17,8 @@ namespace Fable
     public class ReaderController : MonoBehaviour
     {
         public event Action Next, Previous, ReturnToReading, Select, ToggleView;
+        /// The Quest's menu gesture (left palm toward the face, pinch and hold) or the left controller's menu button.
+        public event Action MenuRequested;
         public event Action<int> Scrub;                 // +1 / -1 per scrub step while dragging
         public event Action<int> Turn;                  // +1 (right) / -1 (left) per step of a left-hand sideways drag
         public event Action<bool> PinchBegan, PinchEnded;   // raw pinch edges per hand (true = right), before taps and holds are judged
@@ -121,7 +123,7 @@ namespace Fable
             pos = Vector3.zero; bool p = false;
 #if FABLE_META_XR
             var h = left ? LeftHand : RightHand; var a = left ? LeftPointer : RightPointer;
-            if (h && h.IsTracked)
+            if (h && h.IsTracked && !h.IsSystemGestureInProgress)   // the palm-up menu pinch never also turns a page
             {
                 p = h.GetFingerIsPinching(OVRHand.HandFinger.Index) && h.GetFingerConfidence(OVRHand.HandFinger.Index) == OVRHand.TrackingConfidence.High;
                 p |= h.GetFingerIsPinching(OVRHand.HandFinger.Middle) && h.GetFingerConfidence(OVRHand.HandFinger.Middle) == OVRHand.TrackingConfidence.High;   // a closing hand
@@ -154,6 +156,12 @@ namespace Fable
             InputMode = handsSeen ? "hands" : ctrlSeen ? "controllers" : "none";
 #elif UNITY_EDITOR || UNITY_STANDALONE
             InputMode = "keyboard";
+#endif
+#if FABLE_META_XR
+            if (OVRInput.GetDown(OVRInput.Button.Start)) { Debug.Log("[Fable] menu gesture"); MenuRequested?.Invoke(); }
+#endif
+#if UNITY_EDITOR || UNITY_STANDALONE
+            if (UnityEngine.InputSystem.Keyboard.current != null && UnityEngine.InputSystem.Keyboard.current.mKey.wasPressedThisFrame) MenuRequested?.Invoke();
 #endif
             if (InputMode != lastMode) { lastMode = InputMode; Debug.Log($"[Fable] input: {InputMode}"); ModeChanged?.Invoke(InputMode); }
             if (r != wasR) { wasR = r; Edge(true, r); }

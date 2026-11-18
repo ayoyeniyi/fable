@@ -1070,8 +1070,8 @@ namespace Fable
             }
             (contentsBtn, contentsLbl) = Button("BtnContents", new Vector2(0, 1), new Vector2(Margin - 8, -TopRow), new Vector2(130, TopRowH), TextAlignmentOptions.Left);
             contentsLbl.text = "contents";
-            TMP_Text shelfLbl; (shelfBtn, shelfLbl) = Button("BtnShelf", new Vector2(0, 1), new Vector2(Margin - 8 + 132, -TopRow), new Vector2(100, TopRowH), TextAlignmentOptions.Left);
-            shelfLbl.text = "\u2039 shelf";
+            TMP_Text shelfLbl; (shelfBtn, shelfLbl) = Button("BtnShelf", new Vector2(0, 1), new Vector2(Margin - 8 + 132, -TopRow), new Vector2(118, TopRowH), TextAlignmentOptions.Left);
+            shelfLbl.text = "<b>\u2039 library</b>";
             (sizeBtn, sizeLbl) = Button("BtnTextSize", new Vector2(1, 1), new Vector2(-Margin - 132, -TopRow), new Vector2(150, TopRowH), TextAlignmentOptions.Right);
             (markBtn, markLbl) = Button("BtnBookmark", new Vector2(1, 1), new Vector2(-Margin + 8, -TopRow), new Vector2(124, TopRowH), TextAlignmentOptions.Right);
             (stepBtn, stepLbl) = Button("BtnStepIn", new Vector2(1, 1), new Vector2(-Margin + 8, -FootY + 2), new Vector2(150, FootH - 4), TextAlignmentOptions.Right);

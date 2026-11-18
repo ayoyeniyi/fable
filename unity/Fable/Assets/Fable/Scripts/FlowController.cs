@@ -84,6 +84,20 @@ namespace Fable
         /// The reader put the book down (the X on the page): the page is away, the bar floats nearby with "open the book".
         public bool BookDown { get; private set; }
 
+        /// Fable's own menu (the left palm pinch): back to the book, back to the library, quit. Shown on the bar.
+        public bool MenuOpen { get; private set; }
+        void ToggleMenu() { MenuOpen = !MenuOpen; viewState = null; Debug.Log($"[Fable] menu {(MenuOpen ? "open" : "closed")}"); }
+        void MenuToLibrary()
+        {
+            MenuOpen = false;
+            if (!Application.CanStreamedLevelBeLoaded(LobbyController.SceneName)) return;
+            if (Current == State.Reading && !InPlace && !BookDown) { GoToLobby(); return; }
+            // from a chapter's place or with the book put down: the place in the book is saved with every page
+            ExperienceMood.Restore(); if (Highlight) Highlight.Clear();
+            UnityEngine.SceneManagement.SceneManager.LoadScene(LobbyController.SceneName);
+        }
+        public static void QuitFable() { Debug.Log("[Fable] quit"); Application.Quit(); }
+
         void PutBookDown()
         {
             if (busy || InPlace || Current != State.Reading || BookDown) return;
@@ -293,6 +307,7 @@ namespace Fable
             Teleport = GetComponent<ArcTeleport>() ? GetComponent<ArcTeleport>() : gameObject.AddComponent<ArcTeleport>();
             Teleport.Init(this, Input, Head, RigRoot());   // point at the floor, an arc, pinch: go there
             Handles.PutDown += PutBookDown;
+            Input.MenuRequested -= ToggleMenu; Input.MenuRequested += ToggleMenu;
             Handles.OpenRooms += () => { if (!busy && !InPlace && Current == State.Reading && Menu) Menu.Open("rooms"); };
             Handles.Turn += next =>
             {
@@ -324,7 +339,7 @@ namespace Fable
             if (Handles) Handles.ArrowsVisible = Current == State.Reading && !InPlace && !busy;
             if (!View) return;
             View.MinY = ReadingRoom && ReadingRoom.activeInHierarchy && ReadingRoom.transform.Find("DioramaTable") ? 0.74f : float.NegativeInfinity;
-            var key = busy ? "busy" : InPlace ? "Place" : BookDown ? "BookDown" : Current.ToString();
+            var key = busy ? "busy" : MenuOpen ? "Menu" : InPlace ? "Place" : BookDown ? "BookDown" : Current.ToString();
             if (key == viewState) return;
             viewState = key;
             switch (key)
@@ -341,13 +356,17 @@ namespace Fable
                     View.SetActions(("\u2039 return to the book", () => OnReturn()));
                     if (placeCaption != null) View.Tip(null, placeCaption, 4.5f);   // the chapter and its place, then it fades
                     break;
+                case "Menu":
+                    View.SetActions(("\u2039 back", ToggleMenu), ("library", MenuToLibrary), ("quit Fable", QuitFable));
+                    View.Tip(null, "Fable menu: back to where you were, the library with all ten books, or quit. Left palm pinch closes it too.", 6f);
+                    break;
                 case "BookDown":
                     View.SetActions(("open the book \u203a", OpenBookAgain));
                     View.Tip(null, "The book is put down. Look around; pinch \u201copen the book\u201d when you are ready.", 5f);
                     break;
                 case "Reading":
                     View.SetActions(("chapters", () => Menu.Open("chapters")), ("settings", () => Menu.Open("sound")));   // the reading rooms have their own button above the page
-                    View.Tip("view", "\u2039 turn and turn \u203a show you the room around you. Recentre brings the page back.");
+                    View.Tip("menu", "Left palm toward you, pinch: Fable's menu (library, quit). \u2039 turn and turn \u203a show you the room; recentre brings the page back.", 10f);
                     break;
                 default: View.SetActions(); break;   // moving between states: only the view buttons
             }
