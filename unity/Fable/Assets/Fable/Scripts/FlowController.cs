@@ -273,6 +273,12 @@ namespace Fable
         {
             Handles = Panel.GetComponent<PanelHandles>() ? Panel.GetComponent<PanelHandles>() : Panel.gameObject.AddComponent<PanelHandles>();
             Handles.Init(Panel, Pointer, Input, Head); Pointer.Handles = Handles;
+            Handles.Turn += next =>
+            {
+                if (busy || InPlace || Current != State.Reading) return;
+                if (Highlight && Highlight.Busy) Highlight.Clear();
+                if (next) Reader.NextPage(); else Reader.PreviousPage();
+            };
             View = GetComponent<ViewControls>() ? GetComponent<ViewControls>() : gameObject.AddComponent<ViewControls>();
             View.Init(Input, Head, RigRoot(), (RectTransform)Panel.transform, Panel.Body ? Panel.Body.font : null);
             View.Quiet = () => Highlight && Highlight.Current is Highlighter.Mode.Card or Highlighter.Mode.Menu;   // Peek and the highlight menu sit where the bar would be
@@ -294,6 +300,7 @@ namespace Fable
         /// The toolbar's actions follow the state: the visible way back from every place the reader can be.
         void Update()
         {
+            if (Handles) Handles.ArrowsVisible = Current == State.Reading && !InPlace && !busy;
             if (!View) return;
             View.MinY = ReadingRoom && ReadingRoom.activeInHierarchy && ReadingRoom.transform.Find("DioramaTable") ? 0.74f : float.NegativeInfinity;
             var key = busy ? "busy" : InPlace ? "Place" : Current.ToString();

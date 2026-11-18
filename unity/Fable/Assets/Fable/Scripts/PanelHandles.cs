@@ -1,7 +1,9 @@
 // Visible handles on the reading page:
 //   the bar under the page    point at it, pinch and hold, move the hand: the page goes where you take it
 //   the corner at bottom right    pinch and hold, move away from the page's centre or towards it: bigger or smaller
-// Both take the pinch for themselves (ReaderController.Claimers), so moving the page never turns it or highlights.
+//   the arrows beside the page    pinch either one, with either hand: the page turns that way (a reminder that the
+//                                 right hand's pinch turns forward and the left hand's back)
+// All take the pinch for themselves (ReaderController.Claimers), so moving the page never turns it or highlights.
 // The handles brighten when the ray rests on them and while they are held. The size is saved in the reader's
 // preferences; "recentre" on the view toolbar brings a moved page back in front of the reader.
 using TMPro;
@@ -16,13 +18,18 @@ namespace Fable
         public PagePointer Pointer;
         public ReaderController Input;
         public Transform Head;
-        public Color Idle = new(0.36f, 0.29f, 0.21f, 0.55f), Hover = new(0.80f, 0.50f, 0.15f, 0.95f), Held = new(0.95f, 0.66f, 0.25f, 1f);
+        public Color Idle = new(0.80f, 0.50f, 0.15f, 0.70f), Hover = new(0.80f, 0.50f, 0.15f, 0.95f), Held = new(0.95f, 0.66f, 0.25f, 1f);
+
+        /// Raised when an arrow is pinched: true = next page, false = previous.
+        public event System.Action<bool> Turn;
+        /// Shown only while the page is a book page (not a scene's passage): set by the flow each frame.
+        public bool ArrowsVisible = true;
 
         /// Editor tests: stands in for the pinch of the hand that holds a handle (null = live input).
         public bool? TestPinch;
         public string State => held == 1 ? "moving" : held == 2 ? "resizing" : hover == 1 ? "over move" : hover == 2 ? "over resize" : "idle";
 
-        RectTransform page, moveBar, corner; Image moveImg, cornerImg; TMP_Text moveLbl;
+        RectTransform page, moveBar, corner, prevArrow, nextArrow; Image moveImg, cornerImg, prevImg, nextImg; TMP_Text moveLbl;
         int hover, held; bool heldRight;
         float grabDist; Vector3 grabOffset;                // moving: ray distance and the page's offset from the ray point
         float startScale, startRadius; Plane grabPlane;    // resizing
@@ -32,8 +39,12 @@ namespace Fable
             Panel = panel; Pointer = pointer; Input = input; Head = head; page = (RectTransform)panel.transform;
             Build();
             if (Input && !Input.Claimers.Contains(Claim)) Input.Claimers.Add(Claim);
+            if (Pointer && !Pointer.Targets.Contains(RayTarget)) Pointer.Targets.Add(RayTarget);
         }
-        void OnDestroy() { if (Input) Input.Claimers.Remove(Claim); }
+        void OnDestroy() { if (Input) Input.Claimers.Remove(Claim); if (Pointer) Pointer.Targets.Remove(RayTarget); }
+
+        /// For the page pointer: where this hand's ray meets a handle or arrow (outside the page, where it draws no cursor).
+        Vector3? RayTarget(bool right) => OnPlane(right, out var w, out _) && (HandleAt(w) != 0 || (held != 0 && heldRight == right)) ? w : null;
 
         void Build()
         {
@@ -41,7 +52,7 @@ namespace Fable
             var font = Panel.Body ? Panel.Body.font : null;
             moveBar = new GameObject("HandleMove", typeof(RectTransform), typeof(Image)).GetComponent<RectTransform>();
             moveBar.SetParent(page, false); moveBar.anchorMin = moveBar.anchorMax = new Vector2(0.5f, 0); moveBar.pivot = new Vector2(0.5f, 1);
-            moveBar.anchoredPosition = new Vector2(0, -10); moveBar.sizeDelta = new Vector2(190, 16);
+            moveBar.anchoredPosition = new Vector2(0, -14); moveBar.sizeDelta = new Vector2(190, 16);
             moveImg = moveBar.GetComponent<Image>(); moveImg.color = Idle; moveImg.raycastTarget = false; moveImg.sprite = Pill(); moveImg.type = Image.Type.Sliced;
             moveLbl = new GameObject("Label", typeof(RectTransform)).AddComponent<TextMeshProUGUI>(); moveLbl.transform.SetParent(moveBar, false);
             moveLbl.rectTransform.anchorMin = moveLbl.rectTransform.anchorMax = new Vector2(0.5f, 0); moveLbl.rectTransform.pivot = new Vector2(0.5f, 1);
@@ -52,6 +63,17 @@ namespace Fable
             corner.SetParent(page, false); corner.anchorMin = corner.anchorMax = new Vector2(1, 0); corner.pivot = new Vector2(0, 1);
             corner.anchoredPosition = new Vector2(4, -4); corner.sizeDelta = new Vector2(40, 40);
             cornerImg = corner.GetComponent<Image>(); cornerImg.color = Idle; cornerImg.raycastTarget = false; cornerImg.sprite = Corner();
+            // above the middle of each side, clear of the toolbar's column beside the page's lower left (ViewControls)
+            prevArrow = Arrow("ArrowPrev", 0f, -1, out prevImg); nextArrow = Arrow("ArrowNext", 1f, 1, out nextImg);
+        }
+
+        RectTransform Arrow(string name, float side, int dir, out Image img)
+        {
+            var rt = new GameObject(name, typeof(RectTransform), typeof(Image)).GetComponent<RectTransform>();
+            rt.SetParent(page, false); rt.anchorMin = rt.anchorMax = new Vector2(side, 0.62f); rt.pivot = new Vector2(side == 0 ? 1 : 0, 0.5f);
+            rt.anchoredPosition = new Vector2(dir * 16, 0); rt.sizeDelta = new Vector2(34, 60);
+            img = rt.GetComponent<Image>(); img.color = Idle; img.raycastTarget = false; img.sprite = Chevron(dir > 0);
+            return rt;
         }
 
         /// Where a hand's ray meets the page's plane (not limited to the page's rectangle: the handles sit outside it).
@@ -69,6 +91,8 @@ namespace Fable
             bool In(RectTransform rt, float pad) { var r = rt.rect; r.xMin -= pad; r.xMax += pad; r.yMin -= pad; r.yMax += pad; return r.Contains(rt.InverseTransformPoint(world)); }
             if (In(corner, 14)) return 2;
             if (In(moveBar, 16)) return 1;
+            if (ArrowsVisible && In(prevArrow, 18)) return 3;
+            if (ArrowsVisible && In(nextArrow, 18)) return 4;
             return 0;
         }
 
@@ -79,6 +103,7 @@ namespace Fable
         {
             if (!OnPlane(right, out var w, out var ray)) return false;
             int h = HandleAt(w); if (h == 0) return false;
+            if (h >= 3) { Debug.Log($"[Fable] page arrow: {(h == 4 ? "next" : "previous")}"); Turn?.Invoke(h == 4); return true; }
             held = h; heldRight = right;
             if (h == 1) { grabDist = Vector3.Distance(ray.origin, w); grabOffset = page.position - w; }
             else { grabPlane = new Plane(-page.forward, page.position); startScale = Panel.UserScale; startRadius = Mathf.Max(0.05f, Vector3.Distance(w, page.position)); }
@@ -108,6 +133,8 @@ namespace Fable
             foreach (var right in new[] { true, false }) if (OnPlane(right, out var w, out _)) { hover = HandleAt(w); if (hover != 0) break; }
             moveImg.color = held == 1 ? Held : hover == 1 ? Hover : Idle;
             cornerImg.color = held == 2 ? Held : hover == 2 ? Hover : Idle;
+            if (prevArrow.gameObject.activeSelf != ArrowsVisible) { prevArrow.gameObject.SetActive(ArrowsVisible); nextArrow.gameObject.SetActive(ArrowsVisible); }
+            prevImg.color = hover == 3 ? Hover : Idle; nextImg.color = hover == 4 ? Hover : Idle;
             moveBar.sizeDelta = new Vector2(held == 1 || hover == 1 ? 230 : 190, held == 1 || hover == 1 ? 20 : 16);
             var lc = moveLbl.color; float a = hover == 1 && held == 0 ? 1f : 0f; if (!Mathf.Approximately(lc.a, a)) moveLbl.color = new Color(lc.r, lc.g, lc.b, Mathf.MoveTowards(lc.a, a, Time.deltaTime * 4f));
         }
@@ -132,6 +159,20 @@ namespace Fable
             }
             tex.SetPixels32(px); tex.Apply();
             return Sprite.Create(tex, new Rect(0, 0, w, h), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect, new Vector4(16, 0, 16, 0));
+        }
+
+        /// A chevron: '>' pointing right when next, '<' when previous.
+        static Sprite Chevron(bool right)
+        {
+            const int w = 34, h = 60; var tex = new Texture2D(w, h, TextureFormat.RGBA32, false); var px = new Color32[w * h];
+            for (int y = 0; y < h; y++) for (int x = 0; x < w; x++)
+            {
+                float u = right ? x : w - 1 - x, t = Mathf.Abs(y - (h - 1) / 2f);   // distance from the middle row
+                float d = Mathf.Abs(u - (w - 6 - t * (w - 12) / ((h - 1) / 2f)));    // from the line tip -> corners
+                px[y * w + x] = new Color32(255, 255, 255, (byte)(255 * Mathf.Clamp01(4.5f - d)));
+            }
+            tex.SetPixels32(px); tex.Apply();
+            return Sprite.Create(tex, new Rect(0, 0, w, h), new Vector2(0.5f, 0.5f), 100f);
         }
 
         /// An L-shaped bracket: the page's corner, drawn outside it.

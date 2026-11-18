@@ -17,6 +17,9 @@ namespace Fable
         Image cursor; LineRenderer ray; Material rayMat; BookReader reader;
         /// The page's move and resize handles: the cursor grows over them as over any control.
         public PanelHandles Handles;
+        /// Things off the page that a hand's ray can reach (a Peek model or globe, the page's handles and arrows): each
+        /// returns where the ray meets it for that hand, or null. The ray is drawn to them, in the 'over a control' colour.
+        public readonly System.Collections.Generic.List<System.Func<bool, Vector3?>> Targets = new();
 
         /// Editor tests: a right-hand ray to use instead of the hand or mouse (null = live input).
         public Ray? TestRay;
@@ -87,12 +90,26 @@ namespace Fable
             if (on && ViewControls.Instance && ViewControls.Instance.RayOnBar(right)) on = false;   // the bar draws its own ray
             cursor.gameObject.SetActive(on);
             if (ray) ray.enabled = on;
-            if (!on) return;
+            if (!on) { DrawToTarget(); return; }
+            rayMat.color = new Color(Dot.r, Dot.g, Dot.b, 0.7f);
             bool overControl = (reader && reader.Active && (reader.PressAt(right, dryRun: true) || reader.OverStepIn(right))) || (Handles && Handles.Over(right));
             cursor.rectTransform.localPosition = new Vector3(p.x, p.y, -1f); cursor.transform.SetAsLastSibling();
             cursor.rectTransform.sizeDelta = Vector2.one * (overControl ? 26f : 16f);
             cursor.color = overControl ? new Color(0.80f, 0.36f, 0.08f, 0.95f) : Dot;
             if (Ray(right, out var r)) { ray.SetPosition(0, r.origin + r.direction * 0.04f); ray.SetPosition(1, Page.TransformPoint(new Vector3(p.x, p.y, -1f))); }
+        }
+
+        void DrawToTarget()
+        {
+            if (!ray) return;
+            foreach (var right in new[] { true, false })
+                foreach (var t in Targets)
+                {
+                    var hit = t(right); if (!hit.HasValue || !Ray(right, out var r)) continue;
+                    ray.enabled = true; rayMat.color = new Color(0.80f, 0.36f, 0.08f, 0.85f);
+                    ray.SetPosition(0, r.origin + r.direction * 0.04f); ray.SetPosition(1, hit.Value);
+                    return;
+                }
         }
 
         static Sprite MakeDot()

@@ -77,8 +77,17 @@ namespace Fable
             if (!maps && !TryGetComponent(out maps)) maps = gameObject.AddComponent<BookMap>();
             if (!loading) StartCoroutine(LoadData());
             if (Input && !Input.Claimers.Contains(ClaimPeek)) Input.Claimers.Add(ClaimPeek);
+            if (Pointer && !Pointer.Targets.Contains(PeekRayTarget)) Pointer.Targets.Add(PeekRayTarget);
         }
-        void OnDestroy() { if (Input) Input.Claimers.Remove(ClaimPeek); }
+        void OnDestroy() { if (Input) Input.Claimers.Remove(ClaimPeek); if (Pointer) Pointer.Targets.Remove(PeekRayTarget); }
+
+        /// For the page pointer: the ray reaches the Peek model or globe (and stays on it while it is held).
+        Vector3? PeekRayTarget(bool right)
+        {
+            if (!peekRoot) return null;
+            if (peekHeld && peekHeldRight == right) return Pointer.Ray(right, out var hr) ? hr.GetPoint(peekGrabDist) : null;
+            return PeekHit(right, out var ray, out var d) ? ray.GetPoint(d) : null;
+        }
 
         IEnumerator LoadData()
         {
