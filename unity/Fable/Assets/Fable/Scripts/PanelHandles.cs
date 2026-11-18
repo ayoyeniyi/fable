@@ -20,6 +20,8 @@ namespace Fable
         public Transform Head;
         public Color Idle = new(0.80f, 0.50f, 0.15f, 0.70f), Hover = new(0.80f, 0.50f, 0.15f, 0.95f), Held = new(0.95f, 0.66f, 0.25f, 1f);
 
+        /// Raised when the "reading rooms" button above the page is pinched.
+        public event System.Action OpenRooms;
         /// Raised when an arrow is pinched: true = next page, false = previous.
         public event System.Action<bool> Turn;
         /// Shown only while the page is a book page (not a scene's passage): set by the flow each frame.
@@ -29,7 +31,7 @@ namespace Fable
         public bool? TestPinch;
         public string State => held == 1 ? "moving" : held == 2 ? "resizing" : hover == 1 ? "over move" : hover == 2 ? "over resize" : "idle";
 
-        RectTransform page, moveBar, corner, prevArrow, nextArrow; Image moveImg, cornerImg, prevImg, nextImg; TMP_Text moveLbl;
+        RectTransform page, moveBar, corner, prevArrow, nextArrow, roomsBtn; Image moveImg, cornerImg, prevImg, nextImg, roomsImg; TMP_Text roomsLbl; TMP_Text moveLbl;
         int hover, held; bool heldRight;
         float grabDist; Vector3 grabOffset;                // moving: ray distance and the page's offset from the ray point
         float startScale, startRadius; Plane grabPlane;    // resizing
@@ -65,7 +67,18 @@ namespace Fable
             cornerImg = corner.GetComponent<Image>(); cornerImg.color = Idle; cornerImg.raycastTarget = false; cornerImg.sprite = Corner();
             // above the middle of each side, clear of the toolbar's column beside the page's lower left (ViewControls)
             prevArrow = Arrow("ArrowPrev", 0f, -1, out prevImg); nextArrow = Arrow("ArrowNext", 1f, 1, out nextImg);
+            // the reading rooms, on their own above the page where the eye already is
+            roomsBtn = new GameObject("RoomsButton", typeof(RectTransform), typeof(Image)).GetComponent<RectTransform>();
+            roomsBtn.SetParent(page, false); roomsBtn.anchorMin = roomsBtn.anchorMax = new Vector2(0.5f, 1); roomsBtn.pivot = new Vector2(0.5f, 0);
+            roomsBtn.anchoredPosition = new Vector2(0, 18); roomsBtn.sizeDelta = new Vector2(260, 52);
+            roomsImg = roomsBtn.GetComponent<Image>(); roomsImg.color = RoomsIdle; roomsImg.raycastTarget = false; roomsImg.sprite = Pill(); roomsImg.type = Image.Type.Sliced;
+            roomsLbl = new GameObject("Label", typeof(RectTransform)).AddComponent<TextMeshProUGUI>(); roomsLbl.transform.SetParent(roomsBtn, false);
+            roomsLbl.rectTransform.anchorMin = Vector2.zero; roomsLbl.rectTransform.anchorMax = Vector2.one; roomsLbl.rectTransform.offsetMin = roomsLbl.rectTransform.offsetMax = Vector2.zero;
+            if (font) roomsLbl.font = font; roomsLbl.fontSize = 24; roomsLbl.fontStyle = FontStyles.SmallCaps; roomsLbl.alignment = TextAlignmentOptions.Center;
+            roomsLbl.color = new Color(1f, 0.96f, 0.88f, 1f); roomsLbl.raycastTarget = false; roomsLbl.text = "reading rooms";
         }
+
+        static readonly Color RoomsIdle = new(0.72f, 0.42f, 0.12f, 0.92f), RoomsHover = new(0.90f, 0.56f, 0.18f, 1f);
 
         RectTransform Arrow(string name, float side, int dir, out Image img)
         {
@@ -91,6 +104,7 @@ namespace Fable
             bool In(RectTransform rt, float pad) { var r = rt.rect; r.xMin -= pad; r.xMax += pad; r.yMin -= pad; r.yMax += pad; return r.Contains(rt.InverseTransformPoint(world)); }
             if (In(corner, 14)) return 2;
             if (In(moveBar, 16)) return 1;
+            if (ArrowsVisible && In(roomsBtn, 10)) return 5;
             if (ArrowsVisible && In(prevArrow, 18)) return 3;
             if (ArrowsVisible && In(nextArrow, 18)) return 4;
             return 0;
@@ -103,6 +117,7 @@ namespace Fable
         {
             if (!OnPlane(right, out var w, out var ray)) return false;
             int h = HandleAt(w); if (h == 0) return false;
+            if (h == 5) { Debug.Log("[Fable] page: reading rooms"); OpenRooms?.Invoke(); return true; }
             if (h >= 3) { Debug.Log($"[Fable] page arrow: {(h == 4 ? "next" : "previous")}"); Turn?.Invoke(h == 4); return true; }
             held = h; heldRight = right;
             if (h == 1) { grabDist = Vector3.Distance(ray.origin, w); grabOffset = page.position - w; }
@@ -133,7 +148,8 @@ namespace Fable
             foreach (var right in new[] { true, false }) if (OnPlane(right, out var w, out _)) { hover = HandleAt(w); if (hover != 0) break; }
             moveImg.color = held == 1 ? Held : hover == 1 ? Hover : Idle;
             cornerImg.color = held == 2 ? Held : hover == 2 ? Hover : Idle;
-            if (prevArrow.gameObject.activeSelf != ArrowsVisible) { prevArrow.gameObject.SetActive(ArrowsVisible); nextArrow.gameObject.SetActive(ArrowsVisible); }
+            if (prevArrow.gameObject.activeSelf != ArrowsVisible) { prevArrow.gameObject.SetActive(ArrowsVisible); nextArrow.gameObject.SetActive(ArrowsVisible); roomsBtn.gameObject.SetActive(ArrowsVisible); }
+            roomsImg.color = hover == 5 ? RoomsHover : RoomsIdle; roomsBtn.localScale = Vector3.one * (hover == 5 ? 1.06f : 1f);
             prevImg.color = hover == 3 ? Hover : Idle; nextImg.color = hover == 4 ? Hover : Idle;
             moveBar.sizeDelta = new Vector2(held == 1 || hover == 1 ? 230 : 190, held == 1 || hover == 1 ? 20 : 16);
             var lc = moveLbl.color; float a = hover == 1 && held == 0 ? 1f : 0f; if (!Mathf.Approximately(lc.a, a)) moveLbl.color = new Color(lc.r, lc.g, lc.b, Mathf.MoveTowards(lc.a, a, Time.deltaTime * 4f));

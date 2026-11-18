@@ -21,8 +21,13 @@ namespace Fable
 
         Passage.Scene scene; string currentId;
 
-        void Awake() { baseScale = transform.localScale.x; UserScale = Mathf.Clamp(ProgressStore.LoadPrefs().PanelScale, MinUserScale, MaxUserScale); }
+        void Awake()
+        {
+            baseScale = transform.localScale.x; UserScale = Mathf.Clamp(ProgressStore.LoadPrefs().PanelScale, MinUserScale, MaxUserScale); }
         public const float MinUserScale = 0.7f, MaxUserScale = 1.6f;
+        /// Where a page for reading sits: 1.15 m out and 8 cm below the eyes had seated readers dropping a hand to the thigh
+        /// to reach its foot, so it sits further out and a little higher, a touch larger so the text stays about the same size.
+        public const float ReadDistance = 1.35f, ReadHeight = -0.03f, ReadScale = 1.08f;
 
         /// The page stays where it is in the room. It does not trail the reader's head: a reader who turns (with the view
         /// toolbar, or by looking over a shoulder) to see the room finds the page where they left it, and "recentre"

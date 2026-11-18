@@ -186,7 +186,7 @@ namespace Fable
         }
 
         // reading panel placements: on its own, beside the diorama (to the left, out of the line of sight), and inside the scene
-        void PanelAlone() { Panel.Distance = 1.15f; Panel.Height = -0.08f; Panel.Side = 0f; Panel.Scale = 1f; Panel.ClampToTable = true; Panel.Recentre(); }
+        void PanelAlone() { Panel.Distance = ReadingPanel.ReadDistance; Panel.Height = ReadingPanel.ReadHeight; Panel.Side = 0f; Panel.Scale = ReadingPanel.ReadScale; Panel.ClampToTable = true; Panel.Recentre(); }
         // centred above the diorama (the hall's roofline sits about 0.43 m below the eye), not off to one side
         void PanelBesideDiorama() { Panel.Distance = 1.0f; Panel.Height = -0.02f; Panel.Side = 0f; Panel.Scale = 0.6f; Panel.ClampToTable = true; Panel.Recentre(); }
         void PanelInScene() { Panel.Distance = 0.9f; Panel.Height = -0.32f; Panel.Side = 0f; Panel.Scale = 0.55f; Panel.ClampToTable = false; Panel.Recentre(); }   // no table in the staged room
@@ -273,6 +273,7 @@ namespace Fable
         {
             Handles = Panel.GetComponent<PanelHandles>() ? Panel.GetComponent<PanelHandles>() : Panel.gameObject.AddComponent<PanelHandles>();
             Handles.Init(Panel, Pointer, Input, Head); Pointer.Handles = Handles;
+            Handles.OpenRooms += () => { if (!busy && !InPlace && Current == State.Reading && Menu) Menu.Open("rooms"); };
             Handles.Turn += next =>
             {
                 if (busy || InPlace || Current != State.Reading) return;
@@ -321,7 +322,7 @@ namespace Fable
                     if (placeCaption != null) View.Tip(null, placeCaption, 4.5f);   // the chapter and its place, then it fades
                     break;
                 case "Reading":
-                    View.SetActions(("chapters", () => Menu.Open("chapters")), ("rooms", () => Menu.Open("rooms")), ("settings", () => Menu.Open("sound")));
+                    View.SetActions(("chapters", () => Menu.Open("chapters")), ("settings", () => Menu.Open("sound")));   // the reading rooms have their own button above the page
                     View.Tip("view", "\u2039 turn and turn \u203a show you the room around you. Recentre brings the page back.");
                     break;
                 default: View.SetActions(); break;   // moving between states: only the view buttons
@@ -671,7 +672,7 @@ namespace Fable
         }
 
         /// In a room the page stands where the reader does, a little below the eyes, and is not held above a table.
-        void PanelInRoom() { Panel.Distance = 1.1f; Panel.Height = -0.12f; Panel.Side = 0f; Panel.Scale = 1f; Panel.ClampToTable = false; Panel.Recentre(); }
+        void PanelInRoom() { Panel.Distance = ReadingPanel.ReadDistance; Panel.Height = ReadingPanel.ReadHeight - 0.04f; Panel.Side = 0f; Panel.Scale = ReadingPanel.ReadScale; Panel.ClampToTable = false; Panel.Recentre(); }
 
         /// The reading page in its quiet state: the book, where the reader left it (or at a given book sentence).
         void ShowBook(string atBookSentence = null)
@@ -932,7 +933,7 @@ namespace Fable
             {
                 float x = Mathf.SmoothStep(0, 1, e / GrowSeconds);
                 ScaleAbout(env, pivot, Mathf.Lerp(from, 0.001f, x));
-                Panel.Scale = Mathf.Lerp(0.6f, 1f, x);
+                Panel.Scale = Mathf.Lerp(0.6f, ReadingPanel.ReadScale, x);
                 yield return null;
             }
             env.gameObject.SetActive(false);
