@@ -157,6 +157,10 @@ namespace Fable.Editor
             PlayerSettings.SetApplicationIdentifier(target, "com.fable.alice");
             PlayerSettings.productName = "Fable";
             PlayerSettings.companyName = "Fable";
+            // every upload to the Meta dashboard needs a larger version code than the last one (the first upload, from
+            // another machine, was 1): a date, yyyymmddNN; raise it for each new upload
+            PlayerSettings.Android.bundleVersionCode = 2026111701;
+            PlayerSettings.bundleVersion = "1.0.0";
             PlayerSettings.Android.textureCompressionFormats = new[] { TextureCompressionFormat.ASTC };
             PlayerSettings.gpuSkinning = true;
             // one input backend: "Both" is unsupported on Android. Hands and controllers come through OVRInput/OpenXR,
