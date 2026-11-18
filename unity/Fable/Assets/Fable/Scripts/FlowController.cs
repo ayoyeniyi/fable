@@ -80,6 +80,22 @@ namespace Fable
         public ChapterPackage Experience { get; private set; }
         /// A "place" experience (a room with mood, no script): the reader is in the room with the chapter's moment on the page.
         public bool InPlace { get; private set; }
+        /// The reader put the book down (the X on the page): the page is away, the bar floats nearby with "open the book".
+        public bool BookDown { get; private set; }
+
+        void PutBookDown()
+        {
+            if (busy || InPlace || Current != State.Reading || BookDown) return;
+            if (Highlight) Highlight.Clear();
+            BookDown = true; if (Panel) Panel.gameObject.SetActive(false);
+            Debug.Log("[Fable] book put down");
+        }
+        void OpenBookAgain()
+        {
+            if (!BookDown) return;
+            BookDown = false; if (Panel) { Panel.gameObject.SetActive(true); Panel.Recentre(); }
+            Debug.Log("[Fable] book opened again");
+        }
         public BookMenu Menu { get; private set; }
 
         /// The whole book on the page while reading; the passage view takes over in the miniature and the scene.
@@ -273,6 +289,7 @@ namespace Fable
         {
             Handles = Panel.GetComponent<PanelHandles>() ? Panel.GetComponent<PanelHandles>() : Panel.gameObject.AddComponent<PanelHandles>();
             Handles.Init(Panel, Pointer, Input, Head); Pointer.Handles = Handles;
+            Handles.PutDown += PutBookDown;
             Handles.OpenRooms += () => { if (!busy && !InPlace && Current == State.Reading && Menu) Menu.Open("rooms"); };
             Handles.Turn += next =>
             {
@@ -304,7 +321,7 @@ namespace Fable
             if (Handles) Handles.ArrowsVisible = Current == State.Reading && !InPlace && !busy;
             if (!View) return;
             View.MinY = ReadingRoom && ReadingRoom.activeInHierarchy && ReadingRoom.transform.Find("DioramaTable") ? 0.74f : float.NegativeInfinity;
-            var key = busy ? "busy" : InPlace ? "Place" : Current.ToString();
+            var key = busy ? "busy" : InPlace ? "Place" : BookDown ? "BookDown" : Current.ToString();
             if (key == viewState) return;
             viewState = key;
             switch (key)
@@ -320,6 +337,10 @@ namespace Fable
                 case "Place":
                     View.SetActions(("\u2039 return to the book", () => OnReturn()));
                     if (placeCaption != null) View.Tip(null, placeCaption, 4.5f);   // the chapter and its place, then it fades
+                    break;
+                case "BookDown":
+                    View.SetActions(("open the book \u203a", OpenBookAgain));
+                    View.Tip(null, "The book is put down. Look around; pinch \u201copen the book\u201d when you are ready.", 5f);
                     break;
                 case "Reading":
                     View.SetActions(("chapters", () => Menu.Open("chapters")), ("settings", () => Menu.Open("sound")));   // the reading rooms have their own button above the page
@@ -762,7 +783,7 @@ namespace Fable
         void OnNext()
         {
             if (busy) return;
-            if (InPlace) return;   // nothing to page through: the reader looks around
+            if (InPlace || BookDown) return;   // nothing to page through: the reader looks around
             if (Current == State.Reading)
             {
                 if (Highlight && Highlight.HandleTap(true)) return;   // the menu or card took the pinch
@@ -775,7 +796,7 @@ namespace Fable
         void OnPrev()
         {
             if (busy) return;
-            if (InPlace) return;
+            if (InPlace || BookDown) return;
             if (Current == State.Scene || Current == State.Miniature) Director.Previous();
             else if (Current == State.Reading)
             {
@@ -787,7 +808,7 @@ namespace Fable
         {
             if (busy) return;
             if (Current == State.Scene || Current == State.Miniature) { if (dir > 0) Director.Next(); else Director.Previous(); }
-            else if (Current == State.Reading && !(Highlight && Highlight.Busy)) { if (dir > 0) Reader.NextPage(); else Reader.PreviousPage(); }
+            else if (Current == State.Reading && !BookDown && !(Highlight && Highlight.Busy)) { if (dir > 0) Reader.NextPage(); else Reader.PreviousPage(); }
         }
         void OnToggle()
         {
@@ -800,6 +821,7 @@ namespace Fable
         {
             if (busy) return;
             if (InPlace) { EndPlace(); return; }
+            if (BookDown) { OpenBookAgain(); return; }
             if (Current == State.Scene || Current == State.Miniature) StartCoroutine(Return());
         }
 

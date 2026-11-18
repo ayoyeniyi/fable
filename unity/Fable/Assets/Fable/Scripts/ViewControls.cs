@@ -29,7 +29,7 @@ namespace Fable
         public TMP_FontAsset Font;
         /// Degrees per turn. Saved in the reader's preferences; 30 until headset testing says otherwise.
         public float TurnDegrees = 30f;
-        public float DockGapMetres = 0.062f, FloatForward = 0.62f, FloatDrop = 0.42f, DockedWithinDegrees = 42f, FollowDeadZone = 24f;
+        public float DockGapMetres = 0.062f, FloatForward = 0.60f, FloatDrop = 0.30f, DockedWithinDegrees = 42f, FollowDeadZone = 24f;
         public Color Paper = new(0.97f, 0.93f, 0.84f, 0.97f), Ink = new(0.20f, 0.14f, 0.08f), Lit = new(0.99f, 0.86f, 0.52f, 1f), Edge = new(0.45f, 0.33f, 0.18f, 0.9f);
 
         /// The lowest the bar's bottom edge may go (the reading room's diorama table top); -inf when nothing is below.

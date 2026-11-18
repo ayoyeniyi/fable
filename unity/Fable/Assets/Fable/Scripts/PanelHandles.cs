@@ -20,6 +20,8 @@ namespace Fable
         public Transform Head;
         public Color Idle = new(0.80f, 0.50f, 0.15f, 0.70f), Hover = new(0.80f, 0.50f, 0.15f, 0.95f), Held = new(0.95f, 0.66f, 0.25f, 1f);
 
+        /// Raised when the X at the page's top right is pinched: the reader puts the book down for a while.
+        public event System.Action PutDown;
         /// Raised when the "reading rooms" button above the page is pinched.
         public event System.Action OpenRooms;
         /// Raised when an arrow is pinched: true = next page, false = previous.
@@ -31,7 +33,7 @@ namespace Fable
         public bool? TestPinch;
         public string State => held == 1 ? "moving" : held == 2 ? "resizing" : hover == 1 ? "over move" : hover == 2 ? "over resize" : "idle";
 
-        RectTransform page, moveBar, corner, prevArrow, nextArrow, roomsBtn; Image moveImg, cornerImg, prevImg, nextImg, roomsImg; TMP_Text roomsLbl; TMP_Text moveLbl;
+        RectTransform page, moveBar, corner, prevArrow, nextArrow, roomsBtn, closeBtn; Image moveImg, cornerImg, prevImg, nextImg, roomsImg, closeImg; TMP_Text roomsLbl; TMP_Text moveLbl;
         int hover, held; bool heldRight;
         float grabDist; Vector3 grabOffset;                // moving: ray distance and the page's offset from the ray point
         float startScale, startRadius; Plane grabPlane;    // resizing
@@ -76,6 +78,11 @@ namespace Fable
             roomsLbl.rectTransform.anchorMin = Vector2.zero; roomsLbl.rectTransform.anchorMax = Vector2.one; roomsLbl.rectTransform.offsetMin = roomsLbl.rectTransform.offsetMax = Vector2.zero;
             if (font) roomsLbl.font = font; roomsLbl.fontSize = 24; roomsLbl.fontStyle = FontStyles.SmallCaps; roomsLbl.alignment = TextAlignmentOptions.Center;
             roomsLbl.color = new Color(1f, 0.96f, 0.88f, 1f); roomsLbl.raycastTarget = false; roomsLbl.text = "reading rooms";
+            // put the book down: an X just outside the page's top right corner
+            closeBtn = new GameObject("CloseButton", typeof(RectTransform), typeof(Image)).GetComponent<RectTransform>();
+            closeBtn.SetParent(page, false); closeBtn.anchorMin = closeBtn.anchorMax = new Vector2(1, 1); closeBtn.pivot = new Vector2(0, 0);
+            closeBtn.anchoredPosition = new Vector2(6, 6); closeBtn.sizeDelta = new Vector2(40, 40);
+            closeImg = closeBtn.GetComponent<Image>(); closeImg.color = Idle; closeImg.raycastTarget = false; closeImg.sprite = Cross();
         }
 
         static readonly Color RoomsIdle = new(0.72f, 0.42f, 0.12f, 0.92f), RoomsHover = new(0.90f, 0.56f, 0.18f, 1f);
@@ -104,6 +111,7 @@ namespace Fable
             bool In(RectTransform rt, float pad) { var r = rt.rect; r.xMin -= pad; r.xMax += pad; r.yMin -= pad; r.yMax += pad; return r.Contains(rt.InverseTransformPoint(world)); }
             if (In(corner, 14)) return 2;
             if (In(moveBar, 16)) return 1;
+            if (ArrowsVisible && In(closeBtn, 14)) return 6;
             if (ArrowsVisible && In(roomsBtn, 10)) return 5;
             if (ArrowsVisible && In(prevArrow, 18)) return 3;
             if (ArrowsVisible && In(nextArrow, 18)) return 4;
@@ -117,6 +125,7 @@ namespace Fable
         {
             if (!OnPlane(right, out var w, out var ray)) return false;
             int h = HandleAt(w); if (h == 0) return false;
+            if (h == 6) { Debug.Log("[Fable] page: put the book down"); PutDown?.Invoke(); return true; }
             if (h == 5) { Debug.Log("[Fable] page: reading rooms"); OpenRooms?.Invoke(); return true; }
             if (h >= 3) { Debug.Log($"[Fable] page arrow: {(h == 4 ? "next" : "previous")}"); Turn?.Invoke(h == 4); return true; }
             held = h; heldRight = right;
@@ -148,7 +157,8 @@ namespace Fable
             foreach (var right in new[] { true, false }) if (OnPlane(right, out var w, out _)) { hover = HandleAt(w); if (hover != 0) break; }
             moveImg.color = held == 1 ? Held : hover == 1 ? Hover : Idle;
             cornerImg.color = held == 2 ? Held : hover == 2 ? Hover : Idle;
-            if (prevArrow.gameObject.activeSelf != ArrowsVisible) { prevArrow.gameObject.SetActive(ArrowsVisible); nextArrow.gameObject.SetActive(ArrowsVisible); roomsBtn.gameObject.SetActive(ArrowsVisible); }
+            if (prevArrow.gameObject.activeSelf != ArrowsVisible) { prevArrow.gameObject.SetActive(ArrowsVisible); nextArrow.gameObject.SetActive(ArrowsVisible); roomsBtn.gameObject.SetActive(ArrowsVisible); closeBtn.gameObject.SetActive(ArrowsVisible); }
+            closeImg.color = hover == 6 ? Hover : Idle;
             roomsImg.color = hover == 5 ? RoomsHover : RoomsIdle; roomsBtn.localScale = Vector3.one * (hover == 5 ? 1.06f : 1f);
             prevImg.color = hover == 3 ? Hover : Idle; nextImg.color = hover == 4 ? Hover : Idle;
             moveBar.sizeDelta = new Vector2(held == 1 || hover == 1 ? 230 : 190, held == 1 || hover == 1 ? 20 : 16);
@@ -175,6 +185,22 @@ namespace Fable
             }
             tex.SetPixels32(px); tex.Apply();
             return Sprite.Create(tex, new Rect(0, 0, w, h), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect, new Vector4(16, 0, 16, 0));
+        }
+
+        /// An X in a ring: put the book down.
+        static Sprite Cross()
+        {
+            const int n = 40; var tex = new Texture2D(n, n, TextureFormat.RGBA32, false); var px = new Color32[n * n]; float c = (n - 1) / 2f;
+            for (int y = 0; y < n; y++) for (int x = 0; x < n; x++)
+            {
+                float dx = x - c, dy = y - c, r = Mathf.Sqrt(dx * dx + dy * dy);
+                float ring = Mathf.Clamp01(2.2f - Mathf.Abs(r - (c - 2.5f)));
+                float diag = Mathf.Min(Mathf.Abs(dx - dy), Mathf.Abs(dx + dy)) / 1.414f;
+                float cross = r < c - 9 ? Mathf.Clamp01(3.2f - diag) : 0f;
+                px[y * n + x] = new Color32(255, 255, 255, (byte)(255 * Mathf.Max(ring, cross)));
+            }
+            tex.SetPixels32(px); tex.Apply();
+            return Sprite.Create(tex, new Rect(0, 0, n, n), new Vector2(0.5f, 0.5f), 100f);
         }
 
         /// A chevron: '>' pointing right when next, '<' when previous.
