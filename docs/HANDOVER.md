@@ -1,6 +1,40 @@
-# Fable handover (updated 2026-11-02: chapter-based Step In, stationary controls, the personal library)
+# Fable handover (updated 2026-11-17: 57 published scene rooms, headset frame rates, reader controls)
 
-Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs/TOOLING.md`. Everything below was true at the commit that last touched this file. "Verified" always says where: **editor** (Unity play mode on a Mac, desktop camera, no HMD) or **headset**. Nothing has been verified on a headset yet.
+Read this first, then `README.md`, `docs/PLAN.md`, `docs/ARCHITECTURE.md`, `docs/TOOLING.md`. Everything below was true at the commit that last touched this file. "Verified" always says where: **editor** (Unity play mode on a Mac, desktop camera, no HMD) or **headset**. Headset verification is stated per section; most of what is below has not been tried on a headset.
+
+## 57 scene rooms published, headset frame rates, reader controls (2026-11-17, later the same day)
+
+- **Scene rooms:** 57 downloadable chapter rooms (chapters 1-10 of each book, per `schema/scene_rooms.json`) built by
+  five builders and published to the server (`content/scene-rooms/<id>/`, a download environment each in
+  `schema/environments.json`). One commit per room ("Scene room <id> (<book> cNN): ..."). Known weaknesses: dark and
+  night rooms come out too bright after `runtime_bake`'s auto-exposure; characters and animals are mostly left out.
+- **Frame rates (headset captures, Quest 2, head still, 25 s):** dense Fields to Netherfield 72, dense Pillaji 72,
+  Croquet Ground 72, Mad Tea-Party 72, Maybury dining room 71.9, Pequod deck 72, Hall of Doors 72, Lobby 71.4 (one
+  56 sample at load), Longbourn library 70.6 (min 40, one sample). Recommendation: dense foliage everywhere (the
+  decision rule above is met); **decision pending with the owner**, so both variants and `DenseTrial` stay for now.
+- **Reader controls** (`Scripts/`; each commit says "not yet checked on the headset"):
+  - `PanelHandles.cs`: a chevron arrow beside each side of the page turns that way (either hand); the move bar stays
+    orange when idle and sits lower (`ViewControls.DockGapMetres` 35 -> 62 mm); **reading rooms** is its own button
+    above the page (off the bar); an X at the page's top right puts the book down (`FlowController.BookDown`: the page
+    goes, the bar floats nearby with **open the book**, page turns ignored); **quit Fable** at the top right, a second
+    pinch confirms.
+  - `ViewControls.cs`: the floating bar (book down, step-in places) sits 0.60 m out, 0.30 m below the eyes (was
+    0.62 m, 0.42 m); `Summoned` brings it 0.5 m in front (16 cm below the eyes) while Fable's menu is open.
+  - `ReadingPanel.cs` / `FlowController`: the page sits 1.35 m out (was 1.15 m), 3 cm below the eyes (was 8 cm), at
+    1.08x (`ReadDistance`, `ReadHeight`, `ReadScale`), so a seated reader reaches its foot.
+  - `PagePointer.Targets`: the pointer ray is drawn to Peek models, the map globe, the page handles and arrows, in the
+    orange "can grab" colour.
+  - `ArcTeleport.cs` (new): arc teleport in reading rooms and chapter places; point a raised hand at open floor, pinch
+    to go (a blink; page and bar come along). Colliders are built once per room from its readable meshes (flat-floor
+    fallback); it stays off while the older passage scenes' `Locomotion` is active.
+  - `ReaderController.MenuRequested`: the left palm pinch (`OVRInput.Button.Start`, or the left controller's menu
+    button) opens Fable's menu (back, library, quit Fable) in reading rooms and the lobby; a pinch made as part of a
+    system gesture no longer turns a page. The page's **‹ shelf** is now **‹ library**.
+- **Open issues:**
+  - Laputa (Gulliver): the floor flickers on one fixed spot, likely coplanar surfaces (z-fighting).
+  - Dark scene rooms are too bright (above).
+  - None of today's UI changes measured for frame rate beyond a 72 fps spot check after install.
+  - `dev-open.txt` has been removed from the headset (the dense-trial hook below opens nothing until it is pushed again).
 
 ## Downloadable chapter rooms, the new step-in, and the dense-foliage trial (2026-11-17)
 
