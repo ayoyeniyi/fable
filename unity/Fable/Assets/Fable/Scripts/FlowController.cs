@@ -86,10 +86,10 @@ namespace Fable
 
         /// Fable's own menu (the left palm pinch): back to the book, back to the library, quit. Shown on the bar.
         public bool MenuOpen { get; private set; }
-        void ToggleMenu() { MenuOpen = !MenuOpen; viewState = null; Debug.Log($"[Fable] menu {(MenuOpen ? "open" : "closed")}"); }
+        void ToggleMenu() { MenuOpen = !MenuOpen; viewState = null; if (View) View.Summoned = MenuOpen; Debug.Log($"[Fable] menu {(MenuOpen ? "open" : "closed")}"); }
         void MenuToLibrary()
         {
-            MenuOpen = false;
+            MenuOpen = false; if (View) View.Summoned = false;
             if (!Application.CanStreamedLevelBeLoaded(LobbyController.SceneName)) return;
             if (Current == State.Reading && !InPlace && !BookDown) { GoToLobby(); return; }
             // from a chapter's place or with the book put down: the place in the book is saved with every page

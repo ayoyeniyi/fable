@@ -99,6 +99,9 @@ namespace Fable
 
         /// The reader was moved (a step into a chapter's place): the floating bar goes in front of them at once.
         public void Snap() { floatInit = false; }
+        /// Fable's menu is open: the bar leaves the page and comes right in front of the reader, a little nearer and higher.
+        public bool Summoned { get => summoned; set { if (summoned != value) { summoned = value; floatInit = false; } } }
+        bool summoned;
 
         public void Recentre()
         {
@@ -311,7 +314,7 @@ namespace Fable
         void Place()
         {
             var fwd = Vector3.ProjectOnPlane(Head.forward, Vector3.up).normalized; if (fwd.sqrMagnitude < 0.01f) fwd = Vector3.forward;
-            bool dockOk = Dock && Dock.gameObject.activeInHierarchy && Mathf.Abs(netTurn) < 1f;
+            bool dockOk = !summoned && Dock && Dock.gameObject.activeInHierarchy && Mathf.Abs(netTurn) < 1f;
             if (dockOk)
             {
                 var toDock = Vector3.ProjectOnPlane(Dock.position - Head.position, Vector3.up);
@@ -342,7 +345,7 @@ namespace Fable
                 SetColumn(false); scale = Px;
                 if (!floatInit || Vector3.Angle(fwd, Vector3.ProjectOnPlane(floatPos - Head.position, Vector3.up)) > FollowDeadZone)
                 {
-                    floatPos = Head.position + fwd * FloatForward + Vector3.down * FloatDrop;
+                    floatPos = Head.position + fwd * (summoned ? 0.5f : FloatForward) + Vector3.down * (summoned ? 0.16f : FloatDrop);
                     floatPos.y = Mathf.Max(floatPos.y, MinY + bar.sizeDelta.y * Px * 0.5f + 0.01f);
                     floatRot = Quaternion.LookRotation(floatPos - Head.position, Vector3.up);
                     if (!floatInit) { bar.position = floatPos; bar.rotation = floatRot; }

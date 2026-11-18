@@ -127,7 +127,7 @@ namespace Fable
         /// The left palm pinch in the library: the bar offers "quit Fable" (and closes again on a second pinch).
         void LobbyMenu()
         {
-            menuOpen = !menuOpen;
+            menuOpen = !menuOpen; View.Summoned = menuOpen;
             if (menuOpen) { View.SetActions(("\u2039 back", LobbyMenu), ("quit Fable", FlowController.QuitFable)); View.Tip(null, "Fable menu: quit, or back to the library.", 5f); }
             else View.SetActions(("face the shelf", FaceShelf));
         }
