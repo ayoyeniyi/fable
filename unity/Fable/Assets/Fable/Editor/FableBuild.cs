@@ -22,7 +22,7 @@ namespace Fable.Editor
 {
     public static class FableBuild
     {
-        public const int VersionCode = 2026111701; public const string VersionName = "1.0.0";
+        public const int VersionCode = 2026111801; public const string VersionName = "1.0.0";
 
         // One Unity scene per passage, each with its own lightmaps. Outdoor scenes get daylight, an unlit sky dome and haze.
         /// Room: a book's own room with no staged passage (the page floats in it; FlowController.RoomOnly). LightScale
@@ -153,7 +153,7 @@ namespace Fable.Editor
             PlayerSettings.SetScriptingBackend(target, ScriptingImplementation.IL2CPP);
             PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
             PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel32;
-            PlayerSettings.Android.targetSdkVersion = AndroidSdkVersions.AndroidApiLevelAuto;
+            PlayerSettings.Android.targetSdkVersion = AndroidSdkVersions.AndroidApiLevel34;   // Meta's store refuses a target above 34 (Auto picked 36)
             PlayerSettings.SetGraphicsAPIs(BuildTarget.Android, new[] { GraphicsDeviceType.Vulkan });
             PlayerSettings.colorSpace = ColorSpace.Linear;
             PlayerSettings.SetApplicationIdentifier(target, "com.fable.alice");
@@ -838,6 +838,10 @@ namespace Fable.Editor
             // every upload to the Meta dashboard needs a larger version code than the last one (the first upload, from
             // another machine, was 1): a date, yyyymmddNN; raise it for each new upload
             PlayerSettings.Android.bundleVersionCode = VersionCode; PlayerSettings.bundleVersion = VersionName;
+            // the store's rules, set here as well so a build never depends on ConfigureProject having run: target SDK 34 at
+            // most (Meta rejects 36), 64-bit only
+            PlayerSettings.Android.targetSdkVersion = AndroidSdkVersions.AndroidApiLevel34;
+            PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
             Directory.CreateDirectory("out");
             SetBuildScenes();
             var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions { scenes = Built.Select(d => d.Scene).ToArray(), locationPathName = "out/fable.apk", target = BuildTarget.Android, options = BuildOptions.None });
