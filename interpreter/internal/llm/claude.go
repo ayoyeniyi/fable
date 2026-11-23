@@ -138,7 +138,7 @@ func (d *Director) stream(ctx context.Context, system string, content []anthropi
 	stream := d.client.Messages.NewStreaming(ctx, anthropic.MessageNewParams{
 		Model:     anthropic.Model(d.model),
 		MaxTokens: maxTokens,
-		System:    []anthropic.TextBlockParam{{Text: system}},
+		System:    []anthropic.TextBlockParam{{Text: system, CacheControl: anthropic.NewCacheControlEphemeralParam()}},
 		Messages:  []anthropic.MessageParam{anthropic.NewUserMessage(content...)},
 	})
 	msg := anthropic.Message{}
@@ -170,7 +170,7 @@ func (d *Director) askWith(ctx context.Context, system string, msgs []anthropic.
 	resp, err := d.client.Messages.New(ctx, anthropic.MessageNewParams{
 		Model:     anthropic.Model(d.model),
 		MaxTokens: maxTokens,
-		System:    []anthropic.TextBlockParam{{Text: system}},
+		System:    []anthropic.TextBlockParam{{Text: system, CacheControl: anthropic.NewCacheControlEphemeralParam()}},
 		Messages:  msgs,
 	})
 	if err != nil {
@@ -225,8 +225,10 @@ func (d *Director) Interpret(ctx context.Context, sc *book.Scene, m *script.Mani
 	if sc.Room != "" && sc.Room != sc.ID {
 		staging = fmt.Sprintf("\nSTAGING: this chapter is deliberately played in the %q set, a borrowed stage, the way a theatre stages a scene on whatever set is standing: its anchors, props, characters, lights, clips and sounds stand in for what the text describes. The mismatch is intended; do not flag it, refuse, or leave beats out because the set is not literal. Suggest rather than match (a lamp dims for dusk, a door rattles for a knock, a character asset speaks for whoever is talking, a prop grows for anything that grows). Give EVERY sentence its own beat, in order, each with one to four actions, so the reader sees the room answer each line.\n", sc.Room)
 	}
-	user := fmt.Sprintf("MANIFEST:\n%s\n\nPREVIOUSLY READ (context only, already happened):\n%s\nREADING POSITION: %s\n%s%s\nPASSAGE (%s, %s):\n%s\nReturn the SceneScript JSON.", mj, sc.Context(6000), pos, direction, staging, sc.Title, sc.Chapter, sc.Numbered())
-	msgs := []anthropic.MessageParam{anthropic.NewUserMessage(anthropic.NewTextBlock(user))}
+	manifest := anthropic.NewTextBlock("MANIFEST:\n" + string(mj))
+	manifest.OfText.CacheControl = anthropic.NewCacheControlEphemeralParam()
+	user := fmt.Sprintf("PREVIOUSLY READ (context only, already happened):\n%s\nREADING POSITION: %s\n%s%s\nPASSAGE (%s, %s):\n%s\nReturn the SceneScript JSON.", sc.Context(6000), pos, direction, staging, sc.Title, sc.Chapter, sc.Numbered())
+	msgs := []anthropic.MessageParam{anthropic.NewUserMessage(manifest, anthropic.NewTextBlock(user))}
 	var attempts []string
 	for round := 0; round < 2; round++ {
 		raw, err := d.ask(ctx, msgs)
