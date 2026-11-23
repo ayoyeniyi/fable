@@ -34,6 +34,7 @@ headset ──HTTPS──> Caddy (VM, :443) ──/k/<access key>/…──> fab
 | Claude-written room scripts | roomgen's script check filters them. On the VM, Blender also runs inside **bubblewrap** (`--sandbox`): no network, its own process tree (so it cannot read the service's environment), the system read-only, and only that room's work folder writable. `deploy/provision.sh` checks bubblewrap works and turns it off with a warning if not. |
 | "Local only" tools reached through the proxy | Behind Caddy every request comes from 127.0.0.1. `guard.IsLocal` also requires that no `X-Forwarded-For` header is present, so `/rooms/rebuild` stays owner-only. |
 | The access key in logs | The app logs only the host (`FableService.Describe`). Caddy's log replaces the request path. |
+| Paying twice for the same prompt text | Anthropic prompt caching (`internal/llm/claude.go`): the system prompt and, for scene interpretation, the manifest block carry `cache_control`, so a warm call within 5 minutes reads them from the cache (0.05x the input price on Opus 5.5) instead of resending them. Every call logs `claude <model>: input= cache_write= cache_read= output=`; a warm call with `cache_read` above zero is the proof it worked. Measured 2026-11-23 on the hall-of-doors passage: 2054 tokens written on the first call, 2054 read on the next. |
 
 ## Deploying
 

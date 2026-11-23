@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"strings"
 	"sync"
 	"time"
@@ -150,6 +151,7 @@ func (d *Director) stream(ctx context.Context, system string, content []anthropi
 	if err := stream.Err(); err != nil {
 		return "", "", err
 	}
+	logUsage(d.model, msg.Usage)
 	var sb strings.Builder
 	for _, block := range msg.Content {
 		if t, ok := block.AsAny().(anthropic.TextBlock); ok {
@@ -176,6 +178,7 @@ func (d *Director) askWith(ctx context.Context, system string, msgs []anthropic.
 	if err != nil {
 		return "", err
 	}
+	logUsage(d.model, resp.Usage)
 	if resp.StopReason == "refusal" {
 		return "", fmt.Errorf("model declined the request (stop_reason=refusal)")
 	}
@@ -186,6 +189,12 @@ func (d *Director) askWith(ctx context.Context, system string, msgs []anthropic.
 		}
 	}
 	return stripFences(sb.String()), nil
+}
+
+// logUsage records what each call cost in tokens. cache_write and cache_read are the prompt-cache counters: a
+// warm call with cache_read > 0 proves the cached prefix (system prompt, then the scene manifest) was reused.
+func logUsage(model string, u anthropic.Usage) {
+	log.Printf("claude %s: input=%d cache_write=%d cache_read=%d output=%d", model, u.InputTokens, u.CacheCreationInputTokens, u.CacheReadInputTokens, u.OutputTokens)
 }
 
 func stripFences(s string) string {
